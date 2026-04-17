@@ -1,8 +1,14 @@
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import MedicationViewSet, MAREntryViewSet
 
-router = DefaultRouter()
-router.register("", MedicationViewSet, basename="medication")
-router.register("mar", MAREntryViewSet, basename="mar-entry")
+med_router = DefaultRouter()
+med_router.register("", MedicationViewSet, basename="medication")
 
-urlpatterns = router.urls
+mar_router = DefaultRouter()
+mar_router.register("", MAREntryViewSet, basename="mar-entry")
+
+urlpatterns = [
+    path("mar/", include(mar_router.urls)),
+    path("", include(med_router.urls)),
+]

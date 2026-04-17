@@ -1,24 +1,19 @@
-/**
- * Typed API client for the Empathika Django backend.
- * All requests go through Next.js rewrites → Django.
- */
-
 import type {
   Resident,
   Medication,
   MAREntry,
   CarePlan,
-  Staff,
-  ComplianceRecord,
+  Shift,
+  LeaveRequest,
+  ComplianceAudit,
+  User,
 } from "@/types";
 
 const BASE = "/api/v1";
 
-async function request<T>(
-  path: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
 
   const res = await fetch(`${BASE}${path}`, {
     ...options,
@@ -30,11 +25,8 @@ async function request<T>(
   });
 
   if (res.status === 401) {
-    // Attempt silent token refresh
     const refreshed = await refreshToken();
-    if (refreshed) {
-      return request<T>(path, options);
-    }
+    if (refreshed) return request<T>(path, options);
     window.location.href = "/login";
     throw new Error("Unauthorized");
   }
@@ -48,7 +40,8 @@ async function request<T>(
 }
 
 async function refreshToken(): Promise<boolean> {
-  const refresh = localStorage.getItem("refresh_token");
+  const refresh =
+    typeof window !== "undefined" ? localStorage.getItem("refresh_token") : null;
   if (!refresh) return false;
 
   try {
@@ -57,7 +50,6 @@ async function refreshToken(): Promise<boolean> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refresh }),
     });
-
     if (!res.ok) return false;
     const { access } = await res.json();
     localStorage.setItem("access_token", access);
@@ -67,17 +59,15 @@ async function refreshToken(): Promise<boolean> {
   }
 }
 
-// Auth
 export const auth = {
   login: (username: string, password: string) =>
     request<{ access: string; refresh: string }>("/auth/login/", {
       method: "POST",
       body: JSON.stringify({ username, password }),
     }),
-  me: () => request<{ id: number; username: string; role: string; full_name: string }>("/auth/me/"),
+  me: () => request<User>("/auth/me/"),
 };
 
-// Residents
 export const residents = {
   list: (params?: Record<string, string>) => {
     const qs = params ? "?" + new URLSearchParams(params) : "";
@@ -87,25 +77,29 @@ export const residents = {
   create: (data: Partial<Resident>) =>
     request<Resident>("/residents/", { method: "POST", body: JSON.stringify(data) }),
   update: (id: number, data: Partial<Resident>) =>
-    request<Resident>(`/residents/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
+    request<Resident>(`/residents/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
 };
 
-// Medications
 export const medications = {
   list: (params?: Record<string, string>) => {
     const qs = params ? "?" + new URLSearchParams(params) : "";
     return request<{ results: Medication[]; count: number }>(`/medications/${qs}`);
   },
-  lowStock: () => request<Medication[]>("/medications/low_stock/"),
+  get: (id: number) => request<Medication>(`/medications/${id}/`),
   marList: (params?: Record<string, string>) => {
     const qs = params ? "?" + new URLSearchParams(params) : "";
     return request<{ results: MAREntry[]; count: number }>(`/medications/mar/${qs}`);
   },
   updateMAR: (id: number, data: Partial<MAREntry>) =>
-    request<MAREntry>(`/medications/mar/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
+    request<MAREntry>(`/medications/mar/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
 };
 
-// Care Plans
 export const carePlans = {
   list: (params?: Record<string, string>) => {
     const qs = params ? "?" + new URLSearchParams(params) : "";
@@ -116,46 +110,37 @@ export const carePlans = {
     request<CarePlan>("/care-plans/", { method: "POST", body: JSON.stringify(data) }),
   update: (id: number, data: Partial<CarePlan>) =>
     request<CarePlan>(`/care-plans/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
+  generateSummary: (id: number) =>
+    request<{ summary: string }>(`/care-plans/${id}/generate-summary/`, { method: "POST" }),
 };
 
-// Staff
 export const staff = {
-  list: (params?: Record<string, string>) => {
+  shifts: (params?: Record<string, string>) => {
     const qs = params ? "?" + new URLSearchParams(params) : "";
-    return request<{ results: Staff[]; count: number }>(`/staff/${qs}`);
+    return request<{ results: Shift[]; count: number }>(`/staff/shifts/${qs}`);
   },
-  get: (id: number) => request<Staff>(`/staff/${id}/`),
-  create: (data: Partial<Staff>) =>
-    request<Staff>("/staff/", { method: "POST", body: JSON.stringify(data) }),
-  update: (id: number, data: Partial<Staff>) =>
-    request<Staff>(`/staff/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
+  leave: (params?: Record<string, string>) => {
+    const qs = params ? "?" + new URLSearchParams(params) : "";
+    return request<{ results: LeaveRequest[]; count: number }>(`/staff/leave/${qs}`);
+  },
+  updateLeave: (id: number, data: Partial<LeaveRequest>) =>
+    request<LeaveRequest>(`/staff/leave/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
 };
 
-// Compliance
 export const compliance = {
-  list: (params?: Record<string, string>) => {
+  audits: (params?: Record<string, string>) => {
     const qs = params ? "?" + new URLSearchParams(params) : "";
-    return request<{ results: ComplianceRecord[]; count: number }>(`/compliance/${qs}`);
+    return request<{ results: ComplianceAudit[]; count: number }>(`/compliance/audits/${qs}`);
   },
-  get: (id: number) => request<ComplianceRecord>(`/compliance/${id}/`),
-  create: (data: Partial<ComplianceRecord>) =>
-    request<ComplianceRecord>("/compliance/", { method: "POST", body: JSON.stringify(data) }),
-  update: (id: number, data: Partial<ComplianceRecord>) =>
-    request<ComplianceRecord>(`/compliance/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
 };
 
-// AI Assistant
 export const ai = {
-  chat: (message: string, context?: Record<string, any>) =>
+  chat: (message: string, context?: Record<string, unknown>) =>
     request<{ response: string }>("/ai/chat/", {
       method: "POST",
       body: JSON.stringify({ message, context }),
     }),
-  generateReport: (type: string, data: Record<string, any>) =>
-    request<{ report: string }>("/ai/report/", {
-      method: "POST",
-      body: JSON.stringify({ type, data }),
-    }),
 };
-
-// Types are imported from @/types
