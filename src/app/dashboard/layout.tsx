@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
+import { ToastProvider } from "@/components/Toast";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [ready, setReady] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -27,12 +29,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex min-h-screen" style={{ background: "#050914" }}>
-      <Sidebar />
-      <div className="flex-1 flex flex-col ml-60">
-        <Header />
-        <main className="flex-1 p-6 overflow-auto">{children}</main>
+    <ToastProvider>
+      <div className="flex min-h-screen" style={{ background: "#050914" }}>
+        <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <div className="flex-1 flex flex-col lg:ml-64 min-w-0">
+          <Header onMenuClick={() => setSidebarOpen(true)} />
+          <main className="flex-1 p-4 lg:p-6 overflow-auto">{children}</main>
+        </div>
       </div>
-    </div>
+    </ToastProvider>
   );
 }

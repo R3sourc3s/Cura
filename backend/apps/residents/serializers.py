@@ -17,13 +17,19 @@ class ResidentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resident
         fields = "__all__"
-        read_only_fields = ["id", "ai_risk_score", "created_at", "updated_at"]
+        read_only_fields = ["id", "care_home", "ai_risk_score", "created_at", "updated_at"]
 
 
 class ResidentListSerializer(serializers.ModelSerializer):
     full_name = serializers.ReadOnlyField()
     age = serializers.ReadOnlyField()
+    conditions = ConditionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Resident
-        fields = ["id", "full_name", "age", "room_number", "fall_risk", "ai_risk_score", "is_active"]
+        fields = [
+            "id", "full_name", "first_name", "last_name", "age", "photo",
+            "room_number", "nhs_number", "admission_date",
+            "fall_risk", "pressure_ulcer_risk", "ai_risk_score",
+            "is_active", "conditions",
+        ]

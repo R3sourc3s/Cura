@@ -16,6 +16,9 @@ class ShiftViewSet(viewsets.ModelViewSet):
     filterset_fields = ["care_home", "staff_member", "date", "shift_type", "is_agency"]
     ordering_fields = ["date", "start_time"]
 
+    def perform_create(self, serializer):
+        serializer.save(care_home=self.request.user.care_home)
+
 
 class LeaveRequestViewSet(viewsets.ModelViewSet):
     queryset = LeaveRequest.objects.select_related("staff_member", "approved_by")
@@ -25,7 +28,11 @@ class LeaveRequestViewSet(viewsets.ModelViewSet):
 
 
 class TrainingViewSet(viewsets.ModelViewSet):
-    queryset = Training.objects.select_related("staff_member")
     serializer_class = TrainingSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["staff_member", "status"]
+
+    def get_queryset(self):
+        return Training.objects.select_related("staff_member").filter(
+            staff_member__care_home=self.request.user.care_home
+        )

@@ -4,6 +4,9 @@ from .models import Medication, MAREntry
 
 class MAREntrySerializer(serializers.ModelSerializer):
     administered_by_name = serializers.StringRelatedField(source="administered_by", read_only=True)
+    drug_name = serializers.CharField(source="medication.drug_name", read_only=True)
+    resident_name = serializers.CharField(source="medication.resident.full_name", read_only=True)
+    resident_id = serializers.IntegerField(source="medication.resident.id", read_only=True)
 
     class Meta:
         model = MAREntry

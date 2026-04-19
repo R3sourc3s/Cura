@@ -22,6 +22,9 @@ class ResidentViewSet(viewsets.ModelViewSet):
             return super().get_queryset().filter(care_home=user.care_home)
         return super().get_queryset()
 
+    def perform_create(self, serializer):
+        serializer.save(care_home=self.request.user.care_home)
+
 
 class ConditionViewSet(viewsets.ModelViewSet):
     queryset = Condition.objects.select_related("resident")

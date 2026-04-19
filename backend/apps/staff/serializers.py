@@ -31,6 +31,8 @@ class LeaveRequestSerializer(serializers.ModelSerializer):
 
 
 class TrainingSerializer(serializers.ModelSerializer):
+    staff_member_name = serializers.StringRelatedField(source="staff_member", read_only=True)
+
     class Meta:
         model = Training
         fields = "__all__"

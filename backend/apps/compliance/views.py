@@ -11,6 +11,12 @@ class ComplianceAuditViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["care_home", "domain", "rating"]
 
+    def perform_create(self, serializer):
+        serializer.save(
+            care_home=self.request.user.care_home,
+            conducted_by=self.request.user,
+        )
+
     @decorators.action(detail=False, methods=["get"], url_path="overall-score")
     def overall_score(self, request):
         care_home = request.query_params.get("care_home")

@@ -14,25 +14,39 @@ async function proxy(request: NextRequest, params: Promise<{ path: string[] }>):
   if (auth) headers.set("authorization", auth);
   if (ct) headers.set("content-type", ct);
 
-  const body =
-    request.method !== "GET" && request.method !== "HEAD"
-      ? await request.arrayBuffer()
-      : undefined;
+  let body: BodyInit | null = null;
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    const ab = await request.arrayBuffer();
+    body = new Uint8Array(ab) as BodyInit;
+  }
 
-  const upstream = await fetch(target, {
-    method: request.method,
-    headers,
-    body: body ?? undefined,
-  });
+  let upstream: Response;
+  try {
+    upstream = await fetch(target, {
+      method: request.method,
+      headers,
+      body: body ?? undefined,
+    });
+  } catch (err) {
+    console.error(`[proxy] upstream fetch failed: ${target}`, err);
+    return NextResponse.json({ detail: "Backend unavailable" }, { status: 502 });
+  }
 
   const upstreamHeaders = new Headers();
   upstream.headers.forEach((v, k) => {
-    if (!["transfer-encoding", "connection"].includes(k.toLowerCase())) {
+    const lower = k.toLowerCase();
+    if (!["transfer-encoding", "connection", "content-encoding"].includes(lower)) {
       upstreamHeaders.set(k, v);
     }
   });
 
-  return new NextResponse(upstream.body, {
+  // 204/205 must not carry a body
+  if (upstream.status === 204 || upstream.status === 205) {
+    return new NextResponse(null, { status: upstream.status, headers: upstreamHeaders });
+  }
+
+  const upstreamBody = await upstream.arrayBuffer();
+  return new NextResponse(upstreamBody, {
     status: upstream.status,
     headers: upstreamHeaders,
   });

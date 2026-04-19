@@ -1,3 +1,13 @@
+export interface Condition {
+  id: number;
+  resident: number;
+  name: string;
+  icd_code?: string;
+  diagnosed_date?: string;
+  notes?: string;
+  is_active: boolean;
+}
+
 export interface Resident {
   id: number;
   care_home: number;
@@ -15,13 +25,13 @@ export interface Resident {
   next_of_kin_phone?: string;
   gp_name?: string;
   gp_phone?: string;
-  fall_risk: string;
-  pressure_ulcer_risk: string;
+  fall_risk: "low" | "medium" | "high" | "critical";
+  pressure_ulcer_risk: "low" | "medium" | "high" | "critical";
   ai_risk_score: number;
   is_active: boolean;
   created_at: string;
   updated_at: string;
-  conditions?: { id: number; name: string; icd_code?: string }[];
+  conditions?: Condition[];
 }
 
 export interface Medication {
@@ -42,6 +52,7 @@ export interface Medication {
   is_active: boolean;
   notes?: string;
   created_at: string;
+  recent_mar?: MAREntry[];
 }
 
 export interface MAREntry {
@@ -51,8 +62,29 @@ export interface MAREntry {
   administered_at: string | null;
   administered_by: number | null;
   administered_by_name?: string;
+  drug_name?: string;
+  resident_name?: string;
+  resident_id?: number;
   status: "given" | "refused" | "omitted" | "pending";
   notes?: string;
+  created_at: string;
+}
+
+export interface CarePlanSection {
+  id: number;
+  care_plan: number;
+  title: string;
+  content: string;
+  risk_level: "low" | "medium" | "high";
+  order: number;
+}
+
+export interface CarePlanNote {
+  id: number;
+  care_plan: number;
+  author: number | null;
+  author_name?: string;
+  body: string;
   created_at: string;
 }
 
@@ -66,7 +98,9 @@ export interface CarePlan {
   ai_summary: string;
   created_at: string;
   updated_at: string;
+  created_by_name?: string;
   sections?: CarePlanSection[];
+  notes?: CarePlanNote[];
 }
 
 export interface Shift {
@@ -93,11 +127,15 @@ export interface LeaveRequest {
   reason?: string;
 }
 
-export interface CarePlanSection {
+export interface Training {
   id: number;
-  title: string;
-  content: string;
-  risk_level: string;
+  staff_member: number;
+  staff_member_name?: string;
+  course_name: string;
+  completed_date: string | null;
+  expiry_date: string | null;
+  status: "pending" | "completed" | "expired";
+  certificate_url?: string;
 }
 
 export interface ComplianceAudit {
@@ -111,6 +149,18 @@ export interface ComplianceAudit {
   next_audit_date: string | null;
   notes: string;
   created_at: string;
+  actions?: AuditAction[];
+}
+
+export interface AuditAction {
+  id: number;
+  audit: number;
+  description: string;
+  priority: "low" | "medium" | "high" | "critical";
+  assigned_to: number | null;
+  due_date: string;
+  status: "open" | "in_progress" | "complete";
+  completed_at: string | null;
 }
 
 export interface User {
@@ -120,6 +170,9 @@ export interface User {
   first_name: string;
   last_name: string;
   full_name: string;
-  role: string;
+  role: "admin" | "manager" | "nurse" | "carer" | "hr";
   phone?: string;
+  avatar?: string;
+  care_home: number | null;
+  is_active: boolean;
 }

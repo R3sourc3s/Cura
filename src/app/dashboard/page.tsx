@@ -122,7 +122,7 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Page title */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-white">Dashboard</h1>
         <p className="text-sm mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>
           {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
@@ -253,13 +253,16 @@ export default function DashboardPage() {
                   className="flex items-center justify-between py-2.5 px-3 rounded-xl"
                   style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}
                 >
-                  <div>
-                    <div className="text-sm font-medium text-white">Med #{m.medication}</div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-white truncate">
+                      {m.drug_name ?? `Med #${m.medication}`}
+                    </div>
                     <div className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
-                      Scheduled: {new Date(m.scheduled_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                      {m.resident_name && <span className="mr-2">{m.resident_name}</span>}
+                      {new Date(m.scheduled_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
                     </div>
                   </div>
-                  <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "rgba(251,146,60,0.15)", color: "#fb923c" }}>
+                  <span className="text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0" style={{ background: "rgba(251,146,60,0.15)", color: "#fb923c" }}>
                     Pending
                   </span>
                 </div>
