@@ -6,10 +6,14 @@ from apps.ai_assistant.services import generate_care_plan_summary
 
 
 class CarePlanViewSet(viewsets.ModelViewSet):
-    queryset = CarePlan.objects.select_related("resident", "created_by").prefetch_related("sections", "notes")
     serializer_class = CarePlanSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["resident", "status"]
+
+    def get_queryset(self):
+        return CarePlan.objects.select_related("resident", "created_by").prefetch_related(
+            "sections", "notes"
+        ).filter(resident__care_home=self.request.user.care_home)
 
     @decorators.action(detail=True, methods=["post"], url_path="generate-summary")
     def generate_summary(self, request, pk=None):

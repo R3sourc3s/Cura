@@ -16,23 +16,18 @@ import type {
 const BASE = "/api/v1";
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-
   const res = await fetch(`${BASE}${path}`, {
     ...options,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
   });
 
   if (res.status === 401) {
-    const refreshed = await refreshToken();
-    if (refreshed) return request<T>(path, options);
     window.location.href = "/login";
-    throw new Error("Unauthorized");
+    throw new Error("Session expired");
   }
 
   if (!res.ok) {
@@ -45,44 +40,21 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 async function upload<T>(path: string, formData: FormData, method = "PATCH"): Promise<T> {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
-
   const res = await fetch(`${BASE}${path}`, {
     method,
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    credentials: "include",
     body: formData,
   });
 
   if (res.status === 401) {
     window.location.href = "/login";
-    throw new Error("Unauthorized");
+    throw new Error("Session expired");
   }
   if (!res.ok) {
     const error = await res.json().catch(() => ({ detail: "Unknown error" }));
     throw new Error(error.detail ?? "Request failed");
   }
   return res.json() as Promise<T>;
-}
-
-async function refreshToken(): Promise<boolean> {
-  const refresh =
-    typeof window !== "undefined" ? localStorage.getItem("refresh_token") : null;
-  if (!refresh) return false;
-
-  try {
-    const res = await fetch(`${BASE}/auth/refresh/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh }),
-    });
-    if (!res.ok) return false;
-    const { access } = await res.json();
-    localStorage.setItem("access_token", access);
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 function qs(params?: Record<string, string>) {

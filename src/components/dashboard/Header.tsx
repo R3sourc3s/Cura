@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Bell, ChevronDown, LogOut, Search, Menu, X, UserCircle } from "lucide-react";
 import Link from "next/link";
 import { auth } from "@/lib/api";
-import { logout } from "@/lib/auth";
+import { logout as doLogout } from "@/lib/auth";
 import type { User } from "@/types";
 
 interface HeaderProps {
@@ -19,6 +19,12 @@ export default function Header({ onMenuClick }: HeaderProps) {
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { auth.me().then(setUser).catch(() => null); }, []);
+
+  useEffect(() => {
+    function refresh() { auth.me().then(setUser).catch(() => null); }
+    window.addEventListener("profile-updated", refresh);
+    return () => window.removeEventListener("profile-updated", refresh);
+  }, []);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -116,7 +122,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
                   <UserCircle size={14} /> My Profile
                 </Link>
                 <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "4px 0" }} />
-                <button onClick={logout}
+                <button onClick={() => doLogout()}
                   className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm transition-colors"
                   style={{ color: "#f87171" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(239,68,68,0.08)")}

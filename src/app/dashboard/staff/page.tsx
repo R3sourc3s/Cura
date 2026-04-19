@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { auth as authApi, staff } from "@/lib/api";
+import { useToast } from "@/components/Toast";
 import type { Shift, LeaveRequest, Training, User } from "@/types";
 import {
   UserCheck, Calendar, Clock, CheckCircle, XCircle,
@@ -368,6 +369,7 @@ function AddTrainingModal({ users, onClose, onAdded }: { users: User[]; onClose:
 }
 
 export default function StaffPage() {
+  const { toast } = useToast();
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [leave, setLeave] = useState<LeaveRequest[]>([]);
   const [training, setTraining] = useState<Training[]>([]);
@@ -401,8 +403,10 @@ export default function StaffPage() {
     try {
       await staff.updateLeave(id, { status });
       setLeave((prev) => prev.map((r) => r.id === id ? { ...r, status } : r));
-    } catch (e) { console.error(e); }
-    finally { setUpdating(null); }
+      toast(`Leave request ${status}.`);
+    } catch (e) {
+      toast("Failed to update leave request.", "error");
+    } finally { setUpdating(null); }
   }
 
   const upcomingCutoff = dateInDays(7);
@@ -654,9 +658,9 @@ export default function StaffPage() {
         </div>
       )}
 
-      {showShift && <AddShiftModal users={users} onClose={() => setShowShift(false)} onAdded={(s) => { setShifts((prev) => [s, ...prev]); setShowShift(false); }} />}
-      {showLeave && <LeaveModal onClose={() => setShowLeave(false)} onAdded={(l) => { setLeave((prev) => [l, ...prev]); setShowLeave(false); }} />}
-      {showAddTraining && <AddTrainingModal users={users} onClose={() => setShowAddTraining(false)} onAdded={(t) => { setTraining((prev) => [t, ...prev]); setShowAddTraining(false); setShowTraining(true); }} />}
+      {showShift && <AddShiftModal users={users} onClose={() => setShowShift(false)} onAdded={(s) => { setShifts((prev) => [s, ...prev]); setShowShift(false); toast("Shift added."); }} />}
+      {showLeave && <LeaveModal onClose={() => setShowLeave(false)} onAdded={(l) => { setLeave((prev) => [l, ...prev]); setShowLeave(false); toast("Leave request submitted."); }} />}
+      {showAddTraining && <AddTrainingModal users={users} onClose={() => setShowAddTraining(false)} onAdded={(t) => { setTraining((prev) => [t, ...prev]); setShowAddTraining(false); setShowTraining(true); toast("Training record added."); }} />}
     </div>
   );
 }

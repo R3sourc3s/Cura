@@ -6,10 +6,14 @@ from .serializers import ComplianceAuditSerializer, AuditActionSerializer, Polic
 
 
 class ComplianceAuditViewSet(viewsets.ModelViewSet):
-    queryset = ComplianceAudit.objects.select_related("care_home", "conducted_by").prefetch_related("actions")
     serializer_class = ComplianceAuditSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["care_home", "domain", "rating"]
+    filterset_fields = ["domain", "rating"]
+
+    def get_queryset(self):
+        return ComplianceAudit.objects.select_related(
+            "care_home", "conducted_by"
+        ).prefetch_related("actions").filter(care_home=self.request.user.care_home)
 
     def perform_create(self, serializer):
         serializer.save(
@@ -19,23 +23,26 @@ class ComplianceAuditViewSet(viewsets.ModelViewSet):
 
     @decorators.action(detail=False, methods=["get"], url_path="overall-score")
     def overall_score(self, request):
-        care_home = request.query_params.get("care_home")
-        qs = self.get_queryset()
-        if care_home:
-            qs = qs.filter(care_home=care_home)
-        result = qs.values("domain").annotate(avg_score=Avg("score"))
+        result = self.get_queryset().values("domain").annotate(avg_score=Avg("score"))
         return response.Response(list(result))
 
 
 class AuditActionViewSet(viewsets.ModelViewSet):
-    queryset = AuditAction.objects.select_related("audit", "assigned_to")
     serializer_class = AuditActionSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["audit", "status", "priority"]
 
+    def get_queryset(self):
+        return AuditAction.objects.select_related("audit", "assigned_to").filter(
+            audit__care_home=self.request.user.care_home
+        )
+
 
 class PolicyViewSet(viewsets.ModelViewSet):
-    queryset = Policy.objects.select_related("care_home", "approved_by")
     serializer_class = PolicySerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["care_home"]
+
+    def get_queryset(self):
+        return Policy.objects.select_related("care_home", "approved_by").filter(
+            care_home=self.request.user.care_home
+        )

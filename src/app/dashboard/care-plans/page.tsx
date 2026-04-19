@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { carePlans, residents as residentsApi } from "@/lib/api";
 import type { CarePlan, Resident } from "@/types";
 import { ClipboardList, Bot, Calendar, Filter, Plus, X, Save } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 const STATUS = {
   active:       { bg: "rgba(52,211,153,0.12)",  text: "#34d399",  label: "Active" },
@@ -136,6 +137,7 @@ function NewPlanModal({
 
 export default function CarePlansPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [plans, setPlans] = useState<CarePlan[]>([]);
   const [residentList, setResidentList] = useState<Resident[]>([]);
   const [filter, setFilter] = useState("");
@@ -161,6 +163,7 @@ export default function CarePlansPage() {
 
   function handleCreated(plan: CarePlan) {
     setShowNew(false);
+    toast("Care plan created.");
     router.push(`/dashboard/care-plans/${plan.id}`);
   }
 
@@ -295,7 +298,8 @@ export default function CarePlansPage() {
                       try {
                         const r = await carePlans.generateSummary(plan.id);
                         setPlans((prev) => prev.map((p) => p.id === plan.id ? { ...p, ai_summary: r.summary } : p));
-                      } catch (e) { console.error(e); }
+                        toast("AI summary generated.");
+                      } catch (e) { toast("Failed to generate summary.", "error"); }
                       finally { setSummaryLoading(null); }
                     }}
                     className="flex-1 py-2 text-xs font-semibold rounded-xl flex items-center justify-center gap-1"

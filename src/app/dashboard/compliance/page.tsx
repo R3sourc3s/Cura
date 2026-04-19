@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { compliance } from "@/lib/api";
 import type { ComplianceAudit, AuditAction } from "@/types";
+import { useToast } from "@/components/Toast";
 import {
   ShieldCheck, TrendingUp, Calendar, Plus, X, Save,
   ChevronDown, ChevronUp, AlertTriangle, CheckCircle, Clock,
@@ -298,6 +299,7 @@ function AddActionModal({
 }
 
 export default function CompliancePage() {
+  const { toast } = useToast();
   const [audits, setAudits] = useState<ComplianceAudit[]>([]);
   const [loading, setLoading] = useState(true);
   const [showNew, setShowNew] = useState(false);
@@ -322,7 +324,8 @@ export default function CompliancePage() {
         ...a,
         actions: (a.actions ?? []).map((ac) => ac.id === action.id ? updated : ac),
       }));
-    } catch (e) { console.error(e); }
+      toast(`Action marked ${next.replace("_", " ")}.`);
+    } catch (e) { toast("Failed to update action.", "error"); }
     finally { setUpdatingAction(null); }
   }
 
@@ -518,7 +521,7 @@ export default function CompliancePage() {
       {showNew && (
         <NewAuditModal
           onClose={() => setShowNew(false)}
-          onCreated={(audit) => { setAudits((prev) => [audit, ...prev]); setShowNew(false); }}
+          onCreated={(audit) => { setAudits((prev) => [audit, ...prev]); setShowNew(false); toast("Audit recorded."); }}
         />
       )}
 
@@ -531,6 +534,7 @@ export default function CompliancePage() {
               a.id !== addActionAuditId ? a : { ...a, actions: [...(a.actions ?? []), action] }
             ));
             setAddActionAuditId(null);
+            toast("Action added.");
           }}
         />
       )}
