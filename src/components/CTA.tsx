@@ -57,13 +57,13 @@ export default function CTA() {
             </h2>
 
             <p className="text-gray-300 text-lg max-w-xl mx-auto mb-10">
-              Join over 1,200 care homes already running smarter with Empathika.
+              Join over 1,200 care homes already running smarter with Cura.
               See the platform built for your residents, your team, and your peace of mind.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="mailto:info@empathika.com"
+                href="mailto:info@cura.com"
                 className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-full font-bold text-white text-lg glow-button"
                 style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
               >
@@ -79,7 +79,7 @@ export default function CTA() {
             </div>
 
             <p className="text-gray-400 text-sm mt-6">
-              info@empathika.com &nbsp;·&nbsp; Unit 7, Friars Mill, Bath Lane, Leicester LE3 5BJ
+              info@cura.com &nbsp;·&nbsp; Unit 7, Friars Mill, Bath Lane, Leicester LE3 5BJ
             </p>
           </div>
         </motion.div>

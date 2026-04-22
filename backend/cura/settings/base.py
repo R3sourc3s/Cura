@@ -52,7 +52,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "empathika.urls"
+ROOT_URLCONF = "cura.urls"
 
 TEMPLATES = [
     {
@@ -70,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "empathika.wsgi.application"
+WSGI_APPLICATION = "cura.wsgi.application"
 
 DATABASES = {
     "default": env.db("DATABASE_URL", default="sqlite:///db.sqlite3")
@@ -142,7 +142,7 @@ CELERY_TASK_SERIALIZER = "json"
 
 # API docs
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Empathika API",
+    "TITLE": "Cura API",
     "DESCRIPTION": "Care home management platform API",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,

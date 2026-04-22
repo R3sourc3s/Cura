@@ -1,5 +1,5 @@
 """
-Seed the database with realistic demo data for Empathika.
+Seed the database with realistic demo data for Cura.
 Run: python manage.py seed
 """
 import random
@@ -269,15 +269,7 @@ class Command(BaseCommand):
                     status=status,
                     created_by=staff_users[0],
                     next_review_date=today + timedelta(days=random.randint(14, 90)),
-                    ai_summary=(
-                        f"{resident.full_name} is a {resident.age}-year-old resident in room {resident.room_number}. "
-                        f"Fall risk: {resident.fall_risk.upper()}. Pressure ulcer risk: {resident.pressure_ulcer_risk.upper()}. "
-                        f"AI risk score: {resident.ai_risk_score}/100. "
-                        f"Conditions include: {', '.join(c.name for c in resident.conditions.all()[:3])}. "
-                        f"Care plan status: {status.replace('_', ' ')}. Next review due in {(plan.next_review_date - today).days} days."
-                        if hasattr(plan, 'next_review_date') and plan.next_review_date else
-                        f"{resident.full_name} — care plan {status}."
-                    ),
+                    ai_summary="",
                     ai_generated=False,
                 )
                 # Regenerate ai_summary since plan is now saved

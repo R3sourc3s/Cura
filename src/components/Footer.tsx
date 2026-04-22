@@ -3,7 +3,7 @@
 import { Zap, Link2, Mail, ExternalLink } from "lucide-react";
 
 const links = {
-  Product: ["Features", "Empathika AI", "Pricing", "Security", "Integrations", "Changelog"],
+  Product: ["Features", "Cura AI", "Pricing", "Security", "Integrations", "Changelog"],
   Company: ["About", "Blog", "Careers", "Press", "Contact"],
   Resources: ["Documentation", "Help Centre", "Webinars", "CQC Toolkit", "Status"],
   Legal: ["Privacy Policy", "Terms of Service", "Cookie Policy", "GDPR Statement"],
@@ -33,7 +33,7 @@ export default function Footer() {
               >
                 <Zap size={16} className="text-white" />
               </div>
-              <span className="text-xl font-bold gradient-text">empathika</span>
+              <span className="text-xl font-bold gradient-text">cura</span>
             </a>
             <p className="text-gray-500 text-sm leading-relaxed mb-6 max-w-xs">
               UK&apos;s #1 care home management platform. Built with care, for care.
@@ -78,7 +78,7 @@ export default function Footer() {
           style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
         >
           <p className="text-gray-600 text-xs">
-            © 2025 Empathika Ltd. Registered in England & Wales. All rights reserved.
+            © 2025 Cura Ltd. Registered in England & Wales. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
             {["ISO 27001", "Cyber Essentials+", "NHS-Aligned"].map((badge) => (

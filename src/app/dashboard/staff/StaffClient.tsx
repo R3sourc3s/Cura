@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { auth as authApi, staff } from "@/lib/api";
+import { useUser } from "@/context/UserContext";
 import { useToast } from "@/components/Toast";
 import type { Shift, LeaveRequest, Training, User } from "@/types";
 import {
@@ -56,6 +57,19 @@ function GlassCard({ title, children, badge, action }: { title: string; children
 
 function today() { return new Date().toISOString().slice(0, 10); }
 function dateInDays(n: number) { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); }
+function fmtTime(t: string) { return t?.slice(0, 5) ?? t; }
+function fmtDateHeader(dateStr: string) {
+  const d = new Date(dateStr + "T00:00:00");
+  const t = today();
+  const tmr = dateInDays(1);
+  if (dateStr === t) return "Today";
+  if (dateStr === tmr) return "Tomorrow";
+  return d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short" });
+}
+function initials(name: string) {
+  const parts = name.replace(/\s*\(.*?\)/, "").trim().split(" ");
+  return (parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "");
+}
 
 function AddShiftModal({ users, onClose, onAdded }: { users: User[]; onClose: () => void; onAdded: (s: Shift) => void }) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -377,6 +391,7 @@ interface Props {
 
 export default function StaffClient({ initialShifts, initialLeave, initialTraining, initialUsers }: Props) {
   const { toast } = useToast();
+  const { can } = useUser();
   const [shifts, setShifts] = useState<Shift[]>(initialShifts);
   const [leave, setLeave] = useState<LeaveRequest[]>(initialLeave);
   const [training, setTraining] = useState<Training[]>(initialTraining);
@@ -399,241 +414,238 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
   }
 
   const upcomingCutoff = dateInDays(7);
-  const todaysShifts = shifts
+  const upcomingShifts = shifts
     .filter((s) => s.date >= today() && s.date <= upcomingCutoff)
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .sort((a, b) => a.date.localeCompare(b.date) || a.start_time.localeCompare(b.start_time));
+
+  const shiftsByDate = upcomingShifts.reduce<Record<string, Shift[]>>((acc, s) => {
+    (acc[s.date] ??= []).push(s);
+    return acc;
+  }, {});
+
   const pendingLeave = leave.filter((l) => l.status === "pending");
 
   return (
     <div className="space-y-5">
+      {/* Header */}
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <UserCheck size={22} style={{ color: "#34d399" }} /> Staff
           </h1>
           <p className="text-sm mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.35)" }}>
-            {todaysShifts.length} shifts in next 7 days · {pendingLeave.length} leave pending
+            {upcomingShifts.length} shifts this week · {pendingLeave.length} leave pending
           </p>
         </div>
         <div className="flex gap-2 flex-shrink-0">
-          <button onClick={() => setShowLeave(true)}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.1)" }}>
-            <Calendar size={13} /> <span className="hidden sm:inline">Request Leave</span>
-          </button>
-          <button onClick={() => setShowShift(true)}
-            className="flex items-center gap-1.5 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
-            <Plus size={14} /> <span className="hidden sm:inline">Add Shift</span><span className="sm:hidden">Shift</span>
-          </button>
+          {can("staff.request_leave") && (
+            <button onClick={() => setShowLeave(true)}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-xl"
+              style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.1)" }}>
+              <Calendar size={13} /> <span className="hidden sm:inline">Request Leave</span>
+            </button>
+          )}
+          {can("staff.manage") && (
+            <button onClick={() => setShowShift(true)}
+              className="flex items-center gap-1.5 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white"
+              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+              <Plus size={14} /> <span className="hidden sm:inline">Add Shift</span><span className="sm:hidden">Shift</span>
+            </button>
+          )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <GlassCard
-          title="Upcoming Shifts"
-          badge={
-            <div className="flex items-center gap-1.5">
-              <Calendar size={12} style={{ color: "rgba(255,255,255,0.35)" }} />
-              <span className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>Next 7 Days</span>
-            </div>
-          }
-        >
-          {todaysShifts.length === 0 ? (
-            <p className="px-5 py-8 text-sm text-center" style={{ color: "rgba(255,255,255,0.3)" }}>No shifts scheduled.</p>
-          ) : (
-            todaysShifts.map((s) => {
-              const cfg = SHIFT_CONFIG[s.shift_type] ?? SHIFT_CONFIG.day;
-              const isToday = s.date === today();
-              const dateLabel = isToday
-                ? "Today"
-                : new Date(s.date + "T00:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
-              return (
-                <div key={s.id} className="flex items-center gap-4 px-5 py-3.5"
-                  style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: cfg.bg }}>
-                    <Clock size={14} style={{ color: cfg.color }} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <div className="text-sm font-medium text-white">
-                        {s.staff_member_name || `Staff #${s.staff_member}`}
-                      </div>
-                      {s.is_agency && (
-                        <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.35)" }}>Agency</span>
-                      )}
-                    </div>
-                    <div className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
-                      {s.start_time}–{s.end_time} · {dateLabel}
-                    </div>
-                  </div>
-                  <span className="text-xs px-2.5 py-1 rounded-full font-medium"
-                    style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
-                </div>
-              );
-            })
-          )}
-        </GlassCard>
+      {/* Main grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-5 gap-4">
 
-        <GlassCard
-          title="Leave Requests"
-          badge={pendingLeave.length > 0 ? (
-            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(250,204,21,0.15)", color: "#fbbf24" }}>
-              {pendingLeave.length} pending
-            </span>
-          ) : undefined}
-        >
-          {leave.length === 0 ? (
-            <p className="px-5 py-8 text-sm text-center" style={{ color: "rgba(255,255,255,0.3)" }}>No leave requests.</p>
-          ) : (
-            leave.slice(0, 8).map((req) => {
-              const cfg = LEAVE_STATUS[req.status] ?? LEAVE_STATUS.pending;
-              return (
-                <div key={req.id} className="flex items-center gap-4 px-5 py-3.5"
-                  style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-white">
-                      {req.staff_member_name || `Staff #${req.staff_member}`}
-                    </div>
-                    <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
-                      <span className="capitalize">{req.leave_type}</span> · {req.start_date} – {req.end_date}
-                    </div>
-                  </div>
-                  {req.status === "pending" ? (
-                    <div className="flex gap-1.5">
-                      <button onClick={() => updateLeave(req.id, "approved")} disabled={updating === req.id}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center disabled:opacity-50"
-                        style={{ background: "rgba(52,211,153,0.15)", border: "1px solid rgba(52,211,153,0.25)" }}>
-                        <CheckCircle size={13} style={{ color: "#34d399" }} />
-                      </button>
-                      <button onClick={() => updateLeave(req.id, "rejected")} disabled={updating === req.id}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center disabled:opacity-50"
-                        style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.2)" }}>
-                        <XCircle size={13} style={{ color: "#f87171" }} />
-                      </button>
-                    </div>
-                  ) : (
-                    <span className="text-xs px-2.5 py-1 rounded-full font-medium capitalize"
-                      style={{ background: cfg.bg, color: cfg.color }}>{req.status}</span>
-                  )}
-                </div>
-              );
-            })
-          )}
-        </GlassCard>
-      </div>
-
-      <div className="rounded-2xl overflow-hidden"
-        style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
-        <div className="flex items-center justify-between px-5 py-4"
-          style={{ background: "rgba(255,255,255,0.03)", borderBottom: showTraining ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
-          <button className="flex items-center gap-2 flex-1 text-left" onClick={() => setShowTraining((v) => !v)}>
-            <GraduationCap size={16} style={{ color: "#a78bfa" }} />
-            <h2 className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.8)" }}>
-              Training Records ({training.length})
-            </h2>
-            {showTraining ? <ChevronUp size={14} style={{ color: "rgba(255,255,255,0.4)" }} /> : <ChevronDown size={14} style={{ color: "rgba(255,255,255,0.4)" }} />}
-          </button>
-          <button onClick={() => setShowAddTraining(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl text-white ml-3"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)", flexShrink: 0 }}>
-            <Plus size={12} /> Add Record
-          </button>
-        </div>
-        {showTraining && (
-          training.length === 0 ? (
-            <p className="px-5 py-8 text-sm text-center" style={{ color: "rgba(255,255,255,0.3)", background: "rgba(5,9,20,0.6)" }}>
-              No training records.
-            </p>
-          ) : (
-            <div style={{ background: "rgba(5,9,20,0.6)" }}>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[500px]">
-                  <thead>
-                    <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                      {["Staff Member", "Course", "Status", "Completed", "Expires"].map((h) => (
-                        <th key={h} className="text-left text-xs font-semibold uppercase tracking-wider px-5 py-3"
-                          style={{ color: "rgba(255,255,255,0.3)" }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {training.map((t) => {
-                      const cfg = TRAINING_STATUS[t.status] ?? TRAINING_STATUS.pending;
-                      return (
-                        <tr key={t.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                          <td className="px-5 py-3 text-sm text-white">
-                            {t.staff_member_name || `Staff #${t.staff_member}`}
-                          </td>
-                          <td className="px-5 py-3 text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>
-                            {t.course_name}
-                          </td>
-                          <td className="px-5 py-3">
-                            <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                              style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
-                          </td>
-                          <td className="px-5 py-3 text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
-                            {t.completed_date ? new Date(t.completed_date).toLocaleDateString("en-GB") : "—"}
-                          </td>
-                          <td className="px-5 py-3 text-xs" style={{ color: t.expiry_date && new Date(t.expiry_date) < new Date() ? "#f87171" : "rgba(255,255,255,0.45)" }}>
-                            {t.expiry_date ? new Date(t.expiry_date).toLocaleDateString("en-GB") : "—"}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )
-        )}
-      </div>
-
-      {shifts.length > todaysShifts.length && (
-        <div className="rounded-2xl overflow-hidden"
-          style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
-          <div className="px-5 py-4 border-b" style={{ background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.06)" }}>
-            <h2 className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>All Shifts</h2>
+        {/* Shifts — wider column */}
+        <div className="xl:col-span-3 rounded-2xl overflow-hidden"
+          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+            <h2 className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>Upcoming Shifts</h2>
+            <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>Next 7 days</span>
           </div>
-          <div className="overflow-x-auto" style={{ background: "rgba(5,9,20,0.6)" }}>
-            <table className="w-full min-w-[480px]">
-              <thead>
-                <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                  {["Staff Member", "Date", "Type", "Hours", ""].map((h) => (
-                    <th key={h} className="text-left text-xs font-semibold uppercase tracking-wider px-5 py-3"
-                      style={{ color: "rgba(255,255,255,0.3)" }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {shifts.slice(0, 20).map((s) => {
-                  const cfg = SHIFT_CONFIG[s.shift_type] ?? SHIFT_CONFIG.day;
-                  return (
-                    <tr key={s.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                      <td className="px-5 py-3 text-sm text-white">{s.staff_member_name || `Staff #${s.staff_member}`}</td>
-                      <td className="px-5 py-3 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
-                        {new Date(s.date).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}
-                      </td>
-                      <td className="px-5 py-3">
-                        <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+
+          {upcomingShifts.length === 0 ? (
+            <p className="px-5 py-10 text-sm text-center" style={{ color: "rgba(255,255,255,0.3)" }}>No shifts scheduled.</p>
+          ) : (
+            <div className="divide-y" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+              {Object.entries(shiftsByDate).map(([date, dayShifts]) => (
+                <div key={date}>
+                  {/* Date header */}
+                  <div className="flex items-center gap-3 px-5 py-2.5"
+                    style={{ background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    <span className="text-xs font-semibold uppercase tracking-wider"
+                      style={{ color: date === today() ? "#a78bfa" : "rgba(255,255,255,0.4)" }}>
+                      {fmtDateHeader(date)}
+                    </span>
+                    <span className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
+                      {dayShifts.length} shift{dayShifts.length !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  {/* Shift rows */}
+                  {dayShifts.map((s) => {
+                    const cfg = SHIFT_CONFIG[s.shift_type] ?? SHIFT_CONFIG.day;
+                    const name = (s.staff_member_name || `Staff #${s.staff_member}`).replace(/\s*\(.*?\)/, "");
+                    const role = s.staff_member_name?.match(/\((.+?)\)/)?.[1] ?? "";
+                    return (
+                      <div key={s.id} className="flex items-center gap-3 px-5 py-3"
+                        style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                        {/* Avatar */}
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                          style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30` }}>
+                          {initials(s.staff_member_name || "?")}
+                        </div>
+                        {/* Name + role */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-white truncate">{name}</span>
+                            {s.is_agency && (
+                              <span className="text-xs px-1.5 py-0.5 rounded flex-shrink-0"
+                                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.35)" }}>Agency</span>
+                            )}
+                          </div>
+                          {role && <div className="text-xs capitalize" style={{ color: "rgba(255,255,255,0.3)" }}>{role}</div>}
+                        </div>
+                        {/* Time */}
+                        <div className="text-xs text-right flex-shrink-0" style={{ color: "rgba(255,255,255,0.45)" }}>
+                          {fmtTime(s.start_time)} – {fmtTime(s.end_time)}
+                        </div>
+                        {/* Badge */}
+                        <span className="text-xs px-2.5 py-1 rounded-full font-medium flex-shrink-0 w-16 text-center"
                           style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
-                      </td>
-                      <td className="px-5 py-3 text-xs font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>
-                        {s.start_time}–{s.end_time}
-                      </td>
-                      <td className="px-5 py-3">
-                        {s.is_agency && <span className="text-xs px-1.5 py-0.5 rounded"
-                          style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.3)" }}>Agency</span>}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+
+        {/* Right column: Leave + Training */}
+        <div className="xl:col-span-2 flex flex-col gap-4">
+
+          {/* Leave Requests */}
+          <div className="rounded-2xl overflow-hidden"
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+              <h2 className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>Leave Requests</h2>
+              {pendingLeave.length > 0 && (
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(250,204,21,0.15)", color: "#fbbf24" }}>
+                  {pendingLeave.length} pending
+                </span>
+              )}
+            </div>
+            {leave.length === 0 ? (
+              <p className="px-5 py-8 text-sm text-center" style={{ color: "rgba(255,255,255,0.3)" }}>No leave requests.</p>
+            ) : (
+              leave.slice(0, 6).map((req) => {
+                const cfg = LEAVE_STATUS[req.status] ?? LEAVE_STATUS.pending;
+                const name = (req.staff_member_name || `Staff #${req.staff_member}`).replace(/\s*\(.*?\)/, "");
+                const role = req.staff_member_name?.match(/\((.+?)\)/)?.[1] ?? "";
+                return (
+                  <div key={req.id} className="flex items-start gap-3 px-5 py-3.5"
+                    style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                      style={{ background: "rgba(124,58,237,0.2)", color: "#a78bfa" }}>
+                      {initials(req.staff_member_name || "?")}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-white truncate">{name}</div>
+                      <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+                        <span className="capitalize">{req.leave_type}</span>
+                        <span className="mx-1">·</span>
+                        {new Date(req.start_date + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                        {" – "}
+                        {new Date(req.end_date + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                      </div>
+                      {role && <div className="text-xs capitalize mt-0.5" style={{ color: "rgba(255,255,255,0.2)" }}>{role}</div>}
+                    </div>
+                    {req.status === "pending" && can("staff.manage") ? (
+                      <div className="flex gap-1.5 flex-shrink-0">
+                        <button onClick={() => updateLeave(req.id, "approved")} disabled={updating === req.id}
+                          className="w-7 h-7 rounded-lg flex items-center justify-center disabled:opacity-50"
+                          style={{ background: "rgba(52,211,153,0.15)", border: "1px solid rgba(52,211,153,0.25)" }}>
+                          <CheckCircle size={13} style={{ color: "#34d399" }} />
+                        </button>
+                        <button onClick={() => updateLeave(req.id, "rejected")} disabled={updating === req.id}
+                          className="w-7 h-7 rounded-lg flex items-center justify-center disabled:opacity-50"
+                          style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.2)" }}>
+                          <XCircle size={13} style={{ color: "#f87171" }} />
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="text-xs px-2.5 py-1 rounded-full font-medium capitalize flex-shrink-0"
+                        style={{ background: cfg.bg, color: cfg.color }}>{req.status}</span>
+                    )}
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Training Records */}
+          <div className="rounded-2xl overflow-hidden"
+            style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
+            <div className="flex items-center justify-between px-5 py-4"
+              style={{ background: "rgba(255,255,255,0.03)", borderBottom: showTraining ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
+              <button className="flex items-center gap-2 flex-1 text-left" onClick={() => setShowTraining((v) => !v)}>
+                <GraduationCap size={15} style={{ color: "#a78bfa" }} />
+                <h2 className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.8)" }}>
+                  Training Records
+                </h2>
+                <span className="text-xs ml-1" style={{ color: "rgba(255,255,255,0.3)" }}>({training.length})</span>
+                {showTraining
+                  ? <ChevronUp size={13} style={{ color: "rgba(255,255,255,0.4)" }} />
+                  : <ChevronDown size={13} style={{ color: "rgba(255,255,255,0.4)" }} />}
+              </button>
+              {can("staff.manage") && (
+                <button onClick={() => setShowAddTraining(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl text-white ml-3 flex-shrink-0"
+                  style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                  <Plus size={12} /> Add Record
+                </button>
+              )}
+            </div>
+            {showTraining && (
+              training.length === 0 ? (
+                <p className="px-5 py-8 text-sm text-center" style={{ color: "rgba(255,255,255,0.3)", background: "rgba(5,9,20,0.6)" }}>
+                  No training records.
+                </p>
+              ) : (
+                <div style={{ background: "rgba(5,9,20,0.6)" }}>
+                  {training.map((t) => {
+                    const cfg = TRAINING_STATUS[t.status] ?? TRAINING_STATUS.pending;
+                    const isExpired = t.expiry_date && new Date(t.expiry_date) < new Date();
+                    return (
+                      <div key={t.id} className="flex items-center gap-3 px-5 py-3"
+                        style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-white truncate">
+                            {(t.staff_member_name || `Staff #${t.staff_member}`).replace(/\s*\(.*?\)/, "")}
+                          </div>
+                          <div className="text-xs mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.4)" }}>{t.course_name}</div>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                            style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
+                          {t.expiry_date && (
+                            <div className="text-xs mt-1" style={{ color: isExpired ? "#f87171" : "rgba(255,255,255,0.3)" }}>
+                              exp. {new Date(t.expiry_date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" })}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )
+            )}
+          </div>
+
+        </div>
+      </div>
 
       {showShift && <AddShiftModal users={users} onClose={() => setShowShift(false)} onAdded={(s) => { setShifts((prev) => [s, ...prev]); setShowShift(false); toast("Shift added."); }} />}
       {showLeave && <LeaveModal onClose={() => setShowLeave(false)} onAdded={(l) => { setLeave((prev) => [l, ...prev]); setShowLeave(false); toast("Leave request submitted."); }} />}

@@ -21,7 +21,7 @@ const floatingCards = [
   {
     icon: Users,
     title: "1,200+ Homes",
-    subtitle: "Trust Empathika",
+    subtitle: "Trust Cura",
     color: "#06b6d4",
     delay: 3,
   },
@@ -87,7 +87,7 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="text-lg lg:text-xl text-gray-400 max-w-xl mb-10 leading-relaxed"
           >
-            Empathika unifies medication management, AI care planning, HR, eMAR
+            Cura unifies medication management, AI care planning, HR, eMAR
             oversight, compliance, and staff coordination — all in one seamless
             flow designed for the future of care.
           </motion.p>

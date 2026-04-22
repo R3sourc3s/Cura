@@ -173,7 +173,7 @@ export default function Pricing() {
           All prices exclude VAT. Billed annually for best value — monthly options available.
           <br />
           Questions?{" "}
-          <a href="mailto:info@empathika.com" className="text-violet-400 hover:text-violet-300 transition-colors">
+          <a href="mailto:info@cura.com" className="text-violet-400 hover:text-violet-300 transition-colors">
             Talk to our team
           </a>
         </motion.p>

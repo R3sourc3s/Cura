@@ -8,5 +8,5 @@ class CustomUserAdmin(UserAdmin):
     list_display = ["username", "email", "first_name", "last_name", "role", "care_home"]
     list_filter = ["role", "care_home", "is_active"]
     fieldsets = UserAdmin.fieldsets + (
-        ("Empathika", {"fields": ("role", "care_home", "phone", "avatar")}),
+        ("Cura", {"fields": ("role", "care_home", "phone", "avatar")}),
     )

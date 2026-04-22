@@ -1,6 +1,7 @@
+import { API_URL } from "@/lib/config";
 import { NextResponse } from "next/server";
 
-const API_URL = process.env.API_URL ?? "http://localhost:8000";
+
 const secure = process.env.NODE_ENV === "production";
 
 export async function POST(request: Request) {

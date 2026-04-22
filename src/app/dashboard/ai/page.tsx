@@ -21,7 +21,7 @@ export default function AIPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hello! I'm your Empathika AI assistant, powered by Claude. I can help you with resident care, medication management, compliance queries, and more. What would you like to know?",
+      content: "Hello! I'm your Cura AI assistant, powered by Claude. I can help you with resident care, medication management, compliance queries, and more. What would you like to know?",
       ts: new Date(),
     },
   ]);
@@ -42,12 +42,17 @@ export default function AIPage() {
     setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
     try {
-      const res = await ai.chat(content);
+      const history = messages
+        .filter((m) => m.role !== "assistant" || messages.indexOf(m) > 0)
+        .map((m) => ({ role: m.role, content: m.content }));
+      const res = await ai.chat(content, history);
       setMessages((prev) => [...prev, { role: "assistant", content: res.response, ts: new Date() }]);
-    } catch {
+    } catch (err) {
       setMessages((prev) => [...prev, {
         role: "assistant",
-        content: "Sorry, I encountered an error. Please check that the AI assistant backend is configured correctly.",
+        content: err instanceof Error && err.message !== "AI unavailable"
+          ? err.message
+          : "Sorry, I'm unavailable right now. Please ensure ANTHROPIC_API_KEY is set and try again.",
         ts: new Date(),
       }]);
     } finally {

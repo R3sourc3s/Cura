@@ -15,7 +15,7 @@ const capabilities = [
     icon: Brain,
     title: "Adaptive Care Planning",
     description:
-      "Plans that evolve with your residents. Empathika AI rewrites sections of the care plan as conditions change — no manual updates needed.",
+      "Plans that evolve with your residents. Cura AI rewrites sections of the care plan as conditions change — no manual updates needed.",
     color: "#3b82f6",
   },
   {
@@ -75,7 +75,7 @@ export default function AISection() {
             }}
           >
             <Sparkles size={14} />
-            Empathika AI
+            Cura AI
           </div>
           <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
             AI that thinks alongside
@@ -83,7 +83,7 @@ export default function AISection() {
             <span className="gradient-text">your entire team</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Not just automation — genuine intelligence. Empathika&apos;s AI understands
+            Not just automation — genuine intelligence. Cura&apos;s AI understands
             the complexity of care, learns your residents, and guides your staff through
             every critical moment.
           </p>
@@ -123,7 +123,7 @@ export default function AISection() {
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-white text-sm glow-button"
               style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
             >
-              Experience Empathika AI <ChevronRight size={16} />
+              Experience Cura AI <ChevronRight size={16} />
             </motion.a>
           </div>
 
@@ -151,7 +151,7 @@ export default function AISection() {
                 <Brain size={16} className="text-white" />
               </div>
               <div>
-                <div className="text-white font-semibold text-sm">Empathika AI Assistant</div>
+                <div className="text-white font-semibold text-sm">Cura AI Assistant</div>
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                   <span className="text-xs text-gray-400">Active — analysing 127 residents</span>
@@ -236,7 +236,7 @@ export default function AISection() {
                 className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-gray-500"
                 style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
               >
-                Ask Empathika AI anything...
+                Ask Cura AI anything...
                 <div
                   className="ml-auto w-7 h-7 rounded-lg flex items-center justify-center"
                   style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}

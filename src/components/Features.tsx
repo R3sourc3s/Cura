@@ -37,7 +37,7 @@ const features = [
     title: "Care Management",
     subtitle: "AI-driven adaptive care plans",
     description:
-      "Go beyond static care plans. Empathika's AI continuously adapts to each resident's changing needs, prompting staff at critical moments and surfacing compliance gaps before inspections.",
+      "Go beyond static care plans. Cura's AI continuously adapts to each resident's changing needs, prompting staff at critical moments and surfacing compliance gaps before inspections.",
     bullets: [
       "Dynamic AI care plans updated in real time",
       "CQC-aligned documentation templates",
@@ -60,7 +60,7 @@ const features = [
     title: "Recruitment & HR",
     subtitle: "Hire, onboard, and retain better",
     description:
-      "Cut your time-to-hire in half. Empathika's HR module handles everything from job postings to onboarding checklists, leave tracking, and competency management.",
+      "Cut your time-to-hire in half. Cura's HR module handles everything from job postings to onboarding checklists, leave tracking, and competency management.",
     bullets: [
       "Automated job posting & applicant tracking",
       "Digital onboarding with e-signatures",
@@ -129,7 +129,7 @@ const features = [
     title: "Compliance Engine",
     subtitle: "Always inspection-ready",
     description:
-      "Never dread a CQC inspection again. Empathika generates audit trails automatically, maps everything to regulatory frameworks, and gives you a live compliance score.",
+      "Never dread a CQC inspection again. Cura generates audit trails automatically, maps everything to regulatory frameworks, and gives you a live compliance score.",
     bullets: [
       "Live CQC compliance score dashboard",
       "Automated audit trail generation",

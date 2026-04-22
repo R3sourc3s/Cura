@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { medications } from "@/lib/api";
 import type { Medication, MAREntry, Resident } from "@/types";
+import { useUser } from "@/context/UserContext";
 import {
   Pill, AlertTriangle, CheckCircle, Clock, XCircle,
   Plus, X, Save, Edit2, Trash2,
@@ -244,6 +245,7 @@ interface Props {
 }
 
 export default function MedicationsClient({ initialMeds, initialMar, initialResidents }: Props) {
+  const { can } = useUser();
   const [meds, setMeds] = useState<Medication[]>(initialMeds);
   const [mar, setMar] = useState<MAREntry[]>(initialMar);
   const [residentList] = useState<Resident[]>(initialResidents);
@@ -296,11 +298,13 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
             {meds.length} medications · {todayMAR.filter(m => m.status === "pending").length} pending today
           </p>
         </div>
-        <button onClick={() => { setEditMed(null); setShowModal(true); }}
-          className="flex-shrink-0 flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
-          <Plus size={14} /> <span className="hidden sm:inline">Add Medication</span><span className="sm:hidden">Add</span>
-        </button>
+        {can("medications.create") && (
+          <button onClick={() => { setEditMed(null); setShowModal(true); }}
+            className="flex-shrink-0 flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white"
+            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            <Plus size={14} /> <span className="hidden sm:inline">Add Medication</span><span className="sm:hidden">Add</span>
+          </button>
+        )}
       </div>
 
       {lowStock.length > 0 && (
@@ -344,7 +348,7 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
                         {med?.dose} · {new Date(entry.scheduled_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
                       </div>
                     </div>
-                    {entry.status === "pending" ? (
+                    {entry.status === "pending" && can("medications.administer") ? (
                       <button onClick={() => administer(entry.id)} disabled={administeringId === entry.id}
                         className="text-xs font-semibold px-3 py-1.5 rounded-lg text-white disabled:opacity-50"
                         style={{ background: "linear-gradient(135deg,#7c3aed,#3b82f6)" }}>
@@ -407,16 +411,20 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
                         />
                       </div>
                     </div>
-                    <button onClick={() => { setEditMed(med); setShowModal(true); }}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center"
-                      style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa" }}>
-                      <Edit2 size={12} />
-                    </button>
-                    <button onClick={() => handleDelete(med.id)} disabled={deletingId === med.id}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center disabled:opacity-40"
-                      style={{ background: "rgba(239,68,68,0.08)", color: "#f87171" }}>
-                      {deletingId === med.id ? <span className="text-xs">…</span> : <Trash2 size={12} />}
-                    </button>
+                    {can("medications.edit") && (
+                      <button onClick={() => { setEditMed(med); setShowModal(true); }}
+                        className="w-7 h-7 rounded-lg flex items-center justify-center"
+                        style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa" }}>
+                        <Edit2 size={12} />
+                      </button>
+                    )}
+                    {can("medications.delete") && (
+                      <button onClick={() => handleDelete(med.id)} disabled={deletingId === med.id}
+                        className="w-7 h-7 rounded-lg flex items-center justify-center disabled:opacity-40"
+                        style={{ background: "rgba(239,68,68,0.08)", color: "#f87171" }}>
+                        {deletingId === med.id ? <span className="text-xs">…</span> : <Trash2 size={12} />}
+                      </button>
+                    )}
                   </div>
                 </div>
               ))

@@ -1,12 +1,13 @@
 from rest_framework import generics, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .models import User
-from .serializers import UserSerializer, RegisterSerializer, EmpathikaTokenSerializer, AdminCreateUserSerializer, AdminUpdateUserSerializer
+from .serializers import UserSerializer, RegisterSerializer, CuraTokenSerializer, AdminCreateUserSerializer, AdminUpdateUserSerializer
+from .permissions import require
 from django_filters.rest_framework import DjangoFilterBackend
 
 
 class LoginView(TokenObtainPairView):
-    serializer_class = EmpathikaTokenSerializer
+    serializer_class = CuraTokenSerializer
     permission_classes = [permissions.AllowAny]
 
 
@@ -28,6 +29,9 @@ class UserListView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["role", "care_home"]
 
+    def get_permissions(self):
+        return [require("staff.view")]
+
     def get_queryset(self):
         return User.objects.filter(care_home=self.request.user.care_home).order_by("first_name")
 
@@ -35,12 +39,20 @@ class UserListView(generics.ListAPIView):
 class AdminCreateUserView(generics.CreateAPIView):
     serializer_class = AdminCreateUserSerializer
 
+    def get_permissions(self):
+        return [require("staff.manage")]
+
     def perform_create(self, serializer):
         serializer.save(care_home=self.request.user.care_home)
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AdminUpdateUserSerializer
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [require("staff.view")]
+        return [require("staff.manage")]
 
     def get_queryset(self):
         return User.objects.filter(care_home=self.request.user.care_home)

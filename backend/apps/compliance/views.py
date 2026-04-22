@@ -1,6 +1,7 @@
 from rest_framework import viewsets, decorators, response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Avg
+from apps.authentication.permissions import require
 from .models import ComplianceAudit, AuditAction, Policy
 from .serializers import ComplianceAuditSerializer, AuditActionSerializer, PolicySerializer
 
@@ -9,6 +10,11 @@ class ComplianceAuditViewSet(viewsets.ModelViewSet):
     serializer_class = ComplianceAuditSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["domain", "rating"]
+
+    def get_permissions(self):
+        if self.action in ("list", "retrieve", "overall_score"):
+            return [require("compliance.view")]
+        return [require("compliance.manage")]
 
     def get_queryset(self):
         return ComplianceAudit.objects.select_related(
@@ -32,6 +38,11 @@ class AuditActionViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["audit", "status", "priority"]
 
+    def get_permissions(self):
+        if self.action in ("list", "retrieve"):
+            return [require("compliance.view")]
+        return [require("compliance.manage")]
+
     def get_queryset(self):
         return AuditAction.objects.select_related("audit", "assigned_to").filter(
             audit__care_home=self.request.user.care_home
@@ -41,6 +52,11 @@ class AuditActionViewSet(viewsets.ModelViewSet):
 class PolicyViewSet(viewsets.ModelViewSet):
     serializer_class = PolicySerializer
     filter_backends = [DjangoFilterBackend]
+
+    def get_permissions(self):
+        if self.action in ("list", "retrieve"):
+            return [require("compliance.view")]
+        return [require("compliance.manage")]
 
     def get_queryset(self):
         return Policy.objects.select_related("care_home", "approved_by").filter(

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { residents as residentsApi } from "@/lib/api";
 import type { Resident } from "@/types";
 import { useToast } from "@/components/Toast";
+import { useUser } from "@/context/UserContext";
 import { Search, Filter, Users, AlertTriangle, Plus, Eye, Edit2, Trash2, X, Save, Upload } from "lucide-react";
 
 const RISK = {
@@ -202,6 +203,7 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
 export default function ResidentsClient({ initialList, initialTotal }: { initialList: Resident[]; initialTotal: number }) {
   const router = useRouter();
   const { toast } = useToast();
+  const { can } = useUser();
   const [list, setList] = useState<Resident[]>(initialList);
   const [total, setTotal] = useState(initialTotal);
   const [page, setPage] = useState(1);
@@ -270,11 +272,13 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
             {total} active resident{total !== 1 ? "s" : ""}
           </p>
         </div>
-        <button onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white flex-shrink-0"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
-          <Plus size={15} /> <span className="hidden sm:inline">Add Resident</span><span className="sm:hidden">Add</span>
-        </button>
+        {can("residents.create") && (
+          <button onClick={() => setShowCreate(true)}
+            className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white flex-shrink-0"
+            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            <Plus size={15} /> <span className="hidden sm:inline">Add Resident</span><span className="sm:hidden">Add</span>
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 p-4 rounded-2xl"
@@ -326,12 +330,14 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
                 style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}>
                 <Eye size={12} /> View
               </button>
-              <button onClick={() => router.push(`/dashboard/residents/${r.id}/edit`)}
-                className="flex-1 flex items-center justify-center gap-1 text-xs font-medium py-2 rounded-lg"
-                style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.2)" }}>
-                <Edit2 size={12} /> Edit
-              </button>
-              {confirmId === r.id ? (
+              {can("residents.edit") && (
+                <button onClick={() => router.push(`/dashboard/residents/${r.id}/edit`)}
+                  className="flex-1 flex items-center justify-center gap-1 text-xs font-medium py-2 rounded-lg"
+                  style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.2)" }}>
+                  <Edit2 size={12} /> Edit
+                </button>
+              )}
+              {can("residents.delete") && (confirmId === r.id ? (
                 <>
                   <button onClick={() => handleDelete(r.id)} disabled={deletingId === r.id}
                     className="flex-1 text-xs font-semibold py-2 rounded-lg text-white disabled:opacity-50" style={{ background: "#dc2626" }}>
@@ -347,7 +353,7 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
                   style={{ background: "rgba(239,68,68,0.08)", color: "#f87171", border: "1px solid rgba(239,68,68,0.15)" }}>
                   <Trash2 size={12} />
                 </button>
-              )}
+              ))}
             </div>
           </div>
         ))}
@@ -402,12 +408,14 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
                       style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}>
                       <Eye size={12} /> View
                     </button>
-                    <button onClick={() => router.push(`/dashboard/residents/${r.id}/edit`)}
-                      className="flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg"
-                      style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.2)" }}>
-                      <Edit2 size={12} /> Edit
-                    </button>
-                    {confirmId === r.id ? (
+                    {can("residents.edit") && (
+                      <button onClick={() => router.push(`/dashboard/residents/${r.id}/edit`)}
+                        className="flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg"
+                        style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.2)" }}>
+                        <Edit2 size={12} /> Edit
+                      </button>
+                    )}
+                    {can("residents.delete") && (confirmId === r.id ? (
                       <div className="flex items-center gap-1">
                         <button onClick={() => handleDelete(r.id)} disabled={deletingId === r.id}
                           className="text-xs font-semibold px-2.5 py-1.5 rounded-lg text-white disabled:opacity-50" style={{ background: "#dc2626" }}>
@@ -423,7 +431,7 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
                         style={{ background: "rgba(239,68,68,0.08)", color: "#f87171", border: "1px solid rgba(239,68,68,0.15)" }}>
                         <Trash2 size={12} />
                       </button>
-                    )}
+                    ))}
                   </div>
                 </td>
               </tr>

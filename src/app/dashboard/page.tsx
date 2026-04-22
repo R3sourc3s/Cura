@@ -49,12 +49,17 @@ const DOMAIN_LABELS: Record<string, string> = {
 };
 
 export default async function DashboardPage() {
-  const [resData, marData, compData, planData] = await Promise.all([
+  const [resResult, marResult, compResult, planResult] = await Promise.allSettled([
     serverApi.residents.list({ is_active: "true" }),
     serverApi.medications.marList({ status: "pending" }),
     serverApi.compliance.audits(),
     serverApi.carePlans.list({ status: "active" }),
   ]);
+  const empty = { results: [], count: 0 };
+  const resData  = resResult.status  === "fulfilled" ? resResult.value  : empty;
+  const marData  = marResult.status  === "fulfilled" ? marResult.value  : empty;
+  const compData = compResult.status === "fulfilled" ? compResult.value : empty;
+  const planData = planResult.status === "fulfilled" ? planResult.value : empty;
 
   const highRisk = resData.results.filter(
     (r: Resident) => r.fall_risk === "high" || r.fall_risk === "critical"

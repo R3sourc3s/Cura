@@ -1,11 +1,11 @@
-# Empathika — Full-Stack Care Home Management Platform
+# Cura — Full-Stack Care Home Management Platform
 
 UK's #1 care home management platform, rebuilt on steroids.
 
 ## Architecture
 
 ```
-empathika-clone/
+cura/
 ├── /             ← Marketing site (Next.js 14, landing page)
 ├── /backend      ← Django REST Framework API
 ├── /frontend     ← Dashboard (Next.js 14, App Router)

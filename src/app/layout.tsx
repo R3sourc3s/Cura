@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Empathika — UK's #1 Care Home Management Platform",
+  title: "Cura — UK's #1 Care Home Management Platform",
   description: "One platform. Every function. Total clarity. AI-powered care home management for medication, staffing, compliance, and more.",
 };
 
