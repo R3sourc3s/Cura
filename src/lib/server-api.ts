@@ -1,10 +1,11 @@
+import { API_URL } from "@/lib/config";
 import { cookies } from "next/headers";
 import type {
-  Resident, MAREntry, CarePlan, ComplianceAudit,
+  Resident, Medication, MAREntry, CarePlan, ComplianceAudit,
   AuditAction, Shift, LeaveRequest, Training, User,
 } from "@/types";
 
-const API_URL = process.env.API_URL ?? "http://localhost:8000";
+
 
 async function get<T>(path: string, params?: Record<string, string>): Promise<T> {
   const cookieStore = await cookies();
@@ -33,7 +34,7 @@ export const serverApi = {
     list: (p?: Record<string, string>) => get<List<Resident>>("/residents/", p),
   },
   medications: {
-    list: (p?: Record<string, string>) => get<List<{ id: number; [key: string]: unknown }>>("/medications/", p),
+    list: (p?: Record<string, string>) => get<List<Medication>>("/medications/", p),
     marList: (p?: Record<string, string>) => get<List<MAREntry>>("/medications/mar/", p),
   },
   carePlans: {

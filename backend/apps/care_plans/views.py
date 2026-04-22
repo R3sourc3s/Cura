@@ -1,14 +1,28 @@
 from rest_framework import viewsets, decorators, response, status
 from django_filters.rest_framework import DjangoFilterBackend
+from apps.authentication.permissions import require
 from .models import CarePlan, CarePlanSection, CarePlanNote
 from .serializers import CarePlanSerializer, CarePlanSectionSerializer, CarePlanNoteSerializer
 from apps.ai_assistant.services import generate_care_plan_summary
+
+_PLAN_PERMS = {
+    "list":             ["care_plans.view"],
+    "retrieve":         ["care_plans.view"],
+    "create":           ["care_plans.create"],
+    "update":           ["care_plans.create"],
+    "partial_update":   ["care_plans.create"],
+    "destroy":          ["care_plans.create"],
+    "generate_summary": ["care_plans.ai_summary"],
+}
 
 
 class CarePlanViewSet(viewsets.ModelViewSet):
     serializer_class = CarePlanSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["resident", "status"]
+
+    def get_permissions(self):
+        return [require(*_PLAN_PERMS.get(self.action, ["care_plans.view"]))]
 
     def get_queryset(self):
         return CarePlan.objects.select_related("resident", "created_by").prefetch_related(
@@ -30,6 +44,11 @@ class CarePlanSectionViewSet(viewsets.ModelViewSet):
     queryset = CarePlanSection.objects.all()
     serializer_class = CarePlanSectionSerializer
 
+    def get_permissions(self):
+        if self.action in ("list", "retrieve"):
+            return [require("care_plans.view")]
+        return [require("care_plans.create")]
+
     def get_queryset(self):
         return super().get_queryset().filter(care_plan_id=self.kwargs["care_plan_pk"])
 
@@ -37,6 +56,11 @@ class CarePlanSectionViewSet(viewsets.ModelViewSet):
 class CarePlanNoteViewSet(viewsets.ModelViewSet):
     queryset = CarePlanNote.objects.select_related("author")
     serializer_class = CarePlanNoteSerializer
+
+    def get_permissions(self):
+        if self.action in ("list", "retrieve"):
+            return [require("care_plans.view")]
+        return [require("care_plans.create")]
 
     def get_queryset(self):
         return super().get_queryset().filter(care_plan_id=self.kwargs["care_plan_pk"])

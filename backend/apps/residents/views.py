@@ -1,7 +1,26 @@
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
+from apps.authentication.permissions import require
 from .models import Resident, Condition
 from .serializers import ResidentSerializer, ResidentListSerializer, ConditionSerializer
+
+_RESIDENT_PERMS = {
+    "list":           ["residents.view"],
+    "retrieve":       ["residents.view"],
+    "create":         ["residents.create"],
+    "update":         ["residents.edit"],
+    "partial_update": ["residents.edit"],
+    "destroy":        ["residents.delete"],
+}
+
+_CONDITION_PERMS = {
+    "list":           ["residents.view"],
+    "retrieve":       ["residents.view"],
+    "create":         ["residents.edit"],
+    "update":         ["residents.edit"],
+    "partial_update": ["residents.edit"],
+    "destroy":        ["residents.delete"],
+}
 
 
 class ResidentViewSet(viewsets.ModelViewSet):
@@ -10,6 +29,9 @@ class ResidentViewSet(viewsets.ModelViewSet):
     filterset_fields = ["care_home", "is_active", "fall_risk"]
     search_fields = ["first_name", "last_name", "nhs_number", "room_number"]
     ordering_fields = ["last_name", "ai_risk_score", "admission_date"]
+
+    def get_permissions(self):
+        return [require(*_RESIDENT_PERMS.get(self.action, ["residents.view"]))]
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -29,6 +51,9 @@ class ResidentViewSet(viewsets.ModelViewSet):
 class ConditionViewSet(viewsets.ModelViewSet):
     queryset = Condition.objects.select_related("resident")
     serializer_class = ConditionSerializer
+
+    def get_permissions(self):
+        return [require(*_CONDITION_PERMS.get(self.action, ["residents.view"]))]
 
     def get_queryset(self):
         return super().get_queryset().filter(resident_id=self.kwargs.get("resident_pk"))

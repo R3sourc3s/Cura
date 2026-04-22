@@ -44,7 +44,7 @@ export default function Navbar() {
           >
             <Zap size={16} className="text-white" />
           </div>
-          <span className="text-xl font-bold gradient-text">empathika</span>
+          <span className="text-xl font-bold gradient-text">cura</span>
         </a>
 
         {/* Desktop links */}

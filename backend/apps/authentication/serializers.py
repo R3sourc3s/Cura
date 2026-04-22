@@ -58,7 +58,7 @@ class AdminUpdateUserSerializer(serializers.ModelSerializer):
         return instance
 
 
-class EmpathikaTokenSerializer(TokenObtainPairSerializer):
+class CuraTokenSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)

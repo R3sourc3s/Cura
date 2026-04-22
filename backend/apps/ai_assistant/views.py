@@ -1,12 +1,13 @@
-from rest_framework import views, response, status, permissions
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import views, response, status
+from apps.authentication.permissions import require
 from .services import chat, generate_compliance_gap_report, score_resident_risk
 from apps.residents.models import Resident
 from apps.staff.models import CareHome
 
 
 class ChatView(views.APIView):
-    """Streaming-ready chat endpoint. Accepts a message history and returns the AI reply."""
+    def get_permissions(self):
+        return [require("ai.chat")]
 
     def post(self, request):
         messages = request.data.get("messages", [])
@@ -29,6 +30,9 @@ class ChatView(views.APIView):
 
 
 class ComplianceGapReportView(views.APIView):
+    def get_permissions(self):
+        return [require("compliance.ai_report")]
+
     def post(self, request):
         care_home_id = request.data.get("care_home_id")
         try:
@@ -41,6 +45,9 @@ class ComplianceGapReportView(views.APIView):
 
 
 class ResidentRiskScoreView(views.APIView):
+    def get_permissions(self):
+        return [require("ai.risk_score")]
+
     def post(self, request, resident_id):
         try:
             resident = Resident.objects.prefetch_related("conditions", "medications").get(pk=resident_id)

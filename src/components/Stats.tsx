@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 
 const stats = [
-  { value: 1200, suffix: "+", label: "Care Homes", desc: "Trust Empathika daily" },
+  { value: 1200, suffix: "+", label: "Care Homes", desc: "Trust Cura daily" },
   { value: 98, suffix: "%", label: "Compliance Rate", desc: "Across all registered homes" },
   { value: 4, suffix: "hrs", label: "Saved Per Day", desc: "Per care manager on average" },
   { value: 99.9, suffix: "%", label: "Uptime SLA", desc: "Enterprise-grade reliability" },

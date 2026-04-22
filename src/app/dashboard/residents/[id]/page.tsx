@@ -2,12 +2,13 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
-import { residents as residentsApi } from "@/lib/api";
+import { residents as residentsApi, ai as aiApi } from "@/lib/api";
+import { useUser } from "@/context/UserContext";
 import type { Resident, Medication, CarePlan, MAREntry } from "@/types";
 import {
   ArrowLeft, Edit2, Trash2, User, Phone, Heart, Pill,
   ClipboardList, AlertTriangle, CheckCircle, Clock, XCircle,
-  Calendar, Activity, Shield, ChevronRight,
+  Calendar, Activity, Shield, ChevronRight, Sparkles,
 } from "lucide-react";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -111,9 +112,25 @@ const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
 
 // ── Sub-views ─────────────────────────────────────────────────────────────────
 
-function OverviewTab({ resident }: { resident: Resident }) {
-  const riskScore = resident.ai_risk_score;
+function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate }: { resident: Resident; onRiskScoreUpdate: (score: number) => void; canRecalculate: boolean }) {
+  const [riskScore, setRiskScore] = useState(resident.ai_risk_score);
+  const [scoringLoading, setScoringLoading] = useState(false);
+  const [scoringReason, setScoringReason] = useState("");
   const scoreColor = riskScore >= 80 ? "#ef4444" : riskScore >= 60 ? "#f97316" : riskScore >= 40 ? "#eab308" : "#10b981";
+
+  async function recalculateRisk() {
+    setScoringLoading(true);
+    try {
+      const result = await aiApi.riskScore(resident.id);
+      setRiskScore(result.risk_score);
+      setScoringReason(result.reasoning);
+      onRiskScoreUpdate(result.risk_score);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setScoringLoading(false);
+    }
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -173,12 +190,24 @@ function OverviewTab({ resident }: { resident: Resident }) {
           <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 16 }}>
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>AI Risk Score</span>
-              <span className="text-lg font-bold" style={{ color: scoreColor }}>{riskScore}/100</span>
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold" style={{ color: scoreColor }}>{riskScore}/100</span>
+                {canRecalculate && (
+                  <button onClick={recalculateRisk} disabled={scoringLoading}
+                    className="flex items-center gap-1 text-xs px-2 py-1 rounded-lg disabled:opacity-40"
+                    style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}>
+                    <Sparkles size={10} />{scoringLoading ? "…" : "Recalculate"}
+                  </button>
+                )}
+              </div>
             </div>
             <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
               <div className="h-full rounded-full transition-all"
                 style={{ width: `${riskScore}%`, background: `linear-gradient(90deg, ${scoreColor}88, ${scoreColor})` }} />
             </div>
+            {scoringReason && (
+              <p className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.35)" }}>{scoringReason}</p>
+            )}
           </div>
         </div>
       </GlassCard>
@@ -444,6 +473,7 @@ function MARTab({ residentId }: { residentId: number }) {
 export default function ResidentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const { can } = useUser();
   const [resident, setResident] = useState<Resident | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("overview");
@@ -518,18 +548,22 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
             </div>
           </div>
           <div className="flex sm:flex-col gap-2 flex-shrink-0">
-            <button
-              onClick={() => router.push(`/dashboard/residents/${resident.id}/edit`)}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white transition-all"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
-              <Edit2 size={14} /> Edit
-            </button>
-            <button
-              onClick={() => setConfirmDelete(true)}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all"
-              style={{ background: "rgba(239,68,68,0.1)", color: "#f87171", border: "1px solid rgba(239,68,68,0.2)" }}>
-              <Trash2 size={14} /> Delete
-            </button>
+            {can("residents.edit") && (
+              <button
+                onClick={() => router.push(`/dashboard/residents/${resident.id}/edit`)}
+                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white transition-all"
+                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                <Edit2 size={14} /> Edit
+              </button>
+            )}
+            {can("residents.delete") && (
+              <button
+                onClick={() => setConfirmDelete(true)}
+                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all"
+                style={{ background: "rgba(239,68,68,0.1)", color: "#f87171", border: "1px solid rgba(239,68,68,0.2)" }}>
+                <Trash2 size={14} /> Delete
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -552,7 +586,7 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
       </div>
 
       {/* Tab content */}
-      {tab === "overview"    && <OverviewTab resident={resident} />}
+      {tab === "overview"    && <OverviewTab resident={resident} onRiskScoreUpdate={(score) => setResident((r) => r ? { ...r, ai_risk_score: score } : r)} canRecalculate={can("ai.risk_score")} />}
       {tab === "medications" && <MedicationsTab residentId={resident.id} />}
       {tab === "care-plans"  && <CarePlansTab residentId={resident.id} />}
       {tab === "mar"         && <MARTab residentId={resident.id} />}

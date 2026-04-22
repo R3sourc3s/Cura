@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Zap, Eye, EyeOff } from "lucide-react";
+import { Zap, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { login } from "@/lib/auth";
 
 export default function LoginPage() {
@@ -42,15 +43,22 @@ export default function LoginPage() {
           backdropFilter: "blur(20px)"
         }}
       >
-        {/* Logo */}
-        <div className="flex items-center gap-2.5 mb-10">
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
-          >
-            <Zap size={16} className="text-white" />
+        {/* Logo + back home */}
+        <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+            >
+              <Zap size={16} className="text-white" />
+            </div>
+            <span className="text-white text-xl font-semibold">Cura</span>
           </div>
-          <span className="text-white text-xl font-semibold">Empathika</span>
+          <Link href="/"
+            className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft size={14} /> Home
+          </Link>
         </div>
 
         {/* Title */}

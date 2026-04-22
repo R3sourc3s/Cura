@@ -123,7 +123,13 @@ export const carePlans = {
     request<CarePlan>(`/care-plans/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
   delete: (id: number) => request<void>(`/care-plans/${id}/`, { method: "DELETE" }),
   generateSummary: (id: number) =>
-    request<{ summary: string }>(`/care-plans/${id}/generate-summary/`, { method: "POST" }),
+    fetch(`/api/ai/care-plans/${id}/generate-summary`, {
+      method: "POST",
+      credentials: "include",
+    }).then(async (r) => {
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error ?? "AI unavailable");
+      return r.json() as Promise<{ summary: string }>;
+    }),
   createSection: (planId: number, data: Partial<CarePlanSection>) =>
     request<CarePlanSection>(`/care-plans/${planId}/sections/`, {
       method: "POST",
@@ -193,13 +199,30 @@ export const compliance = {
 };
 
 export const ai = {
-  chat: (message: string, context?: Record<string, unknown>) =>
-    request<{ response: string }>("/ai/chat/", {
+  chat: (message: string, history: { role: string; content: string }[] = []) =>
+    fetch("/api/ai/chat", {
       method: "POST",
-      body: JSON.stringify({ message, context }),
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message, history }),
+    }).then(async (r) => {
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error ?? "AI unavailable");
+      return r.json() as Promise<{ response: string }>;
     }),
   riskScore: (residentId: number) =>
-    request<{ risk_score: number }>(`/ai/residents/${residentId}/risk-score/`, { method: "POST" }),
+    fetch(`/api/ai/residents/${residentId}/risk-score`, {
+      method: "POST",
+      credentials: "include",
+    }).then(async (r) => {
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error ?? "AI unavailable");
+      return r.json() as Promise<{ risk_score: number; reasoning: string }>;
+    }),
   complianceGapReport: () =>
-    request<{ report: string }>("/ai/compliance-gap-report/", { method: "POST" }),
+    fetch("/api/ai/compliance-gap-report", {
+      method: "POST",
+      credentials: "include",
+    }).then(async (r) => {
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error ?? "AI unavailable");
+      return r.json() as Promise<{ report: string }>;
+    }),
 };

@@ -13,7 +13,7 @@ const testimonials = [
     color: "#7c3aed",
     rating: 5,
     quote:
-      "Empathika has transformed how we operate. Our last CQC inspection was Outstanding — the inspector was genuinely impressed by how our audit trails were organised. I can't imagine going back.",
+      "Cura has transformed how we operate. Our last CQC inspection was Outstanding — the inspector was genuinely impressed by how our audit trails were organised. I can't imagine going back.",
   },
   {
     name: "James Okafor",
@@ -23,7 +23,7 @@ const testimonials = [
     color: "#3b82f6",
     rating: 5,
     quote:
-      "Rolling out Empathika across all 12 of our homes was the best decision we've made. The AI care planning alone has saved our managers hours every week. The ROI was evident within 3 months.",
+      "Rolling out Cura across all 12 of our homes was the best decision we've made. The AI care planning alone has saved our managers hours every week. The ROI was evident within 3 months.",
   },
   {
     name: "Priya Khatri",
@@ -33,7 +33,7 @@ const testimonials = [
     color: "#06b6d4",
     rating: 5,
     quote:
-      "The medication management module is outstanding. We've had zero medication errors since implementing Empathika — that's the number that matters most to me and my team.",
+      "The medication management module is outstanding. We've had zero medication errors since implementing Cura — that's the number that matters most to me and my team.",
   },
   {
     name: "Tom Hargreaves",

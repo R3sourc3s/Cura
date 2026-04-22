@@ -4,6 +4,7 @@ import { useState } from "react";
 import { auth as authApi } from "@/lib/api";
 import type { User } from "@/types";
 import { useToast } from "@/components/Toast";
+import { useUser } from "@/context/UserContext";
 import {
   Users, Plus, X, Save, Search, Shield, Edit2, Trash2,
   CheckCircle, XCircle, Mail, Phone,
@@ -251,6 +252,7 @@ function DeleteConfirmModal({ user, onClose, onDeleted }: {
 export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
   const [users, setUsers] = useState<User[]>(initialUsers);
   const { toast } = useToast();
+  const { can } = useUser();
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [editUser, setEditUser] = useState<User | null>(null);
@@ -289,11 +291,13 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
             {activeCount} active · {users.length} total
           </p>
         </div>
-        <button onClick={() => setShowAdd(true)}
-          className="flex-shrink-0 flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
-          <Plus size={14} /> <span className="hidden sm:inline">Add Member</span><span className="sm:hidden">Add</span>
-        </button>
+        {can("team.manage") && (
+          <button onClick={() => setShowAdd(true)}
+            className="flex-shrink-0 flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white"
+            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            <Plus size={14} /> <span className="hidden sm:inline">Add Member</span><span className="sm:hidden">Add</span>
+          </button>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -362,25 +366,37 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
                     {u.phone && <div className="flex items-center gap-1.5 text-xs" style={{ color: "rgba(255,255,255,0.35)" }}><Phone size={11} />{u.phone}</div>}
                   </td>
                   <td className="px-5 py-3.5">
-                    <button onClick={() => toggleActive(u)} disabled={togglingId === u.id}
-                      className="flex items-center gap-1.5 text-xs font-medium disabled:opacity-50">
-                      {u.is_active
-                        ? <><CheckCircle size={13} style={{ color: "#34d399" }} /><span style={{ color: "#34d399" }}>Active</span></>
-                        : <><XCircle size={13} style={{ color: "#f87171" }} /><span style={{ color: "#f87171" }}>Inactive</span></>}
-                    </button>
+                    {can("team.manage") ? (
+                      <button onClick={() => toggleActive(u)} disabled={togglingId === u.id}
+                        className="flex items-center gap-1.5 text-xs font-medium disabled:opacity-50">
+                        {u.is_active
+                          ? <><CheckCircle size={13} style={{ color: "#34d399" }} /><span style={{ color: "#34d399" }}>Active</span></>
+                          : <><XCircle size={13} style={{ color: "#f87171" }} /><span style={{ color: "#f87171" }}>Inactive</span></>}
+                      </button>
+                    ) : (
+                      <span className="flex items-center gap-1.5 text-xs font-medium">
+                        {u.is_active
+                          ? <><CheckCircle size={13} style={{ color: "#34d399" }} /><span style={{ color: "#34d399" }}>Active</span></>
+                          : <><XCircle size={13} style={{ color: "#f87171" }} /><span style={{ color: "#f87171" }}>Inactive</span></>}
+                      </span>
+                    )}
                   </td>
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2 justify-end">
-                      <button onClick={() => setEditUser(u)}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center"
-                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                        <Edit2 size={12} style={{ color: "rgba(255,255,255,0.5)" }} />
-                      </button>
-                      <button onClick={() => setDeleteUser(u)}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center"
-                        style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)" }}>
-                        <Trash2 size={12} style={{ color: "#f87171" }} />
-                      </button>
+                      {can("team.manage") && (
+                        <>
+                          <button onClick={() => setEditUser(u)}
+                            className="w-7 h-7 rounded-lg flex items-center justify-center"
+                            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                            <Edit2 size={12} style={{ color: "rgba(255,255,255,0.5)" }} />
+                          </button>
+                          <button onClick={() => setDeleteUser(u)}
+                            className="w-7 h-7 rounded-lg flex items-center justify-center"
+                            style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)" }}>
+                            <Trash2 size={12} style={{ color: "#f87171" }} />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -417,20 +433,31 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
                 {u.phone && <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.35)" }}><Phone size={11} />{u.phone}</div>}
               </div>
               <div className="flex gap-2 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-                <button onClick={() => toggleActive(u)} disabled={togglingId === u.id}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium rounded-xl disabled:opacity-50"
-                  style={{ background: u.is_active ? "rgba(52,211,153,0.1)" : "rgba(239,68,68,0.1)", color: u.is_active ? "#34d399" : "#f87171" }}>
-                  {u.is_active ? <><CheckCircle size={12} />Active</> : <><XCircle size={12} />Inactive</>}
-                </button>
-                <button onClick={() => setEditUser(u)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium rounded-xl"
-                  style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)" }}>
-                  <Edit2 size={12} />Edit
-                </button>
-                <button onClick={() => setDeleteUser(u)}
-                  className="w-9 flex items-center justify-center py-2 rounded-xl" style={{ background: "rgba(239,68,68,0.08)" }}>
-                  <Trash2 size={13} style={{ color: "#f87171" }} />
-                </button>
+                {can("team.manage") ? (
+                  <button onClick={() => toggleActive(u)} disabled={togglingId === u.id}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium rounded-xl disabled:opacity-50"
+                    style={{ background: u.is_active ? "rgba(52,211,153,0.1)" : "rgba(239,68,68,0.1)", color: u.is_active ? "#34d399" : "#f87171" }}>
+                    {u.is_active ? <><CheckCircle size={12} />Active</> : <><XCircle size={12} />Inactive</>}
+                  </button>
+                ) : (
+                  <span className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium rounded-xl"
+                    style={{ background: u.is_active ? "rgba(52,211,153,0.08)" : "rgba(239,68,68,0.08)", color: u.is_active ? "#34d399" : "#f87171" }}>
+                    {u.is_active ? <><CheckCircle size={12} />Active</> : <><XCircle size={12} />Inactive</>}
+                  </span>
+                )}
+                {can("team.manage") && (
+                  <>
+                    <button onClick={() => setEditUser(u)}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium rounded-xl"
+                      style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)" }}>
+                      <Edit2 size={12} />Edit
+                    </button>
+                    <button onClick={() => setDeleteUser(u)}
+                      className="w-9 flex items-center justify-center py-2 rounded-xl" style={{ background: "rgba(239,68,68,0.08)" }}>
+                      <Trash2 size={13} style={{ color: "#f87171" }} />
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           );

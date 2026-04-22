@@ -47,8 +47,11 @@ class Resident(models.Model):
     @property
     def age(self):
         from django.utils import timezone
+        from datetime import date
         today = timezone.now().date()
         dob = self.date_of_birth
+        if isinstance(dob, str):
+            dob = date.fromisoformat(dob)
         return today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
 
 

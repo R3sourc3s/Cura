@@ -3,13 +3,13 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: empathika
-      POSTGRES_USER: empathika
-      POSTGRES_PASSWORD: empathika
+      POSTGRES_DB: cura
+      POSTGRES_USER: cura
+      POSTGRES_PASSWORD: cura
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U empathika"]
+      test: ["CMD-SHELL", "pg_isready -U cura"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -30,8 +30,8 @@ services:
     restart: unless-stopped
     env_file: ./backend/.env
     environment:
-      DJANGO_SETTINGS_MODULE: empathika.settings.development
-      DATABASE_URL: postgres://empathika:empathika@db:5432/empathika
+      DJANGO_SETTINGS_MODULE: cura.settings.development
+      DATABASE_URL: postgres://cura:cura@db:5432/cura
       REDIS_URL: redis://redis:6379/0
     ports:
       - "8000:8000"
@@ -47,7 +47,7 @@ services:
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
-             gunicorn empathika.wsgi:application --bind 0.0.0.0:8000 --workers 4 --reload"
+             gunicorn cura.wsgi:application --bind 0.0.0.0:8000 --workers 4 --reload"
 
   celery:
     build:
@@ -56,18 +56,17 @@ services:
     restart: unless-stopped
     env_file: ./backend/.env
     environment:
-      DJANGO_SETTINGS_MODULE: empathika.settings.development
-      DATABASE_URL: postgres://empathika:empathika@db:5432/empathika
+      DJANGO_SETTINGS_MODULE: cura.settings.development
+      DATABASE_URL: postgres://cura:cura@db:5432/cura
       REDIS_URL: redis://redis:6379/0
     depends_on:
       backend:
         condition: service_started
     volumes:
       - ./backend:/app
-    command: celery -A empathika worker -l info
+    command: celery -A cura worker -l info
 
-  # Marketing site (existing Next.js at root)
-  marketing:
+  frontend:
     image: node:22-alpine
     working_dir: /app
     volumes:
@@ -79,6 +78,7 @@ services:
     environment:
       NODE_ENV: development
       API_URL: http://backend:8000
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
     depends_on:
       - backend
 
