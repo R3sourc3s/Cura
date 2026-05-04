@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import CommandPalette from "./CommandPalette";
+import QuickCareNote from "./QuickCareNote";
 import { ToastProvider } from "@/components/Toast";
 import { UserProvider } from "@/context/UserContext";
 
@@ -18,6 +20,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             <Header onMenuClick={() => setSidebarOpen(true)} />
             <main className="flex-1 p-4 lg:p-6 overflow-auto">{children}</main>
           </div>
+          <CommandPalette />
+          <QuickCareNote />
         </div>
       </ToastProvider>
     </UserProvider>

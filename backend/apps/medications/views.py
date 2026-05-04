@@ -1,8 +1,8 @@
 from rest_framework import viewsets, decorators, response
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.authentication.permissions import require
-from .models import Medication, MAREntry
-from .serializers import MedicationSerializer, MAREntrySerializer
+from .models import Medication, MAREntry, PRNProtocol, PRNAdministration
+from .serializers import MedicationSerializer, MAREntrySerializer, PRNProtocolSerializer, PRNAdministrationSerializer
 
 _MED_PERMS = {
     "list":           ["medications.view"],
@@ -54,6 +54,44 @@ class MAREntryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return MAREntry.objects.select_related(
+            "medication__resident", "administered_by"
+        ).filter(medication__resident__care_home=self.request.user.care_home)
+
+    def perform_create(self, serializer):
+        serializer.save(administered_by=self.request.user)
+
+
+class PRNProtocolViewSet(viewsets.ModelViewSet):
+    serializer_class = PRNProtocolSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["medication"]
+
+    def get_permissions(self):
+        if self.action in ("list", "retrieve"):
+            return [require("medications.view")]
+        return [require("medications.edit")]
+
+    def get_queryset(self):
+        return PRNProtocol.objects.select_related("medication__resident").filter(
+            medication__resident__care_home=self.request.user.care_home
+        )
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+
+class PRNAdministrationViewSet(viewsets.ModelViewSet):
+    serializer_class = PRNAdministrationSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["medication", "effectiveness"]
+
+    def get_permissions(self):
+        if self.action in ("list", "retrieve"):
+            return [require("medications.view")]
+        return [require("medications.administer")]
+
+    def get_queryset(self):
+        return PRNAdministration.objects.select_related(
             "medication__resident", "administered_by"
         ).filter(medication__resident__care_home=self.request.user.care_home)
 

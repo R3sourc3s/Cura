@@ -170,9 +170,75 @@ export interface User {
   first_name: string;
   last_name: string;
   full_name: string;
-  role: "admin" | "manager" | "nurse" | "carer" | "hr";
+  role: "admin" | "manager" | "nurse" | "carer" | "hr" | "family";
   phone?: string;
   avatar?: string;
   care_home: number | null;
   is_active: boolean;
+}
+
+export interface IncidentFollowUp {
+  id: number;
+  incident: number;
+  note: string;
+  actioned_by: number | null;
+  actioned_by_name?: string;
+  created_at: string;
+}
+
+export interface Incident {
+  id: number;
+  care_home: number;
+  resident: number | null;
+  resident_name?: string;
+  reported_by: number | null;
+  reported_by_name?: string;
+  incident_type: "fall" | "medication_error" | "near_miss" | "behaviour" | "injury" | "other";
+  severity: "low" | "medium" | "high" | "critical";
+  status: "open" | "under_review" | "closed";
+  incident_date: string;
+  location: string;
+  description: string;
+  immediate_action: string;
+  injury_sustained: boolean;
+  injury_description: string;
+  witnesses: string;
+  reported_to_gp: boolean;
+  reported_to_family: boolean;
+  reported_to_cqc: boolean;
+  created_at: string;
+  updated_at: string;
+  follow_ups?: IncidentFollowUp[];
+}
+
+export interface HandoverNote {
+  id: number;
+  care_home: number;
+  author: number | null;
+  author_name?: string;
+  author_role?: string;
+  shift: "day" | "evening" | "night";
+  date: string;
+  priority: "normal" | "urgent" | "critical";
+  content: string;
+  residents_mentioned: number[];
+  read_by_ids: number[];
+  created_at: string;
+}
+
+export interface VitalSign {
+  id: number;
+  resident: number;
+  recorded_by: number | null;
+  recorded_by_name?: string;
+  recorded_at: string;
+  bp_systolic: number | null;
+  bp_diastolic: number | null;
+  pulse: number | null;
+  temperature: number | null;
+  oxygen_saturation: number | null;
+  weight: number | null;
+  blood_glucose: number | null;
+  notes: string;
+  created_at: string;
 }

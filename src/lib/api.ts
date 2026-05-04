@@ -11,6 +11,10 @@ import type {
   ComplianceAudit,
   AuditAction,
   User,
+  Incident,
+  IncidentFollowUp,
+  HandoverNote,
+  VitalSign,
 } from "@/types";
 
 const BASE = "/api/v1";
@@ -196,6 +200,41 @@ export const compliance = {
       method: "PATCH",
       body: JSON.stringify(data),
     }),
+};
+
+export const incidents = {
+  list: (params?: Record<string, string>) =>
+    request<{ results: Incident[]; count: number }>(`/incidents/${qs(params)}`),
+  get: (id: number) => request<Incident>(`/incidents/${id}/`),
+  create: (data: Partial<Incident>) =>
+    request<Incident>("/incidents/", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: number, data: Partial<Incident>) =>
+    request<Incident>(`/incidents/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
+  addFollowUp: (incidentId: number, note: string) =>
+    request<IncidentFollowUp>(`/incidents/${incidentId}/follow-ups/`, {
+      method: "POST",
+      body: JSON.stringify({ note }),
+    }),
+};
+
+export const handover = {
+  list: (params?: Record<string, string>) =>
+    request<{ results: HandoverNote[]; count: number }>(`/handover/${qs(params)}`),
+  create: (data: Partial<HandoverNote>) =>
+    request<HandoverNote>("/handover/", { method: "POST", body: JSON.stringify(data) }),
+  markRead: (id: number) =>
+    request<{ ok: boolean }>(`/handover/${id}/mark-read/`, { method: "POST" }),
+};
+
+export const family = {
+  myResident: () => request<Resident>("/auth/family/resident/"),
+};
+
+export const vitals = {
+  list: (residentId: number) =>
+    request<VitalSign[]>(`/vitals/?resident=${residentId}&ordering=-recorded_at`),
+  create: (data: Partial<VitalSign>) =>
+    request<VitalSign>("/vitals/", { method: "POST", body: JSON.stringify(data) }),
 };
 
 export const ai = {

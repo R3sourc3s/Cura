@@ -1,6 +1,6 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, views, response
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .models import User
+from .models import User, FamilyContact
 from .serializers import UserSerializer, RegisterSerializer, CuraTokenSerializer, AdminCreateUserSerializer, AdminUpdateUserSerializer
 from .permissions import require
 from django_filters.rest_framework import DjangoFilterBackend
@@ -61,3 +61,18 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method == "GET":
             return UserSerializer
         return AdminUpdateUserSerializer
+
+
+class FamilyResidentView(views.APIView):
+    """Returns the resident linked to the logged-in family member."""
+
+    def get_permissions(self):
+        return [require("family.view_resident")]
+
+    def get(self, request):
+        try:
+            contact = FamilyContact.objects.select_related("resident").get(user=request.user)
+        except FamilyContact.DoesNotExist:
+            return response.Response({"detail": "No resident linked to this account."}, status=404)
+        from apps.residents.serializers import ResidentSerializer
+        return response.Response(ResidentSerializer(contact.resident, context={"request": request}).data)

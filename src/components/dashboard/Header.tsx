@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AlertTriangle, Bell, ChevronDown, ClipboardList, LogOut, Menu, Pill, Search, UserCircle, X } from "lucide-react";
+import { AlertTriangle, Bell, ChevronDown, ClipboardList, LogOut, Menu, Pill, Search, Shield, UserCircle, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { logout as doLogout } from "@/lib/auth";
@@ -18,10 +18,12 @@ interface Resident {
 }
 
 interface Notif {
-  id: string;
-  type: "leave" | "stock" | "review";
+  id: number;
+  notif_type: "incident" | "leave" | "stock" | "handover" | "general";
   message: string;
-  href: string;
+  link: string;
+  is_read: boolean;
+  created_at: string;
 }
 
 function useDebounce<T>(value: T, delay: number): T {
@@ -33,10 +35,12 @@ function useDebounce<T>(value: T, delay: number): T {
   return debounced;
 }
 
-function NotifIcon({ type }: { type: Notif["type"] }) {
+function NotifIcon({ type }: { type: Notif["notif_type"] }) {
   if (type === "leave") return <AlertTriangle size={14} className="text-amber-400 flex-shrink-0" />;
   if (type === "stock") return <Pill size={14} className="text-red-400 flex-shrink-0" />;
-  return <ClipboardList size={14} className="text-blue-400 flex-shrink-0" />;
+  if (type === "incident") return <Shield size={14} className="text-orange-400 flex-shrink-0" />;
+  if (type === "handover") return <ClipboardList size={14} className="text-purple-400 flex-shrink-0" />;
+  return <Bell size={14} className="text-blue-400 flex-shrink-0" />;
 }
 
 function SearchInput({ mobile = false, inputRef }: { mobile?: boolean; inputRef?: React.RefObject<HTMLInputElement | null> }) {
@@ -136,12 +140,18 @@ export default function Header({ onMenuClick }: HeaderProps) {
   const notifsRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    fetch("/api/notifications")
-      .then(r => r.ok ? r.json() : { items: [] })
-      .then(data => { setNotifs(data.items ?? []); setNotifsLoaded(true); })
+  const fetchNotifs = useCallback(() => {
+    fetch("/api/v1/notifications/")
+      .then(r => r.ok ? r.json() : [])
+      .then((data: Notif[]) => { setNotifs(Array.isArray(data) ? data : []); setNotifsLoaded(true); })
       .catch(() => setNotifsLoaded(true));
   }, []);
+
+  useEffect(() => {
+    fetchNotifs();
+    const interval = setInterval(fetchNotifs, 30_000);
+    return () => clearInterval(interval);
+  }, [fetchNotifs]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -156,6 +166,25 @@ export default function Header({ onMenuClick }: HeaderProps) {
     if (searchOpen) mobileSearchRef.current?.focus();
   }, [searchOpen]);
 
+  const openNotifs = () => {
+    setNotifsOpen(v => !v);
+    if (!notifsOpen) {
+      const unread = notifs.filter(n => !n.is_read);
+      if (unread.length > 0) {
+        fetch("/api/v1/notifications/mark-all-read/", { method: "POST" })
+          .then(() => setNotifs(prev => prev.map(n => ({ ...n, is_read: true }))))
+          .catch(() => {});
+      }
+    }
+  };
+
+  const dismissNotif = useCallback((id: number) => {
+    fetch(`/api/v1/notifications/${id}/read/`, { method: "PATCH" }).catch(() => {});
+    setNotifs(prev => prev.filter(n => n.id !== id));
+  }, []);
+
+  const unreadCount = notifs.filter(n => !n.is_read).length;
+
   const initials = user
     ? ((user.first_name?.[0] ?? user.username[0]) + (user.last_name?.[0] ?? "")).toUpperCase()
     : "?";
@@ -164,10 +193,6 @@ export default function Header({ onMenuClick }: HeaderProps) {
     admin: "Administrator", manager: "Care Manager",
     nurse: "Nurse", carer: "Carer", hr: "HR",
   };
-
-  const dismissNotif = useCallback((id: string) => {
-    setNotifs(prev => prev.filter(n => n.id !== id));
-  }, []);
 
   return (
     <>
@@ -182,6 +207,14 @@ export default function Header({ onMenuClick }: HeaderProps) {
             <Menu size={18} style={{ color: "rgba(255,255,255,0.6)" }} />
           </button>
           <SearchInput />
+          <button
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all"
+            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.3)" }}
+            onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true }))}>
+            <Search size={11} />
+            <span>Quick find</span>
+            <kbd style={{ background: "rgba(255,255,255,0.06)", borderRadius: 4, padding: "1px 5px", fontFamily: "monospace", fontSize: 10 }}>⌘K</kbd>
+          </button>
         </div>
 
         {/* Right */}
@@ -197,12 +230,14 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
           {/* Notifications */}
           <div className="relative" ref={notifsRef}>
-            <button onClick={() => setNotifsOpen(v => !v)}
+            <button onClick={openNotifs}
               className="relative w-9 h-9 rounded-xl flex items-center justify-center"
               style={{ background: notifsOpen ? "rgba(124,58,237,0.1)" : "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
               <Bell size={15} style={{ color: "rgba(255,255,255,0.5)" }} />
-              {notifsLoaded && notifs.length > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-[#050914]" />
+              {notifsLoaded && unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full border-2 border-[#050914] text-white text-[10px] font-bold flex items-center justify-center">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
               )}
             </button>
 
@@ -224,9 +259,11 @@ export default function Header({ onMenuClick }: HeaderProps) {
                 ) : (
                   <div className="max-h-72 overflow-y-auto">
                     {notifs.map(n => (
-                      <div key={n.id} className="flex items-start gap-3 px-4 py-3 border-b" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
-                        <div className="mt-0.5"><NotifIcon type={n.type} /></div>
-                        <Link href={n.href} onClick={() => { dismissNotif(n.id); setNotifsOpen(false); }}
+                      <div key={n.id}
+                        className="flex items-start gap-3 px-4 py-3 border-b"
+                        style={{ borderColor: "rgba(255,255,255,0.04)", background: n.is_read ? "transparent" : "rgba(124,58,237,0.04)" }}>
+                        <div className="mt-0.5"><NotifIcon type={n.notif_type} /></div>
+                        <Link href={n.link || "#"} onClick={() => { dismissNotif(n.id); setNotifsOpen(false); }}
                           className="flex-1 text-xs leading-relaxed hover:underline"
                           style={{ color: "rgba(255,255,255,0.65)" }}>
                           {n.message}

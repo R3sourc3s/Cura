@@ -4,21 +4,47 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Users, Pill, ClipboardList,
-  UserCheck, ShieldCheck, Bot, Zap, LogOut, X, UsersRound,
+  UserCheck, ShieldCheck, Bot, LogOut, X, UsersRound,
+  AlertTriangle, BookOpen, ClipboardCheck, Zap,
+  TrendingUp, NotebookPen, Stethoscope, CalendarDays,
+  Smile, DoorOpen, Wrench, FolderOpen, CalendarRange,
+  Table2, GraduationCap, Utensils, AlertCircle, Moon, ShieldAlert,
+  MessageSquare, Star,
 } from "lucide-react";
 import { logout } from "@/lib/auth";
 import { useUser } from "@/context/UserContext";
 import { NAV_ACCESS } from "@/lib/permissions";
 
 const ICONS: Record<string, React.ElementType> = {
-  "/dashboard":            LayoutDashboard,
-  "/dashboard/residents":  Users,
-  "/dashboard/medications":Pill,
-  "/dashboard/care-plans": ClipboardList,
-  "/dashboard/staff":      UserCheck,
-  "/dashboard/team":       UsersRound,
-  "/dashboard/compliance": ShieldCheck,
-  "/dashboard/ai":         Bot,
+  "/dashboard":              LayoutDashboard,
+  "/dashboard/kpi":          TrendingUp,
+  "/dashboard/residents":    Users,
+  "/dashboard/medications":  Pill,
+  "/dashboard/care-plans":   ClipboardList,
+  "/dashboard/care-notes":   NotebookPen,
+  "/dashboard/body-map":     Stethoscope,
+  "/dashboard/appointments": CalendarDays,
+  "/dashboard/handover":     BookOpen,
+  "/dashboard/incidents":    AlertTriangle,
+  "/dashboard/activities":   Smile,
+  "/dashboard/visitors":     DoorOpen,
+  "/dashboard/maintenance":  Wrench,
+  "/dashboard/documents":        FolderOpen,
+  "/dashboard/rota":             CalendarRange,
+  "/dashboard/mar":              Table2,
+  "/dashboard/falls-risk":       AlertCircle,
+  "/dashboard/nutrition":        Utensils,
+  "/dashboard/overnight-checks": Moon,
+  "/dashboard/training":         GraduationCap,
+  "/dashboard/safeguarding":     ShieldAlert,
+  "/dashboard/prn":              Pill,
+  "/dashboard/messages":         MessageSquare,
+  "/dashboard/cqc":              Star,
+  "/dashboard/staff":            UserCheck,
+  "/dashboard/team":         UsersRound,
+  "/dashboard/compliance":   ShieldCheck,
+  "/dashboard/audit":        ClipboardCheck,
+  "/dashboard/ai":           Bot,
 };
 
 interface SidebarProps {

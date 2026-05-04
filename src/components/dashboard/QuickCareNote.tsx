@@ -1,0 +1,194 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { NotebookPen, X, Send, ChevronDown } from "lucide-react";
+
+interface Resident { id: number; full_name: string; room_number?: string; }
+
+const SHIFTS = [
+  { value: "morning", label: "Morning" },
+  { value: "afternoon", label: "Afternoon" },
+  { value: "evening", label: "Evening" },
+  { value: "night", label: "Night" },
+];
+
+const CATEGORIES = [
+  { value: "general", label: "General" },
+  { value: "personal_care", label: "Personal Care" },
+  { value: "nutrition", label: "Nutrition" },
+  { value: "mobility", label: "Mobility" },
+  { value: "behaviour", label: "Behaviour" },
+  { value: "medical", label: "Medical" },
+  { value: "social", label: "Social" },
+];
+
+export default function QuickCareNote() {
+  const [open, setOpen] = useState(false);
+  const [content, setContent] = useState("");
+  const [residentId, setResidentId] = useState("");
+  const [shift, setShift] = useState("morning");
+  const [category, setCategory] = useState("general");
+  const [mood, setMood] = useState("neutral");
+  const [residents, setResidents] = useState<Resident[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const textRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (open && residents.length === 0) {
+      fetch("/api/v1/residents/?is_active=true&page_size=50&ordering=full_name", { credentials: "include" })
+        .then(r => r.ok ? r.json() : { results: [] })
+        .then(d => setResidents(d.results ?? d))
+        .catch(() => {});
+    }
+    if (open) setTimeout(() => textRef.current?.focus(), 100);
+  }, [open, residents.length]);
+
+  async function submit() {
+    if (!content.trim() || !residentId) return;
+    setSaving(true);
+    try {
+      const res = await fetch("/api/v1/care-notes/", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resident: parseInt(residentId), content: content.trim(), shift, category, mood }),
+      });
+      if (res.ok) {
+        setSaved(true);
+        setContent("");
+        setTimeout(() => { setSaved(false); setOpen(false); }, 1500);
+      }
+    } finally { setSaving(false); }
+  }
+
+  const now = new Date();
+  const hour = now.getHours();
+  const autoShift = hour < 8 ? "night" : hour < 14 ? "morning" : hour < 19 ? "afternoon" : "evening";
+
+  useEffect(() => { if (open) setShift(autoShift); }, [open, autoShift]);
+
+  return (
+    <>
+      {/* FAB */}
+      <button
+        onClick={() => { setOpen(true); setSaved(false); }}
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-2xl shadow-2xl font-medium text-sm transition-all hover:scale-105 active:scale-95"
+        style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)", color: "#fff", boxShadow: "0 8px 32px rgba(124,58,237,0.5)" }}>
+        <NotebookPen size={15} />
+        <span className="hidden sm:inline">Quick Note</span>
+      </button>
+
+      {/* Modal */}
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
+          style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)" }}
+          onClick={() => setOpen(false)}>
+          <div className="w-full max-w-lg rounded-2xl p-5 space-y-4"
+            style={{ background: "#0d1424", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 40px 80px rgba(0,0,0,0.6)" }}
+            onClick={e => e.stopPropagation()}>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.25)" }}>
+                  <NotebookPen size={13} style={{ color: "#a78bfa" }} />
+                </div>
+                <span className="text-sm font-semibold text-white">Quick Care Note</span>
+              </div>
+              <button onClick={() => setOpen(false)} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "rgba(255,255,255,0.05)" }}>
+                <X size={14} style={{ color: "rgba(255,255,255,0.5)" }} />
+              </button>
+            </div>
+
+            {/* Resident */}
+            <div>
+              <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Resident *</label>
+              <div className="relative">
+                <select value={residentId} onChange={e => setResidentId(e.target.value)}
+                  className="w-full text-sm px-3 py-2.5 rounded-xl appearance-none outline-none pr-8"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: residentId ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.35)" }}>
+                  <option value="">Select resident…</option>
+                  {residents.map(r => (
+                    <option key={r.id} value={r.id} style={{ background: "#0d1424" }}>
+                      {r.full_name}{r.room_number ? ` · Room ${r.room_number}` : ""}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+              </div>
+            </div>
+
+            {/* Shift + Category */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Shift</label>
+                <div className="relative">
+                  <select value={shift} onChange={e => setShift(e.target.value)}
+                    className="w-full text-sm px-3 py-2 rounded-xl appearance-none outline-none pr-8"
+                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}>
+                    {SHIFTS.map(s => <option key={s.value} value={s.value} style={{ background: "#0d1424" }}>{s.label}</option>)}
+                  </select>
+                  <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Category</label>
+                <div className="relative">
+                  <select value={category} onChange={e => setCategory(e.target.value)}
+                    className="w-full text-sm px-3 py-2 rounded-xl appearance-none outline-none pr-8"
+                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}>
+                    {CATEGORIES.map(c => <option key={c.value} value={c.value} style={{ background: "#0d1424" }}>{c.label}</option>)}
+                  </select>
+                  <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Mood */}
+            <div>
+              <label className="text-xs mb-2 block" style={{ color: "rgba(255,255,255,0.4)" }}>Resident Mood</label>
+              <div className="flex gap-2">
+                {[
+                  { v: "happy", e: "😊" }, { v: "neutral", e: "😐" }, { v: "sad", e: "😔" },
+                  { v: "anxious", e: "😟" }, { v: "confused", e: "😕" }, { v: "agitated", e: "😤" },
+                ].map(m => (
+                  <button key={m.v} onClick={() => setMood(m.v)}
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-lg transition-all"
+                    style={{ background: mood === m.v ? "rgba(124,58,237,0.2)" : "rgba(255,255,255,0.04)", border: mood === m.v ? "1px solid rgba(124,58,237,0.4)" : "1px solid transparent" }}
+                    title={m.v}>
+                    {m.e}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Note content */}
+            <div>
+              <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Note *</label>
+              <textarea ref={textRef} value={content} onChange={e => setContent(e.target.value)}
+                placeholder="Describe the care provided, observations, or any concerns…"
+                rows={4}
+                className="w-full text-sm px-3 py-2.5 rounded-xl outline-none resize-none"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                onKeyDown={e => { if (e.key === "Enter" && e.ctrlKey) submit(); }}
+              />
+              <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.2)" }}>Ctrl+Enter to save quickly</p>
+            </div>
+
+            <div className="flex gap-2 pt-1">
+              <button onClick={() => setOpen(false)} className="flex-1 py-2.5 rounded-xl text-sm transition-all"
+                style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)" }}>
+                Cancel
+              </button>
+              <button onClick={submit} disabled={saving || !content.trim() || !residentId}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-40"
+                style={{ background: saved ? "rgba(52,211,153,0.2)" : "linear-gradient(135deg,#7c3aed,#3b82f6)", color: saved ? "#34d399" : "#fff" }}>
+                {saved ? "✓ Saved!" : saving ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <><Send size={13} /> Save Note</>}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

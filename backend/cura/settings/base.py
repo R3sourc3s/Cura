@@ -36,6 +36,24 @@ LOCAL_APPS = [
     "apps.staff",
     "apps.compliance",
     "apps.ai_assistant",
+    "apps.incidents",
+    "apps.handover",
+    "apps.vitals",
+    "apps.notifications",
+    "apps.audit_log",
+    "apps.care_notes",
+    "apps.visitors",
+    "apps.maintenance",
+    "apps.activities",
+    "apps.appointments",
+    "apps.body_map",
+    "apps.documents",
+    "apps.training",
+    "apps.nutrition",
+    "apps.falls_risk",
+    "apps.overnight_checks",
+    "apps.safeguarding",
+    "apps.messages_board",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -50,6 +68,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "apps.audit_log.middleware.AuditMiddleware",
 ]
 
 ROOT_URLCONF = "cura.urls"

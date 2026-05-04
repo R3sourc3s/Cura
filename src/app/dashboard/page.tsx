@@ -1,6 +1,7 @@
 import { serverApi } from "@/lib/server-api";
 import type { Resident, MAREntry, ComplianceAudit } from "@/types";
 import { Users, Pill, ShieldCheck, ClipboardList, AlertTriangle, TrendingUp, Activity } from "lucide-react";
+import DashboardAlerts from "@/components/dashboard/DashboardAlerts";
 
 function GlassCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
@@ -73,6 +74,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <DashboardAlerts />
       <div>
         <h1 className="text-xl sm:text-2xl font-bold text-white">Dashboard</h1>
         <p className="text-sm mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>

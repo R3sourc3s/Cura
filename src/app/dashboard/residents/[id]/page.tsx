@@ -2,13 +2,14 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
-import { residents as residentsApi, ai as aiApi } from "@/lib/api";
+import { residents as residentsApi, ai as aiApi, vitals as vitalsApi } from "@/lib/api";
 import { useUser } from "@/context/UserContext";
-import type { Resident, Medication, CarePlan, MAREntry } from "@/types";
+import type { Resident, Medication, CarePlan, MAREntry, VitalSign } from "@/types";
 import {
   ArrowLeft, Edit2, Trash2, User, Phone, Heart, Pill,
   ClipboardList, AlertTriangle, CheckCircle, Clock, XCircle,
-  Calendar, Activity, Shield, ChevronRight, Sparkles,
+  Activity, Shield, ChevronRight, Sparkles, Plus, Thermometer,
+  NotebookPen, CalendarDays, X,
 } from "lucide-react";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -99,15 +100,235 @@ function Avatar({ resident, size = 80 }: { resident: Resident; size?: number }) 
   );
 }
 
+// ── Sparkline ─────────────────────────────────────────────────────────────────
+
+function Sparkline({ values, color = "#7c3aed", height = 32 }: { values: number[]; color?: string; height?: number }) {
+  if (values.length < 2) return <div className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>—</div>;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+  const w = 80;
+  const step = w / (values.length - 1);
+  const pts = values.map((v, i) => `${i * step},${height - ((v - min) / range) * (height - 4) - 2}`).join(" ");
+  return (
+    <svg width={w} height={height} style={{ display: "block" }}>
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={(values.length - 1) * step} cy={height - ((values[values.length - 1] - min) / range) * (height - 4) - 2} r="2.5" fill={color} />
+    </svg>
+  );
+}
+
+// ── Vitals Tab ────────────────────────────────────────────────────────────────
+
+const VITAL_FIELDS: { key: keyof VitalSign; label: string; unit: string; color: string; normal?: string }[] = [
+  { key: "bp_systolic",       label: "Systolic BP",  unit: "mmHg", color: "#f87171", normal: "90–120" },
+  { key: "bp_diastolic",      label: "Diastolic BP", unit: "mmHg", color: "#fb923c", normal: "60–80" },
+  { key: "pulse",             label: "Pulse",        unit: "bpm",  color: "#34d399", normal: "60–100" },
+  { key: "temperature",       label: "Temperature",  unit: "°C",   color: "#fbbf24", normal: "36.1–37.2" },
+  { key: "oxygen_saturation", label: "SpO₂",         unit: "%",    color: "#60a5fa", normal: "95–100" },
+  { key: "weight",            label: "Weight",       unit: "kg",   color: "#a78bfa" },
+  { key: "blood_glucose",     label: "Glucose",      unit: "mmol/L", color: "#f472b6", normal: "4–7" },
+];
+
+function VitalsTab({ residentId, canEdit }: { residentId: number; canEdit: boolean }) {
+  const [vitals, setVitals] = useState<VitalSign[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState<Record<string, string>>({ recorded_at: new Date().toISOString().slice(0, 16) });
+
+  useEffect(() => {
+    vitalsApi.list(residentId)
+      .then(setVitals)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [residentId]);
+
+  async function handleSave() {
+    setSaving(true);
+    try {
+      const payload: Record<string, string | number> = {
+        resident: residentId,
+        recorded_at: form.recorded_at,
+      };
+      VITAL_FIELDS.forEach(({ key }) => {
+        const v = form[key as string];
+        if (v !== "" && v !== undefined) payload[key as string] = Number(v);
+      });
+      if (form.notes) payload.notes = form.notes;
+      const created = await vitalsApi.create(payload as Partial<VitalSign>);
+      setVitals(prev => [created, ...prev]);
+      setShowForm(false);
+      setForm({ recorded_at: new Date().toISOString().slice(0, 16) });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) return <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div>;
+
+  const latest = vitals[0];
+
+  return (
+    <div className="space-y-4">
+      {/* Sparkline summary row */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {VITAL_FIELDS.map(({ key, label, unit, color, normal }) => {
+          const vals = vitals.map(v => Number(v[key])).filter(n => !isNaN(n) && n > 0);
+          const latestVal = latest ? Number(latest[key]) : null;
+          return (
+            <GlassCard key={key as string} className="!p-4">
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <div className="text-xs font-semibold" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</div>
+                  {normal && <div className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>Normal: {normal}</div>}
+                </div>
+              </div>
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className="text-xl font-bold" style={{ color: latestVal ? color : "rgba(255,255,255,0.2)" }}>
+                    {latestVal ? latestVal : "—"}
+                  </div>
+                  <div className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{unit}</div>
+                </div>
+                <Sparkline values={vals.slice(0, 10).reverse()} color={color} />
+              </div>
+            </GlassCard>
+          );
+        })}
+        {canEdit && (
+          <button onClick={() => setShowForm(true)}
+            className="rounded-2xl p-4 flex flex-col items-center justify-center gap-2 transition-all"
+            style={{ background: "rgba(124,58,237,0.05)", border: "1px dashed rgba(124,58,237,0.3)" }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(124,58,237,0.1)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "rgba(124,58,237,0.05)")}>
+            <Plus size={20} style={{ color: "#7c3aed" }} />
+            <span className="text-xs font-medium" style={{ color: "#a78bfa" }}>Log Vitals</span>
+          </button>
+        )}
+      </div>
+
+      {/* History table */}
+      {vitals.length > 0 && (
+        <GlassCard className="!p-0 overflow-hidden">
+          <div className="px-5 py-3 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>History</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[700px]">
+              <thead>
+                <tr style={{ background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>Date</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>BP</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>Pulse</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>Temp</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>SpO₂</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>Weight</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>Glucose</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>By</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vitals.slice(0, 20).map(v => (
+                  <tr key={v.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    <td className="px-4 py-2.5 text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>
+                      {new Date(v.recorded_at).toLocaleDateString("en-GB")}{" "}
+                      <span style={{ color: "rgba(255,255,255,0.3)" }}>{new Date(v.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</span>
+                    </td>
+                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>
+                      {v.bp_systolic && v.bp_diastolic ? `${v.bp_systolic}/${v.bp_diastolic}` : "—"}
+                    </td>
+                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>{v.pulse ?? "—"}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>{v.temperature ? `${v.temperature}°C` : "—"}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>{v.oxygen_saturation ? `${v.oxygen_saturation}%` : "—"}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>{v.weight ? `${v.weight} kg` : "—"}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>{v.blood_glucose ? `${v.blood_glucose}` : "—"}</td>
+                    <td className="px-4 py-2.5 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{v.recorded_by_name ?? "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </GlassCard>
+      )}
+
+      {vitals.length === 0 && !showForm && (
+        <div className="text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
+          <Thermometer size={28} className="mx-auto mb-2" style={{ color: "rgba(255,255,255,0.15)" }} />
+          <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No vitals recorded yet.</p>
+        </div>
+      )}
+
+      {/* Log form modal */}
+      {showForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-lg"
+            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-base font-bold text-white">Log Vitals</h3>
+              <button onClick={() => setShowForm(false)} style={{ color: "rgba(255,255,255,0.4)" }}><XCircle size={18} /></button>
+            </div>
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <div className="col-span-2">
+                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Date & Time *</label>
+                <input type="datetime-local" value={form.recorded_at ?? ""}
+                  onChange={e => setForm(f => ({ ...f, recorded_at: e.target.value }))}
+                  className="w-full text-sm px-3 py-2 rounded-xl outline-none"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }} />
+              </div>
+              {VITAL_FIELDS.map(({ key, label, unit }) => (
+                <div key={key as string}>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>{label} <span style={{ color: "rgba(255,255,255,0.25)" }}>({unit})</span></label>
+                  <input type="number" step="any" placeholder="—"
+                    value={form[key as string] ?? ""}
+                    onChange={e => setForm(f => ({ ...f, [key as string]: e.target.value }))}
+                    className="w-full text-sm px-3 py-2 rounded-xl outline-none"
+                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }} />
+                </div>
+              ))}
+              <div className="col-span-2">
+                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Notes</label>
+                <textarea rows={2} placeholder="Any observations…"
+                  value={form.notes ?? ""}
+                  onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                  className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }} />
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setShowForm(false)}
+                className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
+                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                Cancel
+              </button>
+              <button onClick={handleSave} disabled={saving || !form.recorded_at}
+                className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
+                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                {saving ? "Saving…" : "Save Vitals"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Tabs ─────────────────────────────────────────────────────────────────────
 
-type Tab = "overview" | "medications" | "care-plans" | "mar";
+type Tab = "overview" | "medications" | "care-plans" | "mar" | "vitals" | "care-notes" | "appointments";
 
 const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
-  { id: "overview",    label: "Overview",    icon: User },
-  { id: "medications", label: "Medications", icon: Pill },
-  { id: "care-plans",  label: "Care Plans",  icon: ClipboardList },
-  { id: "mar",         label: "MAR History", icon: Activity },
+  { id: "overview",     label: "Overview",     icon: User },
+  { id: "medications",  label: "Medications",  icon: Pill },
+  { id: "care-plans",   label: "Care Plans",   icon: ClipboardList },
+  { id: "care-notes",   label: "Care Notes",   icon: NotebookPen },
+  { id: "appointments", label: "Appointments", icon: CalendarDays },
+  { id: "mar",          label: "MAR History",  icon: Activity },
+  { id: "vitals",       label: "Vitals",       icon: Thermometer },
 ];
 
 // ── Sub-views ─────────────────────────────────────────────────────────────────
@@ -468,6 +689,171 @@ function MARTab({ residentId }: { residentId: number }) {
   );
 }
 
+// ── Care Notes Tab ────────────────────────────────────────────────────────────
+
+const SHIFT_LABEL: Record<string, string> = { day:"Day", evening:"Evening", night:"Night" };
+const NOTE_CAT_LABEL: Record<string, string> = { personal_care:"Personal Care", nutrition:"Nutrition", mobility:"Mobility", mood:"Mood", sleep:"Sleep", health:"Health", social:"Social", general:"General" };
+const MOOD_EMOJI: Record<string, string> = { happy:"😊", calm:"😌", anxious:"😟", confused:"😕", distressed:"😢", agitated:"😤", unresponsive:"😶" };
+const NOTE_SHIFT_COLOR: Record<string, string> = { day:"#fbbf24", evening:"#60a5fa", night:"#a78bfa" };
+
+function CareNotesTab({ residentId }: { residentId: number }) {
+  const [notes, setNotes] = useState<Array<{id:number;shift:string;category:string;mood?:string;content:string;recorded_at:string;author_name?:string}>>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ shift:"day", category:"general", mood:"", content:"" });
+  const inputSt = { background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.8)" };
+
+  useEffect(() => {
+    fetch(`/api/v1/care-notes/?resident=${residentId}&ordering=-recorded_at&page_size=30`, { credentials:"include" })
+      .then(r => r.ok ? r.json() : { results:[] })
+      .then(d => setNotes(d.results ?? d))
+      .catch(console.error).finally(() => setLoading(false));
+  }, [residentId]);
+
+  async function handleSave() {
+    if (!form.content) return;
+    setSaving(true);
+    try {
+      const body = { resident: residentId, shift: form.shift, category: form.category, mood: form.mood || null, content: form.content };
+      const res = await fetch("/api/v1/care-notes/", { method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) });
+      if (res.ok) { const n = await res.json(); setNotes(p => [n, ...p]); setShowForm(false); setForm({ shift:"day", category:"general", mood:"", content:"" }); }
+    } finally { setSaving(false); }
+  }
+
+  if (loading) return <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div>;
+
+  return (
+    <div className="space-y-3">
+      <div className="flex justify-end">
+        <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#7c3aed,#3b82f6)" }}><Plus size={14} /> Add Note</button>
+      </div>
+      {notes.length === 0 ? (
+        <div className="text-center py-12 rounded-2xl" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)" }}>
+          <NotebookPen size={28} className="mx-auto mb-2" style={{ color:"rgba(255,255,255,0.15)" }} />
+          <p className="text-sm" style={{ color:"rgba(255,255,255,0.3)" }}>No care notes recorded.</p>
+        </div>
+      ) : notes.map(note => (
+        <div key={note.id} className="rounded-2xl p-4" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)" }}>
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <span className="text-xs px-2 py-0.5 rounded font-semibold" style={{ background:`${NOTE_SHIFT_COLOR[note.shift]}22`, color:NOTE_SHIFT_COLOR[note.shift] }}>{SHIFT_LABEL[note.shift] ?? note.shift}</span>
+            <span className="text-xs px-2 py-0.5 rounded" style={{ background:"rgba(255,255,255,0.06)", color:"rgba(255,255,255,0.45)" }}>{NOTE_CAT_LABEL[note.category] ?? note.category}</span>
+            {note.mood && <span className="text-xs">{MOOD_EMOJI[note.mood] ?? ""} {note.mood}</span>}
+            <span className="text-xs ml-auto" style={{ color:"rgba(255,255,255,0.3)" }}>{new Date(note.recorded_at).toLocaleDateString("en-GB")} · {note.author_name ?? "—"}</span>
+          </div>
+          <p className="text-sm leading-relaxed" style={{ color:"rgba(255,255,255,0.7)" }}>{note.content}</p>
+        </div>
+      ))}
+
+      {showForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"#0f1629", border:"1px solid rgba(124,58,237,0.25)" }}>
+            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Care Note</h3><button onClick={()=>setShowForm(false)} style={{color:"rgba(255,255,255,0.4)"}}><X size={18}/></button></div>
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Shift</label>
+                <select value={form.shift} onChange={e=>setForm(f=>({...f,shift:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputSt}>
+                  <option value="day">Day</option><option value="evening">Evening</option><option value="night">Night</option>
+                </select></div>
+                <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Category</label>
+                <select value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputSt}>
+                  {Object.entries(NOTE_CAT_LABEL).map(([k,v])=><option key={k} value={k}>{v}</option>)}
+                </select></div>
+              </div>
+              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Mood</label>
+              <select value={form.mood} onChange={e=>setForm(f=>({...f,mood:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputSt}>
+                <option value="">Not recorded</option>
+                {Object.entries(MOOD_EMOJI).map(([k,v])=><option key={k} value={k}>{v} {k}</option>)}
+              </select></div>
+              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Note *</label>
+              <textarea rows={4} value={form.content} onChange={e=>setForm(f=>({...f,content:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputSt} placeholder="Enter care note…"/></div>
+            </div>
+            <div className="flex gap-3 mt-5">
+              <button onClick={()=>setShowForm(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"rgba(255,255,255,0.06)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.08)"}}>Cancel</button>
+              <button onClick={handleSave} disabled={saving||!form.content} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#7c3aed,#3b82f6)"}}>{saving?"Saving…":"Save Note"}</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Appointments Tab ──────────────────────────────────────────────────────────
+
+const APPT_TYPE_LABEL: Record<string,string> = { gp:"GP", hospital:"Hospital", specialist:"Specialist", dentist:"Dentist", optician:"Optician", physio:"Physiotherapy", other:"Other" };
+const APPT_STATUS_CFG: Record<string,{color:string;bg:string}> = {
+  scheduled:  { color:"#60a5fa", bg:"rgba(96,165,250,0.12)" },
+  completed:  { color:"#34d399", bg:"rgba(52,211,153,0.12)" },
+  cancelled:  { color:"#f87171", bg:"rgba(239,68,68,0.12)" },
+  dna:        { color:"#fbbf24", bg:"rgba(251,191,36,0.12)" },
+};
+
+function AppointmentsTab({ residentId }: { residentId: number }) {
+  const [appointments, setAppointments] = useState<Array<{id:number;appointment_type:string;provider_name:string;location:string;scheduled_at:string;status:string;notes:string;outcome:string}>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`/api/v1/appointments/?resident=${residentId}&ordering=scheduled_at&page_size=30`, { credentials:"include" })
+      .then(r => r.ok ? r.json() : { results:[] })
+      .then(d => setAppointments(d.results ?? d))
+      .catch(console.error).finally(() => setLoading(false));
+  }, [residentId]);
+
+  if (loading) return <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div>;
+
+  const now = new Date().toISOString();
+  const upcoming = appointments.filter(a => a.scheduled_at >= now && a.status === "scheduled");
+  const past = appointments.filter(a => a.scheduled_at < now || a.status !== "scheduled");
+
+  if (appointments.length === 0) return (
+    <div className="text-center py-12 rounded-2xl" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)" }}>
+      <CalendarDays size={28} className="mx-auto mb-2" style={{ color:"rgba(255,255,255,0.15)" }} />
+      <p className="text-sm" style={{ color:"rgba(255,255,255,0.3)" }}>No appointments recorded.</p>
+    </div>
+  );
+
+  const ApptCard = ({ a }: { a: typeof appointments[0] }) => {
+    const cfg = APPT_STATUS_CFG[a.status] ?? APPT_STATUS_CFG.scheduled;
+    const dt = new Date(a.scheduled_at);
+    return (
+      <div className="rounded-2xl p-4" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)" }}>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm font-semibold text-white">{APPT_TYPE_LABEL[a.appointment_type] ?? a.appointment_type}</span>
+              {a.provider_name && <span className="text-xs" style={{ color:"rgba(255,255,255,0.5)" }}>with {a.provider_name}</span>}
+            </div>
+            <div className="text-xs mt-1" style={{ color:"rgba(255,255,255,0.4)" }}>
+              {dt.toLocaleDateString("en-GB")} at {dt.toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit" })}
+              {a.location && ` · ${a.location}`}
+            </div>
+            {a.outcome && <p className="text-xs mt-1.5" style={{ color:"rgba(255,255,255,0.5)" }}>{a.outcome}</p>}
+          </div>
+          <span className="text-xs px-2 py-0.5 rounded-lg flex-shrink-0 capitalize" style={{ background:cfg.bg, color:cfg.color }}>{a.status}</span>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-4">
+      {upcoming.length > 0 && (
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color:"rgba(255,255,255,0.35)" }}>Upcoming</div>
+          <div className="space-y-2">{upcoming.map(a => <ApptCard key={a.id} a={a} />)}</div>
+        </div>
+      )}
+      {past.length > 0 && (
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color:"rgba(255,255,255,0.35)" }}>Past</div>
+          <div className="space-y-2">{past.map(a => <ApptCard key={a.id} a={a} />)}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function ResidentDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -548,6 +934,12 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
             </div>
           </div>
           <div className="flex sm:flex-col gap-2 flex-shrink-0">
+            <button
+              onClick={() => router.push(`/dashboard/residents/${resident.id}/timeline`)}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all"
+              style={{ background:"rgba(124,58,237,0.1)", color:"#a78bfa", border:"1px solid rgba(124,58,237,0.2)" }}>
+              <Activity size={14} /> Timeline
+            </button>
             {can("residents.edit") && (
               <button
                 onClick={() => router.push(`/dashboard/residents/${resident.id}/edit`)}
@@ -586,10 +978,13 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
       </div>
 
       {/* Tab content */}
-      {tab === "overview"    && <OverviewTab resident={resident} onRiskScoreUpdate={(score) => setResident((r) => r ? { ...r, ai_risk_score: score } : r)} canRecalculate={can("ai.risk_score")} />}
-      {tab === "medications" && <MedicationsTab residentId={resident.id} />}
-      {tab === "care-plans"  && <CarePlansTab residentId={resident.id} />}
-      {tab === "mar"         && <MARTab residentId={resident.id} />}
+      {tab === "overview"      && <OverviewTab resident={resident} onRiskScoreUpdate={(score) => setResident((r) => r ? { ...r, ai_risk_score: score } : r)} canRecalculate={can("ai.risk_score")} />}
+      {tab === "medications"   && <MedicationsTab residentId={resident.id} />}
+      {tab === "care-plans"    && <CarePlansTab residentId={resident.id} />}
+      {tab === "care-notes"    && <CareNotesTab residentId={resident.id} />}
+      {tab === "appointments"  && <AppointmentsTab residentId={resident.id} />}
+      {tab === "mar"           && <MARTab residentId={resident.id} />}
+      {tab === "vitals"        && <VitalsTab residentId={resident.id} canEdit={can("residents.edit")} />}
 
       {/* Delete confirmation modal */}
       {confirmDelete && (

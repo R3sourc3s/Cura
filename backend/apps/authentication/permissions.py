@@ -9,6 +9,9 @@ ROLE_PERMISSIONS: dict[str, set[str]] = {
         "compliance.view", "compliance.manage", "compliance.ai_report",
         "team.view", "team.manage",
         "ai.chat", "ai.risk_score", "ai.compliance_report",
+        "incidents.view", "incidents.create", "incidents.manage",
+        "handover.view", "handover.create", "handover.manage",
+        "audit.view",
     },
     "manager": {
         "residents.view", "residents.create", "residents.edit",
@@ -18,6 +21,9 @@ ROLE_PERMISSIONS: dict[str, set[str]] = {
         "compliance.view", "compliance.manage", "compliance.ai_report",
         "team.view",
         "ai.chat", "ai.risk_score", "ai.compliance_report",
+        "incidents.view", "incidents.create", "incidents.manage",
+        "handover.view", "handover.create", "handover.manage",
+        "audit.view",
     },
     "nurse": {
         "residents.view", "residents.create", "residents.edit",
@@ -26,6 +32,8 @@ ROLE_PERMISSIONS: dict[str, set[str]] = {
         "staff.view", "staff.request_leave",
         "compliance.view",
         "ai.chat", "ai.risk_score",
+        "incidents.view", "incidents.create",
+        "handover.view", "handover.create",
     },
     "carer": {
         "residents.view",
@@ -34,11 +42,17 @@ ROLE_PERMISSIONS: dict[str, set[str]] = {
         "staff.view", "staff.request_leave",
         "compliance.view",
         "ai.chat",
+        "incidents.view", "incidents.create",
+        "handover.view", "handover.create",
     },
     "hr": {
         "staff.view", "staff.manage", "staff.request_leave",
         "team.view", "team.manage",
         "ai.chat",
+        "handover.view",
+    },
+    "family": {
+        "family.view_resident",
     },
 }
 

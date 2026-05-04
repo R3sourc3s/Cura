@@ -9,13 +9,12 @@ export async function proxy(request: NextRequest) {
 
   // Redirect authenticated users away from /login
   if (pathname === "/login" && accessToken) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    const role = await getRole(accessToken);
+    return NextResponse.redirect(new URL(role === "family" ? "/family/dashboard" : "/dashboard", request.url));
   }
 
-  // Only protect /dashboard routes
-  if (!pathname.startsWith("/dashboard")) {
-    return NextResponse.next();
-  }
+  const isProtected = pathname.startsWith("/dashboard") || pathname.startsWith("/family");
+  if (!isProtected) return NextResponse.next();
 
   if (!accessToken) {
     if (refreshToken) {
@@ -25,7 +24,30 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // Keep family users out of /dashboard and staff out of /family
+  const role = await getRole(accessToken);
+  if (pathname.startsWith("/dashboard") && role === "family") {
+    return NextResponse.redirect(new URL("/family/dashboard", request.url));
+  }
+  if (pathname.startsWith("/family") && role !== "family") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
   return NextResponse.next();
+}
+
+async function getRole(token: string): Promise<string> {
+  try {
+    const res = await fetch(`${API_URL}/api/v1/auth/me/`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+    if (!res.ok) return "";
+    const user = await res.json();
+    return user.role ?? "";
+  } catch {
+    return "";
+  }
 }
 
 async function tryRefresh(
