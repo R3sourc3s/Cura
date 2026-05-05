@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { Stethoscope, Plus, X, CheckCircle } from "lucide-react";
+
+const BodyScene = dynamic(() => import("@/components/body-map/BodyScene"), { ssr: false });
 
 interface WoundRecord {
   id: number; resident: number; resident_name?: string;
@@ -22,7 +25,7 @@ interface WoundAssessment {
   assessed_by_name?: string;
 }
 
-interface Resident { id: number; full_name: string; }
+interface Resident { id: number; full_name: string; gender?: "male" | "female" | "other" | ""; }
 
 const WOUND_TYPES = ["pressure_ulcer","laceration","bruise","surgical","skin_tear","burn","other"];
 const WOUND_TYPE_LABEL: Record<string,string> = { pressure_ulcer:"Pressure Ulcer", laceration:"Laceration", bruise:"Bruise", surgical:"Surgical", skin_tear:"Skin Tear", burn:"Burn", other:"Other" };
@@ -46,185 +49,6 @@ function gradeColor(grade: string) {
 }
 
 function isoDate(d: Date) { return d.toISOString().slice(0,10); }
-
-// ── Body SVG diagrams ─────────────────────────────────────────────────────────
-
-function BodyFront() {
-  const s = "none";
-  const c = "rgba(255,255,255,0.22)";
-  const c2 = "rgba(255,255,255,0.13)";
-  const sw = 1.5;
-  return (
-    <g>
-      {/* Head */}
-      <ellipse cx="100" cy="28" rx="21" ry="25" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Neck */}
-      <rect x="92" y="52" width="16" height="13" rx="4" fill={s} stroke={c2} strokeWidth={sw}/>
-      {/* Shoulders */}
-      <path d="M60 68 Q45 68 38 78 L30 90" fill={s} stroke={c} strokeWidth={sw}/>
-      <path d="M140 68 Q155 68 162 78 L170 90" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Torso */}
-      <rect x="62" y="65" width="76" height="88" rx="10" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Clavicle lines */}
-      <line x1="100" y1="66" x2="62" y2="74" stroke={c2} strokeWidth="1"/>
-      <line x1="100" y1="66" x2="138" y2="74" stroke={c2} strokeWidth="1"/>
-      {/* Chest / ribs suggestion */}
-      <ellipse cx="83" cy="88" rx="10" ry="7" fill={s} stroke={c2} strokeWidth="1"/>
-      <ellipse cx="117" cy="88" rx="10" ry="7" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Abdomen line */}
-      <line x1="100" y1="105" x2="100" y2="150" stroke={c2} strokeWidth="1" strokeDasharray="3,3"/>
-      {/* Navel */}
-      <circle cx="100" cy="130" r="2.5" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Arms */}
-      <rect x="28" y="68" width="30" height="78" rx="13" fill={s} stroke={c} strokeWidth={sw}/>
-      <rect x="142" y="68" width="30" height="78" rx="13" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Hands */}
-      <ellipse cx="43" cy="155" rx="13" ry="9" fill={s} stroke={c2} strokeWidth="1"/>
-      <ellipse cx="157" cy="155" rx="13" ry="9" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Hips */}
-      <path d="M62 153 Q58 165 60 175 L62 175" fill={s} stroke={c} strokeWidth={sw}/>
-      <path d="M138 153 Q142 165 140 175 L138 175" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Pelvis */}
-      <path d="M62 153 Q100 168 138 153" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Legs */}
-      <rect x="62" y="158" width="34" height="98" rx="14" fill={s} stroke={c} strokeWidth={sw}/>
-      <rect x="104" y="158" width="34" height="98" rx="14" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Knees */}
-      <ellipse cx="79" cy="222" rx="13" ry="8" fill={s} stroke={c2} strokeWidth="1"/>
-      <ellipse cx="121" cy="222" rx="13" ry="8" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Feet */}
-      <ellipse cx="79" cy="260" rx="15" ry="7" fill={s} stroke={c2} strokeWidth="1"/>
-      <ellipse cx="121" cy="260" rx="15" ry="7" fill={s} stroke={c2} strokeWidth="1"/>
-    </g>
-  );
-}
-
-function BodyBack() {
-  const s = "none";
-  const c = "rgba(255,255,255,0.22)";
-  const c2 = "rgba(255,255,255,0.13)";
-  const sw = 1.5;
-  return (
-    <g>
-      {/* Head */}
-      <ellipse cx="100" cy="28" rx="21" ry="25" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Neck */}
-      <rect x="92" y="52" width="16" height="13" rx="4" fill={s} stroke={c2} strokeWidth={sw}/>
-      {/* Shoulders */}
-      <path d="M60 68 Q45 68 38 78 L30 90" fill={s} stroke={c} strokeWidth={sw}/>
-      <path d="M140 68 Q155 68 162 78 L170 90" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Torso / back */}
-      <rect x="62" y="65" width="76" height="88" rx="10" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Spine */}
-      <line x1="100" y1="68" x2="100" y2="153" stroke={c2} strokeWidth="1.5" strokeDasharray="4,3"/>
-      {/* Shoulder blades */}
-      <ellipse cx="82" cy="90" rx="12" ry="16" fill={s} stroke={c2} strokeWidth="1"/>
-      <ellipse cx="118" cy="90" rx="12" ry="16" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Lumbar */}
-      <ellipse cx="100" cy="140" rx="14" ry="8" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Arms */}
-      <rect x="28" y="68" width="30" height="78" rx="13" fill={s} stroke={c} strokeWidth={sw}/>
-      <rect x="142" y="68" width="30" height="78" rx="13" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Hands */}
-      <ellipse cx="43" cy="155" rx="13" ry="9" fill={s} stroke={c2} strokeWidth="1"/>
-      <ellipse cx="157" cy="155" rx="13" ry="9" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Hips */}
-      <path d="M62 153 Q100 170 138 153" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Legs */}
-      <rect x="62" y="158" width="34" height="98" rx="14" fill={s} stroke={c} strokeWidth={sw}/>
-      <rect x="104" y="158" width="34" height="98" rx="14" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Knee hollows */}
-      <ellipse cx="79" cy="222" rx="11" ry="7" fill={s} stroke={c2} strokeWidth="1"/>
-      <ellipse cx="121" cy="222" rx="11" ry="7" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Heels */}
-      <ellipse cx="79" cy="260" rx="12" ry="7" fill={s} stroke={c2} strokeWidth="1"/>
-      <ellipse cx="121" cy="260" rx="12" ry="7" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Sacrum / coccyx area */}
-      <ellipse cx="100" cy="158" rx="16" ry="7" fill={s} stroke={c2} strokeWidth="1" opacity="0.7"/>
-    </g>
-  );
-}
-
-function BodyLeft() {
-  const s = "none";
-  const c = "rgba(255,255,255,0.22)";
-  const c2 = "rgba(255,255,255,0.13)";
-  const sw = 1.5;
-  return (
-    <g>
-      {/* Head — profile */}
-      <path d="M85 10 Q120 8 122 28 Q124 48 110 54 Q100 58 88 54 Q78 50 80 30 Q80 12 85 10Z" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Ear */}
-      <ellipse cx="80" cy="32" rx="5" ry="8" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Nose suggestion */}
-      <path d="M121 25 Q126 28 122 33" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Neck */}
-      <rect x="90" y="54" width="18" height="14" rx="4" fill={s} stroke={c2} strokeWidth={sw}/>
-      {/* Torso side */}
-      <path d="M72 68 Q68 80 68 120 Q68 150 75 158 L118 158 Q128 148 128 118 Q128 80 124 68Z" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Chest / belly contour */}
-      <path d="M128 75 Q138 88 136 108 Q134 128 128 138" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Arm (one visible) */}
-      <rect x="50" y="70" width="20" height="75" rx="10" fill={s} stroke={c} strokeWidth={sw}/>
-      <ellipse cx="60" cy="150" rx="10" ry="7" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Hip */}
-      <path d="M75 158 Q70 168 72 180" fill={s} stroke={c} strokeWidth={sw}/>
-      <path d="M118 158 Q124 168 122 180" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Upper leg (thigh) */}
-      <path d="M72 160 Q65 195 68 235 Q70 255 80 260 Q90 265 98 260 Q108 255 110 235 Q113 195 118 160Z" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Lower leg */}
-      <path d="M68 235 Q65 255 70 270 Q74 278 80 278 Q88 278 92 270 Q97 260 98 235" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Foot */}
-      <path d="M70 275 Q68 282 78 285 Q96 287 110 280 Q115 275 108 272" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Spine line */}
-      <line x1="96" y1="68" x2="96" y2="155" stroke={c2} strokeWidth="1" strokeDasharray="3,3"/>
-    </g>
-  );
-}
-
-function BodyRight() {
-  const s = "none";
-  const c = "rgba(255,255,255,0.22)";
-  const c2 = "rgba(255,255,255,0.13)";
-  const sw = 1.5;
-  return (
-    <g>
-      {/* Head — profile (mirrored) */}
-      <path d="M115 10 Q80 8 78 28 Q76 48 90 54 Q100 58 112 54 Q122 50 120 30 Q120 12 115 10Z" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Ear */}
-      <ellipse cx="120" cy="32" rx="5" ry="8" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Nose suggestion */}
-      <path d="M79 25 Q74 28 78 33" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Neck */}
-      <rect x="92" y="54" width="18" height="14" rx="4" fill={s} stroke={c2} strokeWidth={sw}/>
-      {/* Torso side (mirrored) */}
-      <path d="M128 68 Q132 80 132 120 Q132 150 125 158 L82 158 Q72 148 72 118 Q72 80 76 68Z" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Chest / belly contour */}
-      <path d="M72 75 Q62 88 64 108 Q66 128 72 138" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Arm */}
-      <rect x="130" y="70" width="20" height="75" rx="10" fill={s} stroke={c} strokeWidth={sw}/>
-      <ellipse cx="140" cy="150" rx="10" ry="7" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Hip */}
-      <path d="M125 158 Q130 168 128 180" fill={s} stroke={c} strokeWidth={sw}/>
-      <path d="M82 158 Q76 168 78 180" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Upper leg */}
-      <path d="M128 160 Q135 195 132 235 Q130 255 120 260 Q110 265 102 260 Q92 255 90 235 Q87 195 82 160Z" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Lower leg */}
-      <path d="M132 235 Q135 255 130 270 Q126 278 120 278 Q112 278 108 270 Q103 260 102 235" fill={s} stroke={c} strokeWidth={sw}/>
-      {/* Foot */}
-      <path d="M130 275 Q132 282 122 285 Q104 287 90 280 Q85 275 92 272" fill={s} stroke={c2} strokeWidth="1"/>
-      {/* Spine line */}
-      <line x1="104" y1="68" x2="104" y2="155" stroke={c2} strokeWidth="1" strokeDasharray="3,3"/>
-    </g>
-  );
-}
-
-const BODY_COMPONENTS = {
-  front: BodyFront,
-  back:  BodyBack,
-  left:  BodyLeft,
-  right: BodyRight,
-};
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -260,11 +84,8 @@ export default function BodyMapPage() {
 
   useEffect(() => { loadWounds(); }, [loadWounds]);
 
-  function handleBodyClick(e: React.MouseEvent<SVGSVGElement>) {
+  function handleBodyClick(x: number, y: number) {
     if (!selectedResident) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = parseFloat(((e.clientX - rect.left) / rect.width * 100).toFixed(1));
-    const y = parseFloat(((e.clientY - rect.top) / rect.height * 100).toFixed(1));
     setPendingClick({ x, y });
     setShowAddWound(true);
   }
@@ -318,7 +139,8 @@ export default function BodyMapPage() {
   }
 
   const visibleWounds = wounds.filter(w => w.body_side === side);
-  const BodyComponent = BODY_COMPONENTS[side];
+  const residentGender = residents.find(r => r.id === selectedResident)?.gender;
+  const bodyGender: "male" | "female" = residentGender === "female" ? "female" : "male";
 
   // Per-side wound counts for the tab badges
   const countBySide = (s: string) => wounds.filter(w => w.body_side === s && w.is_active).length;
@@ -373,44 +195,30 @@ export default function BodyMapPage() {
               })}
             </div>
 
-            {/* Body diagram */}
-            <div className="rounded-2xl p-4 flex flex-col items-center" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)" }}>
-              <p className="text-xs mb-3" style={{ color:"rgba(255,255,255,0.3)" }}>
-                Viewing: <span className="font-medium" style={{ color:"#60a5fa" }}>{SIDES.find(s=>s.id===side)?.label}</span>
-                {" · "}Click to mark a wound
-              </p>
+            {/* 3D Body diagram */}
+            <div className="rounded-2xl overflow-hidden" style={{ height:"420px", background:"#0a101e", border:"1px solid rgba(255,255,255,0.07)" }}>
+              <BodyScene
+                side={side}
+                wounds={wounds}
+                selectedWoundId={selectedWound?.id ?? null}
+                canPlace={!!selectedResident}
+                gender={bodyGender}
+                onBodyClick={handleBodyClick}
+                onWoundClick={w => {
+                  const full = wounds.find(x => x.id === w.id) ?? null;
+                  setSelectedWound(selectedWound?.id === w.id ? null : full);
+                }}
+              />
+            </div>
 
-              <svg
-                viewBox="0 0 200 290"
-                className="w-full max-w-[180px] cursor-crosshair select-none"
-                onClick={handleBodyClick}
-                style={{ overflow:"visible" }}>
-                <BodyComponent />
-                {visibleWounds.map(w => {
-                  const cx = w.location_x * 2;
-                  const cy = w.location_y * 2.9;
-                  const color = gradeColor(w.grade);
-                  const isSelected = selectedWound?.id === w.id;
-                  return (
-                    <g key={w.id} style={{ cursor:"pointer" }} onClick={ev => { ev.stopPropagation(); setSelectedWound(isSelected ? null : w); }}>
-                      <circle cx={cx} cy={cy} r={isSelected ? 9 : 7} fill={color} opacity={w.is_active ? 0.85 : 0.35} stroke="white" strokeWidth={isSelected ? 2 : 1}/>
-                      {isSelected && <circle cx={cx} cy={cy} r="14" fill="none" stroke={color} strokeWidth="1.5" opacity="0.5"/>}
-                      {!w.is_active && <line x1={cx-5} y1={cy-5} x2={cx+5} y2={cy+5} stroke="white" strokeWidth="1.5" opacity="0.6"/>}
-                      {!w.is_active && <line x1={cx+5} y1={cy-5} x2={cx-5} y2={cy+5} stroke="white" strokeWidth="1.5" opacity="0.6"/>}
-                    </g>
-                  );
-                })}
-              </svg>
-
-              {/* Grade legend */}
-              <div className="mt-4 flex flex-wrap gap-2 justify-center">
-                {[["1","Grade 1"],["2","Grade 2"],["3","Grade 3"],["4","Grade 4"],["unstageable","Unstageable"]].map(([g,l]) => (
-                  <div key={g} className="flex items-center gap-1 text-xs" style={{ color:"rgba(255,255,255,0.4)" }}>
-                    <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: gradeColor(g) }} />
-                    {l}
-                  </div>
-                ))}
-              </div>
+            {/* Grade legend */}
+            <div className="flex flex-wrap gap-2 justify-center px-1">
+              {[["1","Grade 1"],["2","Grade 2"],["3","Grade 3"],["4","Grade 4"],["unstageable","Unstageable"]].map(([g,l]) => (
+                <div key={g} className="flex items-center gap-1 text-xs" style={{ color:"rgba(255,255,255,0.4)" }}>
+                  <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: gradeColor(g) }} />
+                  {l}
+                </div>
+              ))}
             </div>
 
             {/* Summary badges for all sides */}
