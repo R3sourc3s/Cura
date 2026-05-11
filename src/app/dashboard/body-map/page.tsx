@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { Stethoscope, Plus, X, CheckCircle } from "lucide-react";
+import { Stethoscope, Plus, X, CheckCircle, Trash2 } from "lucide-react";
 
 const BodyScene = dynamic(() => import("@/components/body-map/BodyScene"), { ssr: false });
 
@@ -31,11 +31,19 @@ const WOUND_TYPES = ["pressure_ulcer","laceration","bruise","surgical","skin_tea
 const WOUND_TYPE_LABEL: Record<string,string> = { pressure_ulcer:"Pressure Ulcer", laceration:"Laceration", bruise:"Bruise", surgical:"Surgical", skin_tear:"Skin Tear", burn:"Burn", other:"Other" };
 const GRADES = ["1","2","3","4","unstageable"];
 const GRADE_LABEL: Record<string,string> = { "1":"Grade 1","2":"Grade 2","3":"Grade 3","4":"Grade 4","unstageable":"Unstageable" };
-const SIDES = [
-  { id: "front" as const, label: "Front" },
-  { id: "back"  as const, label: "Back"  },
-  { id: "left"  as const, label: "Left"  },
-  { id: "right" as const, label: "Right" },
+const BODY_SIDES = [
+  { id: "front", label: "Front" },
+  { id: "back",  label: "Back"  },
+  { id: "left",  label: "Left"  },
+  { id: "right", label: "Right" },
+];
+
+const HEAD_SIDES = [
+  { id: "head-front", label: "Front" },
+  { id: "head-back",  label: "Back"  },
+  { id: "head-left",  label: "Left"  },
+  { id: "head-right", label: "Right" },
+  { id: "head-top",   label: "Top"   },
 ];
 
 const inputStyle = { background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.8)" };
@@ -55,7 +63,8 @@ function isoDate(d: Date) { return d.toISOString().slice(0,10); }
 export default function BodyMapPage() {
   const [residents, setResidents] = useState<Resident[]>([]);
   const [selectedResident, setSelectedResident] = useState<number | "">("");
-  const [side, setSide] = useState<"front"|"back"|"left"|"right">("front");
+  const [section, setSection] = useState<"body"|"head">("body");
+  const [side, setSide] = useState("front");
   const [wounds, setWounds] = useState<WoundRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedWound, setSelectedWound] = useState<WoundRecord | null>(null);
@@ -63,6 +72,9 @@ export default function BodyMapPage() {
   const [showAddAssessment, setShowAddAssessment] = useState(false);
   const [pendingClick, setPendingClick] = useState<{x:number;y:number} | null>(null);
   const [saving, setSaving] = useState(false);
+  const [deleteModal, setDeleteModal] = useState<{ wound: WoundRecord } | null>(null);
+  const [deleteReason, setDeleteReason] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   const [woundForm, setWoundForm] = useState({ wound_type:"pressure_ulcer", grade:"2", first_observed:isoDate(new Date()), description:"" });
   const [assessForm, setAssessForm] = useState({ assessment_date:isoDate(new Date()), length_cm:"", width_cm:"", depth_cm:"", appearance:"", treatment:"", dressing_used:"", next_review:"", notes:"" });
@@ -104,6 +116,27 @@ export default function BodyMapPage() {
         setWoundForm({ wound_type:"pressure_ulcer", grade:"2", first_observed:isoDate(new Date()), description:"" });
       }
     } finally { setSaving(false); }
+  }
+
+  async function handleDeleteWound() {
+    if (!deleteModal || !deleteReason.trim()) return;
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/v1/body-map/wounds/${deleteModal.wound.id}/`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ deletion_reason: deleteReason.trim() }),
+      });
+      if (res.ok || res.status === 204) {
+        setWounds(p => p.filter(w => w.id !== deleteModal.wound.id));
+        if (selectedWound?.id === deleteModal.wound.id) setSelectedWound(null);
+        setDeleteModal(null);
+        setDeleteReason("");
+      }
+    } finally {
+      setDeleting(false);
+    }
   }
 
   async function handleMarkHealed(id: number) {
@@ -155,7 +188,7 @@ export default function BodyMapPage() {
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Body Map</h1>
-            <p className="text-xs" style={{ color:"rgba(255,255,255,0.35)" }}>Wound &amp; skin integrity tracker — front, back, left &amp; right</p>
+            <p className="text-xs" style={{ color:"rgba(255,255,255,0.35)" }}>Wound &amp; skin integrity tracker — body &amp; head views</p>
           </div>
         </div>
         <select value={selectedResident} onChange={e => { setSelectedResident(e.target.value ? Number(e.target.value) : ""); setSelectedWound(null); }}
@@ -176,27 +209,56 @@ export default function BodyMapPage() {
           {/* Body diagram column */}
           <div className="lg:col-span-2 space-y-3">
 
-            {/* Side tabs */}
-            <div className="flex gap-1 p-1 rounded-xl" style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)" }}>
-              {SIDES.map(s => {
-                const cnt = countBySide(s.id);
-                const active = side === s.id;
-                return (
-                  <button key={s.id} onClick={() => { setSide(s.id); setSelectedWound(null); }}
-                    className="flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all relative"
-                    style={{ background: active ? "rgba(96,165,250,0.2)" : "transparent", color: active ? "#60a5fa" : "rgba(255,255,255,0.4)", border: active ? "1px solid rgba(96,165,250,0.3)" : "1px solid transparent" }}>
-                    {s.label}
-                    {cnt > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-0.5 rounded-full text-[9px] font-bold flex items-center justify-center"
-                        style={{ background: "#f87171", color: "#fff" }}>{cnt}</span>
-                    )}
-                  </button>
-                );
-              })}
+            {/* Section + view tabs */}
+            <div className="space-y-1.5">
+              {/* Body / Head switcher */}
+              <div className="flex gap-1 p-1 rounded-xl" style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)" }}>
+                {(["body","head"] as const).map(sec => {
+                  const active = section === sec;
+                  const totalActive = wounds.filter(w => {
+                    const isHead = w.body_side.startsWith("head-");
+                    return sec === "head" ? isHead : !isHead;
+                  }).filter(w => w.is_active).length;
+                  return (
+                    <button key={sec} onClick={() => {
+                      setSection(sec);
+                      setSide(sec === "body" ? "front" : "head-front");
+                      setSelectedWound(null);
+                    }}
+                      className="flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all relative capitalize"
+                      style={{ background: active ? "rgba(96,165,250,0.2)" : "transparent", color: active ? "#60a5fa" : "rgba(255,255,255,0.4)", border: active ? "1px solid rgba(96,165,250,0.3)" : "1px solid transparent" }}>
+                      {sec}
+                      {totalActive > 0 && (
+                        <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-0.5 rounded-full text-[9px] font-bold flex items-center justify-center"
+                          style={{ background: "#f87171", color: "#fff" }}>{totalActive}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* View tabs for current section */}
+              <div className="flex gap-1 p-1 rounded-xl" style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)" }}>
+                {(section === "body" ? BODY_SIDES : HEAD_SIDES).map(s => {
+                  const cnt = countBySide(s.id);
+                  const active = side === s.id;
+                  return (
+                    <button key={s.id} onClick={() => { setSide(s.id); setSelectedWound(null); }}
+                      className="flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all relative"
+                      style={{ background: active ? "rgba(96,165,250,0.2)" : "transparent", color: active ? "#60a5fa" : "rgba(255,255,255,0.4)", border: active ? "1px solid rgba(96,165,250,0.3)" : "1px solid transparent" }}>
+                      {s.label}
+                      {cnt > 0 && (
+                        <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-0.5 rounded-full text-[9px] font-bold flex items-center justify-center"
+                          style={{ background: "#f87171", color: "#fff" }}>{cnt}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* 3D Body diagram */}
-            <div className="rounded-2xl overflow-hidden" style={{ height:"420px", background:"#0a101e", border:"1px solid rgba(255,255,255,0.07)" }}>
+            <div className="rounded-2xl overflow-hidden" style={{ height:"520px", background:"#0a101e", border:"1px solid rgba(255,255,255,0.07)" }}>
               <BodyScene
                 side={side}
                 wounds={wounds}
@@ -221,13 +283,30 @@ export default function BodyMapPage() {
               ))}
             </div>
 
-            {/* Summary badges for all sides */}
+            {/* Summary badges — body */}
             <div className="grid grid-cols-4 gap-1.5">
-              {SIDES.map(s => {
+              {BODY_SIDES.map(s => {
                 const active = countBySide(s.id);
                 const total = wounds.filter(w => w.body_side === s.id).length;
                 return (
-                  <button key={s.id} onClick={() => { setSide(s.id); setSelectedWound(null); }}
+                  <button key={s.id} onClick={() => { setSection("body"); setSide(s.id); setSelectedWound(null); }}
+                    className="rounded-xl p-2 text-center transition-all"
+                    style={{ background: side === s.id ? "rgba(96,165,250,0.1)" : "rgba(255,255,255,0.02)", border: `1px solid ${side === s.id ? "rgba(96,165,250,0.25)" : "rgba(255,255,255,0.06)"}` }}>
+                    <div className="text-base font-bold" style={{ color: active > 0 ? "#f87171" : "#34d399" }}>{active}</div>
+                    <div className="text-xs" style={{ color:"rgba(255,255,255,0.35)" }}>{s.label}</div>
+                    {total > active && <div className="text-xs" style={{ color:"rgba(255,255,255,0.2)" }}>{total-active} healed</div>}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Summary badges — head */}
+            <div className="grid grid-cols-5 gap-1.5">
+              {HEAD_SIDES.map(s => {
+                const active = countBySide(s.id);
+                const total = wounds.filter(w => w.body_side === s.id).length;
+                return (
+                  <button key={s.id} onClick={() => { setSection("head"); setSide(s.id); setSelectedWound(null); }}
                     className="rounded-xl p-2 text-center transition-all"
                     style={{ background: side === s.id ? "rgba(96,165,250,0.1)" : "rgba(255,255,255,0.02)", border: `1px solid ${side === s.id ? "rgba(96,165,250,0.25)" : "rgba(255,255,255,0.06)"}` }}>
                     <div className="text-base font-bold" style={{ color: active > 0 ? "#f87171" : "#34d399" }}>{active}</div>
@@ -248,7 +327,7 @@ export default function BodyMapPage() {
                 <div className="rounded-2xl p-4" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)" }}>
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-sm font-semibold text-white">
-                      {SIDES.find(s=>s.id===side)?.label} — Wound Records
+                      {[...BODY_SIDES, ...HEAD_SIDES].find(s => s.id === side)?.label ?? side} {section === "head" ? "(Head)" : ""} — Wound Records
                     </h3>
                     <div className="flex items-center gap-2">
                       <span className="text-xs px-2 py-0.5 rounded-lg" style={{ background:"rgba(255,255,255,0.05)", color:"rgba(255,255,255,0.4)" }}>
@@ -260,7 +339,7 @@ export default function BodyMapPage() {
                   {/* Show wounds from current side */}
                   {visibleWounds.length === 0 ? (
                     <p className="text-xs text-center py-6" style={{ color:"rgba(255,255,255,0.25)" }}>
-                      No wounds on the {SIDES.find(s=>s.id===side)?.label.toLowerCase()} of the body. Click the diagram to add one.
+                      No wounds recorded here. Click the diagram to add one.
                     </p>
                   ) : (
                     <div className="space-y-2">
@@ -298,13 +377,14 @@ export default function BodyMapPage() {
                     <div className="mt-3 pt-3 border-t" style={{ borderColor:"rgba(255,255,255,0.05)" }}>
                       <p className="text-xs" style={{ color:"rgba(255,255,255,0.25)" }}>
                         Also:{" "}
-                        {SIDES.filter(s => s.id !== side).map(s => {
+                        {[...BODY_SIDES, ...HEAD_SIDES].filter(s => s.id !== side).map(s => {
                           const n = countBySide(s.id);
                           if (!n) return null;
+                          const isHead = s.id.startsWith("head-");
                           return (
-                            <button key={s.id} onClick={() => { setSide(s.id); setSelectedWound(null); }}
+                            <button key={s.id} onClick={() => { setSection(isHead ? "head" : "body"); setSide(s.id); setSelectedWound(null); }}
                               className="mr-2 underline" style={{ color:"rgba(96,165,250,0.7)" }}>
-                              {n} on {s.label.toLowerCase()}
+                              {n} on {isHead ? `head ${s.label.toLowerCase()}` : s.label.toLowerCase()}
                             </button>
                           );
                         })}
@@ -320,7 +400,7 @@ export default function BodyMapPage() {
                       <div>
                         <h3 className="text-sm font-bold text-white">{WOUND_TYPE_LABEL[selectedWound.wound_type] ?? selectedWound.wound_type}</h3>
                         <p className="text-xs mt-0.5" style={{ color:"rgba(255,255,255,0.4)" }}>
-                          {SIDES.find(s=>s.id===selectedWound.body_side)?.label} · {GRADE_LABEL[selectedWound.grade] ?? selectedWound.grade}
+                          {[...BODY_SIDES, ...HEAD_SIDES].find(s=>s.id===selectedWound.body_side)?.label ?? selectedWound.body_side} · {GRADE_LABEL[selectedWound.grade] ?? selectedWound.grade}
                           {" · "}{selectedWound.is_active ? "Active" : "Healed"}
                         </p>
                       </div>
@@ -336,6 +416,11 @@ export default function BodyMapPage() {
                           className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg"
                           style={{ background:"rgba(96,165,250,0.1)", color:"#60a5fa", border:"1px solid rgba(96,165,250,0.2)" }}>
                           <Plus size={11} /> Assessment
+                        </button>
+                        <button onClick={() => { setDeleteModal({ wound: selectedWound }); setDeleteReason(""); }}
+                          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg"
+                          style={{ background:"rgba(248,113,113,0.08)", color:"rgba(248,113,113,0.7)", border:"1px solid rgba(248,113,113,0.15)" }}>
+                          <Trash2 size={11} /> Delete
                         </button>
                       </div>
                     </div>
@@ -381,7 +466,7 @@ export default function BodyMapPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-sm" style={{ background:"#0f1629", border:"1px solid rgba(96,165,250,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-base font-bold text-white">Add Wound — {SIDES.find(s=>s.id===side)?.label}</h3>
+              <h3 className="text-base font-bold text-white">Add Wound — {[...BODY_SIDES, ...HEAD_SIDES].find(s=>s.id===side)?.label ?? side}{side.startsWith("head-") ? " (Head)" : ""}</h3>
               <button onClick={() => { setShowAddWound(false); setPendingClick(null); }} style={{ color:"rgba(255,255,255,0.4)" }}><X size={18}/></button>
             </div>
             <div className="space-y-3">
@@ -398,7 +483,7 @@ export default function BodyMapPage() {
               <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Description</label>
               <textarea rows={2} value={woundForm.description} onChange={e=>setWoundForm(f=>({...f,description:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle}/></div>
               <p className="text-xs px-2 py-1.5 rounded-lg" style={{ color:"rgba(255,255,255,0.35)", background:"rgba(255,255,255,0.04)" }}>
-                📍 {SIDES.find(s=>s.id===side)?.label} body · {pendingClick?.x}%, {pendingClick?.y}%
+                📍 {[...BODY_SIDES, ...HEAD_SIDES].find(s=>s.id===side)?.label ?? side}{side.startsWith("head-") ? " (Head)" : ""} · {pendingClick?.x}%, {pendingClick?.y}%
               </p>
             </div>
             <div className="flex gap-3 mt-5">
@@ -438,6 +523,65 @@ export default function BodyMapPage() {
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowAddAssessment(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"rgba(255,255,255,0.06)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.08)"}}>Cancel</button>
               <button onClick={handleCreateAssessment} disabled={saving||!assessForm.assessment_date} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#3b82f6,#7c3aed)"}}>{saving?"Saving…":"Save Assessment"}</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Delete wound modal */}
+      {deleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.75)", backdropFilter:"blur(8px)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-sm" style={{ background:"#0f1629", border:"1px solid rgba(248,113,113,0.25)" }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background:"rgba(248,113,113,0.12)", border:"1px solid rgba(248,113,113,0.2)" }}>
+                  <Trash2 size={14} style={{ color:"#f87171" }} />
+                </div>
+                <h3 className="text-base font-bold text-white">Delete Wound Record</h3>
+              </div>
+              <button onClick={() => setDeleteModal(null)} style={{ color:"rgba(255,255,255,0.4)" }}><X size={18}/></button>
+            </div>
+
+            <div className="rounded-xl p-3 mb-4" style={{ background:"rgba(248,113,113,0.06)", border:"1px solid rgba(248,113,113,0.12)" }}>
+              <p className="text-xs font-semibold" style={{ color:"rgba(255,255,255,0.7)" }}>
+                {WOUND_TYPE_LABEL[deleteModal.wound.wound_type] ?? deleteModal.wound.wound_type}
+              </p>
+              <p className="text-xs mt-0.5" style={{ color:"rgba(255,255,255,0.35)" }}>
+                {GRADE_LABEL[deleteModal.wound.grade] ?? deleteModal.wound.grade} ·{" "}
+                {[...BODY_SIDES, ...HEAD_SIDES].find(s => s.id === deleteModal.wound.body_side)?.label ?? deleteModal.wound.body_side}
+                {deleteModal.wound.body_side.startsWith("head-") ? " (Head)" : ""}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color:"rgba(255,255,255,0.6)" }}>
+                  Reason for deletion <span style={{ color:"#f87171" }}>*</span>
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="e.g. Duplicate entry, recorded in error, wound merged with another record…"
+                  value={deleteReason}
+                  onChange={e => setDeleteReason(e.target.value)}
+                  className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none"
+                  style={{ ...inputStyle, borderColor: deleteReason.trim() ? "rgba(255,255,255,0.1)" : "rgba(248,113,113,0.3)" }}
+                  autoFocus
+                />
+                <p className="text-xs mt-1.5" style={{ color:"rgba(255,255,255,0.25)" }}>
+                  This will be logged with your name and the current date &amp; time.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-5">
+              <button onClick={() => setDeleteModal(null)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
+                style={{ background:"rgba(255,255,255,0.06)", color:"rgba(255,255,255,0.7)", border:"1px solid rgba(255,255,255,0.08)" }}>
+                Cancel
+              </button>
+              <button onClick={handleDeleteWound} disabled={deleting || !deleteReason.trim()}
+                className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-40"
+                style={{ background: deleteReason.trim() ? "linear-gradient(135deg,#dc2626,#b91c1c)" : "rgba(248,113,113,0.2)" }}>
+                {deleting ? "Deleting…" : "Delete Record"}
+              </button>
             </div>
           </div>
         </div>
