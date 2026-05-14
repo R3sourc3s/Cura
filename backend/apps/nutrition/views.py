@@ -16,7 +16,7 @@ class FluidRecordViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ("list", "retrieve"):
             return [require("residents.view")]
-        return [require("care_notes.create")]
+        return [require("nutrition.create")]
 
     def get_queryset(self):
         return FluidRecord.objects.select_related(
@@ -40,7 +40,7 @@ class MealRecordViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ("list", "retrieve"):
             return [require("residents.view")]
-        return [require("care_notes.create")]
+        return [require("nutrition.create")]
 
     def get_queryset(self):
         return MealRecord.objects.select_related(

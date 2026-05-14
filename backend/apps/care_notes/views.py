@@ -13,10 +13,10 @@ class CareNoteViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ("list", "retrieve"):
-            return [require("residents.view")]
+            return [require("care_notes.view")]
         if self.action == "destroy":
             return [require("residents.delete")]
-        return [require("residents.edit")]
+        return [require("care_notes.create")]
 
     def get_queryset(self):
         return CareNote.objects.select_related("author").filter(

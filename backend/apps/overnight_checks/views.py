@@ -16,8 +16,8 @@ class OvernightCheckViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ("list", "retrieve"):
-            return [require("residents.view")]
-        return [require("care_notes.create")]
+            return [require("overnight_checks.view")]
+        return [require("overnight_checks.create")]
 
     def get_queryset(self):
         return OvernightCheck.objects.select_related(
