@@ -1,7 +1,63 @@
 services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cura
+      POSTGRES_USER: cura
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cura"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: ghcr.io/r3sourc3s/cura/backend:latest
+    restart: unless-stopped
+    env_file: .env.prod
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn cura.wsgi:application --bind 0.0.0.0:8000 --workers 4"
+
+  celery:
+    image: ghcr.io/r3sourc3s/cura/backend:latest
+    restart: unless-stopped
+    env_file: .env.prod
+    depends_on:
+      - backend
+    command: celery -A cura worker -l info
+
   frontend:
-    command: sh -c "npm run build && npm start"
+    image: ghcr.io/r3sourc3s/cura/frontend:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
     environment:
       NODE_ENV: production
       API_URL: http://backend:8000
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

@@ -65,7 +65,26 @@ class Command(BaseCommand):
                 u.save()
             staff_users.append(u)
 
-        User.objects.filter(username="admin").update(care_home=home, role="admin")
+        admin, created = User.objects.get_or_create(
+            username="admin",
+            defaults=dict(
+                first_name="Admin",
+                last_name="User",
+                email="admin@sunrisecare.co.uk",
+                role="admin",
+                care_home=home,
+                is_staff=True,
+                is_superuser=True,
+            ),
+        )
+        if created:
+            admin.set_password("admin1234")
+            admin.save()
+        else:
+            admin.care_home = home
+            admin.role = "admin"
+            admin.is_superuser = True
+            admin.save(update_fields=["care_home", "role", "is_superuser"])
 
         # ── Residents ──────────────────────────────────────────────────────────
         residents_data = [
