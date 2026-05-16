@@ -79,7 +79,7 @@ export default function CTA() {
             </div>
 
             <p className="text-gray-400 text-sm mt-6">
-              info@cura.com &nbsp;·&nbsp; Unit 7, Friars Mill, Bath Lane, Leicester LE3 5BJ
+              info@cura.com &nbsp;·&nbsp; Flat 1, 31 Knighton Road, Leicester, LE2 3HL
             </p>
           </div>
         </motion.div>
