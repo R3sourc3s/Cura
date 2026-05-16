@@ -29,7 +29,7 @@ class Command(BaseCommand):
             cqc_registration_number="CQC-2024-DEMO",
             defaults=dict(
                 name="Sunrise Care Home",
-                address="12 Maple Grove, Bristol, BS1 4LR",
+                address="Flat 1, 31 Knighton Road, Leicester, LE2 3HL",
                 bed_count=32,
                 phone="0117 900 1234",
                 email="info@sunrisecare.co.uk",
