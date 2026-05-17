@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { ArrowLeft, Activity, Shield, Pill, Heart, NotebookPen, CalendarDays, Stethoscope, Moon, ClipboardList } from "lucide-react";
+import { Activity, Shield, Pill, Heart, NotebookPen, CalendarDays, Stethoscope, Moon, ClipboardList } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 interface TimelineEvent {
   id: string;
@@ -126,19 +127,16 @@ export default function ResidentTimelinePage({ params }: { params: Promise<{ id:
 
   return (
     <div className="space-y-5 max-w-3xl mx-auto">
-      <div className="flex items-center gap-3">
-        <button onClick={() => router.back()} className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)" }}>
-          <ArrowLeft size={16} style={{ color:"rgba(255,255,255,0.6)" }} />
-        </button>
-        <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(124,58,237,0.12)", border:"1px solid rgba(124,58,237,0.2)" }}>
-            <Activity size={16} style={{ color:"#a78bfa" }} />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold text-white">Resident Timeline</h1>
-            {residentName && <p className="text-xs" style={{ color:"rgba(255,255,255,0.4)" }}>{residentName}</p>}
-          </div>
+      <Breadcrumbs crumbs={[
+        { label: "Residents", href: "/dashboard/residents" },
+        ...(residentName ? [{ label: residentName, href: `/dashboard/residents/${id}` }] : []),
+        { label: "Timeline" },
+      ]} />
+      <div className="flex items-center gap-2">
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(124,58,237,0.12)", border:"1px solid rgba(124,58,237,0.2)" }}>
+          <Activity size={16} style={{ color:"#a78bfa" }} />
         </div>
+        <h1 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Resident Timeline</h1>
       </div>
 
       {/* Type filter pills */}

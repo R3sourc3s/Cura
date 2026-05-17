@@ -109,27 +109,27 @@ export default function CommandPalette() {
       style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
       onClick={() => setOpen(false)}>
       <div className="w-full max-w-xl mx-4 rounded-2xl overflow-hidden shadow-2xl"
-        style={{ background: "#0d1424", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 40px 80px rgba(0,0,0,0.7)" }}
+        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-strong)", boxShadow: "0 40px 80px rgba(0,0,0,0.7)" }}
         onClick={e => e.stopPropagation()}>
 
         {/* Search input */}
-        <div className="flex items-center gap-3 px-4 py-3.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-          <Search size={16} style={{ color: "rgba(255,255,255,0.35)", flexShrink: 0 }} />
+        <div className="flex items-center gap-3 px-4 py-3.5" style={{ borderBottom: "1px solid var(--border-strong)" }}>
+          <Search size={16} style={{ color: "var(--text-muted)", flexShrink: 0 }} />
           <input
             ref={inputRef}
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search pages and features…"
             className="flex-1 text-sm bg-transparent outline-none"
-            style={{ color: "rgba(255,255,255,0.85)" }}
+            style={{ color: "var(--text-primary)" }}
           />
-          <kbd className="text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.35)", fontFamily: "monospace" }}>esc</kbd>
+          <kbd className="text-xs px-1.5 py-0.5 rounded" style={{ background: "var(--border)", color: "var(--text-muted)", fontFamily: "monospace" }}>esc</kbd>
         </div>
 
         {/* Results */}
         <div className="max-h-80 overflow-y-auto py-1.5">
           {filtered.length === 0 ? (
-            <div className="px-4 py-8 text-center text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No results</div>
+            <div className="px-4 py-8 text-center text-sm" style={{ color: "var(--text-muted)" }}>No results</div>
           ) : (
             filtered.map((item, i) => {
               const Icon = item.icon;
@@ -145,10 +145,10 @@ export default function CommandPalette() {
                     <Icon size={14} style={{ color: item.color }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium" style={{ color: active ? "#fff" : "rgba(255,255,255,0.75)" }}>{item.label}</div>
-                    {item.sub && <div className="text-xs truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{item.sub}</div>}
+                    <div className="text-sm font-medium" style={{ color: active ? "#fff" : "var(--text-secondary)" }}>{item.label}</div>
+                    {item.sub && <div className="text-xs truncate" style={{ color: "var(--text-muted)" }}>{item.sub}</div>}
                   </div>
-                  {active && <ChevronRight size={14} style={{ color: "rgba(255,255,255,0.3)" }} />}
+                  {active && <ChevronRight size={14} style={{ color: "var(--text-muted)" }} />}
                 </button>
               );
             })
@@ -156,7 +156,7 @@ export default function CommandPalette() {
         </div>
 
         {/* Footer hint */}
-        <div className="px-4 py-2 flex items-center gap-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+        <div className="px-4 py-2 flex items-center gap-4 border-t" style={{ borderColor: "var(--border)" }}>
           {[
             { keys: ["↑","↓"], label: "navigate" },
             { keys: ["↵"], label: "open" },
@@ -164,14 +164,14 @@ export default function CommandPalette() {
           ].map(hint => (
             <div key={hint.label} className="flex items-center gap-1.5">
               {hint.keys.map(k => (
-                <kbd key={k} className="text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.4)", fontFamily: "monospace" }}>{k}</kbd>
+                <kbd key={k} className="text-xs px-1.5 py-0.5 rounded" style={{ background: "var(--border)", color: "var(--text-muted)", fontFamily: "monospace" }}>{k}</kbd>
               ))}
-              <span className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>{hint.label}</span>
+              <span className="text-xs" style={{ color: "var(--text-muted)" }}>{hint.label}</span>
             </div>
           ))}
           <div className="ml-auto flex items-center gap-1.5">
-            <Hash size={10} style={{ color: "rgba(255,255,255,0.2)" }} />
-            <span className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>{filtered.length} results</span>
+            <Hash size={10} style={{ color: "var(--text-muted)" }} />
+            <span className="text-xs" style={{ color: "var(--text-muted)" }}>{filtered.length} results</span>
           </div>
         </div>
       </div>

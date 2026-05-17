@@ -75,12 +75,12 @@ export default function AuditPage() {
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Audit Trail</h1>
-            <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>Full history of all system changes</p>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>Full history of all system changes</p>
           </div>
         </div>
         <button onClick={load} disabled={loading}
           className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl transition-all disabled:opacity-50"
-          style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
           <RefreshCw size={13} className={loading ? "animate-spin" : ""} /> Refresh
         </button>
       </div>
@@ -88,18 +88,18 @@ export default function AuditPage() {
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
-          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
           <input type="text" placeholder="Search by user, record…" value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full text-sm pl-9 pr-4 py-2 rounded-xl outline-none"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)" }} />
+            style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-secondary)" }} />
         </div>
 
         <div className="relative">
-          <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+          <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
           <select value={filterAction} onChange={e => setFilterAction(e.target.value)}
             className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}>
+            style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-secondary)" }}>
             <option value="">All Actions</option>
             <option value="create">Created</option>
             <option value="update">Updated</option>
@@ -109,10 +109,10 @@ export default function AuditPage() {
         </div>
 
         <div className="relative">
-          <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+          <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
           <select value={filterModel} onChange={e => setFilterModel(e.target.value)}
             className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}>
+            style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-secondary)" }}>
             <option value="">All Models</option>
             {MODELS.map(m => <option key={m} value={m}>{MODEL_LABELS[m]}</option>)}
           </select>

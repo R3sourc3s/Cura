@@ -53,7 +53,7 @@ export default function ActivitiesPage() {
   }
 
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
-  const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" };
+  const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" };
 
   return (
     <div className="space-y-5 max-w-6xl mx-auto">
@@ -66,9 +66,9 @@ export default function ActivitiesPage() {
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
-            <button onClick={() => setWeekStart(d => addDays(d, -7))} className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}><ChevronLeft size={14} style={{ color: "rgba(255,255,255,0.6)" }} /></button>
-            <span className="text-sm px-3" style={{ color: "rgba(255,255,255,0.6)" }}>{isoDate(weekStart)} – {isoDate(addDays(weekStart, 6))}</span>
-            <button onClick={() => setWeekStart(d => addDays(d, 7))} className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}><ChevronRight size={14} style={{ color: "rgba(255,255,255,0.6)" }} /></button>
+            <button onClick={() => setWeekStart(d => addDays(d, -7))} className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--input-bg)", border: "1px solid var(--bg-card-hover)" }}><ChevronLeft size={14} style={{ color: "var(--text-secondary)" }} /></button>
+            <span className="text-sm px-3" style={{ color: "var(--text-secondary)" }}>{isoDate(weekStart)} – {isoDate(addDays(weekStart, 6))}</span>
+            <button onClick={() => setWeekStart(d => addDays(d, 7))} className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--input-bg)", border: "1px solid var(--bg-card-hover)" }}><ChevronRight size={14} style={{ color: "var(--text-secondary)" }} /></button>
           </div>
           <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}><Plus size={14} /> Add Activity</button>
         </div>
@@ -81,18 +81,18 @@ export default function ActivitiesPage() {
             const dayActivities = activities.filter(a => a.scheduled_date === dateStr);
             const isToday = dateStr === isoDate(new Date());
             return (
-              <div key={i} className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${isToday ? "rgba(124,58,237,0.4)" : "rgba(255,255,255,0.06)"}` }}>
-                <div className="px-2 py-2.5 text-center" style={{ background: isToday ? "rgba(124,58,237,0.12)" : "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                  <div className="text-xs font-semibold" style={{ color: isToday ? "#a78bfa" : "rgba(255,255,255,0.5)" }}>{DAYS[i]}</div>
-                  <div className="text-sm font-bold mt-0.5" style={{ color: isToday ? "white" : "rgba(255,255,255,0.7)" }}>{day.getDate()}</div>
+              <div key={i} className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${isToday ? "rgba(124,58,237,0.4)" : "var(--border)"}` }}>
+                <div className="px-2 py-2.5 text-center" style={{ background: isToday ? "rgba(124,58,237,0.12)" : "var(--bg-card)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                  <div className="text-xs font-semibold" style={{ color: isToday ? "#a78bfa" : "var(--text-secondary)" }}>{DAYS[i]}</div>
+                  <div className="text-sm font-bold mt-0.5" style={{ color: isToday ? "white" : "var(--text-secondary)" }}>{day.getDate()}</div>
                 </div>
                 <div className="p-1.5 space-y-1">
-                  {dayActivities.length === 0 ? <div className="text-center py-4 text-xs" style={{ color: "rgba(255,255,255,0.15)" }}>—</div> : dayActivities.map(a => {
+                  {dayActivities.length === 0 ? <div className="text-center py-4 text-xs" style={{ color: "var(--text-muted)" }}>—</div> : dayActivities.map(a => {
                     const t = TYPE_CFG[a.activity_type as keyof typeof TYPE_CFG] ?? TYPE_CFG.group;
                     return (
                       <div key={a.id} className="rounded-lg px-2 py-1.5 relative" style={{ background: a.is_completed ? "rgba(52,211,153,0.06)" : t.bg, border: `1px solid ${a.is_completed ? "rgba(52,211,153,0.15)" : "transparent"}` }}>
-                        <div className="text-xs font-medium leading-snug" style={{ color: a.is_completed ? "#34d399" : "rgba(255,255,255,0.8)" }}>{a.name}</div>
-                        {a.scheduled_time && <div className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>{a.scheduled_time.slice(0,5)}</div>}
+                        <div className="text-xs font-medium leading-snug" style={{ color: a.is_completed ? "#34d399" : "var(--text-primary)" }}>{a.name}</div>
+                        {a.scheduled_time && <div className="text-xs" style={{ color: "var(--text-muted)" }}>{a.scheduled_time.slice(0,5)}</div>}
                         <div className="flex items-center justify-between mt-0.5">
                           <span className="text-xs" style={{ color: t.color }}>{t.label}</span>
                           {!a.is_completed && <button onClick={() => markComplete(a.id)} title="Mark complete" className="opacity-40 hover:opacity-80"><CheckCircle size={11} style={{ color: "#34d399" }} /></button>}
@@ -109,8 +109,8 @@ export default function ActivitiesPage() {
 
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
-            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Activity</h3><button onClick={() => setShowCreate(false)} style={{ color: "rgba(255,255,255,0.4)" }}><X size={18} /></button></div>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(124,58,237,0.25)" }}>
+            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Activity</h3><button onClick={() => setShowCreate(false)} style={{ color: "var(--text-muted)" }}><X size={18} /></button></div>
             <div className="space-y-3">
               {[
                 { label: "Name *", el: <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder="Activity name" /> },
@@ -120,10 +120,10 @@ export default function ActivitiesPage() {
                 { label: "Duration (mins)", el: <input type="number" value={form.duration_minutes} onChange={e => setForm(f => ({ ...f, duration_minutes: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} /> },
                 { label: "Location", el: <input value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder="Lounge, garden…" /> },
                 { label: "Description", el: <textarea rows={2} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle} /> },
-              ].map(({ label, el }) => <div key={label}><label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</label>{el}</div>)}
+              ].map(({ label, el }) => <div key={label}><label className="block text-xs mb-1" style={{ color: "var(--text-secondary)" }}>{label}</label>{el}</div>)}
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={() => setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>Cancel</button>
+              <button onClick={() => setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{ background: "var(--bg-card-hover)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>Cancel</button>
               <button onClick={handleCreate} disabled={saving || !form.name} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>{saving ? "Saving…" : "Create"}</button>
             </div>
           </div>

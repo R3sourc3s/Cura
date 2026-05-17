@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { carePlans } from "@/lib/api";
 import type { CarePlan, CarePlanSection, CarePlanNote } from "@/types";
 import {
-  ArrowLeft, Bot, Calendar, CheckCircle, ChevronDown, ChevronUp,
+  Bot, Calendar, CheckCircle, ChevronDown, ChevronUp,
   Edit2, MessageSquare, Plus, Save, Trash2, X,
 } from "lucide-react";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 const STATUS = {
   active:       { bg: "rgba(52,211,153,0.12)",  text: "#34d399",  label: "Active" },
-  draft:        { bg: "rgba(255,255,255,0.06)",  text: "rgba(255,255,255,0.5)", label: "Draft" },
+  draft:        { bg: "var(--bg-card)",            text: "var(--text-secondary)", label: "Draft" },
   under_review: { bg: "rgba(251,146,60,0.12)",   text: "#fb923c",  label: "Under Review" },
   archived:     { bg: "rgba(124,58,237,0.12)",   text: "#a78bfa",  label: "Archived" },
 } as const;
@@ -25,14 +26,14 @@ const RISK_STYLE = {
 function GlassCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={`rounded-2xl p-5 ${className}`}
-      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+      style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
       {children}
     </div>
   );
 }
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" };
 
 function SectionEditor({
   planId,
@@ -79,7 +80,7 @@ function SectionEditor({
 
   return (
     <div className="rounded-2xl p-4 space-y-3"
-      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(124,58,237,0.25)" }}>
+      style={{ background: "var(--bg-card)", border: "1px solid rgba(124,58,237,0.25)" }}>
       {error && (
         <p className="text-xs text-red-400">{error}</p>
       )}
@@ -88,13 +89,13 @@ function SectionEditor({
       <textarea placeholder="Section content…" className={inputCls} style={inputStyle}
         value={content} onChange={(e) => setContent(e.target.value)} rows={4} />
       <div className="flex items-center gap-2">
-        <span className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>Risk:</span>
+        <span className="text-xs" style={{ color: "var(--text-muted)" }}>Risk:</span>
         {(["low", "medium", "high"] as const).map((r) => (
           <button key={r} onClick={() => setRisk(r)}
             className="text-xs px-2.5 py-1 rounded-lg font-medium capitalize transition-all"
             style={{
-              background: risk === r ? RISK_STYLE[r].bg : "rgba(255,255,255,0.04)",
-              color: risk === r ? RISK_STYLE[r].text : "rgba(255,255,255,0.35)",
+              background: risk === r ? RISK_STYLE[r].bg : "var(--bg-card)",
+              color: risk === r ? RISK_STYLE[r].text : "var(--text-muted)",
               border: risk === r ? `1px solid ${RISK_STYLE[r].text}40` : "1px solid transparent",
             }}>
             {r}
@@ -103,7 +104,7 @@ function SectionEditor({
       </div>
       <div className="flex gap-2">
         <button onClick={onCancel} className="flex-1 py-2 text-xs font-semibold rounded-xl"
-          style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)" }}>
+          style={{ background: "var(--bg-card)", color: "var(--text-secondary)" }}>
           Cancel
         </button>
         {section && onDeleted && (
@@ -207,13 +208,10 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
 
   return (
     <div className="space-y-5 max-w-4xl mx-auto">
-      <button onClick={() => router.back()}
-        className="flex items-center gap-2 text-sm transition-all"
-        style={{ color: "rgba(255,255,255,0.4)" }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.8)")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.4)")}>
-        <ArrowLeft size={16} /> Back to Care Plans
-      </button>
+      <Breadcrumbs crumbs={[
+        { label: "Care Plans", href: "/dashboard/care-plans" },
+        { label: `Care Plan v${plan.version}` },
+      ]} />
 
       {/* Header */}
       <GlassCard>
@@ -225,7 +223,7 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
                 {s.label}
               </span>
             </div>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: "var(--text-muted)" }}>
               {plan.created_by_name && <span>Created by {plan.created_by_name}</span>}
               <span>Created {new Date(plan.created_at).toLocaleDateString("en-GB")}</span>
               {plan.next_review_date && (
@@ -245,8 +243,8 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
                 <button key={st} onClick={() => updateStatus(st)} disabled={statusSaving || plan.status === st}
                   className="text-xs px-2.5 py-1.5 rounded-lg font-medium transition-all disabled:opacity-40"
                   style={{
-                    background: plan.status === st ? cfg.bg : "rgba(255,255,255,0.04)",
-                    color: plan.status === st ? cfg.text : "rgba(255,255,255,0.4)",
+                    background: plan.status === st ? cfg.bg : "var(--bg-card)",
+                    color: plan.status === st ? cfg.text : "var(--text-muted)",
                     border: plan.status === st ? `1px solid ${cfg.text}40` : "1px solid transparent",
                   }}>
                   {cfg.label}
@@ -262,7 +260,7 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Bot size={16} style={{ color: "#a78bfa" }} />
-            <h2 className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.8)" }}>AI Summary</h2>
+            <h2 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>AI Summary</h2>
             {plan.ai_generated && (
               <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(124,58,237,0.15)", color: "#a78bfa" }}>
                 Generated
@@ -277,11 +275,11 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
           </button>
         </div>
         {plan.ai_summary ? (
-          <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
             {plan.ai_summary}
           </p>
         ) : (
-          <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
             No summary yet. Click Generate to create one using AI.
           </p>
         )}
@@ -290,7 +288,7 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
       {/* Sections */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.7)" }}>
+          <h2 className="text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>
             Sections ({sections.length})
           </h2>
           <button onClick={() => setEditSection("new")}
@@ -306,8 +304,8 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
           )}
           {sections.length === 0 && editSection !== "new" && (
             <div className="text-center py-10 rounded-2xl"
-              style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No sections yet.</p>
+              style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+              <p className="text-sm" style={{ color: "var(--text-muted)" }}>No sections yet.</p>
             </div>
           )}
           {sections.map((sec) => {
@@ -322,7 +320,7 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
                     onCancel={() => setEditSection(null)} />
                 ) : (
                   <div className="rounded-2xl p-4"
-                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                    style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold text-white">{sec.title}</span>
@@ -331,11 +329,11 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
                       </div>
                       <button onClick={() => setEditSection(sec.id)}
                         className="w-7 h-7 rounded-lg flex items-center justify-center"
-                        style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)" }}>
+                        style={{ background: "var(--bg-card)", color: "var(--text-muted)" }}>
                         <Edit2 size={12} />
                       </button>
                     </div>
-                    <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
                       {sec.content}
                     </p>
                   </div>
@@ -350,18 +348,18 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
       <div>
         <button className="flex items-center gap-2 mb-3 w-full text-left"
           onClick={() => setExpandedNotes((v) => !v)}>
-          <MessageSquare size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
-          <h2 className="text-sm font-semibold flex-1" style={{ color: "rgba(255,255,255,0.7)" }}>
+          <MessageSquare size={16} style={{ color: "var(--text-secondary)" }} />
+          <h2 className="text-sm font-semibold flex-1" style={{ color: "var(--text-secondary)" }}>
             Progress Notes ({notes.length})
           </h2>
-          {expandedNotes ? <ChevronUp size={14} style={{ color: "rgba(255,255,255,0.3)" }} /> : <ChevronDown size={14} style={{ color: "rgba(255,255,255,0.3)" }} />}
+          {expandedNotes ? <ChevronUp size={14} style={{ color: "var(--text-muted)" }} /> : <ChevronDown size={14} style={{ color: "var(--text-muted)" }} />}
         </button>
 
         {expandedNotes && (
           <div className="space-y-3">
             {/* Add note */}
             <div className="rounded-2xl p-4 space-y-3"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+              style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
               <textarea ref={noteRef} placeholder="Add a progress note…"
                 className={inputCls} style={inputStyle}
                 value={noteBody} onChange={(e) => setNoteBody(e.target.value)} rows={3} />
@@ -374,22 +372,22 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
               </div>
             </div>
             {notes.length === 0 ? (
-              <p className="text-sm text-center py-6" style={{ color: "rgba(255,255,255,0.3)" }}>No notes yet.</p>
+              <p className="text-sm text-center py-6" style={{ color: "var(--text-muted)" }}>No notes yet.</p>
             ) : (
               notes.map((note) => (
                 <div key={note.id} className="rounded-2xl p-4"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                  style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold"
                       style={{ background: "rgba(124,58,237,0.2)", color: "#a78bfa" }}>
                       {note.author_name?.[0] ?? "?"}
                     </div>
-                    <span className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.6)" }}>{note.author_name ?? "Unknown"}</span>
-                    <span className="text-xs ml-auto" style={{ color: "rgba(255,255,255,0.3)" }}>
+                    <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>{note.author_name ?? "Unknown"}</span>
+                    <span className="text-xs ml-auto" style={{ color: "var(--text-muted)" }}>
                       {new Date(note.created_at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                     </span>
                   </div>
-                  <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>{note.body}</p>
+                  <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{note.body}</p>
                 </div>
               ))
             )}

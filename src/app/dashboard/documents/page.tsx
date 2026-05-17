@@ -63,7 +63,7 @@ export default function DocumentsPage() {
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(251,191,36,0.12)", border: "1px solid rgba(251,191,36,0.2)" }}>
             <FolderOpen size={16} style={{ color: "#fbbf24" }} />
           </div>
-          <div><h1 className="text-lg font-bold text-white">Document Vault</h1><p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>Policies, certificates & records</p></div>
+          <div><h1 className="text-lg font-bold text-white">Document Vault</h1><p className="text-xs" style={{ color: "var(--text-muted)" }}>Policies, certificates & records</p></div>
         </div>
         <div className="flex items-center gap-3">
           {expired > 0 && <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl" style={{ background: "rgba(239,68,68,0.12)", color: "#f87171" }}><AlertTriangle size={12} />{expired} expired</div>}
@@ -76,28 +76,28 @@ export default function DocumentsPage() {
         {[["", "All"], ...CATEGORIES.map(c => [c, CAT_LABEL[c]])].map(([v, l]) => (
           <button key={v} onClick={() => setActiveTab(v)}
             className="text-xs px-3 py-1.5 rounded-xl font-medium transition-all"
-            style={{ background: activeTab === v ? "rgba(124,58,237,0.2)" : "rgba(255,255,255,0.04)", color: activeTab === v ? "#a78bfa" : "rgba(255,255,255,0.5)", border: activeTab === v ? "1px solid rgba(124,58,237,0.3)" : "1px solid transparent" }}>
+            style={{ background: activeTab === v ? "rgba(124,58,237,0.2)" : "var(--bg-card)", color: activeTab === v ? "#a78bfa" : "var(--text-secondary)", border: activeTab === v ? "1px solid rgba(124,58,237,0.3)" : "1px solid transparent" }}>
             {l}
           </button>
         ))}
       </div>
 
       <div className="relative">
-        <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+        <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
         <input type="text" placeholder="Search documents…" value={search} onChange={e => setSearch(e.target.value)}
           className="w-full text-sm pl-9 pr-4 py-2 rounded-xl outline-none"
-          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)" }} />
+          style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-secondary)" }} />
       </div>
 
       {loading ? <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div> : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {filtered.length === 0 ? (
-            <div className="col-span-3 text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-              <FolderOpen size={28} className="mx-auto mb-2" style={{ color: "rgba(255,255,255,0.15)" }} />
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No documents found.</p>
+            <div className="col-span-3 text-center py-12 rounded-2xl" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+              <FolderOpen size={28} className="mx-auto mb-2" style={{ color: "var(--text-muted)" }} />
+              <p className="text-sm" style={{ color: "var(--text-muted)" }}>No documents found.</p>
             </div>
           ) : filtered.map(doc => (
-            <div key={doc.id} className="rounded-2xl p-4" style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${doc.is_expired ? "rgba(239,68,68,0.2)" : "rgba(255,255,255,0.07)"}` }}>
+            <div key={doc.id} className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: `1px solid ${doc.is_expired ? "rgba(239,68,68,0.2)" : "var(--border)"}` }}>
               <div className="flex items-start gap-3 mb-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ background: doc.file_type?.includes("pdf") ? "rgba(239,68,68,0.12)" : "rgba(96,165,250,0.12)" }}>
@@ -106,15 +106,15 @@ export default function DocumentsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-semibold text-white leading-snug truncate">{doc.title}</div>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.45)" }}>{CAT_LABEL[doc.category] ?? doc.category}</span>
-                    {doc.version && <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>v{doc.version}</span>}
+                    <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "var(--border)", color: "var(--text-muted)" }}>{CAT_LABEL[doc.category] ?? doc.category}</span>
+                    {doc.version && <span className="text-xs" style={{ color: "var(--text-muted)" }}>v{doc.version}</span>}
                     {doc.is_expired && <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(239,68,68,0.12)", color: "#f87171" }}>Expired</span>}
                   </div>
                 </div>
               </div>
               <div className="space-y-1 mb-3">
                 {doc.expiry_date && <div className="text-xs" style={{ color: doc.is_expired ? "#f87171" : "rgba(255,255,255,0.4)" }}>Expires: {new Date(doc.expiry_date).toLocaleDateString("en-GB")}</div>}
-                <div className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                <div className="text-xs" style={{ color: "var(--text-muted)" }}>
                   {doc.uploaded_by_name && <span>{doc.uploaded_by_name} · </span>}
                   {formatBytes(doc.file_size)} · {new Date(doc.created_at).toLocaleDateString("en-GB")}
                 </div>
@@ -133,20 +133,20 @@ export default function DocumentsPage() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
-            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Upload Document</h3><button onClick={() => setShowModal(false)} style={{ color: "rgba(255,255,255,0.4)" }}><X size={18} /></button></div>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(124,58,237,0.25)" }}>
+            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Upload Document</h3><button onClick={() => setShowModal(false)} style={{ color: "var(--text-muted)" }}><X size={18} /></button></div>
             <div className="space-y-3">
               {[
-                { label:"Title *", el:<input value={form.title} onChange={e=>setForm(f=>({...f,title:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.8)"}} placeholder="Document name" /> },
-                { label:"Category", el:<select value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.8)"}}>{CATEGORIES.map(c=><option key={c} value={c}>{CAT_LABEL[c]}</option>)}</select> },
-                { label:"File *", el:<input type="file" onChange={e=>setFile(e.target.files?.[0]??null)} className="w-full text-sm px-3 py-2 rounded-xl" style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.6)"}} /> },
-                { label:"Version", el:<input value={form.version} onChange={e=>setForm(f=>({...f,version:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.8)"}} placeholder="e.g. 2.1" /> },
-                { label:"Expiry Date", el:<input type="date" value={form.expiry_date} onChange={e=>setForm(f=>({...f,expiry_date:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.8)"}} /> },
-                { label:"Notes", el:<textarea rows={2} value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={{background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.8)"}} /> },
-              ].map(({label,el})=><div key={label}><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>{label}</label>{el}</div>)}
+                { label:"Title *", el:<input value={form.title} onChange={e=>setForm(f=>({...f,title:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={{background:"var(--input-bg)",border:"1px solid var(--border-strong)",color:"var(--text-primary)"}} placeholder="Document name" /> },
+                { label:"Category", el:<select value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={{background:"var(--input-bg)",border:"1px solid var(--border-strong)",color:"var(--text-primary)"}}>{CATEGORIES.map(c=><option key={c} value={c}>{CAT_LABEL[c]}</option>)}</select> },
+                { label:"File *", el:<input type="file" onChange={e=>setFile(e.target.files?.[0]??null)} className="w-full text-sm px-3 py-2 rounded-xl" style={{background:"var(--input-bg)",border:"1px solid var(--border-strong)",color:"var(--text-secondary)"}} /> },
+                { label:"Version", el:<input value={form.version} onChange={e=>setForm(f=>({...f,version:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={{background:"var(--input-bg)",border:"1px solid var(--border-strong)",color:"var(--text-primary)"}} placeholder="e.g. 2.1" /> },
+                { label:"Expiry Date", el:<input type="date" value={form.expiry_date} onChange={e=>setForm(f=>({...f,expiry_date:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={{background:"var(--input-bg)",border:"1px solid var(--border-strong)",color:"var(--text-primary)"}} /> },
+                { label:"Notes", el:<textarea rows={2} value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={{background:"var(--input-bg)",border:"1px solid var(--border-strong)",color:"var(--text-primary)"}} /> },
+              ].map(({label,el})=><div key={label}><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>{label}</label>{el}</div>)}
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={()=>setShowModal(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"rgba(255,255,255,0.06)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.08)"}}>Cancel</button>
+              <button onClick={()=>setShowModal(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--border)",color:"var(--text-secondary)",border:"1px solid var(--border-strong)"}}>Cancel</button>
               <button onClick={handleUpload} disabled={saving||!form.title||!file} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#7c3aed,#3b82f6)"}}>{saving?"Uploading…":"Upload"}</button>
             </div>
           </div>

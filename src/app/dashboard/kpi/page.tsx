@@ -26,7 +26,7 @@ function OccupancyRing({ pct }: { pct: number }) {
   const color = pct >= 90 ? "#34d399" : pct >= 70 ? "#fbbf24" : "#f87171";
   return (
     <svg width="96" height="96" className="mx-auto">
-      <circle cx="48" cy="48" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
+      <circle cx="48" cy="48" r={r} fill="none" stroke="var(--border)" strokeWidth="8" />
       <circle cx="48" cy="48" r={r} fill="none" stroke={color} strokeWidth="8"
         strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
         transform="rotate(-90 48 48)" style={{ transition: "stroke-dasharray 0.6s ease" }} />
@@ -39,10 +39,10 @@ function MiniBar({ value, max, color }: { value: number; max: number; color: str
   const pct = max > 0 ? Math.min((value / max) * 100, 100) : 0;
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+      <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
         <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: color }} />
       </div>
-      <span className="text-xs w-6 text-right font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>{value}</span>
+      <span className="text-xs w-6 text-right font-mono" style={{ color: "var(--text-secondary)" }}>{value}</span>
     </div>
   );
 }
@@ -97,12 +97,12 @@ export default function KPIPage() {
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Analytics & KPIs</h1>
-            {lastUpdated && <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>Updated {lastUpdated.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</p>}
+            {lastUpdated && <p className="text-xs" style={{ color: "var(--text-muted)" }}>Updated {lastUpdated.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</p>}
           </div>
         </div>
         <button onClick={load} disabled={loading}
           className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-xl disabled:opacity-50"
-          style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
           <RefreshCw size={13} className={loading ? "animate-spin" : ""} /> Refresh
         </button>
       </div>
@@ -110,10 +110,10 @@ export default function KPIPage() {
       {/* Top metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Occupancy */}
-        <div className="rounded-2xl p-5 text-center" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>Occupancy</p>
+        <div className="rounded-2xl p-5 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
+          <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--text-muted)" }}>Occupancy</p>
           <OccupancyRing pct={residents.occupancy_pct} />
-          <p className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.35)" }}>{residents.active} of {residents.total} beds</p>
+          <p className="text-xs mt-2" style={{ color: "var(--text-muted)" }}>{residents.active} of {residents.total} beds</p>
         </div>
 
         {[
@@ -121,20 +121,20 @@ export default function KPIPage() {
           { icon: Pill, label: "Low Stock Meds", value: medications.low_stock_count, sub: "need reordering", color: medications.low_stock_count > 0 ? "#f87171" : "#34d399" },
           { icon: ClipboardList, label: "Overdue Reviews", value: care.overdue_reviews, sub: "care plans", color: care.overdue_reviews > 0 ? "#fb923c" : "#34d399" },
         ].map(({ icon: Icon, label, value, sub, color }) => (
-          <div key={label} className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <div key={label} className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
             <div className="flex items-center justify-between mb-3">
-              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>{label}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>{label}</p>
               <Icon size={14} style={{ color }} />
             </div>
             <p className="text-4xl font-bold" style={{ color }}>{value}</p>
-            <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.3)" }}>{sub}</p>
+            <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>{sub}</p>
           </div>
         ))}
       </div>
 
       {/* Risk Breakdown */}
-      <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-        <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>Resident Risk Breakdown</p>
+      <div className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
+        <p className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "var(--text-muted)" }}>Resident Risk Breakdown</p>
         <div className="flex h-8 rounded-xl overflow-hidden gap-0.5">
           {[
             { key: "critical" as const, color: "#ef4444", label: "Critical" },
@@ -162,29 +162,29 @@ export default function KPIPage() {
           ].map(({ key, color, label }) => (
             <div key={key} className="flex items-center gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full" style={{ background: color }} />
-              <span className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>{label}: <strong style={{ color: "rgba(255,255,255,0.8)" }}>{residents.risk_breakdown[key]}</strong></span>
+              <span className="text-xs" style={{ color: "var(--text-secondary)" }}>{label}: <strong style={{ color: "var(--text-primary)" }}>{residents.risk_breakdown[key]}</strong></span>
             </div>
           ))}
-          <div className="ml-auto text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>Avg AI risk: <strong style={{ color: "#a78bfa" }}>{residents.avg_ai_risk_score}/100</strong></div>
+          <div className="ml-auto text-xs" style={{ color: "var(--text-muted)" }}>Avg AI risk: <strong style={{ color: "#a78bfa" }}>{residents.avg_ai_risk_score}/100</strong></div>
         </div>
       </div>
 
       {/* Bottom 3 columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Staff */}
-        <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
           <div className="flex items-center gap-2 mb-4">
             <UserCheck size={14} style={{ color: "#7c3aed" }} />
-            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>Staff Overview</p>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Staff Overview</p>
           </div>
           <p className="text-3xl font-bold text-white mb-1">{staff.total}</p>
-          <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.35)" }}>active staff members</p>
+          <p className="text-xs mb-4" style={{ color: "var(--text-muted)" }}>active staff members</p>
           <div className="space-y-2.5">
             {staff.by_role.map(({ role, count }) => (
               <div key={role}>
                 <div className="flex justify-between text-xs mb-1">
-                  <span style={{ color: "rgba(255,255,255,0.5)" }}>{ROLE_LABELS[role] ?? role}</span>
-                  <span style={{ color: "rgba(255,255,255,0.7)" }}>{count}</span>
+                  <span style={{ color: "var(--text-secondary)" }}>{ROLE_LABELS[role] ?? role}</span>
+                  <span style={{ color: "var(--text-secondary)" }}>{count}</span>
                 </div>
                 <MiniBar value={count} max={staff.total} color="#7c3aed" />
               </div>
@@ -198,10 +198,10 @@ export default function KPIPage() {
         </div>
 
         {/* Care Quality */}
-        <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp size={14} style={{ color: "#7c3aed" }} />
-            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>Care Quality</p>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Care Quality</p>
           </div>
           <div className="space-y-4">
             {[
@@ -211,16 +211,16 @@ export default function KPIPage() {
               { label: "Residents Discharged (30d)", value: residents.discharged_last_30, color: "#a78bfa", good: false },
             ].map(({ label, value, color, good }) => (
               <div key={label} className="flex items-center justify-between">
-                <span className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</span>
+                <span className="text-xs" style={{ color: "var(--text-secondary)" }}>{label}</span>
                 <span className="text-sm font-bold" style={{ color: good ? "#34d399" : color }}>{value}</span>
               </div>
             ))}
             <div>
               <div className="flex justify-between text-xs mb-1.5">
-                <span style={{ color: "rgba(255,255,255,0.5)" }}>Avg AI Risk Score</span>
+                <span style={{ color: "var(--text-secondary)" }}>Avg AI Risk Score</span>
                 <span style={{ color: "#a78bfa" }}>{residents.avg_ai_risk_score}/100</span>
               </div>
-              <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
                 <div className="h-full rounded-full" style={{ width: `${residents.avg_ai_risk_score}%`, background: "linear-gradient(90deg, #7c3aed, #3b82f6)" }} />
               </div>
             </div>
@@ -228,10 +228,10 @@ export default function KPIPage() {
         </div>
 
         {/* Incidents */}
-        <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
           <div className="flex items-center gap-2 mb-4">
             <AlertTriangle size={14} style={{ color: "#7c3aed" }} />
-            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>Incidents</p>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Incidents</p>
           </div>
           <div className="grid grid-cols-2 gap-3 mb-4">
             {[
@@ -240,19 +240,19 @@ export default function KPIPage() {
               { label: "Currently Open", value: incidents.open, color: "#f87171" },
               { label: "Critical (30d)", value: incidents.critical_last_30, color: "#ef4444" },
             ].map(({ label, value, color }) => (
-              <div key={label} className="rounded-xl px-3 py-2" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <div key={label} className="rounded-xl px-3 py-2" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                 <p className="text-lg font-bold" style={{ color }}>{value}</p>
-                <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>{label}</p>
+                <p className="text-xs" style={{ color: "var(--text-muted)" }}>{label}</p>
               </div>
             ))}
           </div>
-          <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "rgba(255,255,255,0.3)" }}>By Type (90d)</p>
+          <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--text-muted)" }}>By Type (90d)</p>
           <div className="space-y-2">
             {incidents.by_type.slice(0, 5).map(({ incident_type, count }) => (
               <div key={incident_type}>
                 <div className="flex justify-between text-xs mb-0.5">
-                  <span style={{ color: "rgba(255,255,255,0.5)" }}>{INCIDENT_TYPE_LABELS[incident_type] ?? incident_type}</span>
-                  <span style={{ color: "rgba(255,255,255,0.7)" }}>{count}</span>
+                  <span style={{ color: "var(--text-secondary)" }}>{INCIDENT_TYPE_LABELS[incident_type] ?? incident_type}</span>
+                  <span style={{ color: "var(--text-secondary)" }}>{count}</span>
                 </div>
                 <MiniBar value={count} max={incidents.last_90_days || 1} color="#f97316" />
               </div>

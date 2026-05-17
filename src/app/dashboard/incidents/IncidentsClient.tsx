@@ -9,6 +9,7 @@ import {
   AlertTriangle, Plus, X, Save, ChevronDown, ChevronUp,
   CheckCircle, Clock, Eye,
 } from "lucide-react";
+import EmptyState from "@/components/ui/EmptyState";
 
 const SEVERITY = {
   critical: { bg: "rgba(239,68,68,0.15)",  text: "#f87171",  dot: "#ef4444" },
@@ -29,12 +30,12 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium mb-1.5" style={{ color: "rgba(255,255,255,0.45)" }}>
+      <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-muted)" }}>
         {label}{required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {children}
@@ -99,9 +100,9 @@ function CreateIncidentModal({
     <div className="fixed inset-0 z-50 flex items-center justify-end"
       style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(6px)" }}>
       <div className="h-full w-full max-w-xl flex flex-col overflow-hidden"
-        style={{ background: "#0d1526", borderLeft: "1px solid rgba(255,255,255,0.08)" }}>
+        style={{ background: "var(--bg-elevated)", borderLeft: "1px solid var(--border-strong)" }}>
         <div className="flex items-center justify-between px-6 py-4 flex-shrink-0"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}>
@@ -110,8 +111,8 @@ function CreateIncidentModal({
             <h2 className="text-base font-bold text-white">Report Incident</h2>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--input-bg)" }}>
+            <X size={16} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
 
@@ -173,7 +174,7 @@ function CreateIncidentModal({
           </Field>
 
           <div className="space-y-2">
-            <label className="block text-xs font-medium" style={{ color: "rgba(255,255,255,0.45)" }}>
+            <label className="block text-xs font-medium" style={{ color: "var(--text-muted)" }}>
               Injury Sustained
             </label>
             <label className="flex items-center gap-3 cursor-pointer">
@@ -192,8 +193,8 @@ function CreateIncidentModal({
             )}
           </div>
 
-          <div className="space-y-2 pt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.3)" }}>Notifications</p>
+          <div className="space-y-2 pt-2" style={{ borderTop: "1px solid var(--border)" }}>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Notifications</p>
             {(["reported_to_gp", "reported_to_family", "reported_to_cqc"] as const).map((key) => {
               const labels = { reported_to_gp: "GP notified", reported_to_family: "Family notified", reported_to_cqc: "CQC notified" };
               return (
@@ -211,10 +212,10 @@ function CreateIncidentModal({
           </div>
         </form>
 
-        <div className="px-6 py-4 flex gap-3 flex-shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="px-6 py-4 flex gap-3 flex-shrink-0" style={{ borderTop: "1px solid var(--border)" }}>
           <button type="button" onClick={onClose}
             className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
             Cancel
           </button>
           <button onClick={(e) => { e.preventDefault(); handleSubmit(e as unknown as React.FormEvent); }}
@@ -270,18 +271,18 @@ function IncidentDetail({ incident, onClose, onUpdate }: {
     <div className="fixed inset-0 z-50 flex items-center justify-end"
       style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(6px)" }}>
       <div className="h-full w-full max-w-xl flex flex-col overflow-hidden"
-        style={{ background: "#0d1526", borderLeft: "1px solid rgba(255,255,255,0.08)" }}>
+        style={{ background: "var(--bg-elevated)", borderLeft: "1px solid var(--border-strong)" }}>
         <div className="flex items-center justify-between px-6 py-4 flex-shrink-0"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderBottom: "1px solid var(--border)" }}>
           <div>
             <h2 className="text-base font-bold text-white">{TYPE_LABELS[incident.incident_type]}</h2>
-            <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+            <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
               {new Date(incident.incident_date).toLocaleString("en-GB")}
             </p>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--input-bg)" }}>
+            <X size={16} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
 
@@ -314,7 +315,7 @@ function IncidentDetail({ incident, onClose, onUpdate }: {
               const { label, value } = item as { label: string; value: string };
               return (
                 <div key={label}>
-                  <p className="text-xs font-medium mb-1" style={{ color: "rgba(255,255,255,0.35)" }}>{label}</p>
+                  <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>{label}</p>
                   <p className="text-sm text-white whitespace-pre-wrap">{value}</p>
                 </div>
               );
@@ -344,7 +345,7 @@ function IncidentDetail({ incident, onClose, onUpdate }: {
             </div>
           )}
 
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 16 }}>
+          <div style={{ borderTop: "1px solid var(--border)", paddingTop: 16 }}>
             <h3 className="text-sm font-semibold text-white mb-3">Follow-ups ({incident.follow_ups?.length ?? 0})</h3>
             {(incident.follow_ups ?? []).map((fu) => (
               <div key={fu.id} className="flex gap-3 mb-3">
@@ -353,9 +354,9 @@ function IncidentDetail({ incident, onClose, onUpdate }: {
                   {(fu.actioned_by_name?.[0] ?? "?").toUpperCase()}
                 </div>
                 <div className="flex-1 px-3 py-2 rounded-xl text-sm text-white"
-                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                  style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                   <p className="mb-1">{fu.note}</p>
-                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                     {fu.actioned_by_name} · {new Date(fu.created_at).toLocaleDateString("en-GB")}
                   </p>
                 </div>
@@ -423,7 +424,7 @@ export default function IncidentsClient({ initialIncidents, initialTotal, reside
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <AlertTriangle size={22} style={{ color: "#ef4444" }} /> Incidents
           </h1>
-          <p className="text-sm mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
             {openCount} open · {criticalCount} critical
           </p>
         </div>
@@ -445,9 +446,9 @@ export default function IncidentsClient({ initialIncidents, initialTotal, reside
           { label: "Closed", value: list.filter((i) => i.status === "closed").length, color: "#34d399" },
         ].map(({ label, value, color }) => (
           <div key={label} className="px-4 py-3 rounded-2xl"
-            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+            style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
             <p className="text-2xl font-bold" style={{ color }}>{value}</p>
-            <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>{label}</p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>{label}</p>
           </div>
         ))}
       </div>
@@ -461,7 +462,7 @@ export default function IncidentsClient({ initialIncidents, initialTotal, reside
         ].map(({ label, key, value, set, opts }) => (
           <select key={key} value={value} onChange={(e) => set(e.target.value)}
             className="text-sm px-3 py-2 rounded-xl outline-none cursor-pointer"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: value ? "white" : "rgba(255,255,255,0.4)" }}>
+            style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: value ? "white" : "var(--text-muted)" }}>
             <option value="">{label}</option>
             {opts.map((o) => <option key={o} value={o}>{TYPE_LABELS[o] ?? o.replace("_", " ")}</option>)}
           </select>
@@ -469,25 +470,23 @@ export default function IncidentsClient({ initialIncidents, initialTotal, reside
       </div>
 
       {/* Table */}
-      <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
+      <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--border)" }}>
         <table className="w-full">
           <thead>
-            <tr style={{ background: "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <tr style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--border)" }}>
               {["Type", "Resident", "Severity", "Status", "Date", "Reported By", ""].map((h) => (
                 <th key={h} className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-3"
-                  style={{ color: "rgba(255,255,255,0.35)" }}>{h}</th>
+                  style={{ color: "var(--text-muted)" }}>{h}</th>
               ))}
             </tr>
           </thead>
-          <tbody style={{ background: "rgba(5,9,20,0.6)" }}>
+          <tbody style={{ background: "var(--bg-primary)" }}>
             {filtered.length === 0 ? (
-              <tr><td colSpan={7} className="px-4 py-12 text-center text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>
-                No incidents found.
-              </td></tr>
+              <tr><td colSpan={7}><EmptyState icon={AlertTriangle} title="No incidents found" description="All incident reports will appear here." action={{ label: "Log Incident", onClick: () => setShowCreate(true) }} /></td></tr>
             ) : filtered.map((inc) => {
               const st = STATUS[inc.status as keyof typeof STATUS] ?? STATUS.open;
               return (
-                <tr key={inc.id} className="transition-all" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+                <tr key={inc.id} className="transition-all" style={{ borderBottom: "1px solid var(--bg-card)" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.02)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
                   <td className="px-4 py-3">
@@ -496,18 +495,18 @@ export default function IncidentsClient({ initialIncidents, initialTotal, reside
                       <span className="ml-2 text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(239,68,68,0.12)", color: "#f87171" }}>Injury</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
-                    {inc.resident_name ?? <span style={{ color: "rgba(255,255,255,0.25)" }}>—</span>}
+                  <td className="px-4 py-3 text-sm" style={{ color: "var(--text-secondary)" }}>
+                    {inc.resident_name ?? <span style={{ color: "var(--text-muted)" }}>—</span>}
                   </td>
                   <td className="px-4 py-3"><SeverityBadge level={inc.severity} /></td>
                   <td className="px-4 py-3">
                     <span className="text-xs px-2.5 py-1 rounded-full font-medium"
                       style={{ background: st.bg, color: st.color }}>{st.label}</span>
                   </td>
-                  <td className="px-4 py-3 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
+                  <td className="px-4 py-3 text-sm" style={{ color: "var(--text-secondary)" }}>
                     {new Date(inc.incident_date).toLocaleDateString("en-GB")}
                   </td>
-                  <td className="px-4 py-3 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
+                  <td className="px-4 py-3 text-sm" style={{ color: "var(--text-secondary)" }}>
                     {inc.reported_by_name ?? "—"}
                   </td>
                   <td className="px-4 py-3">

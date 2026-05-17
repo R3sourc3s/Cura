@@ -78,10 +78,10 @@ export default function MessagesPage() {
   return (
     <div className="flex h-[calc(100vh-120px)] max-w-5xl mx-auto gap-4">
       {/* Channel sidebar */}
-      <div className="w-48 flex-shrink-0 rounded-2xl p-3 space-y-1" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)" }}>
+      <div className="w-48 flex-shrink-0 rounded-2xl p-3 space-y-1" style={{ background:"var(--bg-card)", border:"1px solid var(--border)" }}>
         <div className="flex items-center gap-2 px-2 py-2 mb-2">
-          <MessageSquare size={14} style={{ color:"rgba(255,255,255,0.4)" }} />
-          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color:"rgba(255,255,255,0.35)" }}>Channels</span>
+          <MessageSquare size={14} style={{ color:"var(--text-muted)" }} />
+          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color:"var(--text-muted)" }}>Channels</span>
         </div>
         {CHANNELS.map(ch => (
           <button key={ch.id} onClick={() => setChannel(ch.id)}
@@ -94,9 +94,9 @@ export default function MessagesPage() {
       </div>
 
       {/* Main chat area */}
-      <div className="flex-1 flex flex-col rounded-2xl overflow-hidden" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)" }}>
+      <div className="flex-1 flex flex-col rounded-2xl overflow-hidden" style={{ background:"var(--bg-card)", border:"1px solid var(--border)" }}>
         {/* Header */}
-        <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom:"1px solid rgba(255,255,255,0.06)", background:"rgba(255,255,255,0.02)" }}>
+        <div className="px-4 py-3 flex items-center gap-2" style={{ borderBottom:"1px solid var(--border)", background:"var(--bg-card)" }}>
           <div className="w-2 h-2 rounded-full" style={{ background: channelCfg.color }} />
           <span className="text-sm font-semibold text-white">{channelCfg.label}</span>
           {pinned.length > 0 && (
@@ -110,7 +110,7 @@ export default function MessagesPage() {
         {pinned.length > 0 && (
           <div className="px-4 py-2 space-y-1" style={{ background:"rgba(251,191,36,0.04)", borderBottom:"1px solid rgba(251,191,36,0.1)" }}>
             {pinned.map(m => (
-              <div key={m.id} className="flex items-center gap-2 text-xs" style={{ color:"rgba(255,255,255,0.5)" }}>
+              <div key={m.id} className="flex items-center gap-2 text-xs" style={{ color:"var(--text-secondary)" }}>
                 <Pin size={9} style={{ color:"#fbbf24" }} />
                 <span style={{ color:"#fbbf24" }}>{m.author_name}:</span>
                 <span className="truncate">{m.content}</span>
@@ -125,8 +125,8 @@ export default function MessagesPage() {
             <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div>
           ) : messages.length === 0 ? (
             <div className="text-center py-12">
-              <MessageSquare size={28} className="mx-auto mb-2" style={{ color:"rgba(255,255,255,0.15)" }} />
-              <p className="text-sm" style={{ color:"rgba(255,255,255,0.3)" }}>No messages yet. Start the conversation!</p>
+              <MessageSquare size={28} className="mx-auto mb-2" style={{ color:"var(--text-muted)" }} />
+              <p className="text-sm" style={{ color:"var(--text-muted)" }}>No messages yet. Start the conversation!</p>
             </div>
           ) : messages.map(m => {
             const roleColor = ROLE_COLOR[m.author_role ?? ""] ?? "#a78bfa";
@@ -138,15 +138,15 @@ export default function MessagesPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2 mb-0.5">
                     <span className="text-xs font-semibold" style={{ color:roleColor }}>{m.author_name ?? "Unknown"}</span>
-                    <span className="text-xs capitalize" style={{ color:"rgba(255,255,255,0.25)" }}>{m.author_role}</span>
-                    <span className="text-xs" style={{ color:"rgba(255,255,255,0.2)" }}>{timeAgo(m.created_at)}</span>
+                    <span className="text-xs capitalize" style={{ color:"var(--text-muted)" }}>{m.author_role}</span>
+                    <span className="text-xs" style={{ color:"var(--text-muted)" }}>{timeAgo(m.created_at)}</span>
                     <button onClick={() => togglePin(m.id, m.is_pinned)}
                       className="opacity-0 group-hover:opacity-60 hover:!opacity-100 transition-opacity ml-auto"
                       title={m.is_pinned ? "Unpin" : "Pin"}>
-                      <Pin size={11} style={{ color: m.is_pinned ? "#fbbf24" : "rgba(255,255,255,0.4)" }} />
+                      <Pin size={11} style={{ color: m.is_pinned ? "#fbbf24" : "var(--text-muted)" }} />
                     </button>
                   </div>
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color:"rgba(255,255,255,0.75)" }}>{m.content}</p>
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color:"var(--text-secondary)" }}>{m.content}</p>
                 </div>
               </div>
             );
@@ -155,19 +155,19 @@ export default function MessagesPage() {
         </div>
 
         {/* Input */}
-        <div className="px-4 py-3" style={{ borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+        <div className="px-4 py-3" style={{ borderTop:"1px solid var(--border)" }}>
           <div className="flex gap-2 items-end">
             <textarea value={content} onChange={e=>setContent(e.target.value)} onKeyDown={handleKey}
               placeholder={`Message #${channelCfg.label.toLowerCase().replace("🚨 ","")}…`}
               rows={2}
               className="flex-1 text-sm px-3 py-2 rounded-xl outline-none resize-none"
-              style={{ background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.8)" }} />
+              style={{ background:"var(--input-bg)", border:"1px solid var(--border-strong)", color:"var(--text-primary)" }} />
             <button onClick={handleSend} disabled={sending||!content.trim()} className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 disabled:opacity-40"
               style={{ background:"linear-gradient(135deg,#7c3aed,#3b82f6)" }}>
               <Send size={14} className="text-white" />
             </button>
           </div>
-          <p className="text-xs mt-1" style={{ color:"rgba(255,255,255,0.2)" }}>Enter to send · Shift+Enter for new line</p>
+          <p className="text-xs mt-1" style={{ color:"var(--text-muted)" }}>Enter to send · Shift+Enter for new line</p>
         </div>
       </div>
     </div>

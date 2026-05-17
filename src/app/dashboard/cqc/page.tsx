@@ -249,7 +249,7 @@ export default function CQCReadinessPage() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-white">CQC Readiness</h1>
-            <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>
               Care Quality Commission self-assessment — {new Date().toLocaleDateString("en-GB", { day:"numeric", month:"long", year:"numeric" })}
             </p>
           </div>
@@ -267,7 +267,7 @@ export default function CQCReadinessPage() {
                 {overallRating.label}
               </span>
             </div>
-            <p className="text-sm mb-3" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <p className="text-sm mb-3" style={{ color: "var(--text-secondary)" }}>
               Based on the 5 CQC key questions. Score updates as you record evidence in the system.
             </p>
             <div className="flex gap-6">
@@ -275,7 +275,7 @@ export default function CQCReadinessPage() {
                 const pct = d.maxScore > 0 ? d.score / d.maxScore : 0;
                 return (
                   <div key={d.key} className="flex flex-col items-center gap-1">
-                    <div className="w-1.5 h-12 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+                    <div className="w-1.5 h-12 rounded-full overflow-hidden" style={{ background: "var(--border-strong)" }}>
                       <div className="w-full rounded-full transition-all duration-700" style={{ height: `${pct * 100}%`, background: d.color, marginTop: `${(1 - pct) * 100}%` }} />
                     </div>
                     <span className="text-xs font-medium" style={{ color: d.color }}>{d.label.slice(0,4)}</span>
@@ -295,7 +295,7 @@ export default function CQCReadinessPage() {
                   ? <XCircle size={13} style={{ color: "#f87171" }} />
                   : <CheckCircle size={13} style={{ color: "#34d399" }} />
                 }
-                <span style={{ color: "rgba(255,255,255,0.6)" }}>{item.label}:</span>
+                <span style={{ color: "var(--text-secondary)" }}>{item.label}:</span>
                 <span className="font-semibold" style={{ color: item.bad ? "#f87171" : "#34d399" }}>{item.val}</span>
               </div>
             ))}
@@ -315,7 +315,7 @@ export default function CQCReadinessPage() {
             const isOpen = expanded === domain.key;
             const highActions = domain.actions.filter(a => a.priority === "high");
             return (
-              <div key={domain.key} className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
+              <div key={domain.key} className="rounded-2xl overflow-hidden" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                 {/* Domain header */}
                 <button className="w-full px-5 py-4 flex items-center gap-4 text-left" onClick={() => setExpanded(isOpen ? null : domain.key)}>
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -334,31 +334,31 @@ export default function CQCReadinessPage() {
                         </span>
                       )}
                     </div>
-                    <p className="text-xs truncate mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>{domain.question}</p>
+                    <p className="text-xs truncate mt-0.5" style={{ color: "var(--text-muted)" }}>{domain.question}</p>
                   </div>
                   {/* Score bar */}
                   <div className="hidden sm:flex items-center gap-3 flex-shrink-0">
-                    <div className="w-28 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+                    <div className="w-28 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--border-strong)" }}>
                       <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: rating.color }} />
                     </div>
                     <span className="text-sm font-bold w-10 text-right" style={{ color: rating.color }}>{Math.round(pct)}%</span>
                   </div>
-                  <ChevronRight size={16} className="flex-shrink-0 transition-transform" style={{ color: "rgba(255,255,255,0.3)", transform: isOpen ? "rotate(90deg)" : "none" }} />
+                  <ChevronRight size={16} className="flex-shrink-0 transition-transform" style={{ color: "var(--text-muted)", transform: isOpen ? "rotate(90deg)" : "none" }} />
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 pb-5 grid md:grid-cols-2 gap-4 border-t" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+                  <div className="px-5 pb-5 grid md:grid-cols-2 gap-4 border-t" style={{ borderColor: "var(--border)" }}>
                     {/* Evidence */}
                     <div>
-                      <div className="text-xs font-semibold uppercase tracking-wider mt-4 mb-2" style={{ color: "rgba(255,255,255,0.35)" }}>Evidence in System</div>
+                      <div className="text-xs font-semibold uppercase tracking-wider mt-4 mb-2" style={{ color: "var(--text-muted)" }}>Evidence in System</div>
                       <div className="space-y-2">
                         {domain.evidence.map((ev, i) => {
                           const SIcon = statusIcon[ev.status];
                           return (
-                            <div key={i} className="flex items-center justify-between py-2 rounded-xl px-3" style={{ background: "rgba(255,255,255,0.03)" }}>
+                            <div key={i} className="flex items-center justify-between py-2 rounded-xl px-3" style={{ background: "var(--bg-card)" }}>
                               <div className="flex items-center gap-2">
                                 <SIcon size={12} style={{ color: statusColor[ev.status] }} />
-                                <span className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>{ev.label}</span>
+                                <span className="text-xs" style={{ color: "var(--text-secondary)" }}>{ev.label}</span>
                               </div>
                               <span className="text-xs font-bold" style={{ color: statusColor[ev.status] }}>{ev.count}</span>
                             </div>
@@ -368,16 +368,16 @@ export default function CQCReadinessPage() {
                     </div>
                     {/* Actions */}
                     <div>
-                      <div className="text-xs font-semibold uppercase tracking-wider mt-4 mb-2" style={{ color: "rgba(255,255,255,0.35)" }}>
+                      <div className="text-xs font-semibold uppercase tracking-wider mt-4 mb-2" style={{ color: "var(--text-muted)" }}>
                         Required Actions
                       </div>
                       <div className="space-y-2">
                         {domain.actions.length === 0 ? (
-                          <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>No actions required — well done!</p>
+                          <p className="text-xs" style={{ color: "var(--text-muted)" }}>No actions required — well done!</p>
                         ) : domain.actions.map((action, i) => (
-                          <div key={i} className="flex items-start gap-2 py-2 px-3 rounded-xl" style={{ background: "rgba(255,255,255,0.03)" }}>
+                          <div key={i} className="flex items-start gap-2 py-2 px-3 rounded-xl" style={{ background: "var(--bg-card)" }}>
                             <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5" style={{ background: priorityColor[action.priority] }} />
-                            <span className="text-xs flex-1" style={{ color: "rgba(255,255,255,0.65)" }}>{action.text}</span>
+                            <span className="text-xs flex-1" style={{ color: "var(--text-secondary)" }}>{action.text}</span>
                             <span className="text-xs capitalize flex-shrink-0" style={{ color: priorityColor[action.priority] }}>{action.priority}</span>
                           </div>
                         ))}
@@ -392,8 +392,8 @@ export default function CQCReadinessPage() {
       )}
 
       {/* Quick links */}
-      <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
-        <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "rgba(255,255,255,0.35)" }}>Quick Links to Evidence</div>
+      <div className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+        <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--text-muted)" }}>Quick Links to Evidence</div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {[
             { label: "Incidents", href: "/dashboard/incidents", icon: AlertTriangle, color: "#f87171" },
@@ -409,7 +409,7 @@ export default function CQCReadinessPage() {
             return (
               <a key={link.href} href={link.href}
                 className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs transition-all hover:opacity-80"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.6)" }}>
+                style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}>
                 <LIcon size={13} style={{ color: link.color }} />
                 {link.label}
               </a>

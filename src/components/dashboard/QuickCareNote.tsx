@@ -85,7 +85,7 @@ export default function QuickCareNote() {
           style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)" }}
           onClick={() => setOpen(false)}>
           <div className="w-full max-w-lg rounded-2xl p-5 space-y-4"
-            style={{ background: "#0d1424", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 40px 80px rgba(0,0,0,0.6)" }}
+            style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-strong)", boxShadow: "0 40px 80px rgba(0,0,0,0.6)" }}
             onClick={e => e.stopPropagation()}>
 
             <div className="flex items-center justify-between">
@@ -95,58 +95,58 @@ export default function QuickCareNote() {
                 </div>
                 <span className="text-sm font-semibold text-white">Quick Care Note</span>
               </div>
-              <button onClick={() => setOpen(false)} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "rgba(255,255,255,0.05)" }}>
-                <X size={14} style={{ color: "rgba(255,255,255,0.5)" }} />
+              <button onClick={() => setOpen(false)} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "var(--input-bg)" }}>
+                <X size={14} style={{ color: "var(--text-secondary)" }} />
               </button>
             </div>
 
             {/* Resident */}
             <div>
-              <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Resident *</label>
+              <label className="text-xs mb-1.5 block" style={{ color: "var(--text-muted)" }}>Resident *</label>
               <div className="relative">
                 <select value={residentId} onChange={e => setResidentId(e.target.value)}
                   className="w-full text-sm px-3 py-2.5 rounded-xl appearance-none outline-none pr-8"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: residentId ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.35)" }}>
+                  style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: residentId ? "var(--text-primary)" : "var(--text-muted)" }}>
                   <option value="">Select resident…</option>
                   {residents.map(r => (
-                    <option key={r.id} value={r.id} style={{ background: "#0d1424" }}>
+                    <option key={r.id} value={r.id} style={{ background: "var(--bg-elevated)" }}>
                       {r.full_name}{r.room_number ? ` · Room ${r.room_number}` : ""}
                     </option>
                   ))}
                 </select>
-                <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+                <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--text-muted)" }} />
               </div>
             </div>
 
             {/* Shift + Category */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Shift</label>
+                <label className="text-xs mb-1.5 block" style={{ color: "var(--text-muted)" }}>Shift</label>
                 <div className="relative">
                   <select value={shift} onChange={e => setShift(e.target.value)}
                     className="w-full text-sm px-3 py-2 rounded-xl appearance-none outline-none pr-8"
-                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}>
-                    {SHIFTS.map(s => <option key={s.value} value={s.value} style={{ background: "#0d1424" }}>{s.label}</option>)}
+                    style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" }}>
+                    {SHIFTS.map(s => <option key={s.value} value={s.value} style={{ background: "var(--bg-elevated)" }}>{s.label}</option>)}
                   </select>
-                  <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+                  <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--text-muted)" }} />
                 </div>
               </div>
               <div>
-                <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Category</label>
+                <label className="text-xs mb-1.5 block" style={{ color: "var(--text-muted)" }}>Category</label>
                 <div className="relative">
                   <select value={category} onChange={e => setCategory(e.target.value)}
                     className="w-full text-sm px-3 py-2 rounded-xl appearance-none outline-none pr-8"
-                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}>
-                    {CATEGORIES.map(c => <option key={c.value} value={c.value} style={{ background: "#0d1424" }}>{c.label}</option>)}
+                    style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" }}>
+                    {CATEGORIES.map(c => <option key={c.value} value={c.value} style={{ background: "var(--bg-elevated)" }}>{c.label}</option>)}
                   </select>
-                  <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+                  <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--text-muted)" }} />
                 </div>
               </div>
             </div>
 
             {/* Mood */}
             <div>
-              <label className="text-xs mb-2 block" style={{ color: "rgba(255,255,255,0.4)" }}>Resident Mood</label>
+              <label className="text-xs mb-2 block" style={{ color: "var(--text-muted)" }}>Resident Mood</label>
               <div className="flex gap-2">
                 {[
                   { v: "happy", e: "😊" }, { v: "neutral", e: "😐" }, { v: "sad", e: "😔" },
@@ -154,7 +154,7 @@ export default function QuickCareNote() {
                 ].map(m => (
                   <button key={m.v} onClick={() => setMood(m.v)}
                     className="w-9 h-9 rounded-xl flex items-center justify-center text-lg transition-all"
-                    style={{ background: mood === m.v ? "rgba(124,58,237,0.2)" : "rgba(255,255,255,0.04)", border: mood === m.v ? "1px solid rgba(124,58,237,0.4)" : "1px solid transparent" }}
+                    style={{ background: mood === m.v ? "rgba(124,58,237,0.2)" : "var(--bg-card)", border: mood === m.v ? "1px solid rgba(124,58,237,0.4)" : "1px solid transparent" }}
                     title={m.v}>
                     {m.e}
                   </button>
@@ -164,20 +164,20 @@ export default function QuickCareNote() {
 
             {/* Note content */}
             <div>
-              <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Note *</label>
+              <label className="text-xs mb-1.5 block" style={{ color: "var(--text-muted)" }}>Note *</label>
               <textarea ref={textRef} value={content} onChange={e => setContent(e.target.value)}
                 placeholder="Describe the care provided, observations, or any concerns…"
                 rows={4}
                 className="w-full text-sm px-3 py-2.5 rounded-xl outline-none resize-none"
-                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" }}
                 onKeyDown={e => { if (e.key === "Enter" && e.ctrlKey) submit(); }}
               />
-              <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.2)" }}>Ctrl+Enter to save quickly</p>
+              <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>Ctrl+Enter to save quickly</p>
             </div>
 
             <div className="flex gap-2 pt-1">
               <button onClick={() => setOpen(false)} className="flex-1 py-2.5 rounded-xl text-sm transition-all"
-                style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)" }}>
+                style={{ background: "var(--input-bg)", color: "var(--text-secondary)" }}>
                 Cancel
               </button>
               <button onClick={submit} disabled={saving || !content.trim() || !residentId}

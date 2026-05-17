@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { BookOpen, Plus, X, Search, Filter, ChevronDown } from "lucide-react";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface CareNote {
   id: number; resident: number; resident_name?: string;
@@ -96,7 +97,7 @@ export default function CareNotesPage() {
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Daily Care Notes</h1>
-            <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>All resident care notes</p>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>All resident care notes</p>
           </div>
         </div>
         <button onClick={() => setShowModal(true)}
@@ -115,9 +116,9 @@ export default function CareNotesPage() {
           { label: "Evening", value: shiftCounts.evening, color: "#60a5fa" },
           { label: "Night", value: shiftCounts.night, color: "#a78bfa" },
         ].map(({ label, value, color }) => (
-          <div key={label} className="rounded-2xl p-4 text-center" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <div key={label} className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
             <div className="text-2xl font-bold" style={{ color }}>{value}</div>
-            <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>{label}</div>
+            <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>{label}</div>
           </div>
         ))}
       </div>
@@ -125,10 +126,10 @@ export default function CareNotesPage() {
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
-          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
           <input type="text" placeholder="Search resident or content…" value={search} onChange={e => setSearch(e.target.value)}
             className="w-full text-sm pl-9 pr-4 py-2 rounded-xl outline-none"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)" }} />
+            style={{ background: "var(--input-bg)", border: "1px solid var(--bg-card-hover)", color: "var(--text-secondary)" }} />
         </div>
         {[
           { value: filterShift, set: setFilterShift, opts: [["","All Shifts"],["day","Day"],["evening","Evening"],["night","Night"]] },
@@ -153,10 +154,7 @@ export default function CareNotesPage() {
       {loading ? (
         <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <BookOpen size={28} className="mx-auto mb-2" style={{ color: "rgba(255,255,255,0.15)" }} />
-          <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No care notes found.</p>
-        </div>
+        <EmptyState icon={BookOpen} title="No care notes found" description="Record a new care note to get started." action={{ label: "Add Note", onClick: () => setShowModal(true) }} />
       ) : (
         <div className="space-y-3">
           {filtered.map(note => {

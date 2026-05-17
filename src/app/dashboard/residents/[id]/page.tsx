@@ -6,11 +6,13 @@ import { residents as residentsApi, ai as aiApi, vitals as vitalsApi } from "@/l
 import { useUser } from "@/context/UserContext";
 import type { Resident, Medication, CarePlan, MAREntry, VitalSign } from "@/types";
 import {
-  ArrowLeft, Edit2, Trash2, User, Phone, Heart, Pill,
+  Edit2, Trash2, User, Phone, Heart, Pill,
   ClipboardList, AlertTriangle, CheckCircle, Clock, XCircle,
   Activity, Shield, ChevronRight, Sparkles, Plus, Thermometer,
   NotebookPen, CalendarDays, X,
 } from "lucide-react";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -49,7 +51,7 @@ function RiskBadge({ level }: { level: string }) {
 function GlassCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={`rounded-2xl p-5 ${className}`}
-      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+      style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
       {children}
     </div>
   );
@@ -59,7 +61,7 @@ function SectionHeading({ icon: Icon, label }: { icon: React.ElementType; label:
   return (
     <div className="flex items-center gap-2 mb-4">
       <Icon size={14} style={{ color: "#7c3aed" }} />
-      <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>
+      <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
         {label}
       </span>
     </div>
@@ -69,9 +71,9 @@ function SectionHeading({ icon: Icon, label }: { icon: React.ElementType; label:
 function InfoRow({ label, value }: { label: string; value?: string | number | null }) {
   return (
     <div className="flex items-start justify-between py-2.5"
-      style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-      <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{label}</span>
-      <span className="text-xs font-medium text-right ml-4" style={{ color: "rgba(255,255,255,0.8)" }}>
+      style={{ borderBottom: "1px solid var(--border)" }}>
+      <span className="text-xs" style={{ color: "var(--text-muted)" }}>{label}</span>
+      <span className="text-xs font-medium text-right ml-4" style={{ color: "var(--text-primary)" }}>
         {value ?? "—"}
       </span>
     </div>
@@ -93,7 +95,7 @@ function Avatar({ resident, size = 80 }: { resident: Resident; size?: number }) 
       style={{
         width: size, height: size, fontSize: size * 0.32,
         background: `linear-gradient(135deg, hsl(${hue},60%,35%), hsl(${(hue + 40) % 360},70%,45%))`,
-        color: "rgba(255,255,255,0.9)",
+        color: "var(--text-primary)",
       }}>
       {initials}
     </div>
@@ -103,7 +105,7 @@ function Avatar({ resident, size = 80 }: { resident: Resident; size?: number }) 
 // ── Sparkline ─────────────────────────────────────────────────────────────────
 
 function Sparkline({ values, color = "#7c3aed", height = 32 }: { values: number[]; color?: string; height?: number }) {
-  if (values.length < 2) return <div className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>—</div>;
+  if (values.length < 2) return <div className="text-xs" style={{ color: "var(--text-muted)" }}>—</div>;
   const min = Math.min(...values);
   const max = Math.max(...values);
   const range = max - min || 1;
@@ -182,16 +184,16 @@ function VitalsTab({ residentId, canEdit }: { residentId: number; canEdit: boole
             <GlassCard key={key as string} className="!p-4">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <div className="text-xs font-semibold" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</div>
-                  {normal && <div className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>Normal: {normal}</div>}
+                  <div className="text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>{label}</div>
+                  {normal && <div className="text-xs" style={{ color: "var(--text-muted)" }}>Normal: {normal}</div>}
                 </div>
               </div>
               <div className="flex items-end justify-between">
                 <div>
-                  <div className="text-xl font-bold" style={{ color: latestVal ? color : "rgba(255,255,255,0.2)" }}>
+                  <div className="text-xl font-bold" style={{ color: latestVal ? color : "var(--text-muted)" }}>
                     {latestVal ? latestVal : "—"}
                   </div>
-                  <div className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{unit}</div>
+                  <div className="text-xs" style={{ color: "var(--text-muted)" }}>{unit}</div>
                 </div>
                 <Sparkline values={vals.slice(0, 10).reverse()} color={color} />
               </div>
@@ -213,39 +215,39 @@ function VitalsTab({ residentId, canEdit }: { residentId: number; canEdit: boole
       {/* History table */}
       {vitals.length > 0 && (
         <GlassCard className="!p-0 overflow-hidden">
-          <div className="px-5 py-3 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>History</span>
+          <div className="px-5 py-3 border-b" style={{ borderColor: "var(--border)" }}>
+            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>History</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[700px]">
               <thead>
-                <tr style={{ background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>Date</th>
-                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>BP</th>
-                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>Pulse</th>
-                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>Temp</th>
-                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>SpO₂</th>
-                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>Weight</th>
-                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>Glucose</th>
-                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "rgba(255,255,255,0.3)" }}>By</th>
+                <tr style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--border)" }}>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--text-muted)" }}>Date</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--text-muted)" }}>BP</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--text-muted)" }}>Pulse</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--text-muted)" }}>Temp</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--text-muted)" }}>SpO₂</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--text-muted)" }}>Weight</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--text-muted)" }}>Glucose</th>
+                  <th className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-2.5" style={{ color: "var(--text-muted)" }}>By</th>
                 </tr>
               </thead>
               <tbody>
                 {vitals.slice(0, 20).map(v => (
-                  <tr key={v.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                    <td className="px-4 py-2.5 text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>
+                  <tr key={v.id} style={{ borderBottom: "1px solid var(--bg-card)" }}>
+                    <td className="px-4 py-2.5 text-xs" style={{ color: "var(--text-secondary)" }}>
                       {new Date(v.recorded_at).toLocaleDateString("en-GB")}{" "}
-                      <span style={{ color: "rgba(255,255,255,0.3)" }}>{new Date(v.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</span>
+                      <span style={{ color: "var(--text-muted)" }}>{new Date(v.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</span>
                     </td>
-                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>
+                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "var(--text-primary)" }}>
                       {v.bp_systolic && v.bp_diastolic ? `${v.bp_systolic}/${v.bp_diastolic}` : "—"}
                     </td>
-                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>{v.pulse ?? "—"}</td>
-                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>{v.temperature ? `${v.temperature}°C` : "—"}</td>
-                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>{v.oxygen_saturation ? `${v.oxygen_saturation}%` : "—"}</td>
-                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>{v.weight ? `${v.weight} kg` : "—"}</td>
-                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>{v.blood_glucose ? `${v.blood_glucose}` : "—"}</td>
-                    <td className="px-4 py-2.5 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{v.recorded_by_name ?? "—"}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "var(--text-primary)" }}>{v.pulse ?? "—"}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "var(--text-primary)" }}>{v.temperature ? `${v.temperature}°C` : "—"}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "var(--text-primary)" }}>{v.oxygen_saturation ? `${v.oxygen_saturation}%` : "—"}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "var(--text-primary)" }}>{v.weight ? `${v.weight} kg` : "—"}</td>
+                    <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "var(--text-primary)" }}>{v.blood_glucose ? `${v.blood_glucose}` : "—"}</td>
+                    <td className="px-4 py-2.5 text-xs" style={{ color: "var(--text-muted)" }}>{v.recorded_by_name ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -255,9 +257,9 @@ function VitalsTab({ residentId, canEdit }: { residentId: number; canEdit: boole
       )}
 
       {vitals.length === 0 && !showForm && (
-        <div className="text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <Thermometer size={28} className="mx-auto mb-2" style={{ color: "rgba(255,255,255,0.15)" }} />
-          <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No vitals recorded yet.</p>
+        <div className="text-center py-12 rounded-2xl" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+          <Thermometer size={28} className="mx-auto mb-2" style={{ color: "var(--text-muted)" }} />
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>No vitals recorded yet.</p>
         </div>
       )}
 
@@ -266,42 +268,42 @@ function VitalsTab({ residentId, canEdit }: { residentId: number; canEdit: boole
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-lg"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(124,58,237,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Log Vitals</h3>
-              <button onClick={() => setShowForm(false)} style={{ color: "rgba(255,255,255,0.4)" }}><XCircle size={18} /></button>
+              <button onClick={() => setShowForm(false)} style={{ color: "var(--text-muted)" }}><XCircle size={18} /></button>
             </div>
             <div className="grid grid-cols-2 gap-3 mb-3">
               <div className="col-span-2">
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Date & Time *</label>
+                <label className="block text-xs mb-1" style={{ color: "var(--text-secondary)" }}>Date & Time *</label>
                 <input type="datetime-local" value={form.recorded_at ?? ""}
                   onChange={e => setForm(f => ({ ...f, recorded_at: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }} />
+                  style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" }} />
               </div>
               {VITAL_FIELDS.map(({ key, label, unit }) => (
                 <div key={key as string}>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>{label} <span style={{ color: "rgba(255,255,255,0.25)" }}>({unit})</span></label>
+                  <label className="block text-xs mb-1" style={{ color: "var(--text-secondary)" }}>{label} <span style={{ color: "var(--text-muted)" }}>({unit})</span></label>
                   <input type="number" step="any" placeholder="—"
                     value={form[key as string] ?? ""}
                     onChange={e => setForm(f => ({ ...f, [key as string]: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }} />
+                    style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" }} />
                 </div>
               ))}
               <div className="col-span-2">
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Notes</label>
+                <label className="block text-xs mb-1" style={{ color: "var(--text-secondary)" }}>Notes</label>
                 <textarea rows={2} placeholder="Any observations…"
                   value={form.notes ?? ""}
                   onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }} />
+                  style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" }} />
               </div>
             </div>
             <div className="flex gap-3">
               <button onClick={() => setShowForm(false)}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "var(--border)", color: "var(--text-primary)", border: "1px solid var(--border-strong)" }}>
                 Cancel
               </button>
               <button onClick={handleSave} disabled={saving || !form.recorded_at}
@@ -374,7 +376,7 @@ function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate }: { resident
         <SectionHeading icon={Phone} label="Key Contacts" />
         <div className="space-y-3">
           <div>
-            <div className="text-xs mb-1" style={{ color: "rgba(255,255,255,0.4)" }}>Next of Kin</div>
+            <div className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>Next of Kin</div>
             <div className="text-sm font-medium text-white">{resident.next_of_kin_name || "—"}</div>
             {resident.next_of_kin_phone && (
               <a href={`tel:${resident.next_of_kin_phone}`}
@@ -383,8 +385,8 @@ function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate }: { resident
               </a>
             )}
           </div>
-          <div className="pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-            <div className="text-xs mb-1" style={{ color: "rgba(255,255,255,0.4)" }}>GP / Medical</div>
+          <div className="pt-3" style={{ borderTop: "1px solid var(--border)" }}>
+            <div className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>GP / Medical</div>
             <div className="text-sm font-medium text-white">{resident.gp_name || "—"}</div>
             {resident.gp_phone && (
               <a href={`tel:${resident.gp_phone}`}
@@ -401,16 +403,16 @@ function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate }: { resident
         <SectionHeading icon={Shield} label="Risk Assessment" />
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>Fall Risk</span>
+            <span className="text-sm" style={{ color: "var(--text-secondary)" }}>Fall Risk</span>
             <RiskBadge level={resident.fall_risk} />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>Pressure Ulcer Risk</span>
+            <span className="text-sm" style={{ color: "var(--text-secondary)" }}>Pressure Ulcer Risk</span>
             <RiskBadge level={resident.pressure_ulcer_risk} />
           </div>
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 16 }}>
+          <div style={{ borderTop: "1px solid var(--border)", paddingTop: 16 }}>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>AI Risk Score</span>
+              <span className="text-sm" style={{ color: "var(--text-secondary)" }}>AI Risk Score</span>
               <div className="flex items-center gap-2">
                 <span className="text-lg font-bold" style={{ color: scoreColor }}>{riskScore}/100</span>
                 {canRecalculate && (
@@ -422,12 +424,12 @@ function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate }: { resident
                 )}
               </div>
             </div>
-            <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+            <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
               <div className="h-full rounded-full transition-all"
                 style={{ width: `${riskScore}%`, background: `linear-gradient(90deg, ${scoreColor}88, ${scoreColor})` }} />
             </div>
             {scoringReason && (
-              <p className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.35)" }}>{scoringReason}</p>
+              <p className="text-xs mt-2" style={{ color: "var(--text-muted)" }}>{scoringReason}</p>
             )}
           </div>
         </div>
@@ -437,16 +439,16 @@ function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate }: { resident
       <GlassCard>
         <SectionHeading icon={Heart} label="Diagnoses & Conditions" />
         {(resident.conditions ?? []).length === 0 ? (
-          <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No conditions recorded.</p>
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>No conditions recorded.</p>
         ) : (
           <div className="space-y-2">
             {resident.conditions!.map((c) => (
               <div key={c.id} className="flex items-center justify-between py-2"
-                style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                style={{ borderBottom: "1px solid var(--border)" }}>
                 <div>
                   <div className="text-sm font-medium text-white">{c.name}</div>
                   {c.diagnosed_date && (
-                    <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.3)" }}>
+                    <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
                       Diagnosed {new Date(c.diagnosed_date).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}
                     </div>
                   )}
@@ -480,9 +482,9 @@ function MedicationsTab({ residentId }: { residentId: number }) {
   if (loading) return <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div>;
 
   if (meds.length === 0) return (
-    <div className="text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-      <Pill size={28} className="mx-auto mb-2" style={{ color: "rgba(255,255,255,0.15)" }} />
-      <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No active medications.</p>
+    <div className="text-center py-12 rounded-2xl" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+      <Pill size={28} className="mx-auto mb-2" style={{ color: "var(--text-muted)" }} />
+      <p className="text-sm" style={{ color: "var(--text-muted)" }}>No active medications.</p>
     </div>
   );
 
@@ -505,7 +507,7 @@ function MedicationsTab({ residentId }: { residentId: number }) {
                   </span>
                 )}
               </div>
-              <div className="text-xs mb-2" style={{ color: "rgba(255,255,255,0.4)" }}>
+              <div className="text-xs mb-2" style={{ color: "var(--text-muted)" }}>
                 {med.dose} · {med.route} · {med.frequency.toUpperCase()}
                 {med.indication ? ` · ${med.indication}` : ""}
               </div>
@@ -520,9 +522,9 @@ function MedicationsTab({ residentId }: { residentId: number }) {
               <div className="text-lg font-bold" style={{ color: med.is_low_stock ? "#f87171" : "#34d399" }}>
                 {med.stock_count}
               </div>
-              <div className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>units</div>
+              <div className="text-xs" style={{ color: "var(--text-muted)" }}>units</div>
               <div className="w-16 mt-2">
-                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--bg-card-hover)" }}>
                   <div className="h-full rounded-full"
                     style={{
                       width: `${Math.min((med.stock_count / Math.max(med.reorder_threshold * 4, 1)) * 100, 100)}%`,
@@ -552,9 +554,9 @@ function CarePlansTab({ residentId }: { residentId: number }) {
 
   if (loading) return <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div>;
   if (plans.length === 0) return (
-    <div className="text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-      <ClipboardList size={28} className="mx-auto mb-2" style={{ color: "rgba(255,255,255,0.15)" }} />
-      <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No care plans recorded.</p>
+    <div className="text-center py-12 rounded-2xl" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+      <ClipboardList size={28} className="mx-auto mb-2" style={{ color: "var(--text-muted)" }} />
+      <p className="text-sm" style={{ color: "var(--text-muted)" }}>No care plans recorded.</p>
     </div>
   );
 
@@ -572,7 +574,7 @@ function CarePlansTab({ residentId }: { residentId: number }) {
                   style={{ background: cfg.bg, color: cfg.color }}>v{plan.version}</div>
                 <div>
                   <div className="text-sm font-semibold text-white">Care Plan v{plan.version}</div>
-                  <div className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  <div className="text-xs" style={{ color: "var(--text-muted)" }}>
                     {plan.created_by_name && `Created by ${plan.created_by_name} · `}
                     {plan.next_review_date && `Review: ${new Date(plan.next_review_date).toLocaleDateString("en-GB")}`}
                   </div>
@@ -581,11 +583,11 @@ function CarePlansTab({ residentId }: { residentId: number }) {
               <div className="flex items-center gap-3">
                 <span className="text-xs px-2 py-0.5 rounded-full font-medium"
                   style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
-                <ChevronRight size={14} style={{ color: "rgba(255,255,255,0.3)", transform: isOpen ? "rotate(90deg)" : "none", transition: "transform .2s" }} />
+                <ChevronRight size={14} style={{ color: "var(--text-muted)", transform: isOpen ? "rotate(90deg)" : "none", transition: "transform .2s" }} />
               </div>
             </button>
             {isOpen && (
-              <div className="px-5 pb-5 space-y-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+              <div className="px-5 pb-5 space-y-3" style={{ borderTop: "1px solid var(--border)" }}>
                 {plan.ai_summary && (
                   <div className="mt-3 px-3 py-2.5 rounded-xl text-xs leading-relaxed"
                     style={{ background: "rgba(124,58,237,0.08)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(124,58,237,0.15)" }}>
@@ -596,13 +598,13 @@ function CarePlansTab({ residentId }: { residentId: number }) {
                   const sRisk = RISK_STYLE[sec.risk_level as keyof typeof RISK_STYLE] ?? RISK_STYLE.low;
                   return (
                     <div key={sec.id} className="rounded-xl px-4 py-3"
-                      style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                      style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="text-xs font-semibold text-white">{sec.title}</span>
                         <span className="text-xs px-2 py-0.5 rounded-full capitalize"
                           style={{ background: sRisk.bg, color: sRisk.text }}>{sec.risk_level}</span>
                       </div>
-                      <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
+                      <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
                         {sec.content}
                       </p>
                     </div>
@@ -635,36 +637,36 @@ function MARTab({ residentId }: { residentId: number }) {
   ).sort((a, b) => new Date(b.scheduled_at).getTime() - new Date(a.scheduled_at).getTime());
 
   if (allMAR.length === 0) return (
-    <div className="text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-      <Activity size={28} className="mx-auto mb-2" style={{ color: "rgba(255,255,255,0.15)" }} />
-      <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No MAR entries found.</p>
+    <div className="text-center py-12 rounded-2xl" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+      <Activity size={28} className="mx-auto mb-2" style={{ color: "var(--text-muted)" }} />
+      <p className="text-sm" style={{ color: "var(--text-muted)" }}>No MAR entries found.</p>
     </div>
   );
 
   return (
-    <div className="rounded-2xl overflow-hidden overflow-x-auto" style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
+    <div className="rounded-2xl overflow-hidden overflow-x-auto" style={{ border: "1px solid var(--border)" }}>
       <table className="w-full min-w-[560px]">
         <thead>
-          <tr style={{ background: "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <tr style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--border)" }}>
             {["Medication", "Scheduled", "Status", "Administered by", "Notes"].map((h) => (
               <th key={h} className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-3"
-                style={{ color: "rgba(255,255,255,0.35)" }}>{h}</th>
+                style={{ color: "var(--text-muted)" }}>{h}</th>
             ))}
           </tr>
         </thead>
-        <tbody style={{ background: "rgba(5,9,20,0.6)" }}>
+        <tbody style={{ background: "var(--bg-primary)" }}>
           {allMAR.slice(0, 50).map((entry) => {
             const cfg = STATUS_CFG[entry.status] ?? STATUS_CFG.pending;
             const Icon = cfg.icon;
             return (
-              <tr key={entry.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+              <tr key={entry.id} style={{ borderBottom: "1px solid var(--bg-card)" }}>
                 <td className="px-4 py-3">
                   <div className="text-sm font-medium text-white">{entry.drugName}</div>
-                  <div className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>{entry.dose}</div>
+                  <div className="text-xs" style={{ color: "var(--text-muted)" }}>{entry.dose}</div>
                 </td>
-                <td className="px-4 py-3 text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>
+                <td className="px-4 py-3 text-xs" style={{ color: "var(--text-secondary)" }}>
                   {new Date(entry.scheduled_at).toLocaleDateString("en-GB")}{" "}
-                  <span style={{ color: "rgba(255,255,255,0.35)" }}>
+                  <span style={{ color: "var(--text-muted)" }}>
                     {new Date(entry.scheduled_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
                   </span>
                 </td>
@@ -674,10 +676,10 @@ function MARTab({ residentId }: { residentId: number }) {
                     <Icon size={10} />{cfg.label}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <td className="px-4 py-3 text-xs" style={{ color: "var(--text-secondary)" }}>
                   {entry.administered_by_name ?? "—"}
                 </td>
-                <td className="px-4 py-3 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+                <td className="px-4 py-3 text-xs" style={{ color: "var(--text-muted)" }}>
                   {entry.notes || "—"}
                 </td>
               </tr>
@@ -702,7 +704,7 @@ function CareNotesTab({ residentId }: { residentId: number }) {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ shift:"day", category:"general", mood:"", content:"" });
-  const inputSt = { background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.8)" };
+  const inputSt = { background:"var(--input-bg)", border:"1px solid var(--border-strong)", color:"var(--text-primary)" };
 
   useEffect(() => {
     fetch(`/api/v1/care-notes/?resident=${residentId}&ordering=-recorded_at&page_size=30`, { credentials:"include" })
@@ -729,38 +731,38 @@ function CareNotesTab({ residentId }: { residentId: number }) {
         <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#7c3aed,#3b82f6)" }}><Plus size={14} /> Add Note</button>
       </div>
       {notes.length === 0 ? (
-        <div className="text-center py-12 rounded-2xl" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)" }}>
-          <NotebookPen size={28} className="mx-auto mb-2" style={{ color:"rgba(255,255,255,0.15)" }} />
-          <p className="text-sm" style={{ color:"rgba(255,255,255,0.3)" }}>No care notes recorded.</p>
+        <div className="text-center py-12 rounded-2xl" style={{ background:"var(--bg-card)", border:"1px solid var(--border)" }}>
+          <NotebookPen size={28} className="mx-auto mb-2" style={{ color:"var(--text-muted)" }} />
+          <p className="text-sm" style={{ color:"var(--text-muted)" }}>No care notes recorded.</p>
         </div>
       ) : notes.map(note => (
-        <div key={note.id} className="rounded-2xl p-4" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)" }}>
+        <div key={note.id} className="rounded-2xl p-4" style={{ background:"var(--bg-card)", border:"1px solid var(--border)" }}>
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="text-xs px-2 py-0.5 rounded font-semibold" style={{ background:`${NOTE_SHIFT_COLOR[note.shift]}22`, color:NOTE_SHIFT_COLOR[note.shift] }}>{SHIFT_LABEL[note.shift] ?? note.shift}</span>
-            <span className="text-xs px-2 py-0.5 rounded" style={{ background:"rgba(255,255,255,0.06)", color:"rgba(255,255,255,0.45)" }}>{NOTE_CAT_LABEL[note.category] ?? note.category}</span>
+            <span className="text-xs px-2 py-0.5 rounded" style={{ background:"var(--border)", color:"var(--text-muted)" }}>{NOTE_CAT_LABEL[note.category] ?? note.category}</span>
             {note.mood && <span className="text-xs">{MOOD_EMOJI[note.mood] ?? ""} {note.mood}</span>}
-            <span className="text-xs ml-auto" style={{ color:"rgba(255,255,255,0.3)" }}>{new Date(note.recorded_at).toLocaleDateString("en-GB")} · {note.author_name ?? "—"}</span>
+            <span className="text-xs ml-auto" style={{ color:"var(--text-muted)" }}>{new Date(note.recorded_at).toLocaleDateString("en-GB")} · {note.author_name ?? "—"}</span>
           </div>
-          <p className="text-sm leading-relaxed" style={{ color:"rgba(255,255,255,0.7)" }}>{note.content}</p>
+          <p className="text-sm leading-relaxed" style={{ color:"var(--text-primary)" }}>{note.content}</p>
         </div>
       ))}
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"#0f1629", border:"1px solid rgba(124,58,237,0.25)" }}>
-            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Care Note</h3><button onClick={()=>setShowForm(false)} style={{color:"rgba(255,255,255,0.4)"}}><X size={18}/></button></div>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(124,58,237,0.25)" }}>
+            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Care Note</h3><button onClick={()=>setShowForm(false)} style={{color:"var(--text-muted)"}}><X size={18}/></button></div>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-2">
-                <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Shift</label>
+                <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Shift</label>
                 <select value={form.shift} onChange={e=>setForm(f=>({...f,shift:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputSt}>
                   <option value="day">Day</option><option value="evening">Evening</option><option value="night">Night</option>
                 </select></div>
-                <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Category</label>
+                <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Category</label>
                 <select value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputSt}>
                   {Object.entries(NOTE_CAT_LABEL).map(([k,v])=><option key={k} value={k}>{v}</option>)}
                 </select></div>
               </div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Mood</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Mood</label>
               <select value={form.mood} onChange={e=>setForm(f=>({...f,mood:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputSt}>
                 <option value="">Not recorded</option>
                 {Object.entries(MOOD_EMOJI).map(([k,v])=><option key={k} value={k}>{v} {k}</option>)}
@@ -897,14 +899,10 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
 
   return (
     <div className="space-y-5 max-w-5xl mx-auto">
-      {/* Back */}
-      <button onClick={() => router.back()}
-        className="flex items-center gap-2 text-sm transition-all"
-        style={{ color: "rgba(255,255,255,0.4)" }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.8)")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.4)")}>
-        <ArrowLeft size={16} /> Back to Residents
-      </button>
+      <Breadcrumbs crumbs={[
+        { label: "Residents", href: "/dashboard/residents" },
+        { label: resident.full_name },
+      ]} />
 
       {/* Header card */}
       <div className="rounded-2xl p-4 sm:p-6"
@@ -986,35 +984,15 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
       {tab === "mar"           && <MARTab residentId={resident.id} />}
       {tab === "vitals"        && <VitalsTab residentId={resident.id} canEdit={can("residents.edit")} />}
 
-      {/* Delete confirmation modal */}
-      {confirmDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-sm"
-            style={{ background: "#0f1629", border: "1px solid rgba(239,68,68,0.3)" }}>
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4"
-              style={{ background: "rgba(239,68,68,0.12)" }}>
-              <Trash2 size={20} className="text-red-400" />
-            </div>
-            <h3 className="text-lg font-bold text-white text-center mb-1">Delete Resident?</h3>
-            <p className="text-sm text-center mb-6" style={{ color: "rgba(255,255,255,0.45)" }}>
-              This will permanently remove <strong className="text-white">{resident.full_name}</strong> and all associated records.
-            </p>
-            <div className="flex gap-3">
-              <button onClick={() => setConfirmDelete(false)}
-                className="flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                Cancel
-              </button>
-              <button onClick={handleDelete} disabled={deleting}
-                className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white transition-all disabled:opacity-50"
-                style={{ background: "#dc2626" }}>
-                {deleting ? "Deleting…" : "Yes, Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        open={confirmDelete}
+        title="Delete Resident?"
+        message={`This will permanently remove ${resident.full_name} and all associated records. This action cannot be undone.`}
+        confirmLabel={deleting ? "Deleting…" : "Yes, Delete"}
+        danger
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmDelete(false)}
+      />
     </div>
   );
 }

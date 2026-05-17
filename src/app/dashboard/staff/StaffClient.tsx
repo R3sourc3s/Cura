@@ -29,12 +29,12 @@ const TRAINING_STATUS = {
 } as const;
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium mb-1.5" style={{ color: "rgba(255,255,255,0.45)" }}>
+      <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-muted)" }}>
         {label}{required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {children}
@@ -45,9 +45,9 @@ function Field({ label, required, children }: { label: string; required?: boolea
 function GlassCard({ title, children, badge, action }: { title: string; children: React.ReactNode; badge?: React.ReactNode; action?: React.ReactNode }) {
   return (
     <div className="rounded-2xl overflow-hidden"
-      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-      <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-        <h2 className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>{title}</h2>
+      style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
+      <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--border)" }}>
+        <h2 className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>{title}</h2>
         <div className="flex items-center gap-2">{badge}{action}</div>
       </div>
       <div>{children}</div>
@@ -108,9 +108,9 @@ function AddShiftModal({ users, onClose, onAdded }: { users: User[]; onClose: ()
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
       <div className="w-full max-w-md rounded-2xl flex flex-col overflow-hidden"
-        style={{ background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)" }}>
+        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-strong)" }}>
         <div className="flex items-center justify-between px-6 py-4"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #34d399, #059669)" }}>
@@ -119,8 +119,8 @@ function AddShiftModal({ users, onClose, onAdded }: { users: User[]; onClose: ()
             <h2 className="text-base font-bold text-white">Add Shift</h2>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--input-bg)" }}>
+            <X size={16} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
 
@@ -173,10 +173,10 @@ function AddShiftModal({ users, onClose, onAdded }: { users: User[]; onClose: ()
           </label>
         </form>
 
-        <div className="px-6 py-4 flex gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="px-6 py-4 flex gap-3" style={{ borderTop: "1px solid var(--border)" }}>
           <button type="button" onClick={onClose}
             className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>
             Cancel
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
@@ -219,13 +219,13 @@ function LeaveModal({ onClose, onAdded }: { onClose: () => void; onAdded: (l: Le
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
       <div className="w-full max-w-md rounded-2xl flex flex-col overflow-hidden"
-        style={{ background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)" }}>
+        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-strong)" }}>
         <div className="flex items-center justify-between px-6 py-4"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderBottom: "1px solid var(--border)" }}>
           <h2 className="text-base font-bold text-white">Request Leave</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--input-bg)" }}>
+            <X size={16} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
         <form ref={formRef} onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
@@ -254,10 +254,10 @@ function LeaveModal({ onClose, onAdded }: { onClose: () => void; onAdded: (l: Le
               onChange={(e) => setForm((f) => ({ ...f, reason: e.target.value }))} placeholder="Optional reason…" />
           </Field>
         </form>
-        <div className="px-6 py-4 flex gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="px-6 py-4 flex gap-3" style={{ borderTop: "1px solid var(--border)" }}>
           <button type="button" onClick={onClose}
             className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>
             Cancel
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
@@ -310,9 +310,9 @@ function AddTrainingModal({ users, onClose, onAdded }: { users: User[]; onClose:
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
       <div className="w-full max-w-md rounded-2xl flex flex-col overflow-hidden"
-        style={{ background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)" }}>
+        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-strong)" }}>
         <div className="flex items-center justify-between px-6 py-4"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #a78bfa, #7c3aed)" }}>
@@ -321,8 +321,8 @@ function AddTrainingModal({ users, onClose, onAdded }: { users: User[]; onClose:
             <h2 className="text-base font-bold text-white">Add Training Record</h2>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--input-bg)" }}>
+            <X size={16} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
         <form ref={formRef} onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
@@ -365,10 +365,10 @@ function AddTrainingModal({ users, onClose, onAdded }: { users: User[]; onClose:
             </Field>
           </div>
         </form>
-        <div className="px-6 py-4 flex gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="px-6 py-4 flex gap-3" style={{ borderTop: "1px solid var(--border)" }}>
           <button type="button" onClick={onClose}
             className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>
             Cancel
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
@@ -433,7 +433,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <UserCheck size={22} style={{ color: "#34d399" }} /> Staff
           </h1>
-          <p className="text-sm mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <p className="text-sm mt-0.5 truncate" style={{ color: "var(--text-muted)" }}>
             {upcomingShifts.length} shifts this week · {pendingLeave.length} leave pending
           </p>
         </div>
@@ -441,7 +441,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
           {can("staff.request_leave") && (
             <button onClick={() => setShowLeave(true)}
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-xl"
-              style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.1)" }}>
+              style={{ background: "var(--border)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
               <Calendar size={13} /> <span className="hidden sm:inline">Request Leave</span>
             </button>
           )}
@@ -460,26 +460,26 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
 
         {/* Shifts — wider column */}
         <div className="xl:col-span-3 rounded-2xl overflow-hidden"
-          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-            <h2 className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>Upcoming Shifts</h2>
-            <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>Next 7 days</span>
+          style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
+          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--border)" }}>
+            <h2 className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>Upcoming Shifts</h2>
+            <span className="text-xs" style={{ color: "var(--text-muted)" }}>Next 7 days</span>
           </div>
 
           {upcomingShifts.length === 0 ? (
-            <p className="px-5 py-10 text-sm text-center" style={{ color: "rgba(255,255,255,0.3)" }}>No shifts scheduled.</p>
+            <p className="px-5 py-10 text-sm text-center" style={{ color: "var(--text-muted)" }}>No shifts scheduled.</p>
           ) : (
-            <div className="divide-y" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+            <div className="divide-y" style={{ borderColor: "var(--bg-card)" }}>
               {Object.entries(shiftsByDate).map(([date, dayShifts]) => (
                 <div key={date}>
                   {/* Date header */}
                   <div className="flex items-center gap-3 px-5 py-2.5"
-                    style={{ background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--bg-card)" }}>
                     <span className="text-xs font-semibold uppercase tracking-wider"
-                      style={{ color: date === today() ? "#a78bfa" : "rgba(255,255,255,0.4)" }}>
+                      style={{ color: date === today() ? "#a78bfa" : "var(--text-muted)" }}>
                       {fmtDateHeader(date)}
                     </span>
-                    <span className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
+                    <span className="text-xs" style={{ color: "var(--text-muted)" }}>
                       {dayShifts.length} shift{dayShifts.length !== 1 ? "s" : ""}
                     </span>
                   </div>
@@ -490,7 +490,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
                     const role = s.staff_member_name?.match(/\((.+?)\)/)?.[1] ?? "";
                     return (
                       <div key={s.id} className="flex items-center gap-3 px-5 py-3"
-                        style={{ borderBottom: "1px solid rgba(255,255,255,0.03)" }}>
+                        style={{ borderBottom: "1px solid var(--bg-card)" }}>
                         {/* Avatar */}
                         <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
                           style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30` }}>
@@ -502,13 +502,13 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
                             <span className="text-sm font-medium text-white truncate">{name}</span>
                             {s.is_agency && (
                               <span className="text-xs px-1.5 py-0.5 rounded flex-shrink-0"
-                                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.35)" }}>Agency</span>
+                                style={{ background: "var(--border)", color: "var(--text-muted)" }}>Agency</span>
                             )}
                           </div>
-                          {role && <div className="text-xs capitalize" style={{ color: "rgba(255,255,255,0.3)" }}>{role}</div>}
+                          {role && <div className="text-xs capitalize" style={{ color: "var(--text-muted)" }}>{role}</div>}
                         </div>
                         {/* Time */}
-                        <div className="text-xs text-right flex-shrink-0" style={{ color: "rgba(255,255,255,0.45)" }}>
+                        <div className="text-xs text-right flex-shrink-0" style={{ color: "var(--text-muted)" }}>
                           {fmtTime(s.start_time)} – {fmtTime(s.end_time)}
                         </div>
                         {/* Badge */}
@@ -528,9 +528,9 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
 
           {/* Leave Requests */}
           <div className="rounded-2xl overflow-hidden"
-            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-            <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-              <h2 className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>Leave Requests</h2>
+            style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
+            <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--border)" }}>
+              <h2 className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>Leave Requests</h2>
               {pendingLeave.length > 0 && (
                 <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(250,204,21,0.15)", color: "#fbbf24" }}>
                   {pendingLeave.length} pending
@@ -538,7 +538,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
               )}
             </div>
             {leave.length === 0 ? (
-              <p className="px-5 py-8 text-sm text-center" style={{ color: "rgba(255,255,255,0.3)" }}>No leave requests.</p>
+              <p className="px-5 py-8 text-sm text-center" style={{ color: "var(--text-muted)" }}>No leave requests.</p>
             ) : (
               leave.slice(0, 6).map((req) => {
                 const cfg = LEAVE_STATUS[req.status] ?? LEAVE_STATUS.pending;
@@ -546,21 +546,21 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
                 const role = req.staff_member_name?.match(/\((.+?)\)/)?.[1] ?? "";
                 return (
                   <div key={req.id} className="flex items-start gap-3 px-5 py-3.5"
-                    style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    style={{ borderBottom: "1px solid var(--bg-card)" }}>
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
                       style={{ background: "rgba(124,58,237,0.2)", color: "#a78bfa" }}>
                       {initials(req.staff_member_name || "?")}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-medium text-white truncate">{name}</div>
-                      <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+                      <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
                         <span className="capitalize">{req.leave_type}</span>
                         <span className="mx-1">·</span>
                         {new Date(req.start_date + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
                         {" – "}
                         {new Date(req.end_date + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
                       </div>
-                      {role && <div className="text-xs capitalize mt-0.5" style={{ color: "rgba(255,255,255,0.2)" }}>{role}</div>}
+                      {role && <div className="text-xs capitalize mt-0.5" style={{ color: "var(--text-muted)" }}>{role}</div>}
                     </div>
                     {req.status === "pending" && can("staff.manage") ? (
                       <div className="flex gap-1.5 flex-shrink-0">
@@ -587,18 +587,18 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
 
           {/* Training Records */}
           <div className="rounded-2xl overflow-hidden"
-            style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
+            style={{ border: "1px solid var(--border)" }}>
             <div className="flex items-center justify-between px-5 py-4"
-              style={{ background: "rgba(255,255,255,0.03)", borderBottom: showTraining ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
+              style={{ background: "var(--bg-card)", borderBottom: showTraining ? "1px solid var(--border)" : "none" }}>
               <button className="flex items-center gap-2 flex-1 text-left" onClick={() => setShowTraining((v) => !v)}>
                 <GraduationCap size={15} style={{ color: "#a78bfa" }} />
-                <h2 className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.8)" }}>
+                <h2 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
                   Training Records
                 </h2>
-                <span className="text-xs ml-1" style={{ color: "rgba(255,255,255,0.3)" }}>({training.length})</span>
+                <span className="text-xs ml-1" style={{ color: "var(--text-muted)" }}>({training.length})</span>
                 {showTraining
-                  ? <ChevronUp size={13} style={{ color: "rgba(255,255,255,0.4)" }} />
-                  : <ChevronDown size={13} style={{ color: "rgba(255,255,255,0.4)" }} />}
+                  ? <ChevronUp size={13} style={{ color: "var(--text-muted)" }} />
+                  : <ChevronDown size={13} style={{ color: "var(--text-muted)" }} />}
               </button>
               {can("staff.manage") && (
                 <button onClick={() => setShowAddTraining(true)}
@@ -610,28 +610,28 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
             </div>
             {showTraining && (
               training.length === 0 ? (
-                <p className="px-5 py-8 text-sm text-center" style={{ color: "rgba(255,255,255,0.3)", background: "rgba(5,9,20,0.6)" }}>
+                <p className="px-5 py-8 text-sm text-center" style={{ color: "var(--text-muted)", background: "var(--bg-primary)" }}>
                   No training records.
                 </p>
               ) : (
-                <div style={{ background: "rgba(5,9,20,0.6)" }}>
+                <div style={{ background: "var(--bg-primary)" }}>
                   {training.map((t) => {
                     const cfg = TRAINING_STATUS[t.status] ?? TRAINING_STATUS.pending;
                     const isExpired = t.expiry_date && new Date(t.expiry_date) < new Date();
                     return (
                       <div key={t.id} className="flex items-center gap-3 px-5 py-3"
-                        style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                        style={{ borderBottom: "1px solid var(--bg-card)" }}>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium text-white truncate">
                             {(t.staff_member_name || `Staff #${t.staff_member}`).replace(/\s*\(.*?\)/, "")}
                           </div>
-                          <div className="text-xs mt-0.5 truncate" style={{ color: "rgba(255,255,255,0.4)" }}>{t.course_name}</div>
+                          <div className="text-xs mt-0.5 truncate" style={{ color: "var(--text-muted)" }}>{t.course_name}</div>
                         </div>
                         <div className="text-right flex-shrink-0">
                           <span className="text-xs px-2 py-0.5 rounded-full font-medium"
                             style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
                           {t.expiry_date && (
-                            <div className="text-xs mt-1" style={{ color: isExpired ? "#f87171" : "rgba(255,255,255,0.3)" }}>
+                            <div className="text-xs mt-1" style={{ color: isExpired ? "#f87171" : "var(--text-muted)" }}>
                               exp. {new Date(t.expiry_date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" })}
                             </div>
                           )}

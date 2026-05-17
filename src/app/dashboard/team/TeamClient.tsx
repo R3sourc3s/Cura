@@ -24,15 +24,15 @@ function roleConfig(role: string) {
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
 const inputStyle = {
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  background: "var(--input-bg)",
+  border: "1px solid var(--border-strong)",
   color: "white",
 };
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium mb-1.5" style={{ color: "rgba(255,255,255,0.45)" }}>
+      <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-muted)" }}>
         {label}{required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {children}
@@ -105,9 +105,9 @@ function UserModal({ user, onClose, onSaved }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}>
       <div className="w-full max-w-lg rounded-2xl flex flex-col max-h-[90vh]"
-        style={{ background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)" }}>
+        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-strong)" }}>
         <div className="flex items-center justify-between px-6 py-4 flex-shrink-0"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
@@ -116,8 +116,8 @@ function UserModal({ user, onClose, onSaved }: {
             <h2 className="text-base font-bold text-white">{isEdit ? `Edit ${user.full_name}` : "Add Team Member"}</h2>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--input-bg)" }}>
+            <X size={16} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
 
@@ -161,8 +161,8 @@ function UserModal({ user, onClose, onSaved }: {
                 onChange={(e) => set("phone", e.target.value)} placeholder="07700 900000" />
             </Field>
           </div>
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "1rem" }}>
-            <p className="text-xs mb-3" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <div style={{ borderTop: "1px solid var(--border)", paddingTop: "1rem" }}>
+            <p className="text-xs mb-3" style={{ color: "var(--text-muted)" }}>
               {isEdit ? "Leave password blank to keep current password." : "Set a secure password (min. 8 characters)."}
             </p>
             <div className="grid grid-cols-2 gap-3">
@@ -179,10 +179,10 @@ function UserModal({ user, onClose, onSaved }: {
         </form>
 
         <div className="px-6 py-4 flex gap-3 flex-shrink-0"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderTop: "1px solid var(--border)" }}>
           <button type="button" onClick={onClose}
             className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>
             Cancel
           </button>
           <button onClick={() => (document.querySelector("form") as HTMLFormElement)?.requestSubmit()} disabled={saving}
@@ -217,17 +217,17 @@ function DeleteConfirmModal({ user, onClose, onDeleted }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}>
       <div className="w-full max-w-sm rounded-2xl p-6 space-y-5"
-        style={{ background: "#0d1526", border: "1px solid rgba(239,68,68,0.2)" }}>
+        style={{ background: "var(--bg-elevated)", border: "1px solid rgba(239,68,68,0.2)" }}>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(239,68,68,0.12)" }}>
             <Trash2 size={18} style={{ color: "#f87171" }} />
           </div>
           <div>
             <h3 className="text-base font-bold text-white">Remove Team Member</h3>
-            <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>This action cannot be undone.</p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>This action cannot be undone.</p>
           </div>
         </div>
-        <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
+        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
           Are you sure you want to remove <span className="text-white font-semibold">{user.full_name}</span>?
           Their records (shifts, leave, training) will be preserved.
         </p>
@@ -235,7 +235,7 @@ function DeleteConfirmModal({ user, onClose, onDeleted }: {
         <div className="flex gap-3">
           <button onClick={onClose}
             className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>
             Cancel
           </button>
           <button onClick={handleDelete} disabled={deleting}
@@ -287,7 +287,7 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <Users size={22} style={{ color: "#a78bfa" }} /> Team
           </h1>
-          <p className="text-sm mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
             {activeCount} active · {users.length} total
           </p>
         </div>
@@ -304,7 +304,7 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
         {roleGroups.map((r) => (
           <button key={r.value} onClick={() => setRoleFilter(roleFilter === r.value ? "" : r.value)}
             className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all"
-            style={{ background: roleFilter === r.value ? r.bg : "rgba(255,255,255,0.03)", color: roleFilter === r.value ? r.color : "rgba(255,255,255,0.4)", border: roleFilter === r.value ? `1px solid ${r.color}40` : "1px solid rgba(255,255,255,0.07)" }}>
+            style={{ background: roleFilter === r.value ? r.bg : "var(--bg-card)", color: roleFilter === r.value ? r.color : "var(--text-muted)", border: roleFilter === r.value ? `1px solid ${r.color}40` : "1px solid var(--border)" }}>
             <Shield size={11} style={{ color: r.color }} />
             {r.label} <span style={{ opacity: 0.6 }}>{r.count}</span>
           </button>
@@ -312,17 +312,17 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
         {roleFilter && (
           <button onClick={() => setRoleFilter("")}
             className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-medium"
-            style={{ background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.07)" }}>
+            style={{ background: "var(--bg-card)", color: "var(--text-muted)", border: "1px solid var(--border)" }}>
             <X size={10} /> Clear
           </button>
         )}
       </div>
 
       <div className="relative">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.3)" }} />
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
         <input
           className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl outline-none"
-          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "white" }}
+          style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)", color: "white" }}
           placeholder="Search by name, email or username…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -331,30 +331,30 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
 
       {/* Table — desktop */}
       <div className="hidden md:block rounded-2xl overflow-hidden"
-        style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
         <table className="w-full">
           <thead>
-            <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+            <tr style={{ borderBottom: "1px solid var(--border)" }}>
               {["Member", "Role", "Contact", "Status", ""].map((h) => (
                 <th key={h} className="text-left text-xs font-semibold uppercase tracking-wider px-5 py-3.5"
-                  style={{ color: "rgba(255,255,255,0.3)" }}>{h}</th>
+                  style={{ color: "var(--text-muted)" }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr><td colSpan={5} className="px-5 py-12 text-center text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No team members found.</td></tr>
+              <tr><td colSpan={5} className="px-5 py-12 text-center text-sm" style={{ color: "var(--text-muted)" }}>No team members found.</td></tr>
             ) : filtered.map((u) => {
               const rc = roleConfig(u.role);
               return (
-                <tr key={u.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+                <tr key={u.id} style={{ borderBottom: "1px solid var(--bg-card)" }}
                   className="transition-colors hover:bg-white/[0.02]">
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
                       <Avatar user={u} size={36} />
                       <div>
                         <div className="text-sm font-semibold text-white">{u.full_name}</div>
-                        <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>@{u.username}</div>
+                        <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>@{u.username}</div>
                       </div>
                     </div>
                   </td>
@@ -362,8 +362,8 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
                     <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: rc.bg, color: rc.color }}>{rc.label}</span>
                   </td>
                   <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-1.5 text-xs mb-0.5" style={{ color: "rgba(255,255,255,0.5)" }}><Mail size={11} />{u.email}</div>
-                    {u.phone && <div className="flex items-center gap-1.5 text-xs" style={{ color: "rgba(255,255,255,0.35)" }}><Phone size={11} />{u.phone}</div>}
+                    <div className="flex items-center gap-1.5 text-xs mb-0.5" style={{ color: "var(--text-secondary)" }}><Mail size={11} />{u.email}</div>
+                    {u.phone && <div className="flex items-center gap-1.5 text-xs" style={{ color: "var(--text-muted)" }}><Phone size={11} />{u.phone}</div>}
                   </td>
                   <td className="px-5 py-3.5">
                     {can("team.manage") ? (
@@ -387,8 +387,8 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
                         <>
                           <button onClick={() => setEditUser(u)}
                             className="w-7 h-7 rounded-lg flex items-center justify-center"
-                            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                            <Edit2 size={12} style={{ color: "rgba(255,255,255,0.5)" }} />
+                            style={{ background: "var(--input-bg)", border: "1px solid var(--bg-card-hover)" }}>
+                            <Edit2 size={12} style={{ color: "var(--text-secondary)" }} />
                           </button>
                           <button onClick={() => setDeleteUser(u)}
                             className="w-7 h-7 rounded-lg flex items-center justify-center"
@@ -409,28 +409,28 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
       {/* Cards — mobile */}
       <div className="md:hidden space-y-3">
         {filtered.length === 0 ? (
-          <div className="text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-            <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No team members found.</p>
+          <div className="text-center py-12 rounded-2xl" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>No team members found.</p>
           </div>
         ) : filtered.map((u) => {
           const rc = roleConfig(u.role);
           return (
-            <div key={u.id} className="rounded-2xl p-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            <div key={u.id} className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
               <div className="flex items-start gap-3 mb-3">
                 <Avatar user={u} size={42} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <div className="text-sm font-semibold text-white">{u.full_name}</div>
-                      <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>@{u.username}</div>
+                      <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>@{u.username}</div>
                     </div>
                     <span className="text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0" style={{ background: rc.bg, color: rc.color }}>{rc.label}</span>
                   </div>
                 </div>
               </div>
               <div className="space-y-1 mb-3">
-                <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.45)" }}><Mail size={11} />{u.email}</div>
-                {u.phone && <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.35)" }}><Phone size={11} />{u.phone}</div>}
+                <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}><Mail size={11} />{u.email}</div>
+                {u.phone && <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}><Phone size={11} />{u.phone}</div>}
               </div>
               <div className="flex gap-2 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
                 {can("team.manage") ? (

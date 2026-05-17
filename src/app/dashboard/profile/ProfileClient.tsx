@@ -11,15 +11,15 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
 
 function Section({ title, icon: Icon, children }: { title: string; icon: React.ElementType; children: React.ReactNode }) {
   return (
     <div className="rounded-2xl overflow-hidden"
-      style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
-      <div className="flex items-center gap-2.5 px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+      style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+      <div className="flex items-center gap-2.5 px-5 py-4 border-b" style={{ borderColor: "var(--border)" }}>
         <Icon size={15} style={{ color: "#a78bfa" }} />
-        <h2 className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.8)" }}>{title}</h2>
+        <h2 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{title}</h2>
       </div>
       <div className="px-5 py-5">{children}</div>
     </div>
@@ -29,7 +29,7 @@ function Section({ title, icon: Icon, children }: { title: string; icon: React.E
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium mb-1.5" style={{ color: "rgba(255,255,255,0.4)" }}>{label}</label>
+      <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-muted)" }}>{label}</label>
       {children}
     </div>
   );
@@ -83,13 +83,13 @@ export default function ProfileClient({ initialUser }: { initialUser: User }) {
         <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
           <UserCircle size={22} style={{ color: "#a78bfa" }} /> My Profile
         </h1>
-        <p className="text-sm mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+        <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
           Manage your account details and password
         </p>
       </div>
 
       <div className="rounded-2xl p-5 flex items-center gap-5"
-        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold flex-shrink-0 text-white"
           style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
           {user.avatar
@@ -98,7 +98,7 @@ export default function ProfileClient({ initialUser }: { initialUser: User }) {
         </div>
         <div className="min-w-0">
           <div className="text-lg font-bold text-white">{user.full_name}</div>
-          <div className="text-sm mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>@{user.username}</div>
+          <div className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>@{user.username}</div>
           <div className="flex items-center gap-1.5 mt-1.5">
             <BadgeCheck size={12} style={{ color: "#a78bfa" }} />
             <span className="text-xs font-medium" style={{ color: "#a78bfa" }}>
@@ -126,7 +126,7 @@ export default function ProfileClient({ initialUser }: { initialUser: User }) {
           </Field>
           <Field label="Phone">
             <div className="relative">
-              <Phone size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.3)" }} />
+              <Phone size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
               <input className={`${inputCls} pl-9`} style={inputStyle} value={profile.phone}
                 onChange={(e) => setProfile((p) => ({ ...p, phone: e.target.value }))} placeholder="07700 900000" />
             </div>
@@ -141,7 +141,7 @@ export default function ProfileClient({ initialUser }: { initialUser: User }) {
 
       <Section title="Change Password" icon={Lock}>
         <form onSubmit={savePassword} className="space-y-4">
-          <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
             Choose a strong password of at least 8 characters.
           </p>
           <Field label="New Password">

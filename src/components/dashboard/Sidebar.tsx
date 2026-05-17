@@ -73,8 +73,8 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
       <aside
         className="fixed top-0 left-0 h-full w-64 flex flex-col z-40 transition-transform duration-300 ease-in-out"
         style={{
-          background: "rgba(8,13,28,0.98)",
-          borderRight: "1px solid rgba(255,255,255,0.06)",
+          background: "var(--sidebar-bg)",
+          borderRight: "1px solid var(--border)",
           backdropFilter: "blur(20px)",
         }}
         data-open={open}
@@ -89,21 +89,21 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
           }
         `}</style>
 
-        <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+        <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--border)" }}>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
               style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
               <Zap size={14} className="text-white" />
             </div>
             <div>
-              <div className="text-white text-sm font-bold leading-none">cura</div>
-              <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>Care Platform</div>
+              <div className="text-sm font-bold leading-none" style={{ color: "var(--text-primary)" }}>cura</div>
+              <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Care Platform</div>
             </div>
           </div>
           <button onClick={onClose}
             className="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--bg-card)" }}>
+            <X size={16} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
 
@@ -117,10 +117,10 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150"
                 style={{
                   background: active ? "rgba(124,58,237,0.15)" : "transparent",
-                  color: active ? "#a78bfa" : "rgba(255,255,255,0.5)",
+                  color: active ? "#a78bfa" : "var(--text-secondary)",
                   border: active ? "1px solid rgba(124,58,237,0.2)" : "1px solid transparent",
                 }}>
-                <Icon size={16} style={{ color: active ? "#a78bfa" : "rgba(255,255,255,0.35)" }} />
+                <Icon size={16} style={{ color: active ? "#a78bfa" : "var(--text-muted)" }} />
                 <span>{label}</span>
                 {active && <div className="ml-auto w-1.5 h-1.5 rounded-full" style={{ background: "#7c3aed" }} />}
               </Link>
@@ -128,12 +128,12 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
           })}
         </nav>
 
-        <div className="px-3 pb-4 pt-3 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+        <div className="px-3 pb-4 pt-3 border-t" style={{ borderColor: "var(--border)" }}>
           <button onClick={logout}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm w-full transition-all duration-150"
-            style={{ color: "rgba(255,255,255,0.4)" }}
+            style={{ color: "var(--text-muted)" }}
             onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.1)"; e.currentTarget.style.color = "#f87171"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}>
+            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-muted)"; }}>
             <LogOut size={16} />
             <span>Sign out</span>
           </button>

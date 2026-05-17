@@ -20,7 +20,7 @@ const PRIORITY = {
 } as const;
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
 
 function today() { return new Date().toISOString().slice(0, 10); }
 function addDays(date: string, n: number) {
@@ -32,7 +32,7 @@ function addDays(date: string, n: number) {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium mb-1.5" style={{ color: "rgba(255,255,255,0.45)" }}>{label}</label>
+      <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-muted)" }}>{label}</label>
       {children}
     </div>
   );
@@ -78,9 +78,9 @@ function CreateNoteModal({ residents, date, onClose, onCreated }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
       <div className="w-full max-w-lg rounded-2xl flex flex-col overflow-hidden"
-        style={{ background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)" }}>
+        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-strong)" }}>
         <div className="flex items-center justify-between px-6 py-4"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
@@ -89,8 +89,8 @@ function CreateNoteModal({ residents, date, onClose, onCreated }: {
             <h2 className="text-base font-bold text-white">Add Handover Note</h2>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--input-bg)" }}>
+            <X size={16} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
 
@@ -143,10 +143,10 @@ function CreateNoteModal({ residents, date, onClose, onCreated }: {
           )}
         </form>
 
-        <div className="px-6 py-4 flex gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="px-6 py-4 flex gap-3" style={{ borderTop: "1px solid var(--border)" }}>
           <button type="button" onClick={onClose}
             className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
             Cancel
           </button>
           <button onClick={(e) => handleSubmit(e as unknown as React.FormEvent)} disabled={saving || !form.content.trim()}
@@ -217,7 +217,7 @@ export default function HandoverClient({ initialNotes, residents }: Props) {
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <ClipboardList size={22} style={{ color: "#7c3aed" }} /> Handover
           </h1>
-          <p className="text-sm mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
             {notes.length} note{notes.length !== 1 ? "s" : ""} · {dateLabel}
           </p>
         </div>
@@ -234,16 +234,16 @@ export default function HandoverClient({ initialNotes, residents }: Props) {
       <div className="flex items-center gap-3">
         <button onClick={() => loadDate(addDays(date, -1))} disabled={loadingDate}
           className="w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <ChevronLeft size={14} style={{ color: "rgba(255,255,255,0.6)" }} />
+          style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
+          <ChevronLeft size={14} style={{ color: "var(--text-secondary)" }} />
         </button>
         <input type="date" value={date} onChange={(e) => loadDate(e.target.value)}
           className="text-sm px-3 py-2 rounded-xl outline-none"
-          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "white" }} />
+          style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" }} />
         <button onClick={() => loadDate(addDays(date, 1))} disabled={loadingDate || date >= today()}
           className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30"
-          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <ChevronRight size={14} style={{ color: "rgba(255,255,255,0.6)" }} />
+          style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
+          <ChevronRight size={14} style={{ color: "var(--text-secondary)" }} />
         </button>
         {!isToday && (
           <button onClick={() => loadDate(today())}
@@ -265,9 +265,9 @@ export default function HandoverClient({ initialNotes, residents }: Props) {
             const shiftNotes = byShift[shift];
             return (
               <div key={shift} className="rounded-2xl overflow-hidden"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
                 <div className="flex items-center gap-2 px-4 py-3"
-                  style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", background: `${cfg.bg}` }}>
+                  style={{ borderBottom: "1px solid var(--border)", background: `${cfg.bg}` }}>
                   <span>{cfg.icon}</span>
                   <span className="text-sm font-semibold" style={{ color: cfg.color }}>{cfg.label} Shift</span>
                   <span className="ml-auto text-xs px-2 py-0.5 rounded-full"
@@ -277,11 +277,11 @@ export default function HandoverClient({ initialNotes, residents }: Props) {
                 </div>
 
                 {shiftNotes.length === 0 ? (
-                  <p className="px-4 py-8 text-sm text-center" style={{ color: "rgba(255,255,255,0.25)" }}>
+                  <p className="px-4 py-8 text-sm text-center" style={{ color: "var(--text-muted)" }}>
                     No notes for this shift.
                   </p>
                 ) : (
-                  <div className="divide-y" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+                  <div className="divide-y" style={{ borderColor: "var(--bg-card)" }}>
                     {shiftNotes.map((note) => {
                       const pr = PRIORITY[note.priority as keyof typeof PRIORITY] ?? PRIORITY.normal;
                       const isRead = user ? note.read_by_ids.includes(user.id) : false;
@@ -293,7 +293,7 @@ export default function HandoverClient({ initialNotes, residents }: Props) {
                                 <span className="text-xs px-2 py-0.5 rounded-full font-medium"
                                   style={{ background: pr.bg, color: pr.color }}>{pr.label}</span>
                               )}
-                              <span className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+                              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
                                 {note.author_name}
                                 {note.author_role && ` · ${note.author_role}`}
                               </span>
@@ -322,7 +322,7 @@ export default function HandoverClient({ initialNotes, residents }: Props) {
                               ))}
                             </div>
                           )}
-                          <p className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
+                          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                             {new Date(note.created_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
                             {note.read_by_ids.length > 0 && ` · Read by ${note.read_by_ids.length}`}
                           </p>

@@ -19,7 +19,7 @@ const APPETITE_CFG: Record<string,{color:string;bg:string}> = { good:{color:"#34
 const FLUID_TARGET_ML = 1500;
 
 function isoDate(d: Date) { return d.toISOString().slice(0,10); }
-const inputStyle = { background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.8)" };
+const inputStyle = { background:"var(--input-bg)", border:"1px solid var(--border-strong)", color:"var(--text-primary)" };
 
 export default function NutritionPage() {
   const [residents, setResidents] = useState<Resident[]>([]);
@@ -83,7 +83,7 @@ export default function NutritionPage() {
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(96,165,250,0.12)", border:"1px solid rgba(96,165,250,0.2)" }}>
             <Utensils size={16} style={{ color:"#60a5fa" }} />
           </div>
-          <div><h1 className="text-lg font-bold text-white">Fluid & Nutrition</h1><p className="text-xs" style={{ color:"rgba(255,255,255,0.35)" }}>Daily intake monitoring</p></div>
+          <div><h1 className="text-lg font-bold text-white">Fluid & Nutrition</h1><p className="text-xs" style={{ color:"var(--text-muted)" }}>Daily intake monitoring</p></div>
         </div>
         <div className="flex items-center gap-3">
           <select value={selectedResident} onChange={e => setSelectedResident(e.target.value ? Number(e.target.value) : "")} className="text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>
@@ -95,16 +95,16 @@ export default function NutritionPage() {
       </div>
 
       {!selectedResident ? (
-        <div className="text-center py-20 rounded-2xl" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)" }}>
-          <Utensils size={28} className="mx-auto mb-2" style={{ color:"rgba(255,255,255,0.15)" }} />
-          <p className="text-sm" style={{ color:"rgba(255,255,255,0.3)" }}>Select a resident to view their nutrition record</p>
+        <div className="text-center py-20 rounded-2xl" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid var(--border)" }}>
+          <Utensils size={28} className="mx-auto mb-2" style={{ color:"var(--text-muted)" }} />
+          <p className="text-sm" style={{ color:"var(--text-muted)" }}>Select a resident to view their nutrition record</p>
         </div>
       ) : loading ? (
         <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" /></div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {/* Fluid section */}
-          <div className="rounded-2xl p-5 space-y-4" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)" }}>
+          <div className="rounded-2xl p-5 space-y-4" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid var(--border)" }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Droplets size={15} style={{ color:"#60a5fa" }} />
@@ -116,22 +116,22 @@ export default function NutritionPage() {
             {/* Progress bar */}
             <div>
               <div className="flex items-center justify-between text-xs mb-2">
-                <span style={{ color:"rgba(255,255,255,0.5)" }}>Daily target: {FLUID_TARGET_ML}ml</span>
+                <span style={{ color:"var(--text-secondary)" }}>Daily target: {FLUID_TARGET_ML}ml</span>
                 <span style={{ color: fluidColor, fontWeight: 600 }}>{totalFluidMl}ml ({fluidPct}%)</span>
               </div>
-              <div className="w-full h-2 rounded-full" style={{ background:"rgba(255,255,255,0.08)" }}>
+              <div className="w-full h-2 rounded-full" style={{ background:"var(--bg-card-hover)" }}>
                 <div className="h-2 rounded-full transition-all" style={{ width:`${fluidPct}%`, background: fluidColor }} />
               </div>
             </div>
 
             {/* Fluid log */}
             {fluids.length === 0 ? (
-              <p className="text-xs text-center py-4" style={{ color:"rgba(255,255,255,0.25)" }}>No fluid intake logged today.</p>
+              <p className="text-xs text-center py-4" style={{ color:"var(--text-muted)" }}>No fluid intake logged today.</p>
             ) : (
               <div className="space-y-1.5 max-h-64 overflow-y-auto">
                 {fluids.map(f => (
                   <div key={f.id} className="flex items-center gap-3 rounded-lg px-3 py-2" style={{ background:"rgba(255,255,255,0.02)" }}>
-                    <span className="text-xs" style={{ color:"rgba(255,255,255,0.35)" }}>{new Date(f.recorded_at).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</span>
+                    <span className="text-xs" style={{ color:"var(--text-muted)" }}>{new Date(f.recorded_at).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</span>
                     <span className="text-xs font-medium text-white flex-1">{FLUID_TYPES[f.fluid_type] ?? f.fluid_type}</span>
                     <span className="text-xs font-semibold" style={{ color:"#60a5fa" }}>{f.amount_ml}ml</span>
                   </div>
@@ -141,7 +141,7 @@ export default function NutritionPage() {
           </div>
 
           {/* Meals section */}
-          <div className="rounded-2xl p-5 space-y-4" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)" }}>
+          <div className="rounded-2xl p-5 space-y-4" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid var(--border)" }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Utensils size={15} style={{ color:"#34d399" }} />
@@ -156,7 +156,7 @@ export default function NutritionPage() {
                 const entry = meals.find(m => m.meal_type === mt);
                 return (
                   <div key={mt} className="rounded-xl p-3 text-center" style={{ background: entry ? "rgba(52,211,153,0.05)" : "rgba(255,255,255,0.02)", border: entry ? "1px solid rgba(52,211,153,0.15)" : "1px solid rgba(255,255,255,0.06)" }}>
-                    <div className="text-xs font-semibold mb-1" style={{ color: entry ? "#34d399" : "rgba(255,255,255,0.4)" }}>{MEAL_TYPES[mt]}</div>
+                    <div className="text-xs font-semibold mb-1" style={{ color: entry ? "#34d399" : "var(--text-muted)" }}>{MEAL_TYPES[mt]}</div>
                     {entry ? (
                       <>
                         <div className="text-lg font-bold" style={{ color:"white" }}>{entry.completion_percent}%</div>
@@ -165,7 +165,7 @@ export default function NutritionPage() {
                         </div>
                       </>
                     ) : (
-                      <div className="text-xs" style={{ color:"rgba(255,255,255,0.2)" }}>Not recorded</div>
+                      <div className="text-xs" style={{ color:"var(--text-muted)" }}>Not recorded</div>
                     )}
                   </div>
                 );
@@ -175,8 +175,8 @@ export default function NutritionPage() {
             {meals.length > 0 && (
               <div className="space-y-1.5 max-h-32 overflow-y-auto">
                 {meals.filter(m => m.notes).map(m => (
-                  <div key={m.id} className="text-xs px-3 py-2 rounded-lg" style={{ background:"rgba(255,255,255,0.02)", color:"rgba(255,255,255,0.4)" }}>
-                    <span className="font-medium" style={{ color:"rgba(255,255,255,0.6)" }}>{MEAL_TYPES[m.meal_type]}: </span>{m.notes}
+                  <div key={m.id} className="text-xs px-3 py-2 rounded-lg" style={{ background:"rgba(255,255,255,0.02)", color:"var(--text-muted)" }}>
+                    <span className="font-medium" style={{ color:"var(--text-secondary)" }}>{MEAL_TYPES[m.meal_type]}: </span>{m.notes}
                   </div>
                 ))}
               </div>
@@ -188,20 +188,20 @@ export default function NutritionPage() {
       {/* Add fluid modal */}
       {showFluid && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-sm" style={{ background:"#0f1629", border:"1px solid rgba(96,165,250,0.25)" }}>
-            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Log Fluid Intake</h3><button onClick={()=>setShowFluid(false)} style={{color:"rgba(255,255,255,0.4)"}}><X size={18}/></button></div>
+          <div className="rounded-2xl p-6 w-full max-w-sm" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(96,165,250,0.25)" }}>
+            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Log Fluid Intake</h3><button onClick={()=>setShowFluid(false)} style={{color:"var(--text-muted)"}}><X size={18}/></button></div>
             <div className="space-y-3">
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Type</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Type</label>
               <select value={fluidForm.fluid_type} onChange={e=>setFluidForm(f=>({...f,fluid_type:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>
                 {Object.entries(FLUID_TYPES).map(([k,v])=><option key={k} value={k}>{v}</option>)}
               </select></div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Amount (ml)</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Amount (ml)</label>
               <input type="number" min="0" max="2000" value={fluidForm.amount_ml} onChange={e=>setFluidForm(f=>({...f,amount_ml:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}/></div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Notes</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Notes</label>
               <input value={fluidForm.notes} onChange={e=>setFluidForm(f=>({...f,notes:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder="Optional"/></div>
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={()=>setShowFluid(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"rgba(255,255,255,0.06)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.08)"}}>Cancel</button>
+              <button onClick={()=>setShowFluid(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card-hover)",color:"var(--text-secondary)",border:"1px solid var(--bg-card-hover)"}}>Cancel</button>
               <button onClick={handleAddFluid} disabled={saving||!fluidForm.amount_ml} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#3b82f6,#7c3aed)"}}>{saving?"Saving…":"Log"}</button>
             </div>
           </div>
@@ -211,26 +211,26 @@ export default function NutritionPage() {
       {/* Add meal modal */}
       {showMeal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-sm" style={{ background:"#0f1629", border:"1px solid rgba(52,211,153,0.25)" }}>
-            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Log Meal</h3><button onClick={()=>setShowMeal(false)} style={{color:"rgba(255,255,255,0.4)"}}><X size={18}/></button></div>
+          <div className="rounded-2xl p-6 w-full max-w-sm" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(52,211,153,0.25)" }}>
+            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Log Meal</h3><button onClick={()=>setShowMeal(false)} style={{color:"var(--text-muted)"}}><X size={18}/></button></div>
             <div className="space-y-3">
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Meal</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Meal</label>
               <select value={mealForm.meal_type} onChange={e=>setMealForm(f=>({...f,meal_type:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>
                 {Object.entries(MEAL_TYPES).map(([k,v])=><option key={k} value={k}>{v}</option>)}
               </select></div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Completion %</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Completion %</label>
               <select value={mealForm.completion_percent} onChange={e=>setMealForm(f=>({...f,completion_percent:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>
                 {[0,25,50,75,100].map(v=><option key={v} value={v}>{v}%</option>)}
               </select></div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Appetite</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Appetite</label>
               <select value={mealForm.appetite} onChange={e=>setMealForm(f=>({...f,appetite:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>
                 <option value="good">Good</option><option value="fair">Fair</option><option value="poor">Poor</option>
               </select></div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Notes</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Notes</label>
               <input value={mealForm.notes} onChange={e=>setMealForm(f=>({...f,notes:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder="Optional"/></div>
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={()=>setShowMeal(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"rgba(255,255,255,0.06)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.08)"}}>Cancel</button>
+              <button onClick={()=>setShowMeal(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card-hover)",color:"var(--text-secondary)",border:"1px solid var(--bg-card-hover)"}}>Cancel</button>
               <button onClick={handleAddMeal} disabled={saving} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#34d399,#3b82f6)"}}>{saving?"Saving…":"Log"}</button>
             </div>
           </div>

@@ -7,6 +7,7 @@ import type { Resident } from "@/types";
 import { useToast } from "@/components/Toast";
 import { useUser } from "@/context/UserContext";
 import { Search, Filter, Users, AlertTriangle, Plus, Eye, Edit2, Trash2, X, Save, Upload } from "lucide-react";
+import EmptyState from "@/components/ui/EmptyState";
 
 const RISK = {
   critical: { bg: "rgba(239,68,68,0.15)",  text: "#f87171", dot: "#ef4444" },
@@ -30,7 +31,7 @@ function ScoreBar({ score }: { score: number }) {
   const color = score >= 80 ? "#ef4444" : score >= 60 ? "#f97316" : score >= 40 ? "#eab308" : "#10b981";
   return (
     <div className="flex items-center gap-2">
-      <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+      <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--bg-card-hover)" }}>
         <div className="h-full rounded-full" style={{ width: `${score}%`, background: color }} />
       </div>
       <span className="text-xs font-semibold" style={{ color }}>{score}</span>
@@ -44,7 +45,7 @@ function ResidentAvatar({ r, size = 32 }: { r: Resident; size?: number }) {
   const hue = (r.id * 47) % 360;
   return (
     <div className="rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold"
-      style={{ width: size, height: size, background: `linear-gradient(135deg, hsl(${hue},60%,30%), hsl(${(hue+40)%360},70%,40%))`, color: "rgba(255,255,255,0.9)" }}>
+      style={{ width: size, height: size, background: `linear-gradient(135deg, hsl(${hue},60%,30%), hsl(${(hue+40)%360},70%,40%))`, color: "var(--text-primary)" }}>
       {initials}
     </div>
   );
@@ -58,12 +59,12 @@ const BLANK_FORM = {
 };
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium mb-1.5" style={{ color: "rgba(255,255,255,0.45)" }}>
+      <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-muted)" }}>
         {label}{required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {children}
@@ -108,9 +109,9 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
     <div className="fixed inset-0 z-50 flex items-center justify-end"
       style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(6px)" }}>
       <div className="h-full w-full max-w-xl flex flex-col overflow-hidden"
-        style={{ background: "#0d1526", borderLeft: "1px solid rgba(255,255,255,0.08)" }}>
+        style={{ background: "var(--bg-elevated)", borderLeft: "1px solid var(--border-strong)" }}>
         <div className="flex items-center justify-between px-6 py-4 flex-shrink-0"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
@@ -119,8 +120,8 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
             <h2 className="text-base font-bold text-white">Add New Resident</h2>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--input-bg)" }}>
+            <X size={16} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
 
@@ -130,22 +131,22 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
               style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>{error}</div>
           )}
           <div>
-            <label className="block text-xs font-medium mb-2" style={{ color: "rgba(255,255,255,0.45)" }}>Profile Photo</label>
+            <label className="block text-xs font-medium mb-2" style={{ color: "var(--text-muted)" }}>Profile Photo</label>
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0"
                 style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
                 {photoPreview ? <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" /> : <Upload size={18} style={{ color: "#a78bfa" }} />}
               </div>
               <label className="flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-xl cursor-pointer"
-                style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
                 <Upload size={12} /> Choose Photo
                 <input type="file" accept="image/*" className="hidden" onChange={handlePhoto} />
               </label>
             </div>
           </div>
 
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 4 }}>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "rgba(255,255,255,0.3)" }}>Personal Details</p>
+          <div style={{ borderTop: "1px solid var(--border)", paddingTop: 4 }}>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--text-muted)" }}>Personal Details</p>
             <div className="grid grid-cols-2 gap-3">
               <Field label="First Name" required><input className={inputCls} style={inputStyle} value={form.first_name} onChange={(e) => set("first_name", e.target.value)} required /></Field>
               <Field label="Last Name" required><input className={inputCls} style={inputStyle} value={form.last_name} onChange={(e) => set("last_name", e.target.value)} required /></Field>
@@ -156,8 +157,8 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
             </div>
           </div>
 
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 4 }}>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "rgba(255,255,255,0.3)" }}>Risk Levels</p>
+          <div style={{ borderTop: "1px solid var(--border)", paddingTop: 4 }}>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--text-muted)" }}>Risk Levels</p>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Fall Risk" required>
                 <select className={inputCls} style={inputStyle} value={form.fall_risk} onChange={(e) => set("fall_risk", e.target.value)}>
@@ -172,8 +173,8 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
             </div>
           </div>
 
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 4 }}>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "rgba(255,255,255,0.3)" }}>Key Contacts</p>
+          <div style={{ borderTop: "1px solid var(--border)", paddingTop: 4 }}>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--text-muted)" }}>Key Contacts</p>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Next of Kin Name"><input className={inputCls} style={inputStyle} value={form.next_of_kin_name} onChange={(e) => set("next_of_kin_name", e.target.value)} /></Field>
               <Field label="Next of Kin Phone"><input type="tel" className={inputCls} style={inputStyle} value={form.next_of_kin_phone} onChange={(e) => set("next_of_kin_phone", e.target.value)} /></Field>
@@ -183,10 +184,10 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
           </div>
         </form>
 
-        <div className="px-6 py-4 flex gap-3 flex-shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="px-6 py-4 flex gap-3 flex-shrink-0" style={{ borderTop: "1px solid var(--border)" }}>
           <button type="button" onClick={onClose}
             className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
             Cancel
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
@@ -268,7 +269,7 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <Users size={22} style={{ color: "#7c3aed" }} /> Residents
           </h1>
-          <p className="text-sm mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
             {total} active resident{total !== 1 ? "s" : ""}
           </p>
         </div>
@@ -282,18 +283,18 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 p-4 rounded-2xl"
-        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
         <div className="relative flex-1">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
           <input value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, NHS, room…" className="w-full pl-9 pr-3 py-2 text-sm rounded-xl outline-none"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "white" }} />
+            style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" }} />
         </div>
         <div className="flex items-center gap-2">
-          <Filter size={14} style={{ color: "rgba(255,255,255,0.35)" }} />
+          <Filter size={14} style={{ color: "var(--text-muted)" }} />
           <select value={riskFilter} onChange={(e) => setRiskFilter(e.target.value)}
             className="flex-1 sm:flex-none text-sm px-3 py-2 rounded-xl outline-none cursor-pointer"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: riskFilter ? "white" : "rgba(255,255,255,0.35)" }}>
+            style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: riskFilter ? "white" : "var(--text-muted)" }}>
             <option value="">All risk levels</option>
             <option value="critical">Critical</option>
             <option value="high">High</option>
@@ -308,20 +309,20 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
         {loading ? (
           <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div>
         ) : list.length === 0 ? (
-          <p className="text-center py-12 text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No residents found.</p>
+          <EmptyState icon={Users} title="No residents found" description="Add your first resident to get started." action={{ label: "Add Resident", onClick: () => setShowCreate(true) }} />
         ) : list.map((r) => (
-          <div key={r.id} className="rounded-2xl p-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+          <div key={r.id} className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
             <div className="flex items-center gap-3 mb-3">
               <ResidentAvatar r={r} size={40} />
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-semibold text-white truncate">{r.full_name}</div>
-                <div className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>Room {r.room_number} · Age {r.age}</div>
+                <div className="text-xs" style={{ color: "var(--text-muted)" }}>Room {r.room_number} · Age {r.age}</div>
               </div>
               <RiskBadge level={r.fall_risk} />
             </div>
             <div className="flex flex-wrap gap-1 mb-3">
               {(r.conditions ?? []).slice(0, 3).map((c, i) => (
-                <span key={i} className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.45)" }}>{c.name}</span>
+                <span key={i} className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: "var(--border)", color: "var(--text-muted)" }}>{c.name}</span>
               ))}
             </div>
             <div className="flex items-center gap-2">
@@ -343,7 +344,7 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
                     className="flex-1 text-xs font-semibold py-2 rounded-lg text-white disabled:opacity-50" style={{ background: "#dc2626" }}>
                     {deletingId === r.id ? "…" : "Confirm"}
                   </button>
-                  <button onClick={() => setConfirmId(null)} className="w-8 flex items-center justify-center py-2 rounded-lg" style={{ color: "rgba(255,255,255,0.4)" }}>
+                  <button onClick={() => setConfirmId(null)} className="w-8 flex items-center justify-center py-2 rounded-lg" style={{ color: "var(--text-muted)" }}>
                     <X size={12} />
                   </button>
                 </>
@@ -360,22 +361,22 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
       </div>
 
       {/* Desktop table */}
-      <div className="hidden md:block rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
+      <div className="hidden md:block rounded-2xl overflow-hidden" style={{ border: "1px solid var(--border)" }}>
         <table className="w-full">
           <thead>
-            <tr style={{ background: "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <tr style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--border)" }}>
               {["Resident", "Room", "Age", "Fall Risk", "AI Score", "Conditions", "Actions"].map((h) => (
-                <th key={h} className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-3" style={{ color: "rgba(255,255,255,0.35)" }}>{h}</th>
+                <th key={h} className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-3" style={{ color: "var(--text-muted)" }}>{h}</th>
               ))}
             </tr>
           </thead>
-          <tbody style={{ background: "rgba(5,9,20,0.6)" }}>
+          <tbody style={{ background: "var(--bg-primary)" }}>
             {loading ? (
               <tr><td colSpan={7} className="px-4 py-12 text-center"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin mx-auto" /></td></tr>
             ) : list.length === 0 ? (
-              <tr><td colSpan={7} className="px-4 py-12 text-center text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No residents found.</td></tr>
+              <tr><td colSpan={7}><EmptyState icon={Users} title="No residents found" description="Add your first resident to get started." action={{ label: "Add Resident", onClick: () => setShowCreate(true) }} /></td></tr>
             ) : list.map((r) => (
-              <tr key={r.id} className="transition-all" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+              <tr key={r.id} className="transition-all" style={{ borderBottom: "1px solid var(--bg-card)" }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.02)")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
                 <td className="px-4 py-3">
@@ -383,21 +384,21 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
                     <ResidentAvatar r={r} size={34} />
                     <div>
                       <div className="text-sm font-medium text-white">{r.full_name}</div>
-                      <div className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>{r.nhs_number || "No NHS no."}</div>
+                      <div className="text-xs" style={{ color: "var(--text-muted)" }}>{r.nhs_number || "No NHS no."}</div>
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3"><span className="text-sm font-mono" style={{ color: "rgba(255,255,255,0.6)" }}>{r.room_number}</span></td>
-                <td className="px-4 py-3"><span className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>{r.age}</span></td>
+                <td className="px-4 py-3"><span className="text-sm font-mono" style={{ color: "var(--text-secondary)" }}>{r.room_number}</span></td>
+                <td className="px-4 py-3"><span className="text-sm" style={{ color: "var(--text-secondary)" }}>{r.age}</span></td>
                 <td className="px-4 py-3"><RiskBadge level={r.fall_risk} /></td>
                 <td className="px-4 py-3"><ScoreBar score={r.ai_risk_score} /></td>
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-1">
                     {(r.conditions ?? []).slice(0, 2).map((c, i) => (
-                      <span key={i} className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.45)" }}>{c.name}</span>
+                      <span key={i} className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: "var(--border)", color: "var(--text-muted)" }}>{c.name}</span>
                     ))}
                     {(r.conditions?.length ?? 0) > 2 && (
-                      <span className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.3)" }}>+{(r.conditions?.length ?? 0) - 2}</span>
+                      <span className="text-xs px-1.5 py-0.5 rounded-md" style={{ background: "var(--border)", color: "var(--text-muted)" }}>+{(r.conditions?.length ?? 0) - 2}</span>
                     )}
                   </div>
                 </td>
@@ -421,7 +422,7 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
                           className="text-xs font-semibold px-2.5 py-1.5 rounded-lg text-white disabled:opacity-50" style={{ background: "#dc2626" }}>
                           {deletingId === r.id ? "…" : "Confirm"}
                         </button>
-                        <button onClick={() => setConfirmId(null)} className="text-xs px-2 py-1.5 rounded-lg" style={{ color: "rgba(255,255,255,0.4)" }}>
+                        <button onClick={() => setConfirmId(null)} className="text-xs px-2 py-1.5 rounded-lg" style={{ color: "var(--text-muted)" }}>
                           <X size={12} />
                         </button>
                       </div>
@@ -454,7 +455,7 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
         <div className="flex justify-center pt-2">
           <button onClick={loadMore} disabled={loadingMore}
             className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl disabled:opacity-50"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.1)" }}>
+            style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
             {loadingMore
               ? <><div className="w-4 h-4 rounded-full border-2 border-purple-400 border-t-transparent animate-spin" />Loading…</>
               : `Load more (${total - list.length} remaining)`}

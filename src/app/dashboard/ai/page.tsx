@@ -83,7 +83,7 @@ export default function AIPage() {
               Claude
             </span>
           </h1>
-          <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
             Powered by Anthropic Claude · Care-aware AI
           </p>
         </div>
@@ -91,7 +91,7 @@ export default function AIPage() {
 
       {/* Chat window */}
       <div className="flex-1 overflow-y-auto rounded-2xl p-4 space-y-4 mb-4"
-        style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
         {messages.map((msg, i) => (
           <div key={i} className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
             {/* Avatar */}
@@ -99,11 +99,11 @@ export default function AIPage() {
               style={{
                 background: msg.role === "assistant"
                   ? "linear-gradient(135deg, #7c3aed, #3b82f6)"
-                  : "rgba(255,255,255,0.1)",
+                  : "var(--bg-card-hover)",
               }}>
               {msg.role === "assistant"
                 ? <Sparkles size={12} className="text-white" />
-                : <User size={12} style={{ color: "rgba(255,255,255,0.7)" }} />}
+                : <User size={12} style={{ color: "var(--text-secondary)" }} />}
             </div>
             {/* Bubble */}
             <div className={`max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
@@ -112,11 +112,11 @@ export default function AIPage() {
               style={{
                 background: msg.role === "user"
                   ? "linear-gradient(135deg, rgba(124,58,237,0.4), rgba(59,130,246,0.3))"
-                  : "rgba(255,255,255,0.05)",
+                  : "var(--input-bg)",
                 border: msg.role === "user"
                   ? "1px solid rgba(124,58,237,0.3)"
-                  : "1px solid rgba(255,255,255,0.08)",
-                color: msg.role === "user" ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.75)",
+                  : "1px solid var(--border-strong)",
+                color: msg.role === "user" ? "var(--text-primary)" : "var(--text-secondary)",
                 whiteSpace: "pre-wrap",
               }}>
               {msg.content}
@@ -133,7 +133,7 @@ export default function AIPage() {
               <Sparkles size={12} className="text-white" />
             </div>
             <div className="rounded-2xl rounded-tl-sm px-4 py-3"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+              style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
               <div className="flex gap-1 items-center h-4">
                 {[0, 1, 2].map((i) => (
                   <div key={i} className="w-1.5 h-1.5 rounded-full animate-bounce"
@@ -166,7 +166,7 @@ export default function AIPage() {
 
       {/* Input */}
       <div className="flex gap-3 items-end rounded-2xl px-4 py-3"
-        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
         <div className="flex items-center gap-1.5 mb-1">
           <Zap size={12} style={{ color: "#7c3aed" }} />
         </div>
@@ -179,7 +179,7 @@ export default function AIPage() {
           disabled={loading}
           rows={1}
           className="flex-1 bg-transparent outline-none text-sm resize-none"
-          style={{ color: "rgba(255,255,255,0.8)", maxHeight: "120px" }}
+          style={{ color: "var(--text-primary)", maxHeight: "120px" }}
         />
         <button
           onClick={() => send()}
@@ -190,7 +190,7 @@ export default function AIPage() {
           <Send size={14} className="text-white" />
         </button>
       </div>
-      <p className="text-center text-xs mt-2" style={{ color: "rgba(255,255,255,0.2)" }}>
+      <p className="text-center text-xs mt-2" style={{ color: "var(--text-muted)" }}>
         AI may make mistakes. Always verify clinical decisions with qualified staff.
       </p>
     </div>

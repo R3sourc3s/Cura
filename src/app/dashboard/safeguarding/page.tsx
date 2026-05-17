@@ -21,7 +21,7 @@ const STATUS_CFG: Record<string,{label:string;color:string;bg:string}> = {
   closed:        { label:"Closed",              color:"#34d399", bg:"rgba(52,211,153,0.12)" },
 };
 
-const inputStyle = { background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.8)" };
+const inputStyle = { background:"var(--input-bg)", border:"1px solid var(--border-strong)", color:"var(--text-primary)" };
 function isoDate(d: Date) { return d.toISOString().slice(0,10); }
 
 export default function SafeguardingPage() {
@@ -77,7 +77,7 @@ export default function SafeguardingPage() {
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(239,68,68,0.12)", border:"1px solid rgba(239,68,68,0.2)" }}>
             <ShieldAlert size={16} style={{ color:"#f87171" }} />
           </div>
-          <div><h1 className="text-lg font-bold text-white">Safeguarding Register</h1><p className="text-xs" style={{ color:"rgba(255,255,255,0.35)" }}>Concerns, referrals & outcomes</p></div>
+          <div><h1 className="text-lg font-bold text-white">Safeguarding Register</h1><p className="text-xs" style={{ color:"var(--text-muted)" }}>Concerns, referrals & outcomes</p></div>
         </div>
         <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#ef4444,#7c3aed)" }}><Plus size={14} /> Raise Concern</button>
       </div>
@@ -94,7 +94,7 @@ export default function SafeguardingPage() {
       <div className="flex gap-1 flex-wrap">
         {["","open","investigating","referred","closed"].map(s => (
           <button key={s} onClick={() => setFilterStatus(s)} className="text-xs px-3 py-1.5 rounded-xl transition-all"
-            style={{ background: filterStatus===s ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.04)", color: filterStatus===s ? "#f87171" : "rgba(255,255,255,0.5)", border: filterStatus===s ? "1px solid rgba(239,68,68,0.3)" : "1px solid transparent" }}>
+            style={{ background: filterStatus===s ? "rgba(239,68,68,0.15)" : "var(--bg-card)", color: filterStatus===s ? "#f87171" : "var(--text-secondary)", border: filterStatus===s ? "1px solid rgba(239,68,68,0.3)" : "1px solid transparent" }}>
             {s === "" ? "All" : STATUS_CFG[s]?.label ?? s}
           </button>
         ))}
@@ -103,9 +103,9 @@ export default function SafeguardingPage() {
       {loading ? (
         <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-red-500 border-t-transparent animate-spin" /></div>
       ) : concerns.length === 0 ? (
-        <div className="text-center py-16 rounded-2xl" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)" }}>
-          <ShieldAlert size={28} className="mx-auto mb-2" style={{ color:"rgba(255,255,255,0.15)" }} />
-          <p className="text-sm" style={{ color:"rgba(255,255,255,0.3)" }}>No safeguarding concerns on record.</p>
+        <div className="text-center py-16 rounded-2xl" style={{ background:"var(--bg-card)", border:"1px solid var(--border)" }}>
+          <ShieldAlert size={28} className="mx-auto mb-2" style={{ color:"var(--text-muted)" }} />
+          <p className="text-sm" style={{ color:"var(--text-muted)" }}>No safeguarding concerns on record.</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -113,26 +113,26 @@ export default function SafeguardingPage() {
             const stCfg = STATUS_CFG[c.status] ?? STATUS_CFG.open;
             const isExpanded = expandedId === c.id;
             return (
-              <div key={c.id} className="rounded-2xl overflow-hidden" style={{ border:"1px solid rgba(255,255,255,0.07)" }}>
-                <button className="w-full flex items-center gap-3 px-4 py-3 text-left" style={{ background:"rgba(255,255,255,0.02)" }} onClick={() => setExpandedId(isExpanded ? null : c.id)}>
+              <div key={c.id} className="rounded-2xl overflow-hidden" style={{ border:"1px solid var(--border)" }}>
+                <button className="w-full flex items-center gap-3 px-4 py-3 text-left" style={{ background:"var(--bg-card)" }} onClick={() => setExpandedId(isExpanded ? null : c.id)}>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-sm font-semibold text-white">{c.resident_name ?? `Resident #${c.resident}`}</span>
-                      <span className="text-xs px-2 py-0.5 rounded" style={{ background:"rgba(255,255,255,0.06)", color:"rgba(255,255,255,0.5)" }}>{CATEGORIES[c.category] ?? c.category}</span>
+                      <span className="text-xs px-2 py-0.5 rounded" style={{ background:"var(--border)", color:"var(--text-secondary)" }}>{CATEGORIES[c.category] ?? c.category}</span>
                       <span className="text-xs px-2 py-0.5 rounded-lg" style={{ background:stCfg.bg, color:stCfg.color }}>{stCfg.label}</span>
                       {c.referred_to_authority && <span className="text-xs px-2 py-0.5 rounded" style={{ background:"rgba(96,165,250,0.1)", color:"#60a5fa" }}>Referred</span>}
                     </div>
-                    <div className="text-xs mt-0.5" style={{ color:"rgba(255,255,255,0.35)" }}>
+                    <div className="text-xs mt-0.5" style={{ color:"var(--text-muted)" }}>
                       {new Date(c.date_raised).toLocaleDateString("en-GB")} · {c.raised_by_name ?? "—"}
                     </div>
                   </div>
-                  {isExpanded ? <ChevronUp size={14} style={{ color:"rgba(255,255,255,0.3)" }} /> : <ChevronDown size={14} style={{ color:"rgba(255,255,255,0.3)" }} />}
+                  {isExpanded ? <ChevronUp size={14} style={{ color:"var(--text-muted)" }} /> : <ChevronDown size={14} style={{ color:"var(--text-muted)" }} />}
                 </button>
                 {isExpanded && (
-                  <div className="px-4 pb-4 pt-1 space-y-3" style={{ borderTop:"1px solid rgba(255,255,255,0.05)" }}>
-                    <div className="text-xs" style={{ color:"rgba(255,255,255,0.6)" }}><span style={{ color:"rgba(255,255,255,0.35)" }}>Description: </span>{c.description}</div>
-                    {c.immediate_action_taken && <div className="text-xs" style={{ color:"rgba(255,255,255,0.6)" }}><span style={{ color:"rgba(255,255,255,0.35)" }}>Immediate action: </span>{c.immediate_action_taken}</div>}
-                    {c.outcome && <div className="text-xs" style={{ color:"rgba(255,255,255,0.6)" }}><span style={{ color:"rgba(255,255,255,0.35)" }}>Outcome: </span>{c.outcome}</div>}
+                  <div className="px-4 pb-4 pt-1 space-y-3" style={{ borderTop:"1px solid var(--border)" }}>
+                    <div className="text-xs" style={{ color:"var(--text-secondary)" }}><span style={{ color:"var(--text-muted)" }}>Description: </span>{c.description}</div>
+                    {c.immediate_action_taken && <div className="text-xs" style={{ color:"var(--text-secondary)" }}><span style={{ color:"var(--text-muted)" }}>Immediate action: </span>{c.immediate_action_taken}</div>}
+                    {c.outcome && <div className="text-xs" style={{ color:"var(--text-secondary)" }}><span style={{ color:"var(--text-muted)" }}>Outcome: </span>{c.outcome}</div>}
                     {c.status !== "closed" && (
                       <div className="flex gap-2 flex-wrap">
                         {c.status === "open" && <button onClick={() => updateStatus(c.id, "investigating")} className="text-xs px-3 py-1.5 rounded-lg" style={{ background:"rgba(251,191,36,0.1)", color:"#fbbf24", border:"1px solid rgba(251,191,36,0.2)" }}>Start Investigation</button>}
@@ -150,38 +150,38 @@ export default function SafeguardingPage() {
 
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto" style={{ background:"#0f1629", border:"1px solid rgba(239,68,68,0.25)" }}>
-            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Raise Safeguarding Concern</h3><button onClick={()=>setShowCreate(false)} style={{color:"rgba(255,255,255,0.4)"}}><X size={18}/></button></div>
+          <div className="rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(239,68,68,0.25)" }}>
+            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Raise Safeguarding Concern</h3><button onClick={()=>setShowCreate(false)} style={{color:"var(--text-muted)"}}><X size={18}/></button></div>
             <div className="space-y-3">
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Resident *</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Resident *</label>
               <select value={form.resident} onChange={e=>setForm(f=>({...f,resident:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>
                 <option value="">Select…</option>{residents.map(r=><option key={r.id} value={r.id}>{r.full_name}</option>)}
               </select></div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Category *</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Category *</label>
               <select value={form.category} onChange={e=>setForm(f=>({...f,category:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>
                 {Object.entries(CATEGORIES).map(([k,v])=><option key={k} value={k}>{v}</option>)}
               </select></div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Date Raised</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Date Raised</label>
               <input type="date" value={form.date_raised} onChange={e=>setForm(f=>({...f,date_raised:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}/></div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Description *</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Description *</label>
               <textarea rows={3} value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle} placeholder="Describe the concern in detail…"/></div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Immediate Action Taken</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Immediate Action Taken</label>
               <textarea rows={2} value={form.immediate_action_taken} onChange={e=>setForm(f=>({...f,immediate_action_taken:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle}/></div>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={form.referred_to_authority} onChange={e=>setForm(f=>({...f,referred_to_authority:e.target.checked}))} className="w-4 h-4 rounded"/>
-                <span className="text-sm" style={{color:"rgba(255,255,255,0.65)"}}>Referred to local authority</span>
+                <span className="text-sm" style={{color:"var(--text-secondary)"}}>Referred to local authority</span>
               </label>
               {form.referred_to_authority && (
                 <div className="grid grid-cols-2 gap-2">
-                  <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Referral Date</label>
+                  <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Referral Date</label>
                   <input type="date" value={form.referral_date} onChange={e=>setForm(f=>({...f,referral_date:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}/></div>
-                  <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Reference No.</label>
+                  <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Reference No.</label>
                   <input value={form.referral_reference} onChange={e=>setForm(f=>({...f,referral_reference:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}/></div>
                 </div>
               )}
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={()=>setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"rgba(255,255,255,0.06)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.08)"}}>Cancel</button>
+              <button onClick={()=>setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--border)",color:"var(--text-primary)",border:"1px solid var(--border-strong)"}}>Cancel</button>
               <button onClick={handleCreate} disabled={saving||!form.resident||!form.description} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#ef4444,#7c3aed)"}}>{saving?"Saving…":"Raise Concern"}</button>
             </div>
           </div>

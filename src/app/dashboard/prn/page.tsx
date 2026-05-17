@@ -119,7 +119,7 @@ export default function PRNPage() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-white">PRN Medications</h1>
-            <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>As-needed medication administration log</p>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>As-needed medication administration log</p>
           </div>
         </div>
         {residentId && (
@@ -132,16 +132,16 @@ export default function PRNPage() {
       </div>
 
       {/* Resident selector */}
-      <div className="rounded-2xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
-        <label className="text-xs mb-2 block" style={{ color: "rgba(255,255,255,0.4)" }}>Select Resident</label>
+      <div className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+        <label className="text-xs mb-2 block" style={{ color: "var(--text-muted)" }}>Select Resident</label>
         <div className="relative">
           <select value={residentId ?? ""} onChange={e => setResidentId(e.target.value ? parseInt(e.target.value) : null)}
             className="w-full text-sm px-3 py-2.5 rounded-xl appearance-none outline-none pr-8"
-            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}>
+            style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" }}>
             <option value="">Choose a resident…</option>
-            {residents.map(r => <option key={r.id} value={r.id} style={{ background: "#0d1424" }}>{r.full_name}{r.room_number ? ` · Room ${r.room_number}` : ""}</option>)}
+            {residents.map(r => <option key={r.id} value={r.id} style={{ background: "var(--bg-elevated)" }}>{r.full_name}{r.room_number ? ` · Room ${r.room_number}` : ""}</option>)}
           </select>
-          <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+          <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--text-muted)" }} />
         </div>
       </div>
 
@@ -150,7 +150,7 @@ export default function PRNPage() {
           {/* PRN Protocols */}
           {prnMeds.length > 0 && (
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "rgba(255,255,255,0.35)" }}>Available PRN Medications</div>
+              <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "var(--text-muted)" }}>Available PRN Medications</div>
               <div className="grid sm:grid-cols-2 gap-3">
                 {prnMeds.map(m => {
                   const p = m.prn_protocol!;
@@ -165,7 +165,7 @@ export default function PRNPage() {
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <div className="text-sm font-semibold text-white">{m.drug_name}</div>
-                          <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.45)" }}>{p.indication}</div>
+                          <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>{p.indication}</div>
                         </div>
                         <span className="text-xs px-2 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1"
                           style={{ background: canGive ? "rgba(52,211,153,0.15)" : "rgba(251,191,36,0.15)", color: canGive ? "#34d399" : "#fbbf24" }}>

@@ -63,7 +63,7 @@ export default function RotaPage() {
 
   const days = Array.from({ length:7 }, (_,i) => addDays(weekStart, i));
   const shiftTypes: ("day"|"evening"|"night")[] = ["day","evening","night"];
-  const inputStyle = { background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.8)" };
+  const inputStyle = { background:"var(--input-bg)", border:"1px solid var(--border-strong)", color:"var(--text-primary)" };
 
   const today = isoDate(new Date());
   const totalThisWeek = shifts.length;
@@ -76,13 +76,13 @@ export default function RotaPage() {
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(251,191,36,0.12)", border:"1px solid rgba(251,191,36,0.2)" }}>
             <CalendarDays size={16} style={{ color:"#fbbf24" }} />
           </div>
-          <div><h1 className="text-lg font-bold text-white">Staff Rota</h1><p className="text-xs" style={{ color:"rgba(255,255,255,0.35)" }}>Weekly shift schedule</p></div>
+          <div><h1 className="text-lg font-bold text-white">Staff Rota</h1><p className="text-xs" style={{ color:"var(--text-muted)" }}>Weekly shift schedule</p></div>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
-            <button onClick={()=>setWeekStart(d=>addDays(d,-7))} className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)" }}><ChevronLeft size={14} style={{ color:"rgba(255,255,255,0.6)" }} /></button>
-            <span className="text-sm px-3 font-medium" style={{ color:"rgba(255,255,255,0.7)" }}>{isoDate(weekStart)} – {isoDate(addDays(weekStart,6))}</span>
-            <button onClick={()=>setWeekStart(d=>addDays(d,7))} className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)" }}><ChevronRight size={14} style={{ color:"rgba(255,255,255,0.6)" }} /></button>
+            <button onClick={()=>setWeekStart(d=>addDays(d,-7))} className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:"var(--bg-card)", border:"1px solid var(--border)" }}><ChevronLeft size={14} style={{ color:"var(--text-secondary)" }} /></button>
+            <span className="text-sm px-3 font-medium" style={{ color:"var(--text-secondary)" }}>{isoDate(weekStart)} – {isoDate(addDays(weekStart,6))}</span>
+            <button onClick={()=>setWeekStart(d=>addDays(d,7))} className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:"var(--bg-card)", border:"1px solid var(--border)" }}><ChevronRight size={14} style={{ color:"var(--text-secondary)" }} /></button>
           </div>
           <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#7c3aed,#3b82f6)" }}><Plus size={14} /> Add Shift</button>
         </div>
@@ -90,7 +90,7 @@ export default function RotaPage() {
 
       {/* Summary */}
       <div className="flex gap-4 flex-wrap">
-        <div className="text-xs px-3 py-1.5 rounded-xl" style={{ background:"rgba(255,255,255,0.05)", color:"rgba(255,255,255,0.5)" }}>
+        <div className="text-xs px-3 py-1.5 rounded-xl" style={{ background:"var(--bg-card)", color:"var(--text-secondary)" }}>
           <Users size={11} className="inline mr-1.5" /><strong style={{ color:"white" }}>{totalThisWeek}</strong> shifts this week
         </div>
         {agencyCount > 0 && <div className="text-xs px-3 py-1.5 rounded-xl" style={{ background:"rgba(251,146,60,0.1)", color:"#fb923c" }}><strong>{agencyCount}</strong> agency shifts</div>}
@@ -98,16 +98,16 @@ export default function RotaPage() {
 
       {/* Rota grid */}
       {loading ? <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div> : (
-        <div className="rounded-2xl overflow-hidden" style={{ border:"1px solid rgba(255,255,255,0.07)" }}>
+        <div className="rounded-2xl overflow-hidden" style={{ border:"1px solid var(--border)" }}>
           {/* Header row */}
-          <div className="grid" style={{ gridTemplateColumns:"100px repeat(7, 1fr)", background:"rgba(255,255,255,0.03)", borderBottom:"1px solid rgba(255,255,255,0.06)" }}>
-            <div className="px-3 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color:"rgba(255,255,255,0.35)" }}>Shift</div>
+          <div className="grid" style={{ gridTemplateColumns:"100px repeat(7, 1fr)", background:"var(--bg-card)", borderBottom:"1px solid var(--border)" }}>
+            <div className="px-3 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color:"var(--text-muted)" }}>Shift</div>
             {days.map((day, i) => {
               const d = isoDate(day); const isToday = d === today;
               return (
-                <div key={i} className="px-2 py-3 text-center" style={{ borderLeft:"1px solid rgba(255,255,255,0.06)", background: isToday ? "rgba(124,58,237,0.08)" : "transparent" }}>
-                  <div className="text-xs font-semibold" style={{ color: isToday ? "#a78bfa" : "rgba(255,255,255,0.5)" }}>{DAYS[i]}</div>
-                  <div className="text-sm font-bold mt-0.5" style={{ color: isToday ? "white" : "rgba(255,255,255,0.7)" }}>{day.getDate()}</div>
+                <div key={i} className="px-2 py-3 text-center" style={{ borderLeft:"1px solid var(--border)", background: isToday ? "rgba(124,58,237,0.08)" : "transparent" }}>
+                  <div className="text-xs font-semibold" style={{ color: isToday ? "#a78bfa" : "var(--text-secondary)" }}>{DAYS[i]}</div>
+                  <div className="text-sm font-bold mt-0.5" style={{ color: isToday ? "white" : "var(--text-secondary)" }}>{day.getDate()}</div>
                 </div>
               );
             })}
@@ -117,27 +117,27 @@ export default function RotaPage() {
           {shiftTypes.map(type => {
             const cfg = SHIFT_CFG[type];
             return (
-              <div key={type} className="grid" style={{ gridTemplateColumns:"100px repeat(7, 1fr)", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
-                <div className="px-3 py-3 flex flex-col justify-center" style={{ borderRight:"1px solid rgba(255,255,255,0.05)" }}>
+              <div key={type} className="grid" style={{ gridTemplateColumns:"100px repeat(7, 1fr)", borderBottom:"1px solid var(--border)" }}>
+                <div className="px-3 py-3 flex flex-col justify-center" style={{ borderRight:"1px solid var(--border)" }}>
                   <span className="text-xs font-semibold" style={{ color: cfg.color }}>{cfg.label}</span>
-                  <span className="text-xs mt-0.5" style={{ color:"rgba(255,255,255,0.25)" }}>{cfg.time}</span>
+                  <span className="text-xs mt-0.5" style={{ color:"var(--text-muted)" }}>{cfg.time}</span>
                 </div>
                 {days.map((day, i) => {
                   const d = isoDate(day);
                   const dayShifts = shifts.filter(s => s.date === d && s.shift_type === type);
                   const isToday = d === today;
                   return (
-                    <div key={i} className="p-1.5 min-h-[80px]" style={{ borderLeft:"1px solid rgba(255,255,255,0.05)", background: isToday ? "rgba(124,58,237,0.03)" : "transparent" }}>
+                    <div key={i} className="p-1.5 min-h-[80px]" style={{ borderLeft:"1px solid var(--border)", background: isToday ? "rgba(124,58,237,0.03)" : "transparent" }}>
                       {dayShifts.length === 0 ? (
                         <button onClick={() => { setForm(f => ({ ...f, shift_type: type, date: d, start_time: cfg.time.split("–")[0], end_time: cfg.time.split("–")[1] })); setShowCreate(true); }}
                           className="w-full h-full min-h-[70px] rounded-lg flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
-                          style={{ border:"1px dashed rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.3)" }}>
+                          style={{ border:"1px dashed var(--border-strong)", color:"var(--text-muted)" }}>
                           <Plus size={14} />
                         </button>
                       ) : dayShifts.map(s => (
                         <div key={s.id} className="rounded-lg px-2 py-1.5 mb-1 group relative" style={{ background: s.is_agency ? "rgba(251,146,60,0.12)" : cfg.bg }}>
-                          <div className="text-xs font-medium leading-snug" style={{ color:"rgba(255,255,255,0.85)" }}>{s.staff_member_name?.split(" ")[0] ?? `#${s.staff_member}`}</div>
-                          <div className="text-xs" style={{ color:"rgba(255,255,255,0.35)" }}>{s.start_time.slice(0,5)}–{s.end_time.slice(0,5)}</div>
+                          <div className="text-xs font-medium leading-snug" style={{ color:"var(--text-primary)" }}>{s.staff_member_name?.split(" ")[0] ?? `#${s.staff_member}`}</div>
+                          <div className="text-xs" style={{ color:"var(--text-muted)" }}>{s.start_time.slice(0,5)}–{s.end_time.slice(0,5)}</div>
                           {s.is_agency && <div className="text-xs" style={{ color:"#fb923c" }}>Agency</div>}
                           <button onClick={()=>deleteShift(s.id)} className="absolute top-1 right-1 opacity-0 group-hover:opacity-60 hover:!opacity-100 transition-opacity" style={{ color:"#f87171" }}><X size={10} /></button>
                         </div>
@@ -153,8 +153,8 @@ export default function RotaPage() {
 
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"#0f1629", border:"1px solid rgba(124,58,237,0.25)" }}>
-            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Shift</h3><button onClick={()=>setShowCreate(false)} style={{ color:"rgba(255,255,255,0.4)" }}><X size={18}/></button></div>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(124,58,237,0.25)" }}>
+            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Shift</h3><button onClick={()=>setShowCreate(false)} style={{ color:"var(--text-muted)" }}><X size={18}/></button></div>
             <div className="space-y-3">
               {[
                 { label:"Staff Member *", el:<select value={form.staff_member} onChange={e=>setForm(f=>({...f,staff_member:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}><option value="">Select…</option>{staff.map(s=><option key={s.id} value={s.id}>{s.full_name} ({s.role})</option>)}</select> },
@@ -163,14 +163,14 @@ export default function RotaPage() {
                 { label:"Start Time", el:<input type="time" value={form.start_time} onChange={e=>setForm(f=>({...f,start_time:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}/> },
                 { label:"End Time", el:<input type="time" value={form.end_time} onChange={e=>setForm(f=>({...f,end_time:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}/> },
                 { label:"Notes", el:<input value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder="Optional"/> },
-              ].map(({label,el})=><div key={label}><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>{label}</label>{el}</div>)}
+              ].map(({label,el})=><div key={label}><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>{label}</label>{el}</div>)}
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="agency" checked={form.is_agency} onChange={e=>setForm(f=>({...f,is_agency:e.target.checked}))} className="w-4 h-4 rounded"/>
-                <label htmlFor="agency" className="text-sm" style={{color:"rgba(255,255,255,0.65)"}}>Agency staff</label>
+                <label htmlFor="agency" className="text-sm" style={{color:"var(--text-secondary)"}}>Agency staff</label>
               </div>
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={()=>setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"rgba(255,255,255,0.06)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.08)"}}>Cancel</button>
+              <button onClick={()=>setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card)",color:"var(--text-secondary)",border:"1px solid var(--border)"}}>Cancel</button>
               <button onClick={handleCreate} disabled={saving||!form.staff_member} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#7c3aed,#3b82f6)"}}>{saving?"Saving…":"Add Shift"}</button>
             </div>
           </div>

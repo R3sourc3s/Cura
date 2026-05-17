@@ -63,7 +63,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 animation: "slideInRight 0.2s ease-out",
               }}>
               <Icon size={16} style={{ color: s.color, flexShrink: 0, marginTop: 1 }} />
-              <span className="text-sm flex-1" style={{ color: "rgba(255,255,255,0.85)" }}>{t.message}</span>
+              <span className="text-sm flex-1" style={{ color: "var(--text-primary)" }}>{t.message}</span>
               <button onClick={() => dismiss(t.id)} className="flex-shrink-0 opacity-40 hover:opacity-70 transition-opacity">
                 <X size={14} style={{ color: "white" }} />
               </button>

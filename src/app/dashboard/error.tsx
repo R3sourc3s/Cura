@@ -14,14 +14,14 @@ export default function DashboardError({ error, reset }: { error: Error & { dige
           style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
           <AlertTriangle size={24} style={{ color: "#f87171" }} />
         </div>
-        <h2 className="text-lg font-bold text-white mb-1">Page error</h2>
-        <p className="text-sm mb-5" style={{ color: "rgba(255,255,255,0.4)" }}>
+        <h2 className="text-lg font-bold mb-1" style={{ color: "var(--text-primary)" }}>Page error</h2>
+        <p className="text-sm mb-5" style={{ color: "var(--text-muted)" }}>
           {error.message || "Something went wrong loading this page."}
         </p>
         <div className="flex items-center justify-center gap-3">
           <Link href="/dashboard"
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "var(--bg-card)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>
             <ArrowLeft size={14} /> Dashboard
           </Link>
           <button onClick={reset}

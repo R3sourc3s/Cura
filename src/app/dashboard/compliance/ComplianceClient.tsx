@@ -39,12 +39,12 @@ const ACTION_STATUS = {
 } as const;
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium mb-1.5" style={{ color: "rgba(255,255,255,0.45)" }}>
+      <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-muted)" }}>
         {label}{required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {children}
@@ -122,9 +122,9 @@ function NewAuditModal({ onClose, onCreated }: { onClose: () => void; onCreated:
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
       <div className="w-full max-w-md rounded-2xl flex flex-col overflow-hidden"
-        style={{ background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)" }}>
+        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-strong)" }}>
         <div className="flex items-center justify-between px-6 py-4"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #34d399, #059669)" }}>
@@ -133,8 +133,8 @@ function NewAuditModal({ onClose, onCreated }: { onClose: () => void; onCreated:
             <h2 className="text-base font-bold text-white">New CQC Audit</h2>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--input-bg)" }}>
+            <X size={16} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
 
@@ -188,7 +188,7 @@ function NewAuditModal({ onClose, onCreated }: { onClose: () => void; onCreated:
           style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
           <button type="button" onClick={onClose}
             className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
             Cancel
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
@@ -236,13 +236,13 @@ function AddActionModal({ auditId, onClose, onAdded }: { auditId: number; onClos
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
       <div className="w-full max-w-sm rounded-2xl flex flex-col overflow-hidden"
-        style={{ background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)" }}>
+        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-strong)" }}>
         <div className="flex items-center justify-between px-5 py-4"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderBottom: "1px solid var(--border)" }}>
           <h2 className="text-sm font-bold text-white">Add Remediation Action</h2>
           <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={14} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--input-bg)" }}>
+            <X size={14} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
         <form ref={formRef} onSubmit={handleSubmit} className="px-5 py-4 space-y-3">
@@ -260,8 +260,8 @@ function AddActionModal({ auditId, onClose, onAdded }: { auditId: number; onClos
                   <button type="button" key={p} onClick={() => setForm((f) => ({ ...f, priority: p }))}
                     className="flex-1 text-xs py-1.5 rounded-lg font-medium capitalize transition-all"
                     style={{
-                      background: form.priority === p ? cfg.bg : "rgba(255,255,255,0.04)",
-                      color: form.priority === p ? cfg.color : "rgba(255,255,255,0.35)",
+                      background: form.priority === p ? cfg.bg : "var(--bg-card)",
+                      color: form.priority === p ? cfg.color : "var(--text-muted)",
                     }}>
                     {p}
                   </button>
@@ -277,7 +277,7 @@ function AddActionModal({ auditId, onClose, onAdded }: { auditId: number; onClos
         <div className="px-5 py-4 flex gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
           <button type="button" onClick={onClose}
             className="flex-1 py-2 text-xs font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)" }}>
+            style={{ background: "var(--input-bg)", color: "var(--text-secondary)" }}>
             Cancel
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
@@ -297,9 +297,9 @@ function GapReportModal({ report, onClose }: { report: string; onClose: () => vo
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}>
       <div className="w-full max-w-2xl max-h-[85vh] flex flex-col rounded-2xl overflow-hidden"
-        style={{ background: "#0d1526", border: "1px solid rgba(255,255,255,0.1)" }}>
+        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-strong)" }}>
         <div className="flex items-center justify-between px-6 py-4 flex-shrink-0"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
@@ -307,12 +307,12 @@ function GapReportModal({ report, onClose }: { report: string; onClose: () => vo
             </div>
             <div>
               <h2 className="text-base font-bold text-white">CQC Gap Analysis Report</h2>
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>Generated by Cura AI · Claude</p>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>Generated by Cura AI · Claude</p>
             </div>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--input-bg)" }}>
+            <X size={16} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">
@@ -326,19 +326,19 @@ function GapReportModal({ report, onClose }: { report: string; onClose: () => vo
                 return (
                   <div key={i} className="flex gap-2">
                     <span style={{ color: "#a78bfa" }}>·</span>
-                    <p className="text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>{line.slice(2)}</p>
+                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{line.slice(2)}</p>
                   </div>
                 );
               }
               if (line.trim() === "") return <div key={i} className="h-1" />;
-              return <p key={i} className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>{line.replace(/\*\*/g, "")}</p>;
+              return <p key={i} className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{line.replace(/\*\*/g, "")}</p>;
             })}
           </div>
         </div>
         <div className="px-6 py-4 flex-shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
           <button onClick={onClose}
             className="w-full py-2.5 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "var(--border)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
             Close
           </button>
         </div>
@@ -396,7 +396,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <ShieldCheck size={22} style={{ color: "#34d399" }} /> Compliance
           </h1>
-          <p className="text-sm mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
             CQC regulatory compliance overview
           </p>
         </div>
@@ -420,7 +420,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
       </div>
 
       <div className="p-5 sm:p-6 rounded-2xl flex items-center gap-6"
-        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
         <div className="relative flex-shrink-0">
           <svg className="-rotate-90 w-20 h-20 sm:w-24 sm:h-24" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
@@ -439,7 +439,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
             </span>
           </div>
           <div className="text-lg sm:text-2xl font-bold text-white mb-1">CQC Compliance Score</div>
-          <p className="text-xs sm:text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
+          <p className="text-xs sm:text-sm" style={{ color: "var(--text-muted)" }}>
             {audits.length} domain{audits.length !== 1 ? "s" : ""} · Last updated{" "}
             {audits.length > 0 ? new Date(audits[0].audit_date).toLocaleDateString("en-GB") : "—"}
           </p>
@@ -448,9 +448,9 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
 
       {audits.length === 0 ? (
         <div className="text-center py-16 rounded-2xl"
-          style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <ShieldCheck size={32} className="mx-auto mb-3" style={{ color: "rgba(255,255,255,0.15)" }} />
-          <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No audits recorded.</p>
+          style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+          <ShieldCheck size={32} className="mx-auto mb-3" style={{ color: "var(--text-muted)" }} />
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>No audits recorded.</p>
           {can("compliance.manage") && (
             <button onClick={() => setShowNew(true)}
               className="mt-4 px-4 py-2 text-sm font-semibold rounded-xl text-white inline-flex items-center gap-2"
@@ -470,7 +470,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
             if (!meta) return null;
             return (
               <div key={audit.id} className="rounded-2xl overflow-hidden transition-all"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
                 <div className="p-5">
                   <div className="flex items-start gap-4">
                     <ScoreGauge score={audit.score} color={meta.color} />
@@ -488,8 +488,8 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
                           </span>
                         )}
                       </div>
-                      <p className="text-xs mb-2" style={{ color: "rgba(255,255,255,0.35)" }}>{meta.desc}</p>
-                      <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+                      <p className="text-xs mb-2" style={{ color: "var(--text-muted)" }}>{meta.desc}</p>
+                      <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
                         <div className="h-full rounded-full" style={{ width: `${audit.score}%`, background: meta.color }} />
                       </div>
                     </div>
@@ -497,13 +497,13 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
 
                   {audit.notes && (
                     <p className="text-xs mt-3 px-3 py-2 rounded-lg"
-                      style={{ background: "rgba(255,255,255,0.03)", color: "rgba(255,255,255,0.35)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                      style={{ background: "var(--bg-card)", color: "var(--text-muted)", border: "1px solid var(--border)" }}>
                       {audit.notes}
                     </p>
                   )}
 
                   <div className="flex items-center justify-between mt-3">
-                    <div className="flex items-center gap-3 text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                    <div className="flex items-center gap-3 text-xs" style={{ color: "var(--text-muted)" }}>
                       <span className="flex items-center gap-1"><Calendar size={10} />
                         {new Date(audit.audit_date).toLocaleDateString("en-GB")}
                       </span>
@@ -513,7 +513,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
                     </div>
                     <button onClick={() => setExpandedAudit(isExpanded ? null : audit.id)}
                       className="flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg transition-all"
-                      style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)" }}>
+                      style={{ background: "var(--input-bg)", color: "var(--text-secondary)" }}>
                       Actions ({actions.length})
                       {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                     </button>
@@ -521,9 +521,9 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
                 </div>
 
                 {isExpanded && (
-                  <div className="px-5 pb-5 space-y-2" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                  <div className="px-5 pb-5 space-y-2" style={{ borderTop: "1px solid var(--border)" }}>
                     <div className="flex items-center justify-between pt-4 mb-3">
-                      <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>
+                      <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
                         Remediation Actions
                       </span>
                       {can("compliance.manage") && (
@@ -535,7 +535,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
                       )}
                     </div>
                     {actions.length === 0 ? (
-                      <p className="text-xs text-center py-4" style={{ color: "rgba(255,255,255,0.25)" }}>
+                      <p className="text-xs text-center py-4" style={{ color: "var(--text-muted)" }}>
                         No remediation actions yet.
                       </p>
                     ) : (
@@ -545,7 +545,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
                         const StatusIcon = status.icon;
                         return (
                           <div key={action.id} className="flex items-start gap-3 px-3 py-2.5 rounded-xl"
-                            style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                            style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                             {can("compliance.manage") ? (
                               <button onClick={() => cycleActionStatus(action, audit.id)}
                                 disabled={updatingAction === action.id}
@@ -562,7 +562,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
                                   style={{ background: priority.bg, color: priority.color }}>
                                   {action.priority}
                                 </span>
-                                <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                                <span className="text-xs" style={{ color: "var(--text-muted)" }}>
                                   Due: {new Date(action.due_date).toLocaleDateString("en-GB")}
                                 </span>
                                 <span className="text-xs font-medium" style={{ color: status.color }}>

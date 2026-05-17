@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Wrench, Plus, X, Search, ChevronDown } from "lucide-react";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface MaintenanceIssue {
   id: number; reported_by_name?: string; assigned_to: string;
@@ -69,7 +70,7 @@ export default function MaintenancePage() {
   const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
   const resolvedWeek = issues.filter(i => i.status === "resolved" && i.updated_at >= weekAgo).length;
 
-  const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" };
+  const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" };
 
   return (
     <div className="space-y-5 max-w-5xl mx-auto">
@@ -78,7 +79,7 @@ export default function MaintenancePage() {
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(251,146,60,0.12)", border: "1px solid rgba(251,146,60,0.2)" }}>
             <Wrench size={16} style={{ color: "#fb923c" }} />
           </div>
-          <div><h1 className="text-lg font-bold text-white">Maintenance</h1><p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>Issue tracker</p></div>
+          <div><h1 className="text-lg font-bold text-white">Maintenance</h1><p className="text-xs" style={{ color: "var(--text-muted)" }}>Issue tracker</p></div>
         </div>
         <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
           <Plus size={14} /> Report Issue
@@ -87,27 +88,27 @@ export default function MaintenancePage() {
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[{ label:"Open Issues", value:open, color:"#f87171" }, { label:"Urgent", value:urgent, color:"#ef4444" }, { label:"In Progress", value:inProgress, color:"#60a5fa" }, { label:"Resolved This Week", value:resolvedWeek, color:"#34d399" }].map(({ label, value, color }) => (
-          <div key={label} className="rounded-2xl p-4 text-center" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <div key={label} className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
             <div className="text-2xl font-bold" style={{ color }}>{value}</div>
-            <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.4)" }}>{label}</div>
+            <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>{label}</div>
           </div>
         ))}
       </div>
 
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
-          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
-          <input type="text" placeholder="Search issues…" value={search} onChange={e => setSearch(e.target.value)} className="w-full text-sm pl-9 pr-4 py-2 rounded-xl outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.7)" }} />
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
+          <input type="text" placeholder="Search issues…" value={search} onChange={e => setSearch(e.target.value)} className="w-full text-sm pl-9 pr-4 py-2 rounded-xl outline-none" style={{ background: "var(--input-bg)", border: "1px solid var(--bg-card-hover)", color: "var(--text-secondary)" }} />
         </div>
         {[
           { value: filterStatus, set: setFilterStatus, opts: [["","All Status"],["open","Open"],["in_progress","In Progress"],["resolved","Resolved"],["closed","Closed"]] },
           { value: filterPriority, set: setFilterPriority, opts: [["","All Priority"],["urgent","Urgent"],["high","High"],["medium","Medium"],["low","Low"]] },
         ].map((f, i) => (
           <div key={i} className="relative">
-            <select value={f.value} onChange={e => f.set(e.target.value)} className="text-sm pl-3 pr-8 py-2 rounded-xl outline-none appearance-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}>
+            <select value={f.value} onChange={e => f.set(e.target.value)} className="text-sm pl-3 pr-8 py-2 rounded-xl outline-none appearance-none" style={{ background: "var(--input-bg)", border: "1px solid var(--bg-card-hover)", color: "var(--text-secondary)" }}>
               {f.opts.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
             </select>
-            <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+            <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--text-muted)" }} />
           </div>
         ))}
       </div>
@@ -115,14 +116,11 @@ export default function MaintenancePage() {
       {loading ? <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div> : (
         <div className="space-y-3">
           {filtered.length === 0 ? (
-            <div className="text-center py-12 rounded-2xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-              <Wrench size={28} className="mx-auto mb-2" style={{ color: "rgba(255,255,255,0.15)" }} />
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No maintenance issues found.</p>
-            </div>
+            <EmptyState icon={Wrench} title="No maintenance issues" description="Report a new issue to get started." action={{ label: "Report Issue", onClick: () => setShowCreate(true) }} />
           ) : filtered.map(issue => {
             const p = PRIORITY[issue.priority]; const s = STATUS[issue.status];
             return (
-              <div key={issue.id} className="rounded-2xl p-4 cursor-pointer" style={{ background: "rgba(255,255,255,0.03)", border: `1px solid rgba(255,255,255,0.07)` }} onClick={() => openEdit(issue)} onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(124,58,237,0.3)")} onMouseLeave={e => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)")}>
+              <div key={issue.id} className="rounded-2xl p-4 cursor-pointer" style={{ background: "var(--bg-card)", border: `1px solid var(--border)` }} onClick={() => openEdit(issue)} onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(124,58,237,0.3)")} onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -130,11 +128,11 @@ export default function MaintenancePage() {
                       <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: p.bg, color: p.color }}>{p.label}</span>
                       <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: s.bg, color: s.color }}>{s.label}</span>
                     </div>
-                    {issue.location && <div className="text-xs mb-1" style={{ color: "rgba(255,255,255,0.4)" }}>{issue.location}</div>}
-                    <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>{issue.description}</p>
-                    {issue.assigned_to && <div className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.35)" }}>Assigned: {issue.assigned_to}</div>}
+                    {issue.location && <div className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>{issue.location}</div>}
+                    <p className="text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>{issue.description}</p>
+                    {issue.assigned_to && <div className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>Assigned: {issue.assigned_to}</div>}
                   </div>
-                  <div className="text-xs text-right flex-shrink-0" style={{ color: "rgba(255,255,255,0.3)" }}>
+                  <div className="text-xs text-right flex-shrink-0" style={{ color: "var(--text-muted)" }}>
                     <div>{new Date(issue.created_at).toLocaleDateString("en-GB")}</div>
                     <div>{issue.reported_by_name ?? ""}</div>
                   </div>
@@ -148,8 +146,8 @@ export default function MaintenancePage() {
       {/* Create Modal */}
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
-            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Report Issue</h3><button onClick={() => setShowCreate(false)} style={{ color: "rgba(255,255,255,0.4)" }}><X size={18} /></button></div>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(124,58,237,0.25)" }}>
+            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Report Issue</h3><button onClick={() => setShowCreate(false)} style={{ color: "var(--text-muted)" }}><X size={18} /></button></div>
             <div className="space-y-3">
               {[
                 { label: "Title *", el: <input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder="Brief description" /> },
@@ -158,10 +156,10 @@ export default function MaintenancePage() {
                 { label: "Location", el: <input value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder="Room, corridor…" /> },
                 { label: "Description", el: <textarea rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle} /> },
                 { label: "Assigned To", el: <input value={form.assigned_to} onChange={e => setForm(f => ({ ...f, assigned_to: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder="Contractor / staff name" /> },
-              ].map(({ label, el }) => <div key={label}><label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</label>{el}</div>)}
+              ].map(({ label, el }) => <div key={label}><label className="block text-xs mb-1" style={{ color: "var(--text-secondary)" }}>{label}</label>{el}</div>)}
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={() => setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>Cancel</button>
+              <button onClick={() => setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{ background: "var(--bg-card-hover)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>Cancel</button>
               <button onClick={handleCreate} disabled={saving || !form.title} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>{saving ? "Saving…" : "Report"}</button>
             </div>
           </div>
@@ -171,18 +169,18 @@ export default function MaintenancePage() {
       {/* Edit Modal */}
       {editIssue && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
-            <div className="flex items-center justify-between mb-3"><h3 className="text-base font-bold text-white">{editIssue.title}</h3><button onClick={() => setEditIssue(null)} style={{ color: "rgba(255,255,255,0.4)" }}><X size={18} /></button></div>
-            <p className="text-sm mb-5" style={{ color: "rgba(255,255,255,0.5)" }}>{editIssue.description}</p>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(124,58,237,0.25)" }}>
+            <div className="flex items-center justify-between mb-3"><h3 className="text-base font-bold text-white">{editIssue.title}</h3><button onClick={() => setEditIssue(null)} style={{ color: "var(--text-muted)" }}><X size={18} /></button></div>
+            <p className="text-sm mb-5" style={{ color: "var(--text-secondary)" }}>{editIssue.description}</p>
             <div className="space-y-3">
               {[
                 { label: "Status", el: <select value={editForm.status} onChange={e => setEditForm(f => ({ ...f, status: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>{["open","in_progress","resolved","closed"].map(s => <option key={s} value={s}>{STATUS[s as keyof typeof STATUS]?.label}</option>)}</select> },
                 { label: "Assigned To", el: <input value={editForm.assigned_to} onChange={e => setEditForm(f => ({ ...f, assigned_to: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} /> },
                 { label: "Resolution Notes", el: <textarea rows={3} value={editForm.resolution_notes} onChange={e => setEditForm(f => ({ ...f, resolution_notes: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle} /> },
-              ].map(({ label, el }) => <div key={label}><label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</label>{el}</div>)}
+              ].map(({ label, el }) => <div key={label}><label className="block text-xs mb-1" style={{ color: "var(--text-secondary)" }}>{label}</label>{el}</div>)}
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={() => setEditIssue(null)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>Cancel</button>
+              <button onClick={() => setEditIssue(null)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{ background: "var(--bg-card-hover)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>Cancel</button>
               <button onClick={handleUpdate} disabled={saving} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>{saving ? "Saving…" : "Update"}</button>
             </div>
           </div>

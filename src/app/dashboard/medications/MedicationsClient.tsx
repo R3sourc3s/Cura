@@ -8,6 +8,7 @@ import {
   Pill, AlertTriangle, CheckCircle, Clock, XCircle,
   Plus, X, Save, Edit2, Trash2,
 } from "lucide-react";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 const STATUS_CONFIG = {
   given:    { icon: CheckCircle, color: "#34d399", bg: "rgba(52,211,153,0.12)", label: "Given" },
@@ -27,12 +28,12 @@ const FREQS  = [
 ];
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
 
 function GlassCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={`rounded-2xl ${className}`}
-      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+      style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
       {children}
     </div>
   );
@@ -41,7 +42,7 @@ function GlassCard({ children, className = "" }: { children: React.ReactNode; cl
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium mb-1.5" style={{ color: "rgba(255,255,255,0.45)" }}>
+      <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-muted)" }}>
         {label}{required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {children}
@@ -105,9 +106,9 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
     <div className="fixed inset-0 z-50 flex items-center justify-end"
       style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(6px)" }}>
       <div className="h-full w-full max-w-xl flex flex-col overflow-hidden"
-        style={{ background: "#0d1526", borderLeft: "1px solid rgba(255,255,255,0.08)" }}>
+        style={{ background: "var(--bg-elevated)", borderLeft: "1px solid var(--bg-card-hover)" }}>
         <div className="flex items-center justify-between px-6 py-4 flex-shrink-0"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{ background: "linear-gradient(135deg, #60a5fa, #3b82f6)" }}>
@@ -118,8 +119,8 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
             </h2>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,255,255,0.05)" }}>
-            <X size={16} style={{ color: "rgba(255,255,255,0.5)" }} />
+            style={{ background: "var(--input-bg)" }}>
+            <X size={16} style={{ color: "var(--text-secondary)" }} />
           </button>
         </div>
 
@@ -141,8 +142,8 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
             </select>
           </Field>
 
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 4 }}>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "rgba(255,255,255,0.3)" }}>Drug Details</p>
+          <div style={{ borderTop: "1px solid var(--border)", paddingTop: 4 }}>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--text-muted)" }}>Drug Details</p>
             <div className="space-y-3">
               <Field label="Drug Name" required>
                 <input className={inputCls} style={inputStyle} value={form.drug_name}
@@ -177,8 +178,8 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
             </div>
           </div>
 
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 4 }}>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "rgba(255,255,255,0.3)" }}>Dates & Stock</p>
+          <div style={{ borderTop: "1px solid var(--border)", paddingTop: 4 }}>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--text-muted)" }}>Dates & Stock</p>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Start Date" required>
                 <input type="date" className={inputCls} style={inputStyle} value={form.start_date}
@@ -199,7 +200,7 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
             </div>
           </div>
 
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 4 }}>
+          <div style={{ borderTop: "1px solid var(--border)", paddingTop: 4 }}>
             <label className="flex items-center gap-3 cursor-pointer">
               <div className="w-10 h-5 rounded-full transition-colors flex items-center px-0.5"
                 style={{ background: form.is_controlled ? "#7c3aed" : "rgba(255,255,255,0.12)" }}>
@@ -209,7 +210,7 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
                 <input type="checkbox" className="hidden" checked={form.is_controlled}
                   onChange={(e) => set("is_controlled", e.target.checked)} />
                 <span className="text-sm font-medium text-white">Controlled Drug (CD)</span>
-                <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>Requires additional authorisation</p>
+                <p className="text-xs" style={{ color: "var(--text-muted)" }}>Requires additional authorisation</p>
               </div>
             </label>
           </div>
@@ -221,10 +222,10 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
         </form>
 
         <div className="px-6 py-4 flex gap-3 flex-shrink-0"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderTop: "1px solid var(--border)" }}>
           <button type="button" onClick={onClose}
             className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>
             Cancel
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
@@ -253,6 +254,7 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
   const [showModal, setShowModal] = useState(false);
   const [editMed, setEditMed] = useState<Medication | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   async function administer(id: number) {
     setAdministeringId(id);
@@ -294,7 +296,7 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
             <Pill size={22} style={{ color: "#60a5fa" }} /> Medications
           </h1>
-          <p className="text-sm mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
             {meds.length} medications · {todayMAR.filter(m => m.status === "pending").length} pending today
           </p>
         </div>
@@ -319,15 +321,15 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <GlassCard>
-          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-            <h2 className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>Today&apos;s MAR</h2>
+          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--border)" }}>
+            <h2 className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>Today&apos;s MAR</h2>
             <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(251,146,60,0.15)", color: "#fb923c" }}>
               {todayMAR.filter((m) => m.status === "pending").length} pending
             </span>
           </div>
-          <div className="divide-y" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+          <div className="divide-y" style={{ borderColor: "var(--bg-card)" }}>
             {todayMAR.length === 0 ? (
-              <p className="px-5 py-8 text-sm text-center" style={{ color: "rgba(255,255,255,0.3)" }}>No scheduled medications today.</p>
+              <p className="px-5 py-8 text-sm text-center" style={{ color: "var(--text-muted)" }}>No scheduled medications today.</p>
             ) : (
               todayMAR.map((entry) => {
                 const cfg = STATUS_CONFIG[entry.status] ?? STATUS_CONFIG.pending;
@@ -335,7 +337,7 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
                 const med = meds.find((m) => m.id === entry.medication);
                 return (
                   <div key={entry.id} className="flex items-center gap-4 px-5 py-3.5"
-                    style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    style={{ borderBottom: "1px solid var(--bg-card)" }}>
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                       style={{ background: cfg.bg }}>
                       <StatusIcon size={14} style={{ color: cfg.color }} />
@@ -344,7 +346,7 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
                       <div className="text-sm font-medium text-white truncate">
                         {med?.drug_name ?? `Med #${entry.medication}`}
                       </div>
-                      <div className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+                      <div className="text-xs" style={{ color: "var(--text-muted)" }}>
                         {med?.dose} · {new Date(entry.scheduled_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
                       </div>
                     </div>
@@ -366,8 +368,8 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
         </GlassCard>
 
         <GlassCard>
-          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-            <h2 className="font-semibold text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>Inventory</h2>
+          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--border)" }}>
+            <h2 className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>Inventory</h2>
             {lowStock.length > 0 && (
               <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#f87171" }}>
                 {lowStock.length} low
@@ -376,11 +378,11 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
           </div>
           <div>
             {meds.length === 0 ? (
-              <p className="px-5 py-8 text-sm text-center" style={{ color: "rgba(255,255,255,0.3)" }}>No medications.</p>
+              <p className="px-5 py-8 text-sm text-center" style={{ color: "var(--text-muted)" }}>No medications.</p>
             ) : (
               meds.map((med) => (
                 <div key={med.id} className="flex items-center gap-3 px-5 py-3.5"
-                  style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                  style={{ borderBottom: "1px solid var(--bg-card)" }}>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-sm font-medium text-white">{med.drug_name}</span>
@@ -390,19 +392,19 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
                       )}
                       {med.is_low_stock && <AlertTriangle size={12} className="text-red-400" />}
                     </div>
-                    <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+                    <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
                       {med.dose} · {med.route} · {med.frequency.toUpperCase()}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="text-right mr-1">
-                      <div className="text-sm font-bold" style={{ color: med.is_low_stock ? "#f87171" : "rgba(255,255,255,0.7)" }}>
+                      <div className="text-sm font-bold" style={{ color: med.is_low_stock ? "#f87171" : "var(--text-secondary)" }}>
                         {med.stock_count}
                       </div>
-                      <div className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>units</div>
+                      <div className="text-xs" style={{ color: "var(--text-muted)" }}>units</div>
                     </div>
                     <div className="w-10">
-                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--bg-card-hover)" }}>
                         <div className="h-full rounded-full"
                           style={{
                             width: `${Math.min((med.stock_count / Math.max(med.reorder_threshold * 4, 1)) * 100, 100)}%`,
@@ -419,7 +421,7 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
                       </button>
                     )}
                     {can("medications.delete") && (
-                      <button onClick={() => handleDelete(med.id)} disabled={deletingId === med.id}
+                      <button onClick={() => setConfirmDeleteId(med.id)} disabled={deletingId === med.id}
                         className="w-7 h-7 rounded-lg flex items-center justify-center disabled:opacity-40"
                         style={{ background: "rgba(239,68,68,0.08)", color: "#f87171" }}>
                         {deletingId === med.id ? <span className="text-xs">…</span> : <Trash2 size={12} />}
@@ -441,6 +443,16 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
           onSaved={handleSaved}
         />
       )}
+
+      <ConfirmDialog
+        open={confirmDeleteId !== null}
+        title="Delete Medication?"
+        message="This will permanently remove the medication and all associated records."
+        confirmLabel={deletingId !== null ? "Deleting…" : "Yes, Delete"}
+        danger
+        onConfirm={() => { if (confirmDeleteId !== null) { handleDelete(confirmDeleteId); setConfirmDeleteId(null); } }}
+        onCancel={() => setConfirmDeleteId(null)}
+      />
     </div>
   );
 }

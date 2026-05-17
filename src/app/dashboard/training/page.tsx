@@ -17,7 +17,7 @@ const STATUS_CFG: Record<string, { label: string; color: string; bg: string; Ico
   not_completed: { label:"Not Completed",  color:"#6b7280", bg:"rgba(107,114,128,0.12)", Icon: Clock },
 };
 
-const inputStyle = { background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"rgba(255,255,255,0.8)" };
+const inputStyle = { background:"var(--input-bg)", border:"1px solid var(--border-strong)", color:"var(--text-primary)" };
 
 export default function TrainingPage() {
   const [staff, setStaff] = useState<StaffMember[]>([]);
@@ -68,7 +68,7 @@ export default function TrainingPage() {
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(251,191,36,0.12)", border:"1px solid rgba(251,191,36,0.2)" }}>
             <GraduationCap size={16} style={{ color:"#fbbf24" }} />
           </div>
-          <div><h1 className="text-lg font-bold text-white">Staff Training</h1><p className="text-xs" style={{ color:"rgba(255,255,255,0.35)" }}>Mandatory training & certification tracker</p></div>
+          <div><h1 className="text-lg font-bold text-white">Staff Training</h1><p className="text-xs" style={{ color:"var(--text-muted)" }}>Mandatory training & certification tracker</p></div>
         </div>
         <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#7c3aed,#3b82f6)" }}><Plus size={14} /> Add Record</button>
       </div>
@@ -89,7 +89,7 @@ export default function TrainingPage() {
         </select>
         {["","valid","expiring_soon","expired","not_completed"].map(s => (
           <button key={s} onClick={() => setFilterStatus(s)} className="text-xs px-3 py-1.5 rounded-xl transition-all"
-            style={{ background: filterStatus===s ? "rgba(124,58,237,0.2)" : "rgba(255,255,255,0.04)", color: filterStatus===s ? "#a78bfa" : "rgba(255,255,255,0.5)", border: filterStatus===s ? "1px solid rgba(124,58,237,0.3)" : "1px solid transparent" }}>
+            style={{ background: filterStatus===s ? "rgba(124,58,237,0.2)" : "var(--bg-card)", color: filterStatus===s ? "#a78bfa" : "var(--text-secondary)", border: filterStatus===s ? "1px solid rgba(124,58,237,0.3)" : "1px solid transparent" }}>
             {s === "" ? "All" : STATUS_CFG[s]?.label ?? s}
           </button>
         ))}
@@ -98,27 +98,27 @@ export default function TrainingPage() {
       {loading ? (
         <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div>
       ) : (
-        <div className="rounded-2xl overflow-hidden" style={{ border:"1px solid rgba(255,255,255,0.07)" }}>
+        <div className="rounded-2xl overflow-hidden" style={{ border:"1px solid var(--border)" }}>
           <table className="w-full">
             <thead>
-              <tr style={{ background:"rgba(255,255,255,0.03)", borderBottom:"1px solid rgba(255,255,255,0.06)" }}>
+              <tr style={{ background:"var(--bg-card)", borderBottom:"1px solid var(--border)" }}>
                 {["Staff Member","Training","Completed","Expires","Status","Provider"].map(h => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color:"rgba(255,255,255,0.35)" }}>{h}</th>
+                  <th key={h} className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color:"var(--text-muted)" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
-                <tr><td colSpan={6} className="text-center py-12 text-sm" style={{ color:"rgba(255,255,255,0.3)" }}>No training records found.</td></tr>
+                <tr><td colSpan={6} className="text-center py-12 text-sm" style={{ color:"var(--text-muted)" }}>No training records found.</td></tr>
               ) : filtered.map(r => {
                 const cfg = STATUS_CFG[r.status] ?? STATUS_CFG.not_completed;
                 const { Icon } = cfg;
                 return (
-                  <tr key={r.id} style={{ borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                  <tr key={r.id} style={{ borderBottom:"1px solid var(--border)" }}>
                     <td className="px-4 py-3 text-sm text-white font-medium">{r.staff_member_name ?? `Staff #${r.staff_member}`}</td>
-                    <td className="px-4 py-3 text-sm" style={{ color:"rgba(255,255,255,0.7)" }}>{r.course_name_display}</td>
-                    <td className="px-4 py-3 text-xs" style={{ color:"rgba(255,255,255,0.5)" }}>{r.completed_date ? new Date(r.completed_date).toLocaleDateString("en-GB") : "—"}</td>
-                    <td className="px-4 py-3 text-xs" style={{ color: r.status==="expired" ? "#f87171" : r.status==="expiring_soon" ? "#fbbf24" : "rgba(255,255,255,0.5)" }}>
+                    <td className="px-4 py-3 text-sm" style={{ color:"var(--text-secondary)" }}>{r.course_name_display}</td>
+                    <td className="px-4 py-3 text-xs" style={{ color:"var(--text-secondary)" }}>{r.completed_date ? new Date(r.completed_date).toLocaleDateString("en-GB") : "—"}</td>
+                    <td className="px-4 py-3 text-xs" style={{ color: r.status==="expired" ? "#f87171" : r.status==="expiring_soon" ? "#fbbf24" : "var(--text-secondary)" }}>
                       {r.expiry_date ? new Date(r.expiry_date).toLocaleDateString("en-GB") : "—"}
                     </td>
                     <td className="px-4 py-3">
@@ -126,7 +126,7 @@ export default function TrainingPage() {
                         <Icon size={11} />{cfg.label}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs" style={{ color:"rgba(255,255,255,0.4)" }}>{r.provider || "—"}</td>
+                    <td className="px-4 py-3 text-xs" style={{ color:"var(--text-muted)" }}>{r.provider || "—"}</td>
                   </tr>
                 );
               })}
@@ -137,28 +137,28 @@ export default function TrainingPage() {
 
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"#0f1629", border:"1px solid rgba(124,58,237,0.25)" }}>
-            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Training Record</h3><button onClick={()=>setShowCreate(false)} style={{color:"rgba(255,255,255,0.4)"}}><X size={18}/></button></div>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(124,58,237,0.25)" }}>
+            <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Training Record</h3><button onClick={()=>setShowCreate(false)} style={{color:"var(--text-muted)"}}><X size={18}/></button></div>
             <div className="space-y-3">
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Staff Member *</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Staff Member *</label>
               <select value={form.staff_member} onChange={e=>setForm(f=>({...f,staff_member:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>
                 <option value="">Select…</option>{staff.map(s=><option key={s.id} value={s.id}>{s.full_name} ({s.role})</option>)}
               </select></div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Training Course *</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Training Course *</label>
               <input value={form.course_name} onChange={e=>setForm(f=>({...f,course_name:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder="e.g. Fire Safety, Moving & Handling…"/></div>
               <div className="grid grid-cols-2 gap-2">
-                <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Completed Date</label>
+                <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Completed Date</label>
                 <input type="date" value={form.completed_date} onChange={e=>setForm(f=>({...f,completed_date:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}/></div>
-                <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Expiry Date</label>
+                <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Expiry Date</label>
                 <input type="date" value={form.expiry_date} onChange={e=>setForm(f=>({...f,expiry_date:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}/></div>
               </div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Provider</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Provider</label>
               <input value={form.provider} onChange={e=>setForm(f=>({...f,provider:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder="Training provider name"/></div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Notes</label>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Notes</label>
               <textarea rows={2} value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle}/></div>
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={()=>setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"rgba(255,255,255,0.06)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.08)"}}>Cancel</button>
+              <button onClick={()=>setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card)",color:"var(--text-secondary)",border:"1px solid var(--border)"}}>Cancel</button>
               <button onClick={handleCreate} disabled={saving||!form.staff_member||!form.course_name} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#7c3aed,#3b82f6)"}}>{saving?"Saving…":"Save"}</button>
             </div>
           </div>

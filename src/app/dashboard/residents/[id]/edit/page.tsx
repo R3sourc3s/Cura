@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { residents as residentsApi } from "@/lib/api";
 import type { Resident } from "@/types";
-import { ArrowLeft, Save, Upload } from "lucide-react";
+import { Save, Upload } from "lucide-react";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
@@ -98,11 +99,12 @@ export default function EditResidentPage({ params }: { params: Promise<{ id: str
 
   return (
     <form onSubmit={handleSave} className="space-y-5 max-w-3xl mx-auto">
+      <Breadcrumbs crumbs={[
+        { label: "Residents", href: "/dashboard/residents" },
+        { label: resident.full_name, href: `/dashboard/residents/${id}` },
+        { label: "Edit" },
+      ]} />
       <div className="flex items-center justify-between">
-        <button type="button" onClick={() => router.back()}
-          className="flex items-center gap-2 text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
-          <ArrowLeft size={16} /> Back
-        </button>
         <h1 className="text-xl font-bold text-white">Edit — {resident.full_name}</h1>
         <button type="submit" disabled={saving}
           className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
