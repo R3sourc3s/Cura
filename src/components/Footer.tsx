@@ -1,12 +1,37 @@
 "use client";
 
+import Link from "next/link";
 import { Zap, Link2, Mail, ExternalLink } from "lucide-react";
 
-const links = {
-  Product: ["Features", "Cura AI", "Pricing", "Security", "Integrations", "Changelog"],
-  Company: ["About", "Blog", "Careers", "Press", "Contact"],
-  Resources: ["Documentation", "Help Centre", "Webinars", "CQC Toolkit", "Status"],
-  Legal: ["Privacy Policy", "Terms of Service", "Cookie Policy", "GDPR Statement"],
+const links: Record<string, { label: string; href: string }[]> = {
+  Product: [
+    { label: "Features",     href: "/features" },
+    { label: "Cura AI",      href: "/ai" },
+    { label: "Pricing",      href: "/pricing" },
+    { label: "Security",     href: "/security" },
+    { label: "Integrations", href: "/integrations" },
+    { label: "Changelog",    href: "/changelog" },
+  ],
+  Company: [
+    { label: "About",    href: "/about" },
+    { label: "Blog",     href: "/blog" },
+    { label: "Careers",  href: "/careers" },
+    { label: "Press",    href: "/press" },
+    { label: "Contact",  href: "/contact" },
+  ],
+  Resources: [
+    { label: "Documentation", href: "/docs" },
+    { label: "Help Centre",   href: "/help" },
+    { label: "Webinars",      href: "/webinars" },
+    { label: "CQC Toolkit",   href: "/cqc-toolkit" },
+    { label: "Status",        href: "/status" },
+  ],
+  Legal: [
+    { label: "Privacy Policy",  href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Cookie Policy",   href: "/cookies" },
+    { label: "GDPR Statement",  href: "/gdpr" },
+  ],
 };
 
 export default function Footer() {
@@ -26,7 +51,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-8 mb-16">
           {/* Brand */}
           <div className="col-span-2">
-            <a href="#" className="flex items-center gap-2 mb-4">
+            <Link href="/" className="flex items-center gap-2 mb-4">
               <div
                 className="w-8 h-8 rounded-lg flex items-center justify-center"
                 style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
@@ -34,15 +59,19 @@ export default function Footer() {
                 <Zap size={16} className="text-white" />
               </div>
               <span className="text-xl font-bold gradient-text">cura</span>
-            </a>
+            </Link>
             <p className="text-gray-500 text-sm leading-relaxed mb-6 max-w-xs">
               UK&apos;s #1 care home management platform. Built with care, for care.
             </p>
             <div className="flex gap-3">
-              {[ExternalLink, Link2, Mail].map((Icon, i) => (
+              {[
+                { Icon: ExternalLink, href: "https://linkedin.com/company/curacareplatform" },
+                { Icon: Link2,        href: "https://twitter.com/curacareplatform" },
+                { Icon: Mail,         href: "/contact" },
+              ].map(({ Icon, href }) => (
                 <a
-                  key={i}
-                  href="#"
+                  key={href}
+                  href={href}
                   className="w-9 h-9 rounded-lg glass flex items-center justify-center text-gray-400 hover:text-white transition-colors"
                   style={{ border: "1px solid rgba(255,255,255,0.07)" }}
                 >
@@ -57,14 +86,14 @@ export default function Footer() {
             <div key={category}>
               <div className="text-white font-semibold text-sm mb-4">{category}</div>
               <ul className="space-y-2.5">
-                {items.map((item) => (
-                  <li key={item}>
-                    <a
-                      href="#"
+                {items.map(({ label, href }) => (
+                  <li key={label}>
+                    <Link
+                      href={href}
                       className="text-gray-500 hover:text-gray-300 text-sm transition-colors"
                     >
-                      {item}
-                    </a>
+                      {label}
+                    </Link>
                   </li>
                 ))}
               </ul>

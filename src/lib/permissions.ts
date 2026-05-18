@@ -31,7 +31,16 @@ export type Permission =
   | "safeguarding.view" | "safeguarding.create" | "safeguarding.manage"
   | "messages.view" | "messages.create"
   | "cqc.view"
-  | "prn.view" | "prn.administer";
+  | "prn.view" | "prn.administer"
+  | "pharmacy.view" | "pharmacy.manage"
+  | "recruitment.view" | "recruitment.manage"
+  | "leave.view" | "leave.manage" | "leave.request"
+  | "tasks.view" | "tasks.create" | "tasks.manage"
+  | "enquiries.view" | "enquiries.manage"
+  | "billing.view" | "billing.manage"
+  | "gp.view" | "gp.manage"
+  | "family.view" | "family.manage"
+  | "skills.view" | "skills.manage";
 
 /** Which permission gates each nav item (null = always visible). */
 export const NAV_ACCESS: { label: string; href: string; permission: Permission | null }[] = [
@@ -64,4 +73,13 @@ export const NAV_ACCESS: { label: string; href: string; permission: Permission |
   { label: "Messages",         href: "/dashboard/messages",         permission: "messages.view" },
   { label: "CQC Readiness",   href: "/dashboard/cqc",              permission: "cqc.view" },
   { label: "AI Assistant",    href: "/dashboard/ai",               permission: "ai.chat" },
+  { label: "Pharmacy",        href: "/dashboard/pharmacy",         permission: "pharmacy.view" },
+  { label: "Recruitment",     href: "/dashboard/recruitment",      permission: "recruitment.view" },
+  { label: "Leave",           href: "/dashboard/leave",            permission: "leave.view" },
+  { label: "Tasks",           href: "/dashboard/tasks",            permission: "tasks.view" },
+  { label: "Enquiries",       href: "/dashboard/enquiries",        permission: "enquiries.view" },
+  { label: "Billing",         href: "/dashboard/billing",          permission: "billing.view" },
+  { label: "GP & Hospital",   href: "/dashboard/gp",              permission: "gp.view" },
+  { label: "Family Portal",   href: "/dashboard/family",           permission: "family.view" },
+  { label: "Skills",          href: "/dashboard/skills",           permission: "skills.view" },
 ];

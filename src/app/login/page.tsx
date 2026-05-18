@@ -122,7 +122,7 @@ export default function LoginPage() {
         {/* Footer */}
         <p className="text-center text-gray-400 text-sm mt-8">
           Don't have an account?{" "}
-          <a href="#" className="text-purple-400 hover:text-purple-300">
+          <a href="mailto:hello@curacareplatform.co.uk" className="text-purple-400 hover:text-purple-300">
             Contact administrator
           </a>
         </p>

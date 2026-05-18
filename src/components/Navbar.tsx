@@ -6,11 +6,10 @@ import { Menu, X, Zap } from "lucide-react";
 import Link from "next/link";
 
 const links = [
-  { label: "Features", href: "#features" },
-  { label: "AI Platform", href: "#ai" },
-  { label: "Compliance", href: "#compliance" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "About", href: "#about" }
+  { label: "Features",    href: "/features" },
+  { label: "AI Platform", href: "/ai" },
+  { label: "Pricing",     href: "/pricing" },
+  { label: "About",       href: "/about" },
 ];
 
 export default function Navbar() {
@@ -37,7 +36,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2 group">
+        <Link href="/" className="flex items-center gap-2 group">
           <div
             className="w-8 h-8 rounded-lg flex items-center justify-center"
             style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
@@ -45,7 +44,7 @@ export default function Navbar() {
             <Zap size={16} className="text-white" />
           </div>
           <span className="text-xl font-bold gradient-text">cura</span>
-        </a>
+        </Link>
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8">
@@ -69,7 +68,7 @@ export default function Navbar() {
             Log in
           </Link>
           <a
-            href="#demo"
+            href="/contact"
             className="text-sm font-semibold px-5 py-2.5 rounded-full text-white glow-button"
             style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
           >
@@ -114,7 +113,7 @@ export default function Navbar() {
                 Log in
               </Link>
               <a
-                href="#demo"
+                href="/contact"
                 className="text-center font-semibold px-5 py-3 rounded-full text-white mt-2"
                 style={{
                   background: "linear-gradient(135deg, #7c3aed, #3b82f6)"

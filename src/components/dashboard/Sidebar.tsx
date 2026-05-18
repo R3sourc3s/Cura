@@ -10,6 +10,8 @@ import {
   Smile, DoorOpen, Wrench, FolderOpen, CalendarRange,
   Table2, GraduationCap, Utensils, AlertCircle, Moon, ShieldAlert,
   MessageSquare, Star,
+  Package, Briefcase, CalendarOff, CheckSquare, ClipboardPlus,
+  Receipt, Activity, Heart, Award,
 } from "lucide-react";
 import { logout } from "@/lib/auth";
 import { useUser } from "@/context/UserContext";
@@ -45,6 +47,15 @@ const ICONS: Record<string, React.ElementType> = {
   "/dashboard/compliance":   ShieldCheck,
   "/dashboard/audit":        ClipboardCheck,
   "/dashboard/ai":           Bot,
+  "/dashboard/pharmacy":     Package,
+  "/dashboard/recruitment":  Briefcase,
+  "/dashboard/leave":        CalendarOff,
+  "/dashboard/tasks":        CheckSquare,
+  "/dashboard/enquiries":    ClipboardPlus,
+  "/dashboard/billing":      Receipt,
+  "/dashboard/gp":           Activity,
+  "/dashboard/family":       Heart,
+  "/dashboard/skills":       Award,
 };
 
 interface SidebarProps {

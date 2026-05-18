@@ -32,6 +32,15 @@ urlpatterns = [
     path("api/v1/overnight-checks/", include("apps.overnight_checks.urls")),
     path("api/v1/safeguarding/", include("apps.safeguarding.urls")),
     path("api/v1/messages/", include("apps.messages_board.urls")),
+    path("api/v1/pharmacy/", include("apps.pharmacy.urls")),
+    path("api/v1/recruitment/", include("apps.recruitment.urls")),
+    path("api/v1/leave/", include("apps.leave.urls")),
+    path("api/v1/tasks/", include("apps.tasks.urls")),
+    path("api/v1/enquiries/", include("apps.enquiries.urls")),
+    path("api/v1/billing/", include("apps.billing.urls")),
+    path("api/v1/gp/", include("apps.gp_integration.urls")),
+    path("api/v1/family/", include("apps.family_portal.urls")),
+    path("api/v1/skills/", include("apps.skills.urls")),
 
     # OpenAPI docs
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

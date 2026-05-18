@@ -54,6 +54,15 @@ LOCAL_APPS = [
     "apps.overnight_checks",
     "apps.safeguarding",
     "apps.messages_board",
+    "apps.pharmacy",
+    "apps.recruitment",
+    "apps.leave",
+    "apps.tasks",
+    "apps.enquiries",
+    "apps.billing",
+    "apps.gp_integration",
+    "apps.family_portal",
+    "apps.skills",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
