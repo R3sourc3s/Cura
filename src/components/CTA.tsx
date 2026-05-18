@@ -12,26 +12,33 @@ export default function CTA() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           className="relative rounded-3xl overflow-hidden p-12 lg:p-20 text-center"
-          style={{
-            background: "linear-gradient(135deg, rgba(124,58,237,0.3) 0%, rgba(59,130,246,0.2) 50%, rgba(6,182,212,0.15) 100%)",
-            border: "1px solid rgba(124,58,237,0.3)",
-          }}
+          style={{ border: "1px solid rgba(124,58,237,0.3)" }}
         >
-          {/* Background glow */}
+          {/* Background care home photo */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://images.unsplash.com/photo-1773227055624-07b515ba87c5?w=1400&h=700&fit=crop&crop=center&auto=format&q=80"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+
+          {/* Dark overlay so text remains readable */}
           <div
-            className="absolute inset-0 pointer-events-none"
+            className="absolute inset-0"
             style={{
-              background: "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(124,58,237,0.2), transparent)",
+              background:
+                "linear-gradient(135deg, rgba(5,9,20,0.88) 0%, rgba(124,58,237,0.55) 50%, rgba(5,9,20,0.88) 100%)",
             }}
           />
 
-          {/* Decorative orbs */}
+          {/* Decorative orbs on top of photo */}
           <div
-            className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl opacity-30"
+            className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl opacity-25 pointer-events-none"
             style={{ background: "#7c3aed" }}
           />
           <div
-            className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full blur-3xl opacity-30"
+            className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full blur-3xl opacity-25 pointer-events-none"
             style={{ background: "#3b82f6" }}
           />
 

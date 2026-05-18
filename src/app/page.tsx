@@ -4,6 +4,7 @@ import Stats from "@/components/Stats";
 import Features from "@/components/Features";
 import AISection from "@/components/AISection";
 import Compliance from "@/components/Compliance";
+import CareGallery from "@/components/CareGallery";
 import Testimonials from "@/components/Testimonials";
 import Pricing from "@/components/Pricing";
 import CTA from "@/components/CTA";
@@ -18,6 +19,7 @@ export default function Home() {
       <Features />
       <AISection />
       <Compliance />
+      <CareGallery />
       <Testimonials />
       <Pricing />
       <CTA />

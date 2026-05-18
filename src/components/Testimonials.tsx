@@ -10,6 +10,7 @@ const testimonials = [
     role: "Registered Manager",
     home: "Meadowbrook Care, Manchester",
     avatar: "SP",
+    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop&crop=faces&auto=format&q=80",
     color: "#7c3aed",
     rating: 5,
     quote:
@@ -20,6 +21,7 @@ const testimonials = [
     role: "Director of Care",
     home: "Sunrise Group, 12 Homes",
     avatar: "JO",
+    photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&crop=faces&auto=format&q=80",
     color: "#3b82f6",
     rating: 5,
     quote:
@@ -30,6 +32,7 @@ const testimonials = [
     role: "Head of Nursing",
     home: "Pineview Nursing Home, Leicester",
     avatar: "PK",
+    photo: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=96&h=96&fit=crop&crop=faces&auto=format&q=80",
     color: "#06b6d4",
     rating: 5,
     quote:
@@ -40,6 +43,7 @@ const testimonials = [
     role: "HR & Operations Manager",
     home: "Elderflower Group, Birmingham",
     avatar: "TH",
+    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=96&h=96&fit=crop&crop=faces&auto=format&q=80",
     color: "#10b981",
     rating: 5,
     quote:
@@ -114,11 +118,26 @@ export default function Testimonials() {
             </blockquote>
 
             <div className="flex items-center justify-center gap-4">
-              <div
-                className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                style={{ background: `linear-gradient(135deg, ${t.color}, ${t.color}88)` }}
-              >
-                {t.avatar}
+              <div className="relative flex-shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={t.photo}
+                  alt={t.name}
+                  className="w-14 h-14 rounded-full object-cover"
+                  style={{ border: `2px solid ${t.color}66` }}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.style.display = "none";
+                    const fallback = target.nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = "flex";
+                  }}
+                />
+                <div
+                  className="w-14 h-14 rounded-full items-center justify-center text-white font-bold text-sm"
+                  style={{ background: `linear-gradient(135deg, ${t.color}, ${t.color}88)`, display: "none" }}
+                >
+                  {t.avatar}
+                </div>
               </div>
               <div className="text-left">
                 <div className="text-white font-semibold">{t.name}</div>

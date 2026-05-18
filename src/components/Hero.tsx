@@ -1,31 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Shield, Brain, Users, ChevronDown } from "lucide-react";
-
-const floatingCards = [
-  {
-    icon: Brain,
-    title: "AI Care Plans",
-    subtitle: "Adapts in real-time",
-    color: "#7c3aed",
-    delay: 0,
-  },
-  {
-    icon: Shield,
-    title: "CQC Ready",
-    subtitle: "Always compliant",
-    color: "#3b82f6",
-    delay: 1.5,
-  },
-  {
-    icon: Users,
-    title: "1,200+ Homes",
-    subtitle: "Trust Cura",
-    color: "#06b6d4",
-    delay: 3,
-  },
-];
+import { ArrowRight, ChevronDown } from "lucide-react";
 
 export default function Hero() {
   return (
@@ -135,106 +111,75 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Right: Floating dashboard mockup */}
-        <div className="flex-1 relative flex items-center justify-center min-h-[500px]">
-          {/* Central dashboard card */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative glass rounded-2xl p-6 w-80"
-            style={{ border: "1px solid rgba(124, 58, 237, 0.3)" }}
+        {/* Right: Care home photo mosaic */}
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="flex-1 hidden lg:grid gap-3"
+          style={{ gridTemplateColumns: "1fr 1fr", gridTemplateRows: "1fr 1fr", height: "520px" }}
+        >
+          {/* Top-left large: carer holding elderly resident's hands in care home lounge */}
+          <div
+            className="relative rounded-2xl overflow-hidden row-span-2"
+            style={{ border: "1px solid rgba(124,58,237,0.2)" }}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <div className="text-xs text-gray-500 mb-1">Today&apos;s Overview</div>
-                <div className="text-white font-bold text-lg">Care Dashboard</div>
-              </div>
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: "rgba(124, 58, 237, 0.3)" }}
-              >
-                <Brain size={18} style={{ color: "#c084fc" }} />
-              </div>
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://images.unsplash.com/photo-1773227055624-07b515ba87c5?w=600&h=900&fit=crop&crop=center&auto=format&q=80"
+              alt="Carer holding hands with a smiling elderly resident in a care home lounge"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(5,9,20,0.6) 0%, transparent 60%)" }} />
+            <span className="absolute bottom-3 left-3 text-xs text-gray-300 font-medium">Person-centred care</span>
+          </div>
 
-            {/* Stats grid */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
+          {/* Top-right: carer in uniform smiling with elderly resident */}
+          <div
+            className="relative rounded-2xl overflow-hidden"
+            style={{ border: "1px solid rgba(59,130,246,0.2)" }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://images.unsplash.com/photo-1765896387387-0538bc9f997e?w=600&h=400&fit=crop&crop=faces&auto=format&q=80"
+              alt="Care home nurse in blue scrubs smiling warmly with an elderly resident"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(5,9,20,0.6) 0%, transparent 60%)" }} />
+            <span className="absolute bottom-3 left-3 text-xs text-gray-300 font-medium">Dedicated care teams</span>
+          </div>
+
+          {/* Bottom-right: live dashboard glass card */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.85 }}
+            className="rounded-2xl p-4 flex flex-col justify-between"
+            style={{
+              background: "rgba(5,9,20,0.75)",
+              backdropFilter: "blur(24px)",
+              border: "1px solid rgba(124,58,237,0.35)",
+            }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-xs text-gray-400 font-medium">Live Dashboard</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 flex-1">
               {[
-                { label: "Residents", value: "127", change: "+3", color: "#7c3aed" },
-                { label: "Meds Due", value: "34", change: "On time", color: "#06b6d4" },
-                { label: "Staff Active", value: "48", change: "2 shifts", color: "#3b82f6" },
-                { label: "Tasks Done", value: "92%", change: "↑ 4%", color: "#10b981" },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="rounded-xl p-3"
-                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
-                >
-                  <div className="text-xs text-gray-500 mb-1">{stat.label}</div>
-                  <div className="text-xl font-bold text-white">{stat.value}</div>
-                  <div className="text-xs mt-1" style={{ color: stat.color }}>{stat.change}</div>
+                { label: "Residents", value: "127", color: "#7c3aed" },
+                { label: "Meds", value: "On Time", color: "#10b981" },
+                { label: "Staff", value: "48 active", color: "#3b82f6" },
+                { label: "Tasks", value: "92% done", color: "#06b6d4" },
+              ].map((s) => (
+                <div key={s.label} className="rounded-xl p-2.5" style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <div className="text-xs text-gray-500 mb-1">{s.label}</div>
+                  <div className="text-sm font-bold" style={{ color: s.color }}>{s.value}</div>
                 </div>
               ))}
             </div>
-
-            {/* AI alert */}
-            <div
-              className="rounded-xl p-3 flex items-start gap-3"
-              style={{ background: "rgba(124, 58, 237, 0.1)", border: "1px solid rgba(124, 58, 237, 0.2)" }}
-            >
-              <div
-                className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                style={{ background: "rgba(124, 58, 237, 0.3)" }}
-              >
-                <Brain size={12} style={{ color: "#c084fc" }} />
-              </div>
-              <div>
-                <div className="text-xs font-semibold text-violet-300 mb-0.5">AI Alert</div>
-                <div className="text-xs text-gray-400">
-                  Resident 14 care plan updated — review recommended before 3pm shift.
-                </div>
-              </div>
-            </div>
           </motion.div>
-
-          {/* Floating mini cards */}
-          {floatingCards.map((card, i) => {
-            const positions = [
-              { top: "5%", right: "-10%" },
-              { bottom: "20%", right: "-15%" },
-              { top: "40%", left: "-15%" },
-            ];
-            return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.6 + i * 0.2 }}
-                className="absolute glass rounded-xl p-3 w-44 float"
-                style={{
-                  ...positions[i],
-                  border: `1px solid ${card.color}33`,
-                  animationDelay: `${card.delay}s`,
-                }}
-              >
-                <div className="flex items-center gap-2">
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: `${card.color}22` }}
-                  >
-                    <card.icon size={14} style={{ color: card.color }} />
-                  </div>
-                  <div>
-                    <div className="text-xs font-semibold text-white">{card.title}</div>
-                    <div className="text-xs text-gray-500">{card.subtitle}</div>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+        </motion.div>
       </div>
 
       {/* Scroll indicator */}

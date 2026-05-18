@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import {
   Heart,
-  Target,
   Eye,
   Zap,
   Users,
@@ -28,6 +27,7 @@ const team = [
     title: "Chief Executive Officer",
     bio: "Former care home director with 12 years on the front line; built Cura to solve the problems he lived every day.",
     color: "#7c3aed",
+    photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=faces&auto=format&q=80",
   },
   {
     initials: "PS",
@@ -35,6 +35,7 @@ const team = [
     title: "Chief Technology Officer",
     bio: "Previously led engineering at NHS Digital; passionate about using technology to improve health outcomes at scale.",
     color: "#3b82f6",
+    photo: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop&crop=faces&auto=format&q=80",
   },
   {
     initials: "TW",
@@ -42,6 +43,7 @@ const team = [
     title: "Chief Product Officer",
     bio: "Spent a decade designing software for regulated industries; believes great UX is a matter of dignity, not just convenience.",
     color: "#06b6d4",
+    photo: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=200&h=200&fit=crop&crop=faces&auto=format&q=80",
   },
   {
     initials: "RC",
@@ -49,6 +51,7 @@ const team = [
     title: "Chief Marketing Officer",
     bio: "Healthcare marketing veteran who has helped three B2B SaaS companies scale from seed to Series B across the UK and Europe.",
     color: "#10b981",
+    photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=faces&auto=format&q=80",
   },
 ];
 
@@ -136,12 +139,60 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed"
+            className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed mb-14"
           >
             We didn&apos;t set out to build software. We set out to solve a problem
             we experienced first-hand — and the only way to do that properly was
             to build something new entirely.
           </motion.p>
+
+          {/* Photo strip */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.35 }}
+            className="grid grid-cols-3 gap-3 max-w-4xl mx-auto"
+          >
+            {[
+              {
+                src: "https://images.unsplash.com/photo-1765896387387-0538bc9f997e?w=600&h=400&fit=crop&crop=faces&auto=format&q=80",
+                alt: "Care home nurse in blue scrubs smiling warmly with an elderly resident",
+                label: "Person-centred care",
+              },
+              {
+                src: "https://images.unsplash.com/photo-1773227059780-5e865ce7fb13?w=600&h=400&fit=crop&crop=center&auto=format&q=80",
+                alt: "Residents and carers laughing together in a care home activity session",
+                label: "Community & connection",
+              },
+              {
+                src: "https://images.unsplash.com/photo-1762955913084-96ea3f986468?w=600&h=400&fit=crop&crop=center&auto=format&q=80",
+                alt: "Young carer helping elderly women with a craft activity in a care home",
+                label: "Skilled, caring teams",
+              },
+            ].map((img) => (
+              <div
+                key={img.label}
+                className="relative rounded-2xl overflow-hidden group"
+                style={{ height: "200px", border: "1px solid rgba(255,255,255,0.07)" }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background: "linear-gradient(to top, rgba(5,9,20,0.75) 0%, transparent 60%)",
+                  }}
+                />
+                <span className="absolute bottom-3 left-4 text-xs font-medium text-gray-300">
+                  {img.label}
+                </span>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
@@ -195,38 +246,50 @@ export default function AboutPage() {
               transition={{ duration: 0.7 }}
               className="relative"
             >
+              {/* Care home photo */}
               <div
-                className="glass rounded-2xl p-8"
-                style={{ border: "1px solid rgba(124,58,237,0.2)" }}
+                className="relative rounded-3xl overflow-hidden"
+                style={{
+                  height: "460px",
+                  border: "1px solid rgba(124,58,237,0.2)",
+                }}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://images.unsplash.com/photo-1773227055624-07b515ba87c5?w=800&h=900&fit=crop&crop=center&auto=format&q=80"
+                  alt="Carer holding hands with a smiling elderly resident in a care home lounge"
+                  className="w-full h-full object-cover"
+                />
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-6"
-                  style={{ background: "rgba(124,58,237,0.2)" }}
-                >
-                  <Target size={24} style={{ color: "#c084fc" }} />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-4">
-                  Our Mission
-                </h3>
-                <p className="text-gray-300 text-lg leading-relaxed italic">
-                  &ldquo;Our mission is to give every care professional back time
-                  — so they can focus on what matters: the people in their
-                  care.&rdquo;
-                </p>
-                <div className="mt-6 pt-6 border-t border-white/5 flex items-center gap-3">
-                  <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                    style={{ background: "linear-gradient(135deg,#7c3aed,#3b82f6)" }}
-                  >
-                    JO
-                  </div>
-                  <div>
-                    <div className="text-sm font-semibold text-white">James Owusu</div>
-                    <div className="text-xs text-gray-500">CEO & Co-Founder</div>
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(to top, rgba(5,9,20,0.95) 0%, rgba(5,9,20,0.3) 60%, rgba(5,9,20,0.1) 100%)",
+                  }}
+                />
+                {/* Mission quote overlaid at bottom */}
+                <div className="absolute bottom-6 left-6 right-6">
+                  <p className="text-gray-200 text-sm leading-relaxed italic mb-4">
+                    &ldquo;Our mission is to give every care professional back time
+                    — so they can focus on what matters: the people in their care.&rdquo;
+                  </p>
+                  <div className="flex items-center gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=faces&auto=format&q=80"
+                      alt="James Owusu"
+                      className="w-9 h-9 rounded-full object-cover"
+                      style={{ border: "2px solid rgba(124,58,237,0.6)" }}
+                    />
+                    <div>
+                      <div className="text-sm font-semibold text-white">James Owusu</div>
+                      <div className="text-xs text-gray-400">CEO &amp; Co-Founder</div>
+                    </div>
                   </div>
                 </div>
               </div>
-              {/* Decorative card */}
+
+              {/* Floating impact card */}
               <div
                 className="absolute -bottom-6 -right-6 glass rounded-xl p-4 w-48"
                 style={{ border: "1px solid rgba(59,130,246,0.2)" }}
@@ -314,11 +377,26 @@ export default function AboutPage() {
                 className="glass glass-hover rounded-2xl p-6"
                 style={{ border: "1px solid rgba(255,255,255,0.07)" }}
               >
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-bold text-white mb-5"
-                  style={{ background: `linear-gradient(135deg, ${member.color}cc, ${member.color}55)` }}
-                >
-                  {member.initials}
+                <div className="relative w-16 h-16 mb-5">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={member.photo}
+                    alt={member.name}
+                    className="w-16 h-16 rounded-2xl object-cover"
+                    style={{ border: `2px solid ${member.color}55` }}
+                    onError={(e) => {
+                      const t = e.currentTarget;
+                      t.style.display = "none";
+                      const fb = t.nextElementSibling as HTMLElement;
+                      if (fb) fb.style.display = "flex";
+                    }}
+                  />
+                  <div
+                    className="w-16 h-16 rounded-2xl items-center justify-center text-xl font-bold text-white"
+                    style={{ background: `linear-gradient(135deg, ${member.color}cc, ${member.color}55)`, display: "none" }}
+                  >
+                    {member.initials}
+                  </div>
                 </div>
                 <div className="font-bold text-white text-lg mb-1">
                   {member.name}

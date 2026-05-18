@@ -1,4 +1,10 @@
-from rest_framework import generics, permissions, views, response
+from django.conf import settings
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from rest_framework import generics, permissions, views, response, status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .models import User, FamilyContact
 from .serializers import UserSerializer, RegisterSerializer, CuraTokenSerializer, AdminCreateUserSerializer, AdminUpdateUserSerializer
@@ -61,6 +67,76 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method == "GET":
             return UserSerializer
         return AdminUpdateUserSerializer
+
+
+class PasswordResetRequestView(views.APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        email = request.data.get("email", "").strip().lower()
+        if not email:
+            return response.Response({"detail": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Always return success — prevents email enumeration
+        try:
+            user = User.objects.get(email__iexact=email, is_active=True)
+        except User.DoesNotExist:
+            return response.Response({"detail": "If that email is registered, a reset link has been sent."})
+
+        token_generator = PasswordResetTokenGenerator()
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = token_generator.make_token(user)
+        reset_url = f"{settings.FRONTEND_URL.rstrip('/')}/reset-password?uid={uid}&token={token}"
+
+        html_body = render_to_string("authentication/password_reset_email.html", {
+            "user": user,
+            "reset_url": reset_url,
+        })
+        send_mail(
+            subject="Reset your Cura password",
+            message=f"Reset your password here: {reset_url}",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            html_message=html_body,
+            fail_silently=True,
+        )
+        return response.Response({"detail": "If that email is registered, a reset link has been sent."})
+
+
+class PasswordResetConfirmView(views.APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        uid = request.data.get("uid", "")
+        token = request.data.get("token", "")
+        new_password = request.data.get("new_password", "")
+
+        if not all([uid, token, new_password]):
+            return response.Response(
+                {"detail": "uid, token and new_password are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if len(new_password) < 8:
+            return response.Response(
+                {"detail": "Password must be at least 8 characters."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            pk = force_str(urlsafe_base64_decode(uid))
+            user = User.objects.get(pk=pk)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return response.Response({"detail": "Invalid reset link."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not PasswordResetTokenGenerator().check_token(user, token):
+            return response.Response(
+                {"detail": "This link has expired or has already been used."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user.set_password(new_password)
+        user.save()
+        return response.Response({"detail": "Password reset successfully. You can now log in."})
 
 
 class FamilyResidentView(views.APIView):
