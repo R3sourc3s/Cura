@@ -4,13 +4,13 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({ error: "OPENAI_API_KEY not configured" }, { status: 503 });
   }
+
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
   const rl = checkRateLimit(`ai:${ip}`);
   if (!rl.ok) {

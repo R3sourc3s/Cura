@@ -4,9 +4,6 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-
 async function fetchCareHomeContext(token: string) {
   const h = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
   const [residents, mar, plans, audits] = await Promise.allSettled([
@@ -63,6 +60,8 @@ export async function POST(req: NextRequest) {
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({ error: "OPENAI_API_KEY not configured" }, { status: 503 });
   }
+
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
   const rl = checkRateLimit(`chat:${ip}`);

@@ -3,13 +3,12 @@ import OpenAI from "openai";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({ error: "OPENAI_API_KEY not configured" }, { status: 503 });
   }
+
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   const { id } = await params;
   const cookieStore = await cookies();
