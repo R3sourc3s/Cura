@@ -1,10 +1,10 @@
 import { API_URL } from "@/lib/config";
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 
 const DOMAIN_LABELS: Record<string, string> = {
@@ -13,8 +13,8 @@ const DOMAIN_LABELS: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json({ error: "ANTHROPIC_API_KEY not configured" }, { status: 503 });
+  if (!process.env.OPENAI_API_KEY) {
+    return NextResponse.json({ error: "OPENAI_API_KEY not configured" }, { status: 503 });
   }
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
   const rl = checkRateLimit(`ai:${ip}`);
@@ -79,12 +79,12 @@ Write a professional gap analysis report with these sections:
 
 Use professional UK care sector language. Be specific and actionable. Maximum 400 words.`;
 
-  const completion = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o",
     max_tokens: 1024,
     messages: [{ role: "user", content: prompt }],
   });
 
-  const report = completion.content[0].type === "text" ? completion.content[0].text : "";
+  const report = completion.choices[0].message.content ?? "";
   return NextResponse.json({ report });
 }

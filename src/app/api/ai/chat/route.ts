@@ -1,10 +1,10 @@
 import { API_URL } from "@/lib/config";
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 
 async function fetchCareHomeContext(token: string) {
@@ -60,8 +60,8 @@ const SYSTEM_PROMPT = `You are Cura AI, an intelligent assistant for care home s
 You have access to live care home data provided below. Be concise, accurate and clinically appropriate. Always recommend involving qualified healthcare professionals for clinical decisions. Use UK English. Never fabricate resident names or clinical data not present in the context.`;
 
 export async function POST(req: NextRequest) {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json({ error: "ANTHROPIC_API_KEY not configured" }, { status: 503 });
+  if (!process.env.OPENAI_API_KEY) {
+    return NextResponse.json({ error: "OPENAI_API_KEY not configured" }, { status: 503 });
   }
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
@@ -92,7 +92,8 @@ export async function POST(req: NextRequest) {
     ? `${SYSTEM_PROMPT}\n\n## Current Care Home Data\n${contextStr}`
     : SYSTEM_PROMPT;
 
-  const messages: Anthropic.MessageParam[] = [
+  const messages: OpenAI.ChatCompletionMessageParam[] = [
+    { role: "system", content: systemWithContext },
     ...history.map((m: { role: string; content: string }) => ({
       role: m.role as "user" | "assistant",
       content: m.content,
@@ -100,13 +101,12 @@ export async function POST(req: NextRequest) {
     { role: "user", content: message },
   ];
 
-  const completion = await anthropic.messages.create({
-    model: "claude-haiku-4-5-20251001",
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
     max_tokens: 1024,
-    system: systemWithContext,
     messages,
   });
 
-  const response = completion.content[0].type === "text" ? completion.content[0].text : "";
+  const response = completion.choices[0].message.content ?? "";
   return NextResponse.json({ response });
 }

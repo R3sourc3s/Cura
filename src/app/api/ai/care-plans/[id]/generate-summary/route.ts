@@ -1,14 +1,14 @@
 import { API_URL } from "@/lib/config";
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json({ error: "ANTHROPIC_API_KEY not configured" }, { status: 503 });
+  if (!process.env.OPENAI_API_KEY) {
+    return NextResponse.json({ error: "OPENAI_API_KEY not configured" }, { status: 503 });
   }
 
   const { id } = await params;
@@ -66,13 +66,13 @@ ${notesText ? `## Recent Notes\n${notesText}` : ""}
 
 Write a 2-4 sentence clinical summary suitable for handover or CQC inspection. Focus on the resident's current care needs, key risks, and care priorities. Use professional UK clinical language. Be factual and based only on the information provided.`;
 
-  const completion = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o",
     max_tokens: 512,
     messages: [{ role: "user", content: prompt }],
   });
 
-  const summary = completion.content[0].type === "text" ? completion.content[0].text : "";
+  const summary = completion.choices[0].message.content ?? "";
 
   // Persist summary back to Django
   try {

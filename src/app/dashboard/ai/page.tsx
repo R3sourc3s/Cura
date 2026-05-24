@@ -52,7 +52,7 @@ export default function AIPage() {
         role: "assistant",
         content: err instanceof Error && err.message !== "AI unavailable"
           ? err.message
-          : "Sorry, I'm unavailable right now. Please ensure ANTHROPIC_API_KEY is set and try again.",
+          : "Sorry, I'm unavailable right now. Please ensure OPENAI_API_KEY is set and try again.",
         ts: new Date(),
       }]);
     } finally {
