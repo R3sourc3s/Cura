@@ -80,11 +80,15 @@ export async function POST(req: NextRequest) {
   const cookieStore = await cookies();
   const token = cookieStore.get("emp_access")?.value;
 
+  if (!token) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  }
+
   let contextStr = "";
-  if (token) {
-    try {
-      contextStr = await fetchCareHomeContext(token);
-    } catch {}
+  try {
+    contextStr = await fetchCareHomeContext(token);
+  } catch (err) {
+    console.error("Failed to fetch care home context:", err);
   }
 
   const systemWithContext = contextStr

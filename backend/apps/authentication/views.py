@@ -1,3 +1,4 @@
+import logging
 from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
@@ -5,16 +6,28 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import generics, permissions, views, response, status
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .models import User, FamilyContact
 from .serializers import UserSerializer, RegisterSerializer, CuraTokenSerializer, AdminCreateUserSerializer, AdminUpdateUserSerializer
 from .permissions import require
 from django_filters.rest_framework import DjangoFilterBackend
 
+logger = logging.getLogger(__name__)
+
+
+class LoginRateThrottle(AnonRateThrottle):
+    scope = "auth_login"
+
+
+class PasswordResetRateThrottle(AnonRateThrottle):
+    scope = "auth_password_reset"
+
 
 class LoginView(TokenObtainPairView):
     serializer_class = CuraTokenSerializer
     permission_classes = [permissions.AllowAny]
+    throttle_classes = [LoginRateThrottle]
 
 
 class RegisterView(generics.CreateAPIView):
@@ -71,6 +84,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class PasswordResetRequestView(views.APIView):
     permission_classes = [permissions.AllowAny]
+    throttle_classes = [PasswordResetRateThrottle]
 
     def post(self, request):
         email = request.data.get("email", "").strip().lower()
@@ -92,14 +106,17 @@ class PasswordResetRequestView(views.APIView):
             "user": user,
             "reset_url": reset_url,
         })
-        send_mail(
-            subject="Reset your Cura password",
-            message=f"Reset your password here: {reset_url}",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-            html_message=html_body,
-            fail_silently=True,
-        )
+        try:
+            send_mail(
+                subject="Reset your Cura password",
+                message=f"Reset your password here: {reset_url}",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                html_message=html_body,
+                fail_silently=False,
+            )
+        except Exception:
+            logger.exception("Failed to send password reset email to %s", user.email)
         return response.Response({"detail": "If that email is registered, a reset link has been sent."})
 
 
