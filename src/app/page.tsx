@@ -9,10 +9,11 @@ import Testimonials from "@/components/Testimonials";
 import Pricing from "@/components/Pricing";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
+import CookieBanner from "@/components/CookieBanner";
 
 export default function Home() {
   return (
-    <main style={{ background: "#050914", minHeight: "100vh" }}>
+    <main style={{ background: "#faf7f0", minHeight: "100vh" }}>
       <Navbar />
       <Hero />
       <Stats />
@@ -24,6 +25,7 @@ export default function Home() {
       <Pricing />
       <CTA />
       <Footer />
+      <CookieBanner />
     </main>
   );
 }

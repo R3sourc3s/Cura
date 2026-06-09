@@ -5,14 +5,14 @@ import { ArrowRight, Calendar } from "lucide-react";
 
 export default function CTA() {
   return (
-    <section id="demo" className="py-24 relative overflow-hidden">
+    <section id="demo" className="py-24" style={{ background: "#faf7f0" }}>
       <div className="max-w-5xl mx-auto px-6">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="relative rounded-3xl overflow-hidden p-12 lg:p-20 text-center"
-          style={{ border: "1px solid rgba(124,58,237,0.3)" }}
+          className="relative rounded-3xl overflow-hidden"
+          style={{ minHeight: "420px" }}
         >
           {/* Background care home photo */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -23,70 +23,55 @@ export default function CTA() {
             className="absolute inset-0 w-full h-full object-cover"
           />
 
-          {/* Dark overlay so text remains readable */}
+          {/* Forest green overlay */}
           <div
             className="absolute inset-0"
             style={{
-              background:
-                "linear-gradient(135deg, rgba(5,9,20,0.88) 0%, rgba(124,58,237,0.55) 50%, rgba(5,9,20,0.88) 100%)",
+              background: "linear-gradient(135deg, rgba(28,46,32,0.93) 0%, rgba(45,90,61,0.87) 50%, rgba(22,38,26,0.93) 100%)",
             }}
           />
 
-          {/* Decorative orbs on top of photo */}
-          <div
-            className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl opacity-25 pointer-events-none"
-            style={{ background: "#7c3aed" }}
-          />
-          <div
-            className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full blur-3xl opacity-25 pointer-events-none"
-            style={{ background: "#3b82f6" }}
-          />
-
-          <div className="relative">
+          <div className="relative text-center px-8 py-20">
             <div
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-7"
               style={{
-                background: "rgba(255,255,255,0.1)",
+                background: "rgba(255,255,255,0.12)",
                 border: "1px solid rgba(255,255,255,0.2)",
                 color: "white",
               }}
             >
-              <Calendar size={14} />
-              30-minute personalised demo — no commitment
+              <Calendar size={13} />
+              30-minute personalised walkthrough — no commitment
             </div>
 
-            <h2 className="text-4xl lg:text-6xl font-extrabold text-white mb-6 leading-tight">
-              Time Saved.
-              <br />
-              <span className="gradient-text">Care Strengthened.</span>
-              <br />
-              Futures Protected.
+            <h2 className="lp-serif text-4xl lg:text-5xl font-bold text-white mb-5 leading-tight">
+              See it working with your home.
             </h2>
 
-            <p className="text-gray-300 text-lg max-w-xl mx-auto mb-10">
-              Join over 1,200 care homes already running smarter with Cura.
-              See the platform built for your residents, your team, and your peace of mind.
+            <p className="text-lg max-w-lg mx-auto mb-10" style={{ color: "rgba(255,255,255,0.75)" }}>
+              Book a 30-minute walkthrough with our team. We&apos;ll show you how Cura fits around
+              your existing setup — no pressure, no jargon.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="mailto:info@cura.com"
-                className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-full font-bold text-white text-lg glow-button"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+                href="mailto:hello@curacareplatform.co.uk"
+                className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-xl font-semibold text-base transition-all"
+                style={{ background: "white", color: "#2d5a3d" }}
               >
-                Request a Free Demo <ArrowRight size={18} />
+                Request a Free Demo <ArrowRight size={16} />
               </a>
               <a
                 href="tel:+441234567890"
-                className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-full font-semibold text-white text-lg transition-all hover:bg-white/10"
-                style={{ border: "1px solid rgba(255,255,255,0.25)" }}
+                className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-xl font-semibold text-white text-base transition-all"
+                style={{ border: "1.5px solid rgba(255,255,255,0.35)" }}
               >
-                Call Us Today
+                Call us today
               </a>
             </div>
 
-            <p className="text-gray-400 text-sm mt-6">
-              info@cura.com &nbsp;·&nbsp; Flat 1, 31 Knighton Road, Leicester, LE2 3HL
+            <p className="text-sm mt-6" style={{ color: "rgba(255,255,255,0.4)" }}>
+              hello@curacareplatform.co.uk &nbsp;·&nbsp; Flat 1, 31 Knighton Road, Leicester, LE2 3HL
             </p>
           </div>
         </motion.div>

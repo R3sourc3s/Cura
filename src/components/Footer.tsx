@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Zap, Link2, Mail, ExternalLink } from "lucide-react";
+import { Mail } from "lucide-react";
 
 const links: Record<string, { label: string; href: string }[]> = {
   Product: [
@@ -13,11 +13,10 @@ const links: Record<string, { label: string; href: string }[]> = {
     { label: "Changelog",    href: "/changelog" },
   ],
   Company: [
-    { label: "About",    href: "/about" },
-    { label: "Blog",     href: "/blog" },
-    { label: "Careers",  href: "/careers" },
-    { label: "Press",    href: "/press" },
-    { label: "Contact",  href: "/contact" },
+    { label: "About",   href: "/about" },
+    { label: "Blog",    href: "/blog" },
+    { label: "Careers", href: "/careers" },
+    { label: "Contact", href: "/contact" },
   ],
   Resources: [
     { label: "Documentation", href: "/docs" },
@@ -27,70 +26,62 @@ const links: Record<string, { label: string; href: string }[]> = {
     { label: "Status",        href: "/status" },
   ],
   Legal: [
-    { label: "Privacy Policy",  href: "/privacy" },
+    { label: "Privacy Policy",   href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },
-    { label: "Cookie Policy",   href: "/cookies" },
-    { label: "GDPR Statement",  href: "/gdpr" },
+    { label: "Cookie Policy",    href: "/cookies" },
+    { label: "GDPR Statement",   href: "/gdpr" },
   ],
 };
 
 export default function Footer() {
   return (
     <footer
-      className="relative pt-20 pb-8"
-      style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+      className="pt-16 pb-8"
+      style={{ background: "#1c1a14", borderTop: "1px solid rgba(255,255,255,0.06)" }}
     >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(ellipse 100% 50% at 50% 100%, rgba(124,58,237,0.05), transparent)",
-        }}
-      />
-
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-8 mb-16">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-8 mb-14">
           {/* Brand */}
           <div className="col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4">
+            <Link href="/" className="flex items-center gap-2.5 mb-4">
               <div
                 className="w-8 h-8 rounded-lg flex items-center justify-center"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+                style={{ background: "#2d5a3d" }}
               >
-                <Zap size={16} className="text-white" />
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 2C4.686 2 2 4.686 2 8s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6zm0 2.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm0 7.75A4.5 4.5 0 013.75 10c0-1.5 2.25-2.325 4.25-2.325S12.25 8.5 12.25 10A4.5 4.5 0 018 12.25z" fill="white"/>
+                </svg>
               </div>
-              <span className="text-xl font-bold gradient-text">cura</span>
+              <span className="lp-serif text-xl font-bold text-white">Cura</span>
             </Link>
-            <p className="text-gray-500 text-sm leading-relaxed mb-6 max-w-xs">
-              UK&apos;s #1 care home management platform. Built with care, for care.
+            <p className="text-sm leading-relaxed mb-6 max-w-xs" style={{ color: "#6b6558" }}>
+              Care home management software built for UK care teams. Helping homes run better, every day.
             </p>
-            <div className="flex gap-3">
-              {[
-                { Icon: ExternalLink, href: "https://linkedin.com/company/curacareplatform" },
-                { Icon: Link2,        href: "https://twitter.com/curacareplatform" },
-                { Icon: Mail,         href: "/contact" },
-              ].map(({ Icon, href }) => (
-                <a
-                  key={href}
-                  href={href}
-                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-gray-400 hover:text-white transition-colors"
-                  style={{ border: "1px solid rgba(255,255,255,0.07)" }}
-                >
-                  <Icon size={15} />
-                </a>
-              ))}
-            </div>
+            <a
+              href="mailto:hello@curacareplatform.co.uk"
+              className="flex items-center gap-2 text-sm transition-colors w-fit"
+              style={{ color: "#6b6558" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "#a89f94")}
+              onMouseLeave={e => (e.currentTarget.style.color = "#6b6558")}
+            >
+              <Mail size={14} />
+              hello@curacareplatform.co.uk
+            </a>
           </div>
 
           {/* Link columns */}
           {Object.entries(links).map(([category, items]) => (
             <div key={category}>
-              <div className="text-white font-semibold text-sm mb-4">{category}</div>
+              <div className="font-semibold text-sm mb-4 text-white">{category}</div>
               <ul className="space-y-2.5">
                 {items.map(({ label, href }) => (
                   <li key={label}>
                     <Link
                       href={href}
-                      className="text-gray-500 hover:text-gray-300 text-sm transition-colors"
+                      className="text-sm transition-colors"
+                      style={{ color: "#6b6558" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "#f5f0eb")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "#6b6558")}
                     >
                       {label}
                     </Link>
@@ -104,17 +95,17 @@ export default function Footer() {
         {/* Bottom bar */}
         <div
           className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
+          style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
         >
-          <p className="text-gray-600 text-xs">
-            © 2025 Cura Ltd. Registered in England & Wales. All rights reserved.
+          <p className="text-xs" style={{ color: "#4a4438" }}>
+            © 2026 Cura Ltd. Registered in England & Wales. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
-            {["ISO 27001", "Cyber Essentials+", "NHS-Aligned"].map((badge) => (
+            {["CQC-aligned", "GDPR compliant", "ISO 27001"].map((badge) => (
               <span
                 key={badge}
-                className="text-xs text-gray-600 px-2.5 py-1 rounded-full"
-                style={{ border: "1px solid rgba(255,255,255,0.06)" }}
+                className="text-xs px-2.5 py-1 rounded-full"
+                style={{ border: "1px solid rgba(255,255,255,0.08)", color: "#4a4438" }}
               >
                 {badge}
               </span>

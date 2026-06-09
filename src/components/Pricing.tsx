@@ -1,182 +1,130 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle, Zap, ArrowRight } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
 
 const plans = [
   {
-    name: "Starter",
-    tagline: "For single homes getting started",
-    price: "£299",
-    per: "/month",
-    color: "#3b82f6",
+    name: "Essentials",
+    desc: "For homes getting started with digital care records.",
+    price: "£4",
+    per: "per resident / month",
+    cta: "Start free trial",
+    ctaHref: "#demo",
+    highlight: false,
     features: [
-      "Up to 50 residents",
-      "Medication management (eMAR)",
-      "Basic care planning",
-      "Shift & rota management",
-      "Task management",
-      "Email & chat support",
-      "Standard compliance reports",
+      "Digital care plans & risk assessments",
+      "eMAR medication management",
+      "Shift rota builder",
+      "Document storage",
+      "Email support",
     ],
-    cta: "Start Free Trial",
-    popular: false,
   },
   {
     name: "Professional",
-    tagline: "For homes serious about excellence",
-    price: "£599",
-    per: "/month",
-    color: "#7c3aed",
+    desc: "For homes that want full compliance and reporting.",
+    price: "£7",
+    per: "per resident / month",
+    cta: "Start free trial",
+    ctaHref: "#demo",
+    highlight: true,
+    tag: "Most popular",
     features: [
-      "Unlimited residents",
-      "Full eMAR with pharmacy sync",
-      "AI-powered care planning",
-      "HR & recruitment module",
-      "Advanced analytics dashboard",
-      "CQC compliance autopilot",
-      "Priority 24/7 support",
-      "Staff mobile app",
+      "Everything in Essentials",
+      "Live CQC compliance dashboard",
+      "Staff HR & recruitment module",
+      "Incident & safeguarding reports",
+      "Family portal",
+      "Phone & chat support",
     ],
-    cta: "Start Free Trial",
-    popular: true,
   },
   {
     name: "Enterprise",
-    tagline: "For groups managing multiple homes",
-    price: "Custom",
-    per: "",
-    color: "#06b6d4",
+    desc: "For groups managing multiple homes.",
+    price: "Talk to us",
+    per: "tailored pricing",
+    cta: "Book a call",
+    ctaHref: "/contact",
+    highlight: false,
     features: [
       "Everything in Professional",
-      "Multi-site management",
-      "Custom AI model training",
+      "Multi-home group dashboard",
+      "Single sign-on (SSO)",
       "Dedicated account manager",
-      "SLA guarantee",
-      "White-label option",
-      "API access & integrations",
-      "Bespoke onboarding",
+      "Custom integrations & API access",
+      "SLA-backed support",
     ],
-    cta: "Talk to Sales",
-    popular: false,
   },
 ];
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="py-32 relative">
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(ellipse 70% 40% at 50% 0%, rgba(124,58,237,0.07), transparent)",
-        }}
-      />
-
+    <section id="pricing" className="py-28" style={{ background: "#ffffff" }}>
       <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: "#a78bfa" }}>
-            Simple Pricing
-          </p>
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-            Transparent. No surprises.
+        <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
+          <h2 className="lp-serif text-3xl lg:text-4xl font-bold mb-4" style={{ color: "#1c1a14" }}>
+            Simple pricing, no surprises
           </h2>
-          <p className="text-gray-400 text-lg max-w-xl mx-auto">
-            All plans include a 30-day free trial. No credit card required.
+          <p className="text-lg max-w-xl mx-auto" style={{ color: "#7a7468" }}>
+            All plans include a 30-day free trial. No credit card required until you&apos;re ready.
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {plans.map((plan, i) => (
+        <div className="grid md:grid-cols-3 gap-6 items-stretch">
+          {plans.map((p, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="relative glass rounded-3xl p-8 flex flex-col"
+              className="rounded-2xl p-8 flex flex-col"
               style={{
-                border: plan.popular
-                  ? `1px solid ${plan.color}66`
-                  : "1px solid rgba(255,255,255,0.07)",
-                background: plan.popular ? "rgba(124,58,237,0.08)" : undefined,
+                background: p.highlight ? "#2d5a3d" : "#ffffff",
+                border: p.highlight ? "none" : "1px solid #dfd8cc",
+                boxShadow: p.highlight ? "0 8px 40px rgba(45,90,61,0.25)" : "0 1px 3px rgba(28,25,20,0.06)",
               }}
             >
-              {plan.popular && (
-                <div
-                  className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold text-white"
-                  style={{ background: `linear-gradient(135deg, ${plan.color}, #3b82f6)` }}
-                >
-                  <Zap size={10} /> Most Popular
-                </div>
+              {p.tag && (
+                <span className="text-xs font-bold px-3 py-1 rounded-full self-start mb-4"
+                  style={{ background: "rgba(184,146,58,0.2)", color: "#b8923a" }}>
+                  {p.tag}
+                </span>
               )}
+              <h3 className="lp-serif text-xl font-bold mb-1" style={{ color: p.highlight ? "#ffffff" : "#1c1a14" }}>{p.name}</h3>
+              <p className="text-sm mb-6" style={{ color: p.highlight ? "rgba(255,255,255,0.7)" : "#7a7468" }}>{p.desc}</p>
 
-              {/* Header */}
               <div className="mb-8">
-                <div
-                  className="text-sm font-semibold mb-1"
-                  style={{ color: plan.color }}
-                >
-                  {plan.name}
-                </div>
-                <div className="text-white text-sm mb-6">{plan.tagline}</div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold text-white">{plan.price}</span>
-                  <span className="text-gray-400 text-sm">{plan.per}</span>
-                </div>
+                <span className="lp-serif text-4xl font-bold" style={{ color: p.highlight ? "#ffffff" : "#1c1a14" }}>{p.price}</span>
+                <span className="text-sm ml-2" style={{ color: p.highlight ? "rgba(255,255,255,0.6)" : "#a89f94" }}>{p.per}</span>
               </div>
 
-              {/* Features */}
               <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((feature, j) => (
-                  <li key={j} className="flex items-center gap-3 text-gray-300 text-sm">
-                    <CheckCircle size={14} style={{ color: plan.color, flexShrink: 0 }} />
-                    {feature}
+                {p.features.map((f, j) => (
+                  <li key={j} className="flex items-start gap-3 text-sm"
+                    style={{ color: p.highlight ? "rgba(255,255,255,0.85)" : "#4a4438" }}>
+                    <Check size={14} style={{ color: p.highlight ? "#b8923a" : "#2d5a3d", marginTop: "2px", flexShrink: 0 }} />
+                    {f}
                   </li>
                 ))}
               </ul>
 
-              {/* CTA */}
               <a
-                href="#demo"
-                className="flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm transition-all"
-                style={
-                  plan.popular
-                    ? {
-                        background: `linear-gradient(135deg, ${plan.color}, #3b82f6)`,
-                        color: "white",
-                        boxShadow: `0 0 30px ${plan.color}44`,
-                      }
-                    : {
-                        border: `1px solid ${plan.color}44`,
-                        color: plan.color,
-                        background: `${plan.color}11`,
-                      }
-                }
+                href={p.ctaHref}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-sm font-semibold transition-opacity"
+                style={p.highlight
+                  ? { background: "#ffffff", color: "#2d5a3d" }
+                  : { background: "#2d5a3d", color: "#ffffff" }}
               >
-                {plan.cta} <ArrowRight size={14} />
+                {p.cta} <ArrowRight size={13} />
               </a>
             </motion.div>
           ))}
         </div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-center text-gray-500 text-sm mt-10"
-        >
-          All prices exclude VAT. Billed annually for best value — monthly options available.
-          <br />
-          Questions?{" "}
-          <a href="mailto:info@cura.com" className="text-violet-400 hover:text-violet-300 transition-colors">
-            Talk to our team
-          </a>
-        </motion.p>
+        <p className="text-center text-sm mt-8" style={{ color: "#a89f94" }}>
+          All prices exclude VAT. Billed monthly or annually (save 20%). Minimum 10 residents.
+        </p>
       </div>
     </section>
   );
