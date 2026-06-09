@@ -93,11 +93,11 @@ function SearchInput({ mobile = false, inputRef }: { mobile?: boolean; inputRef?
         placeholder="Search residents…"
         className={`text-sm pl-9 pr-4 py-1.5 rounded-lg outline-none transition-all ${mobile ? "w-full py-2 rounded-xl" : "w-56 lg:w-72"}`}
         style={inputStyle}
-        onFocus={e => (e.target.style.borderColor = "rgba(124,58,237,0.5)")}
+        onFocus={e => (e.target.style.borderColor = "rgba(45,90,61,0.5)")}
         onBlur={e => (e.target.style.borderColor = "var(--border-strong)")}
       />
       {loading && (
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "#2d5a3d", borderTopColor: "transparent" }} />
       )}
       {open && results.length > 0 && (
         <div className="absolute top-full mt-1.5 left-0 w-72 rounded-xl py-1 z-50 overflow-hidden"
@@ -109,7 +109,7 @@ function SearchInput({ mobile = false, inputRef }: { mobile?: boolean; inputRef?
               onMouseEnter={e => (e.currentTarget.style.background = "var(--input-bg)")}
               onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
               <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#2d5a3d" }}>
                 {r.full_name[0]}
               </div>
               <div>
@@ -244,10 +244,10 @@ export default function Header({ onMenuClick }: HeaderProps) {
           <div className="relative" ref={notifsRef}>
             <button onClick={openNotifs}
               className="relative w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: notifsOpen ? "rgba(124,58,237,0.1)" : "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
+              style={{ background: notifsOpen ? "rgba(45,90,61,0.08)" : "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
               <Bell size={15} style={{ color: "var(--text-secondary)" }} />
               {notifsLoaded && unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full border-2 border-[#050914] text-white text-[10px] font-bold flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full border-2 text-white text-[10px] font-bold flex items-center justify-center">
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
@@ -273,7 +273,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
                     {notifs.map(n => (
                       <div key={n.id}
                         className="flex items-start gap-3 px-4 py-3 border-b"
-                        style={{ borderColor: "var(--bg-card)", background: n.is_read ? "transparent" : "rgba(124,58,237,0.04)" }}>
+                        style={{ borderColor: "var(--bg-card)", background: n.is_read ? "transparent" : "rgba(45,90,61,0.04)" }}>
                         <div className="mt-0.5"><NotifIcon type={n.notif_type} /></div>
                         <Link href={n.link || "#"} onClick={() => { dismissNotif(n.id); setNotifsOpen(false); }}
                           className="flex-1 text-xs leading-relaxed hover:underline"
@@ -295,9 +295,9 @@ export default function Header({ onMenuClick }: HeaderProps) {
           <div className="relative" ref={menuRef}>
             <button onClick={() => setMenuOpen(!menuOpen)}
               className="flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-xl transition-all"
-              style={{ background: menuOpen ? "rgba(124,58,237,0.1)" : "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
+              style={{ background: menuOpen ? "rgba(45,90,61,0.08)" : "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
               <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#2d5a3d" }}>
                 {initials}
               </div>
               <div className="text-left hidden sm:block">

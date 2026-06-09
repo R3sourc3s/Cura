@@ -4,22 +4,14 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import {
-  CheckCircle,
-  XCircle,
-  Zap,
-  ArrowRight,
-  ChevronDown,
-  ChevronUp,
-  Phone,
-} from "lucide-react";
+import { CheckCircle, XCircle, Zap, ArrowRight, ChevronDown, ChevronUp, Phone } from "lucide-react";
 
 const plans = [
   {
     name: "Starter",
     tagline: "For single care homes getting started",
     monthlyPrice: 299,
-    color: "#3b82f6",
+    color: "#7a7468",
     popular: false,
     cta: "Start Free Trial",
     features: [
@@ -38,7 +30,7 @@ const plans = [
     name: "Professional",
     tagline: "For homes serious about excellence",
     monthlyPrice: 599,
-    color: "#7c3aed",
+    color: "#2d5a3d",
     popular: true,
     cta: "Start Free Trial",
     features: [
@@ -59,7 +51,7 @@ const plans = [
     name: "Enterprise",
     tagline: "For groups managing multiple homes",
     monthlyPrice: null,
-    color: "#06b6d4",
+    color: "#b8923a",
     popular: false,
     cta: "Talk to Sales",
     features: [
@@ -81,19 +73,19 @@ const plans = [
 type FeatureRow = { label: string; starter: boolean | string; pro: boolean | string; enterprise: boolean | string };
 
 const comparisonRows: FeatureRow[] = [
-  { label: "Residents",              starter: "Up to 20",    pro: "Up to 60",       enterprise: "Unlimited" },
-  { label: "Medications / eMAR",     starter: true,          pro: true,             enterprise: true },
-  { label: "Care Plans",             starter: "Basic",       pro: "AI-powered",     enterprise: "AI + Custom" },
-  { label: "Staff & HR",             starter: false,         pro: true,             enterprise: true },
-  { label: "AI Risk Scoring",        starter: false,         pro: true,             enterprise: true },
-  { label: "Family Portal",          starter: false,         pro: true,             enterprise: true },
-  { label: "Pharmacy Integration",   starter: false,         pro: true,             enterprise: true },
-  { label: "GP Integration",         starter: false,         pro: false,            enterprise: true },
-  { label: "Multi-site Management",  starter: false,         pro: false,            enterprise: true },
-  { label: "API Access",             starter: false,         pro: false,            enterprise: true },
-  { label: "On-premise Option",      starter: false,         pro: false,            enterprise: true },
-  { label: "Support",                starter: "Email & Chat", pro: "Priority 24/7", enterprise: "Dedicated CSM" },
-  { label: "SLA Guarantee",          starter: false,         pro: false,            enterprise: true },
+  { label: "Residents",              starter: "Up to 20",     pro: "Up to 60",       enterprise: "Unlimited" },
+  { label: "Medications / eMAR",     starter: true,           pro: true,             enterprise: true },
+  { label: "Care Plans",             starter: "Basic",        pro: "AI-powered",     enterprise: "AI + Custom" },
+  { label: "Staff & HR",             starter: false,          pro: true,             enterprise: true },
+  { label: "AI Risk Scoring",        starter: false,          pro: true,             enterprise: true },
+  { label: "Family Portal",          starter: false,          pro: true,             enterprise: true },
+  { label: "Pharmacy Integration",   starter: false,          pro: true,             enterprise: true },
+  { label: "GP Integration",         starter: false,          pro: false,            enterprise: true },
+  { label: "Multi-site Management",  starter: false,          pro: false,            enterprise: true },
+  { label: "API Access",             starter: false,          pro: false,            enterprise: true },
+  { label: "On-premise Option",      starter: false,          pro: false,            enterprise: true },
+  { label: "Support",                starter: "Email & Chat", pro: "Priority 24/7",  enterprise: "Dedicated CSM" },
+  { label: "SLA Guarantee",          starter: false,          pro: false,            enterprise: true },
 ];
 
 const faqs = [
@@ -121,12 +113,12 @@ const faqs = [
 
 function FeatureCell({ value }: { value: boolean | string }) {
   if (typeof value === "string") {
-    return <span className="text-gray-300 text-sm">{value}</span>;
+    return <span className="text-sm" style={{ color: "#4a4438" }}>{value}</span>;
   }
   return value ? (
-    <CheckCircle size={18} style={{ color: "#34d399" }} className="mx-auto" />
+    <CheckCircle size={18} style={{ color: "#2d5a3d" }} className="mx-auto" />
   ) : (
-    <XCircle size={18} className="mx-auto text-gray-700" />
+    <XCircle size={18} className="mx-auto" style={{ color: "#dfd8cc" }} />
   );
 }
 
@@ -141,73 +133,35 @@ export default function PricingPage() {
   };
 
   return (
-    <main style={{ background: "#050914", minHeight: "100vh" }}>
+    <main style={{ background: "#faf7f0", minHeight: "100vh" }}>
       <Navbar />
 
-      {/* Hero */}
-      <section className="pt-32 pb-16 relative overflow-hidden">
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.12), transparent)",
-          }}
-        />
-        <div className="max-w-4xl mx-auto px-6 text-center relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: "#a78bfa" }}>
-              Pricing
-            </p>
-            <h1 className="text-5xl lg:text-6xl font-extrabold text-white mb-5 leading-tight">
-              Transparent.
-              <br />
-              <span className="gradient-text">No surprises.</span>
+      <section className="pt-32 pb-16">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: "#2d5a3d" }}>Pricing</p>
+            <h1 className="lp-serif text-5xl lg:text-6xl font-extrabold mb-5 leading-tight" style={{ color: "#1c1a14" }}>
+              Transparent.<br />
+              <span style={{ color: "#2d5a3d" }}>No surprises.</span>
             </h1>
-            <p className="text-xl text-gray-400 max-w-xl mx-auto">
-              All plans include a 30-day free trial. No credit card required.
-              Cancel or change at any time.
+            <p className="text-xl max-w-xl mx-auto" style={{ color: "#7a7468" }}>
+              All plans include a 30-day free trial. No credit card required. Cancel or change at any time.
             </p>
           </motion.div>
 
-          {/* Toggle */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex items-center justify-center gap-4 mt-8"
-          >
-            <span className={`text-sm font-medium ${!annual ? "text-white" : "text-gray-500"}`}>
-              Monthly
-            </span>
-            <button
-              onClick={() => setAnnual(!annual)}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex items-center justify-center gap-4 mt-8">
+            <span className={`text-sm font-medium`} style={{ color: !annual ? "#1c1a14" : "#7a7468" }}>Monthly</span>
+            <button onClick={() => setAnnual(!annual)}
               className="relative w-14 h-7 rounded-full transition-all duration-300 flex-shrink-0"
-              style={{
-                background: annual
-                  ? "linear-gradient(135deg, #7c3aed, #3b82f6)"
-                  : "rgba(255,255,255,0.1)",
-                border: "1px solid rgba(255,255,255,0.15)",
-              }}
-            >
-              <span
-                className="absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all duration-300"
-                style={{ left: annual ? "calc(100% - 1.5rem)" : "0.25rem" }}
-              />
+              style={{ background: annual ? "#2d5a3d" : "#dfd8cc", border: "1px solid #c8bfb0" }}>
+              <span className="absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all duration-300"
+                style={{ left: annual ? "calc(100% - 1.5rem)" : "0.25rem" }} />
             </button>
-            <span className={`text-sm font-medium ${annual ? "text-white" : "text-gray-500"}`}>
+            <span className={`text-sm font-medium`} style={{ color: annual ? "#1c1a14" : "#7a7468" }}>
               Annual
-              <span
-                className="ml-2 text-xs px-2 py-0.5 rounded-full font-semibold"
-                style={{
-                  background: "rgba(52,211,153,0.15)",
-                  color: "#34d399",
-                  border: "1px solid rgba(52,211,153,0.3)",
-                }}
-              >
+              <span className="ml-2 text-xs px-2 py-0.5 rounded-full font-semibold"
+                style={{ background: "rgba(45,90,61,0.1)", color: "#2d5a3d", border: "1px solid rgba(45,90,61,0.25)" }}>
                 Save 20%
               </span>
             </span>
@@ -215,59 +169,41 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Plan cards */}
       <section className="pb-24">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid lg:grid-cols-3 gap-7">
             {plans.map((plan, i) => (
-              <motion.div
-                key={plan.name}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="relative glass rounded-3xl p-8 flex flex-col"
+              <motion.div key={plan.name} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
+                className="relative rounded-3xl p-8 flex flex-col"
                 style={{
-                  border: plan.popular
-                    ? `1px solid ${plan.color}66`
-                    : "1px solid rgba(255,255,255,0.07)",
-                  background: plan.popular ? "rgba(124,58,237,0.08)" : undefined,
-                }}
-              >
+                  background: plan.popular ? "#2d5a3d" : "#ffffff",
+                  border: plan.popular ? "none" : "1px solid #dfd8cc",
+                  boxShadow: plan.popular ? "0 8px 32px rgba(45,90,61,0.2)" : "0 2px 8px rgba(28,26,20,0.06)",
+                }}>
                 {plan.popular && (
-                  <div
-                    className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold text-white"
-                    style={{
-                      background: `linear-gradient(135deg, ${plan.color}, #3b82f6)`,
-                    }}
-                  >
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold"
+                    style={{ background: "#b8923a", color: "#ffffff" }}>
                     <Zap size={10} /> Most Popular
                   </div>
                 )}
 
                 <div className="mb-8">
-                  <div className="text-sm font-semibold mb-1" style={{ color: plan.color }}>
-                    {plan.name}
-                  </div>
-                  <div className="text-gray-400 text-sm mb-5">{plan.tagline}</div>
+                  <div className="text-sm font-semibold mb-1" style={{ color: plan.popular ? "rgba(255,255,255,0.7)" : plan.color }}>{plan.name}</div>
+                  <div className="text-sm mb-5" style={{ color: plan.popular ? "rgba(255,255,255,0.65)" : "#7a7468" }}>{plan.tagline}</div>
                   <div className="flex items-baseline gap-1">
                     <AnimatePresence mode="wait">
-                      <motion.span
-                        key={`${plan.name}-${annual}`}
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                        className="text-4xl font-extrabold text-white"
-                      >
+                      <motion.span key={`${plan.name}-${annual}`} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.2 }}
+                        className="lp-serif text-4xl font-extrabold" style={{ color: plan.popular ? "#ffffff" : "#1c1a14" }}>
                         {displayPrice(plan)}
                       </motion.span>
                     </AnimatePresence>
                     {plan.monthlyPrice && (
-                      <span className="text-gray-400 text-sm">/month</span>
+                      <span className="text-sm" style={{ color: plan.popular ? "rgba(255,255,255,0.6)" : "#7a7468" }}>/month</span>
                     )}
                   </div>
                   {annual && plan.monthlyPrice && (
-                    <p className="text-xs mt-1" style={{ color: "#34d399" }}>
+                    <p className="text-xs mt-1" style={{ color: plan.popular ? "rgba(255,255,255,0.7)" : "#b8923a" }}>
                       Billed as £{Math.round(plan.monthlyPrice * 0.8 * 12)}/year
                     </p>
                   )}
@@ -275,176 +211,87 @@ export default function PricingPage() {
 
                 <ul className="space-y-3 mb-8 flex-1">
                   {plan.features.map((feature, j) => (
-                    <li key={j} className="flex items-start gap-3 text-gray-300 text-sm">
-                      <CheckCircle
-                        size={14}
-                        style={{ color: plan.color, flexShrink: 0, marginTop: "2px" }}
-                      />
+                    <li key={j} className="flex items-start gap-3 text-sm"
+                      style={{ color: plan.popular ? "rgba(255,255,255,0.85)" : "#4a4438" }}>
+                      <CheckCircle size={14} style={{ color: plan.popular ? "rgba(255,255,255,0.6)" : plan.color, flexShrink: 0, marginTop: "2px" }} />
                       {feature}
                     </li>
                   ))}
                 </ul>
 
-                <a
-                  href={plan.cta === "Talk to Sales" ? "mailto:info@cura.com" : "#"}
+                <a href={plan.cta === "Talk to Sales" ? "mailto:info@cura.com" : "#"}
                   className="flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm transition-all"
-                  style={
-                    plan.popular
-                      ? {
-                          background: `linear-gradient(135deg, ${plan.color}, #3b82f6)`,
-                          color: "white",
-                          boxShadow: `0 0 30px ${plan.color}44`,
-                        }
-                      : {
-                          border: `1px solid ${plan.color}44`,
-                          color: plan.color,
-                          background: `${plan.color}11`,
-                        }
-                  }
-                >
+                  style={plan.popular
+                    ? { background: "#ffffff", color: "#2d5a3d" }
+                    : { border: `1.5px solid ${plan.color}40`, color: plan.color, background: `${plan.color}08` }}>
                   {plan.cta} <ArrowRight size={14} />
                 </a>
               </motion.div>
             ))}
           </div>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-center text-gray-500 text-sm mt-8"
-          >
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+            className="text-center text-sm mt-8" style={{ color: "#7a7468" }}>
             All prices exclude VAT. Questions?{" "}
-            <a href="mailto:info@cura.com" className="text-violet-400 hover:text-violet-300 transition-colors">
-              Talk to our team
-            </a>
+            <a href="mailto:info@cura.com" style={{ color: "#2d5a3d" }}>Talk to our team</a>
           </motion.p>
         </div>
       </section>
 
-      {/* Comparison table */}
-      <section className="py-20 relative">
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 40% at 50% 50%, rgba(59,130,246,0.04), transparent)",
-          }}
-        />
-        <div className="max-w-5xl mx-auto px-6 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">
-              Full feature comparison
-            </h2>
-            <p className="text-gray-400">Everything that&apos;s included in each plan</p>
+      <section className="py-20" style={{ background: "#ffffff" }}>
+        <div className="max-w-5xl mx-auto px-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+            <h2 className="lp-serif text-3xl lg:text-4xl font-bold mb-3" style={{ color: "#1c1a14" }}>Full feature comparison</h2>
+            <p style={{ color: "#7a7468" }}>Everything that&apos;s included in each plan</p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="glass rounded-3xl overflow-hidden"
-            style={{ border: "1px solid rgba(255,255,255,0.07)" }}
-          >
-            {/* Table header */}
-            <div
-              className="grid grid-cols-4 px-6 py-4"
-              style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-            >
-              <div className="text-gray-500 text-sm font-semibold">Feature</div>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            className="rounded-3xl overflow-hidden" style={{ border: "1px solid #dfd8cc" }}>
+            <div className="grid grid-cols-4 px-6 py-4" style={{ borderBottom: "1px solid #dfd8cc", background: "#f3ede1" }}>
+              <div className="text-sm font-semibold" style={{ color: "#7a7468" }}>Feature</div>
               {plans.map((p) => (
-                <div key={p.name} className="text-center text-sm font-semibold" style={{ color: p.color }}>
-                  {p.name}
-                </div>
+                <div key={p.name} className="text-center text-sm font-semibold" style={{ color: p.color }}>{p.name}</div>
               ))}
             </div>
-
-            {/* Rows */}
             {comparisonRows.map((row, i) => (
-              <div
-                key={i}
-                className="grid grid-cols-4 px-6 py-3.5 items-center"
-                style={{
-                  borderBottom:
-                    i < comparisonRows.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
-                  background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.015)",
-                }}
-              >
-                <div className="text-gray-300 text-sm">{row.label}</div>
-                <div className="flex items-center justify-center">
-                  <FeatureCell value={row.starter} />
-                </div>
-                <div className="flex items-center justify-center">
-                  <FeatureCell value={row.pro} />
-                </div>
-                <div className="flex items-center justify-center">
-                  <FeatureCell value={row.enterprise} />
-                </div>
+              <div key={i} className="grid grid-cols-4 px-6 py-3.5 items-center"
+                style={{ borderBottom: i < comparisonRows.length - 1 ? "1px solid #dfd8cc" : "none", background: i % 2 === 0 ? "#ffffff" : "#faf7f0" }}>
+                <div className="text-sm" style={{ color: "#4a4438" }}>{row.label}</div>
+                <div className="flex items-center justify-center"><FeatureCell value={row.starter} /></div>
+                <div className="flex items-center justify-center"><FeatureCell value={row.pro} /></div>
+                <div className="flex items-center justify-center"><FeatureCell value={row.enterprise} /></div>
               </div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* FAQ */}
       <section className="py-20">
         <div className="max-w-3xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">
-              Frequently asked questions
-            </h2>
-            <p className="text-gray-400">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+            <h2 className="lp-serif text-3xl lg:text-4xl font-bold mb-3" style={{ color: "#1c1a14" }}>Frequently asked questions</h2>
+            <p style={{ color: "#7a7468" }}>
               Can&apos;t find the answer you&apos;re looking for?{" "}
-              <a href="mailto:info@cura.com" className="text-violet-400 hover:text-violet-300 transition-colors">
-                Ask us directly
-              </a>
+              <a href="mailto:info@cura.com" style={{ color: "#2d5a3d" }}>Ask us directly</a>
             </p>
           </motion.div>
 
           <div className="space-y-3">
             {faqs.map((faq, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="glass rounded-2xl overflow-hidden"
-                style={{ border: "1px solid rgba(255,255,255,0.07)" }}
-              >
-                <button
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between px-6 py-5 text-left"
-                >
-                  <span className="text-white font-medium pr-4">{faq.q}</span>
-                  {openFaq === i ? (
-                    <ChevronUp size={18} className="text-gray-400 flex-shrink-0" />
-                  ) : (
-                    <ChevronDown size={18} className="text-gray-400 flex-shrink-0" />
-                  )}
+              <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }} className="rounded-2xl overflow-hidden" style={{ border: "1px solid #dfd8cc", background: "#ffffff" }}>
+                <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between px-6 py-5 text-left">
+                  <span className="font-medium pr-4" style={{ color: "#1c1a14" }}>{faq.q}</span>
+                  {openFaq === i
+                    ? <ChevronUp size={18} style={{ color: "#7a7468", flexShrink: 0 }} />
+                    : <ChevronDown size={18} style={{ color: "#7a7468", flexShrink: 0 }} />}
                 </button>
                 <AnimatePresence>
                   {openFaq === i && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25 }}
-                    >
-                      <div
-                        className="px-6 pb-5 text-gray-400 text-sm leading-relaxed"
-                        style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
-                      >
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }}>
+                      <div className="px-6 pb-5 text-sm leading-relaxed" style={{ color: "#7a7468", borderTop: "1px solid #dfd8cc" }}>
                         <div className="pt-4">{faq.a}</div>
                       </div>
                     </motion.div>
@@ -456,51 +303,27 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-16 pb-24">
         <div className="max-w-4xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="relative rounded-3xl overflow-hidden p-12 text-center"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(124,58,237,0.25) 0%, rgba(59,130,246,0.15) 100%)",
-              border: "1px solid rgba(124,58,237,0.25)",
-            }}
-          >
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(124,58,237,0.15), transparent)",
-              }}
-            />
-            <div className="relative">
-              <h2 className="text-3xl lg:text-4xl font-extrabold text-white mb-4">
-                Not sure which plan is right for you?
-              </h2>
-              <p className="text-gray-300 mb-8 max-w-lg mx-auto">
-                Talk to our team — we&apos;ll help you find the right plan for your home size,
-                CQC requirements, and budget.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="mailto:info@cura.com"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-white glow-button"
-                  style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
-                >
-                  Start Free Trial <ArrowRight size={16} />
-                </a>
-                <a
-                  href="tel:+441234567890"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-white transition-all hover:bg-white/10"
-                  style={{ border: "1px solid rgba(255,255,255,0.2)" }}
-                >
-                  <Phone size={16} /> Speak to Sales
-                </a>
-              </div>
+          <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
+            className="relative rounded-3xl overflow-hidden p-12 text-center" style={{ background: "#2d5a3d" }}>
+            <h2 className="lp-serif text-3xl lg:text-4xl font-extrabold text-white mb-4">
+              Not sure which plan is right for you?
+            </h2>
+            <p className="mb-8 max-w-lg mx-auto" style={{ color: "rgba(255,255,255,0.8)" }}>
+              Talk to our team — we&apos;ll help you find the right plan for your home size, CQC requirements, and budget.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="mailto:info@cura.com"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold transition-all"
+                style={{ background: "#ffffff", color: "#2d5a3d" }}>
+                Start Free Trial <ArrowRight size={16} />
+              </a>
+              <a href="tel:+441234567890"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-white transition-all"
+                style={{ border: "1.5px solid rgba(255,255,255,0.35)" }}>
+                <Phone size={16} /> Speak to Sales
+              </a>
             </div>
           </motion.div>
         </div>

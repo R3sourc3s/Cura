@@ -59,7 +59,7 @@ const releases = [
     date: "January 2025",
     type: "major",
     changes: [
-      "Complete platform redesign — new dark/light theme with CSS variable theming",
+      "Complete platform redesign — warm theme with CSS variable theming",
       "New: AI Assistant with natural language query support",
       "New: Role-based permission system with granular module access",
       "New: Real-time notifications via WebSocket",
@@ -70,29 +70,27 @@ const releases = [
 ];
 
 const typeConfig = {
-  major:       { label: "Major release", color: "#7c3aed", icon: Star },
-  feature:     { label: "Feature update", color: "#3b82f6", icon: Zap },
-  improvement: { label: "Improvement", color: "#10b981", icon: TrendingUp },
-  fix:         { label: "Bug fix", color: "#f59e0b", icon: Wrench },
+  major:       { label: "Major release", color: "#2d5a3d", icon: Star },
+  feature:     { label: "Feature update", color: "#b8923a", icon: Zap },
+  improvement: { label: "Improvement",   color: "#2d5a3d", icon: TrendingUp },
+  fix:         { label: "Bug fix",       color: "#b8923a", icon: Wrench },
 } as const;
 
 export default function ChangelogPage() {
   return (
-    <main style={{ background: "#050914", minHeight: "100vh" }}>
+    <main style={{ background: "#faf7f0", minHeight: "100vh" }}>
       <Navbar />
 
       <section className="pt-32 pb-20 px-6">
         <div className="max-w-3xl mx-auto">
-          {/* Hero */}
           <div className="mb-16">
-            <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: "#a78bfa" }}>Changelog</p>
-            <h1 className="text-4xl font-bold text-white mb-3">What&apos;s new in Cura</h1>
-            <p className="text-gray-400">New features, improvements, and fixes — delivered every few weeks.</p>
+            <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: "#2d5a3d" }}>Changelog</p>
+            <h1 className="lp-serif text-4xl font-bold mb-3" style={{ color: "#1c1a14" }}>What&apos;s new in Cura</h1>
+            <p style={{ color: "#7a7468" }}>New features, improvements, and fixes — delivered every few weeks.</p>
           </div>
 
-          {/* Timeline */}
           <div className="relative">
-            <div className="absolute left-4 top-0 bottom-0 w-px" style={{ background: "rgba(255,255,255,0.07)" }} />
+            <div className="absolute left-4 top-0 bottom-0 w-px" style={{ background: "#dfd8cc" }} />
 
             <div className="space-y-12">
               {releases.map((release) => {
@@ -100,25 +98,29 @@ export default function ChangelogPage() {
                 const Icon = cfg.icon;
                 return (
                   <div key={release.version} className="relative pl-12">
-                    {/* Timeline dot */}
-                    <div className="absolute left-0 w-8 h-8 rounded-full flex items-center justify-center" style={{ background: `${cfg.color}22`, border: `2px solid ${cfg.color}` }}>
+                    <div className="absolute left-0 w-8 h-8 rounded-full flex items-center justify-center"
+                      style={{ background: `${cfg.color}12`, border: `2px solid ${cfg.color}` }}>
                       <Icon size={14} style={{ color: cfg.color }} />
                     </div>
 
-                    <div className="glass rounded-2xl p-6" style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
+                    <div className="lp-card rounded-2xl p-6">
                       <div className="flex items-center gap-3 flex-wrap mb-4">
-                        <span className="text-white font-bold text-lg">{release.version}</span>
-                        <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: `${cfg.color}22`, color: cfg.color }}>{cfg.label}</span>
-                        <span className="text-gray-500 text-sm ml-auto">{release.date}</span>
+                        <span className="font-bold text-lg" style={{ color: "#1c1a14" }}>{release.version}</span>
+                        <span className="text-xs px-2.5 py-1 rounded-full font-medium"
+                          style={{ background: `${cfg.color}12`, color: cfg.color }}>{cfg.label}</span>
+                        <span className="text-sm ml-auto" style={{ color: "#7a7468" }}>{release.date}</span>
                       </div>
                       <ul className="space-y-2">
                         {release.changes.map((change, i) => {
                           const prefix = change.split(":")[0];
                           const rest = change.includes(":") ? change.slice(prefix.length + 1) : change;
-                          const prefixColor = prefix === "New" ? "#a78bfa" : prefix === "Fix" ? "#f87171" : prefix === "Improvement" ? "#34d399" : undefined;
+                          const prefixColor =
+                            prefix === "New"         ? "#2d5a3d" :
+                            prefix === "Fix"         ? "#b91c1c" :
+                            prefix === "Improvement" ? "#b8923a" : undefined;
                           return (
-                            <li key={i} className="flex items-start gap-2 text-sm text-gray-400">
-                              <span className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ background: "rgba(255,255,255,0.2)" }} />
+                            <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "#7a7468" }}>
+                              <span className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ background: "#dfd8cc" }} />
                               {prefixColor && change.includes(":") ? (
                                 <span><span className="font-semibold" style={{ color: prefixColor }}>{prefix}:</span>{rest}</span>
                               ) : (
@@ -135,13 +137,14 @@ export default function ChangelogPage() {
             </div>
           </div>
 
-          {/* Subscribe */}
-          <div className="mt-16 text-center glass rounded-2xl p-8" style={{ border: "1px solid rgba(124,58,237,0.2)" }}>
-            <h3 className="text-white font-semibold mb-2">Stay up to date</h3>
-            <p className="text-gray-400 text-sm mb-5">Get release notes delivered to your inbox.</p>
+          <div className="mt-16 lp-card rounded-2xl p-8 text-center">
+            <h3 className="font-semibold mb-2" style={{ color: "#1c1a14" }}>Stay up to date</h3>
+            <p className="text-sm mb-5" style={{ color: "#7a7468" }}>Get release notes delivered to your inbox.</p>
             <div className="flex gap-2 max-w-sm mx-auto">
-              <input type="email" placeholder="your@email.com" className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }} />
-              <button className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>Subscribe</button>
+              <input type="email" placeholder="your@email.com" className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none"
+                style={{ background: "#faf7f0", border: "1px solid #dfd8cc", color: "#1c1a14" }} />
+              <button className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
+                style={{ background: "#2d5a3d" }}>Subscribe</button>
             </div>
           </div>
         </div>

@@ -1,34 +1,10 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
-  Pill,
-  ClipboardList,
-  Users,
-  ShieldCheck,
-  AlertTriangle,
-  FileText,
-  Map,
-  HandHelping,
-  Activity,
-  Calendar,
-  GraduationCap,
-  Clock,
-  Wrench,
-  UserCheck,
-  FolderOpen,
-  Music,
-  Salad,
-  Lock,
-  Package,
-  UserPlus,
-  CalendarOff,
-  CheckSquare,
-  MessageSquare,
-  CreditCard,
-  Stethoscope,
-  Heart,
-  Star,
-  ArrowRight,
+  Pill, ClipboardList, Users, ShieldCheck, AlertTriangle, FileText, Map,
+  HandHelping, Activity, Calendar, GraduationCap, Clock, Wrench, UserCheck,
+  FolderOpen, Music, Salad, Lock, Package, UserPlus, CalendarOff, CheckSquare,
+  MessageSquare, CreditCard, Stethoscope, Heart, Star, ArrowRight,
 } from "lucide-react";
 
 const modules = [
@@ -63,66 +39,38 @@ const modules = [
 
 export default function FeaturesPage() {
   return (
-    <main style={{ background: "#050914", minHeight: "100vh" }}>
+    <main style={{ background: "#faf7f0", minHeight: "100vh" }}>
       <Navbar />
 
-      {/* Hero */}
       <section className="pt-32 pb-20 relative overflow-hidden">
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124,58,237,0.15), transparent)",
-          }}
-        />
-        <div className="dot-grid absolute inset-0 pointer-events-none opacity-30" />
-
         <div className="max-w-5xl mx-auto px-6 text-center relative">
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6"
-            style={{
-              background: "rgba(124,58,237,0.12)",
-              border: "1px solid rgba(124,58,237,0.3)",
-              color: "#a78bfa",
-            }}
-          >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6"
+            style={{ background: "rgba(45,90,61,0.1)", border: "1px solid rgba(45,90,61,0.25)", color: "#2d5a3d" }}>
             30+ Modules Included
           </div>
-          <h1 className="text-5xl lg:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight">
-            Everything your
-            <br />
-            <span className="gradient-text">care home needs</span>
+          <h1 className="lp-serif text-5xl lg:text-6xl font-extrabold mb-6 leading-tight" style={{ color: "#1c1a14" }}>
+            Everything your<br />
+            <span style={{ color: "#2d5a3d" }}>care home needs</span>
           </h1>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            One platform. 30+ modules. Zero compromise.
-            <br />
+          <p className="text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: "#7a7468" }}>
+            One platform. 30+ modules. Zero compromise.<br />
             Built for the realities of UK care — from CQC inspections to midnight medication rounds.
           </p>
         </div>
       </section>
 
-      {/* Feature Grid */}
-      <section className="pb-24 relative">
+      <section className="pb-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {modules.map(({ icon: Icon, title, desc }, i) => (
-              <div
-                key={i}
-                className="glass glass-hover rounded-2xl p-6 flex gap-4"
-                style={{ border: "1px solid rgba(255,255,255,0.07)" }}
-              >
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-                  style={{
-                    background: "linear-gradient(135deg, rgba(124,58,237,0.25), rgba(59,130,246,0.15))",
-                    border: "1px solid rgba(124,58,237,0.2)",
-                  }}
-                >
-                  <Icon size={18} style={{ color: "#a78bfa" }} />
+              <div key={i} className="lp-card rounded-2xl p-6 flex gap-4">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
+                  style={{ background: i % 2 === 0 ? "rgba(45,90,61,0.1)" : "rgba(184,146,58,0.1)", border: i % 2 === 0 ? "1px solid rgba(45,90,61,0.2)" : "1px solid rgba(184,146,58,0.2)" }}>
+                  <Icon size={18} style={{ color: i % 2 === 0 ? "#2d5a3d" : "#b8923a" }} />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold text-sm mb-1">{title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">{desc}</p>
+                  <h3 className="font-semibold text-sm mb-1" style={{ color: "#1c1a14" }}>{title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: "#7a7468" }}>{desc}</p>
                 </div>
               </div>
             ))}
@@ -130,47 +78,27 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* Bottom CTA */}
-      <section className="py-20 relative overflow-hidden">
+      <section className="py-20">
         <div className="max-w-4xl mx-auto px-6">
-          <div
-            className="relative rounded-3xl overflow-hidden p-12 text-center"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(124,58,237,0.25) 0%, rgba(59,130,246,0.15) 100%)",
-              border: "1px solid rgba(124,58,237,0.25)",
-            }}
-          >
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(124,58,237,0.15), transparent)",
-              }}
-            />
-            <div className="relative">
-              <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight">
-                Start your free trial today
-              </h2>
-              <p className="text-gray-300 text-lg mb-8 max-w-xl mx-auto">
-                30 days. No credit card. Full access to every module. Cancel anytime.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="mailto:info@cura.com"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-white glow-button"
-                  style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
-                >
-                  Start Free Trial <ArrowRight size={16} />
-                </a>
-                <a
-                  href="/pricing"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-white transition-all hover:bg-white/10"
-                  style={{ border: "1px solid rgba(255,255,255,0.2)" }}
-                >
-                  View Pricing
-                </a>
-              </div>
+          <div className="relative rounded-3xl overflow-hidden p-12 text-center"
+            style={{ background: "#2d5a3d" }}>
+            <h2 className="lp-serif text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight">
+              Start your free trial today
+            </h2>
+            <p className="text-lg mb-8 max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.8)" }}>
+              30 days. No credit card. Full access to every module. Cancel anytime.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="mailto:info@cura.com"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold transition-all"
+                style={{ background: "#ffffff", color: "#2d5a3d" }}>
+                Start Free Trial <ArrowRight size={16} />
+              </a>
+              <a href="/pricing"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-white transition-all"
+                style={{ border: "1.5px solid rgba(255,255,255,0.35)" }}>
+                View Pricing
+              </a>
             </div>
           </div>
         </div>

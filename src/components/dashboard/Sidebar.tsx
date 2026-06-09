@@ -76,7 +76,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
       {open && (
         <div
           className="fixed inset-0 z-30 lg:hidden"
-          style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+          style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
           onClick={onClose}
         />
       )}
@@ -85,8 +85,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         className="fixed top-0 left-0 h-full w-64 flex flex-col z-40 transition-transform duration-300 ease-in-out"
         style={{
           background: "var(--sidebar-bg)",
-          borderRight: "1px solid var(--border)",
-          backdropFilter: "blur(20px)",
+          borderRight: "1px solid rgba(255,255,255,0.08)",
         }}
         data-open={open}
       >
@@ -100,21 +99,22 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
           }
         `}</style>
 
-        <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--border)" }}>
+        {/* Logo */}
+        <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+              style={{ background: "rgba(255,255,255,0.15)" }}>
               <Zap size={14} className="text-white" />
             </div>
             <div>
-              <div className="text-sm font-bold leading-none" style={{ color: "var(--text-primary)" }}>cura</div>
-              <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Care Platform</div>
+              <div className="lp-serif text-sm font-bold leading-none text-white">Cura</div>
+              <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>Care Platform</div>
             </div>
           </div>
           <button onClick={onClose}
             className="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "var(--bg-card)" }}>
-            <X size={16} style={{ color: "var(--text-secondary)" }} />
+            style={{ background: "rgba(255,255,255,0.1)" }}>
+            <X size={16} style={{ color: "rgba(255,255,255,0.7)" }} />
           </button>
         </div>
 
@@ -127,24 +127,24 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               <Link key={href} href={href} onClick={onClose}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150"
                 style={{
-                  background: active ? "rgba(124,58,237,0.15)" : "transparent",
-                  color: active ? "#a78bfa" : "var(--text-secondary)",
-                  border: active ? "1px solid rgba(124,58,237,0.2)" : "1px solid transparent",
+                  background: active ? "rgba(255,255,255,0.15)" : "transparent",
+                  color: active ? "#ffffff" : "rgba(255,255,255,0.65)",
+                  border: active ? "1px solid rgba(255,255,255,0.2)" : "1px solid transparent",
                 }}>
-                <Icon size={16} style={{ color: active ? "#a78bfa" : "var(--text-muted)" }} />
+                <Icon size={16} style={{ color: active ? "#ffffff" : "rgba(255,255,255,0.45)" }} />
                 <span>{label}</span>
-                {active && <div className="ml-auto w-1.5 h-1.5 rounded-full" style={{ background: "#7c3aed" }} />}
+                {active && <div className="ml-auto w-1.5 h-1.5 rounded-full" style={{ background: "#b8923a" }} />}
               </Link>
             );
           })}
         </nav>
 
-        <div className="px-3 pb-4 pt-3 border-t" style={{ borderColor: "var(--border)" }}>
+        <div className="px-3 pb-4 pt-3 border-t" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
           <button onClick={logout}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm w-full transition-all duration-150"
-            style={{ color: "var(--text-muted)" }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.1)"; e.currentTarget.style.color = "#f87171"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-muted)"; }}>
+            style={{ color: "rgba(255,255,255,0.5)" }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.15)"; e.currentTarget.style.color = "#fca5a5"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,0.5)"; }}>
             <LogOut size={16} />
             <span>Sign out</span>
           </button>
