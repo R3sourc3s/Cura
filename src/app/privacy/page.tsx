@@ -56,8 +56,6 @@ export default function PrivacyPage() {
                     href={`#${s.id}`}
                     className="text-sm transition-colors"
                     style={{ color: "#7a7468" }}
-                    onMouseOver={e => ((e.target as HTMLAnchorElement).style.color = "#2d5a3d")}
-                    onMouseOut={e => ((e.target as HTMLAnchorElement).style.color = "#7a7468")}
                   >
                     {s.title}
                   </a>
