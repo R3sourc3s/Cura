@@ -6,6 +6,8 @@ from apps.staff.models import CareHome
 
 
 class ChatView(views.APIView):
+    throttle_scope = "ai"
+
     def get_permissions(self):
         return [require("ai.chat")]
 
@@ -30,6 +32,8 @@ class ChatView(views.APIView):
 
 
 class ComplianceGapReportView(views.APIView):
+    throttle_scope = "ai"
+
     def get_permissions(self):
         return [require("compliance.ai_report")]
 
@@ -45,6 +49,8 @@ class ComplianceGapReportView(views.APIView):
 
 
 class ResidentRiskScoreView(views.APIView):
+    throttle_scope = "ai"
+
     def get_permissions(self):
         return [require("ai.risk_score")]
 

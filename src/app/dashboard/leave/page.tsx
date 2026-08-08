@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { CalendarOff, Plus, X, Filter, ChevronDown, Check, Ban } from "lucide-react";
+import { useToast } from "@/components/Toast";
 import EmptyState from "@/components/ui/EmptyState";
 
 interface LeaveType {
@@ -55,6 +56,7 @@ export default function LeavePage() {
   const [filterStatus, setFilterStatus] = useState("");
   const [filterType, setFilterType] = useState("");
 
+  const { toast } = useToast();
   // Request modal
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -122,8 +124,10 @@ export default function LeavePage() {
         setRequests(p => [created, ...p]);
         setShowRequestModal(false);
         setRequestForm({ leave_type: "", start_date: "", end_date: "", days_requested: "", reason: "" });
-      }
-    } finally {
+        toast("Leave request submitted.", "success");
+      } else { toast("Could not submit leave request.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally {
       setSaving(false);
     }
   }
@@ -147,8 +151,10 @@ export default function LeavePage() {
         setLeaveTypes(p => [...p, created]);
         setShowTypeModal(false);
         setTypeForm({ name: "", days_entitlement: "28", color: "#0d9488" });
-      }
-    } finally {
+        toast("Leave type added.", "success");
+      } else { toast("Could not add leave type.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally {
       setSavingType(false);
     }
   }
@@ -166,9 +172,10 @@ export default function LeavePage() {
       if (res.ok) {
         const updated = await res.json();
         setRequests(p => p.map(r => r.id === updated.id ? updated : r));
+        toast(`Leave ${reviewTarget.action}.`, reviewTarget.action === "rejected" ? "error" : "success");
         setReviewTarget(null);
         setReviewNotes("");
-      }
+      } else { toast("Could not review leave request.", "error"); }
     } finally {
       setSavingReview(false);
     }

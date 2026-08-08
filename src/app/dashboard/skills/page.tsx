@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Award, Plus, X, Search, Filter, ChevronDown, ShieldCheck, AlertTriangle } from "lucide-react";
+import { useToast } from "@/components/Toast";
 import EmptyState from "@/components/ui/EmptyState";
 
 interface Skill {
@@ -70,6 +71,7 @@ export default function SkillsPage() {
   const [filterCategory, setFilterCategory] = useState("");
   const [showAddSkill, setShowAddSkill] = useState(false);
   const [savingSkill, setSavingSkill] = useState(false);
+  const { toast } = useToast();
   const [skillForm, setSkillForm] = useState({
     name: "", category: "care", description: "", is_mandatory: false,
   });
@@ -136,8 +138,10 @@ export default function SkillsPage() {
         setSkills(p => [...p, created]);
         setShowAddSkill(false);
         setSkillForm({ name: "", category: "care", description: "", is_mandatory: false });
-      }
-    } finally { setSavingSkill(false); }
+        toast("Skill added.", "success");
+      } else { toast("Could not add skill.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSavingSkill(false); }
   }
 
   async function handleAddStaffSkill() {
@@ -163,8 +167,10 @@ export default function SkillsPage() {
         setStaffSkills(p => [...p, created]);
         setShowAddStaffSkill(false);
         setStaffSkillForm({ staff_member: "", skill: "", proficiency: "competent", certified: false, certification_expiry: "", acquired_date: "", notes: "" });
-      }
-    } finally { setSavingStaffSkill(false); }
+        toast("Staff skill recorded.", "success");
+      } else { toast("Could not record staff skill.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSavingStaffSkill(false); }
   }
 
   // Derived stats

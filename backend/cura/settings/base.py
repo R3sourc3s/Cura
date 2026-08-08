@@ -144,14 +144,22 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 25,
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_THROTTLE_CLASSES": [
+        "cura.throttling.BurstRateThrottle",
+        "cura.throttling.SustainedRateThrottle",
+        "cura.throttling.WriteRateThrottle",   # stricter, writes only (all endpoints)
         "rest_framework.throttling.AnonRateThrottle",
-        "rest_framework.throttling.UserRateThrottle",
+        # Only throttles views that set `throttle_scope` (e.g. AI endpoints); no-op otherwise.
+        "rest_framework.throttling.ScopedRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {
-        "anon": "60/hour",
-        "user": "300/hour",
-        "auth_login": "10/minute",
+        "anon": "100/hour",          # unauthenticated (login / marketing / API probing)
+        "burst": "200/min",          # per user/IP — blocks rapid scripted abuse (all methods)
+        "sustained": "5000/hour",    # per user/IP — blocks slow high-volume scraping
+        "writes": "60/min",          # per user — POST/PUT/PATCH/DELETE only (record-spam)
+        "uploads": "20/min",         # per user — heaviest endpoints (file uploads)
+        "auth_login": "10/minute",   # brute-force protection on login
         "auth_password_reset": "5/hour",
+        "ai": "30/hour",             # expensive LLM endpoints (defense-in-depth vs proxy limit)
     },
 }
 
@@ -177,6 +185,15 @@ CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
+
+# Cache — backs DRF throttling so rate limits are shared across workers and
+# survive restarts (uses a separate Redis DB from Celery).
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": env("CACHE_URL", default=REDIS_URL.rsplit("/", 1)[0] + "/1"),
+    }
+}
 
 # Email
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")

@@ -24,11 +24,12 @@ const ICONS = {
   info: Info,
 };
 
-const STYLES: Record<ToastType, { color: string; bg: string; border: string }> = {
-  success: { color: "#34d399", bg: "rgba(52,211,153,0.1)",  border: "rgba(52,211,153,0.25)"  },
-  error:   { color: "#f87171", bg: "rgba(239,68,68,0.1)",   border: "rgba(239,68,68,0.25)"   },
-  warning: { color: "#fbbf24", bg: "rgba(250,204,21,0.1)",  border: "rgba(250,204,21,0.25)"  },
-  info:    { color: "#2dd4bf", bg: "rgba(45, 212, 191,0.1)",  border: "rgba(45, 212, 191,0.25)"  },
+// Solid backgrounds: green for success (create/update), red for destructive.
+const STYLES: Record<ToastType, { bg: string }> = {
+  success: { bg: "#059669" },
+  error:   { bg: "#dc2626" },
+  warning: { bg: "#d97706" },
+  info:    { bg: "#0d9488" },
 };
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
@@ -56,16 +57,15 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             <div key={t.id}
               className="flex items-start gap-3 px-4 py-3 rounded-xl pointer-events-auto"
               style={{
-                background: "rgba(10,16,32,0.96)",
-                border: `1px solid ${s.border}`,
-                backdropFilter: "blur(12px)",
-                boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+                background: s.bg,
+                border: "1px solid rgba(255,255,255,0.18)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.35)",
                 animation: "slideInRight 0.2s ease-out",
               }}>
-              <Icon size={16} style={{ color: s.color, flexShrink: 0, marginTop: 1 }} />
-              <span className="text-sm flex-1" style={{ color: "var(--text-primary)" }}>{t.message}</span>
-              <button onClick={() => dismiss(t.id)} className="flex-shrink-0 opacity-40 hover:opacity-70 transition-opacity">
-                <X size={14} style={{ color: "white" }} />
+              <Icon size={16} style={{ color: "#fff", flexShrink: 0, marginTop: 1 }} />
+              <span className="text-sm flex-1 font-medium" style={{ color: "#fff" }}>{t.message}</span>
+              <button onClick={() => dismiss(t.id)} className="flex-shrink-0 opacity-70 hover:opacity-100 transition-opacity">
+                <X size={14} style={{ color: "#fff" }} />
               </button>
             </div>
           );

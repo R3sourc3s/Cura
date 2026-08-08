@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Receipt, Plus, X, Search, Filter, ChevronDown, CreditCard, Users } from "lucide-react";
+import { useToast } from "@/components/Toast";
 import EmptyState from "@/components/ui/EmptyState";
 
 interface Invoice {
@@ -92,6 +93,7 @@ export default function BillingPage() {
   const [filterStatus, setFilterStatus] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [form, setForm] = useState({
     resident: "",
     invoice_number: "",
@@ -138,8 +140,10 @@ export default function BillingPage() {
         setInvoices(p => [inv, ...p]);
         setShowModal(false);
         setForm({ resident: "", invoice_number: "", period_start: "", period_end: "", issue_date: today, due_date: "", notes: "" });
-      }
-    } finally {
+        toast("Invoice created.", "success");
+      } else { toast("Could not create invoice.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally {
       setSaving(false);
     }
   }

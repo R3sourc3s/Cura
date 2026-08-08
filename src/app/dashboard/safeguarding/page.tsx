@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { ShieldAlert, Plus, X, ChevronDown, ChevronUp } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 interface SafeguardingConcern {
   id: number; resident: number; resident_name?: string;
@@ -32,6 +33,7 @@ export default function SafeguardingPage() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [form, setForm] = useState({ resident:"", category:"neglect", date_raised:isoDate(new Date()), description:"", immediate_action_taken:"", referred_to_authority:false, referral_date:"", referral_reference:"", outcome:"", status:"open" });
 
   useEffect(() => {
@@ -58,13 +60,16 @@ export default function SafeguardingPage() {
     try {
       const body = { ...form, resident: Number(form.resident), referral_date: form.referral_date || null, referred_to_authority: form.referred_to_authority };
       const res = await fetch("/api/v1/safeguarding/", { method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) });
-      if (res.ok) { const n = await res.json(); setConcerns(p => [n, ...p]); setShowCreate(false); setForm({ resident:"", category:"neglect", date_raised:isoDate(new Date()), description:"", immediate_action_taken:"", referred_to_authority:false, referral_date:"", referral_reference:"", outcome:"", status:"open" }); }
-    } finally { setSaving(false); }
+      if (res.ok) { const n = await res.json(); setConcerns(p => [n, ...p]); setShowCreate(false); setForm({ resident:"", category:"neglect", date_raised:isoDate(new Date()), description:"", immediate_action_taken:"", referred_to_authority:false, referral_date:"", referral_reference:"", outcome:"", status:"open" }); toast("Safeguarding concern raised.", "success"); }
+      else { toast("Could not raise concern.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   async function updateStatus(id: number, status: string) {
     const res = await fetch(`/api/v1/safeguarding/${id}/`, { method:"PATCH", credentials:"include", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ status, ...(status === "closed" ? { closed_date: isoDate(new Date()) } : {}) }) });
-    if (res.ok) { const u = await res.json(); setConcerns(p => p.map(c => c.id === id ? u : c)); }
+    if (res.ok) { const u = await res.json(); setConcerns(p => p.map(c => c.id === id ? u : c)); toast(`Concern marked ${STATUS_CFG[status]?.label ?? status}.`, "success"); }
+    else { toast("Could not update concern.", "error"); }
   }
 
   const open = concerns.filter(c => c.status === "open").length;

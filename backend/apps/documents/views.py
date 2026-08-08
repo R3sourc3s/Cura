@@ -7,6 +7,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.authentication.permissions import require
+from cura.throttling import UploadRateThrottle
 from .models import Document, DocumentFile
 from .serializers import DocumentSerializer, DocumentFileSerializer
 
@@ -33,6 +34,10 @@ class DocumentViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, FormParser, JSONParser]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ["category", "resident", "staff_member", "is_active"]
+
+    def get_throttles(self):
+        # Global throttles + a tight per-user upload cap on this heavy endpoint.
+        return super().get_throttles() + [UploadRateThrottle()]
 
     def get_permissions(self):
         if self.action in ("list", "retrieve"):

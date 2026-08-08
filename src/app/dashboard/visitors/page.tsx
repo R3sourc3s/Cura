@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Users, Plus, X, Search, CheckCircle, XCircle, LogOut } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 interface VisitorLog {
   id: number; resident: number; resident_name?: string;
@@ -22,6 +23,7 @@ export default function VisitorsPage() {
   const [filterResident, setFilterResident] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [signingOut, setSigningOut] = useState<number | null>(null);
   const [form, setForm] = useState({
     resident: "", visitor_name: "", relationship: "", phone: "",
@@ -50,8 +52,10 @@ export default function VisitorsPage() {
     setSigningOut(id);
     try {
       const res = await fetch(`/api/v1/visitors/${id}/sign-out/`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
-      if (res.ok) { const updated = await res.json(); setLogs(p => p.map(l => l.id === id ? updated : l)); }
-    } finally { setSigningOut(null); }
+      if (res.ok) { const updated = await res.json(); setLogs(p => p.map(l => l.id === id ? updated : l)); toast("Visitor signed out.", "success"); }
+      else { toast("Could not sign out visitor.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSigningOut(null); }
   }
 
   async function handleSave() {
@@ -63,8 +67,10 @@ export default function VisitorsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, resident: Number(form.resident) }),
       });
-      if (res.ok) { const n = await res.json(); setLogs(p => [n, ...p]); setShowModal(false); setForm({ resident: "", visitor_name: "", relationship: "", phone: "", purpose: "", health_screening_passed: true, screening_notes: "", signed_in: new Date().toISOString().slice(0, 16) }); }
-    } finally { setSaving(false); }
+      if (res.ok) { const n = await res.json(); setLogs(p => [n, ...p]); setShowModal(false); setForm({ resident: "", visitor_name: "", relationship: "", phone: "", purpose: "", health_screening_passed: true, screening_notes: "", signed_in: new Date().toISOString().slice(0, 16) }); toast("Visitor logged.", "success"); }
+      else { toast("Could not log visitor.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   const filtered = logs.filter(l => {

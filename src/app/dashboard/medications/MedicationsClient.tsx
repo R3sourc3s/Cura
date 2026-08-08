@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { medications } from "@/lib/api";
 import type { Medication, MAREntry, Resident } from "@/types";
 import { useUser } from "@/context/UserContext";
+import { useToast } from "@/components/Toast";
 import {
   Pill, AlertTriangle, CheckCircle, Clock, XCircle,
   Plus, X, Save, Edit2, Trash2,
@@ -76,6 +77,7 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const { toast } = useToast();
 
   function set(k: string, v: string | boolean) { setForm((f) => ({ ...f, [k]: v })); }
 
@@ -95,8 +97,10 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
         ? await medications.update(initial.id, payload)
         : await medications.create(payload);
       onSaved(saved);
+      toast(initial ? "Medication updated." : "Medication added.", "success");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save");
+      toast("Could not save medication.", "error");
     } finally {
       setSaving(false);
     }
@@ -247,6 +251,7 @@ interface Props {
 
 export default function MedicationsClient({ initialMeds, initialMar, initialResidents }: Props) {
   const { can } = useUser();
+  const { toast } = useToast();
   const [meds, setMeds] = useState<Medication[]>(initialMeds);
   const [mar, setMar] = useState<MAREntry[]>(initialMar);
   const [residentList] = useState<Resident[]>(initialResidents);
@@ -270,7 +275,8 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
     try {
       await medications.delete(id);
       setMeds((prev) => prev.filter((m) => m.id !== id));
-    } catch (e) { console.error(e); }
+      toast("Medication removed.", "error");
+    } catch (e) { console.error(e); toast("Could not remove medication.", "error"); }
     finally { setDeletingId(null); }
   }
 

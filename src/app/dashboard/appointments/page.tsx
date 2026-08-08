@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Calendar, Plus, X, ChevronDown, Search } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 interface Appointment {
   id: number; resident: number; resident_name?: string;
@@ -38,6 +39,7 @@ export default function AppointmentsPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [editAppt, setEditAppt] = useState<Appointment | null>(null);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [form, setForm] = useState({ resident: "", appointment_type: "gp", provider_name: "", location: "", scheduled_at: "", escort_required: false, transport_arranged: false });
   const [editForm, setEditForm] = useState({ status: "scheduled", outcome: "", follow_up_required: false, follow_up_notes: "" });
 
@@ -63,8 +65,10 @@ export default function AppointmentsPage() {
     setSaving(true);
     try {
       const res = await fetch("/api/v1/appointments/", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, resident: Number(form.resident) }) });
-      if (res.ok) { const n = await res.json(); setAppts(p => [n, ...p]); setShowCreate(false); setForm({ resident: "", appointment_type: "gp", provider_name: "", location: "", scheduled_at: "", escort_required: false, transport_arranged: false }); }
-    } finally { setSaving(false); }
+      if (res.ok) { const n = await res.json(); setAppts(p => [n, ...p]); setShowCreate(false); setForm({ resident: "", appointment_type: "gp", provider_name: "", location: "", scheduled_at: "", escort_required: false, transport_arranged: false }); toast("Appointment added.", "success"); }
+      else { toast("Could not add appointment.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   async function handleUpdate() {
@@ -72,8 +76,10 @@ export default function AppointmentsPage() {
     setSaving(true);
     try {
       const res = await fetch(`/api/v1/appointments/${editAppt.id}/`, { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(editForm) });
-      if (res.ok) { const u = await res.json(); setAppts(p => p.map(a => a.id === editAppt.id ? u : a)); setEditAppt(null); }
-    } finally { setSaving(false); }
+      if (res.ok) { const u = await res.json(); setAppts(p => p.map(a => a.id === editAppt.id ? u : a)); setEditAppt(null); toast("Appointment updated.", "success"); }
+      else { toast("Could not update appointment.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   const today = new Date().toISOString().slice(0, 10);

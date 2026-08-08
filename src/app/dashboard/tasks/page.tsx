@@ -5,6 +5,7 @@ import {
   CheckSquare, Plus, X, Search, Filter, ChevronDown, Check, AlertCircle, Clock, Ban,
 } from "lucide-react";
 import EmptyState from "@/components/ui/EmptyState";
+import { useToast } from "@/components/Toast";
 
 interface Task {
   id: number;
@@ -73,6 +74,7 @@ export default function TasksPage() {
   const [filterCategory, setFilterCategory] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [form, setForm] = useState({
     title: "",
@@ -129,8 +131,10 @@ export default function TasksPage() {
         setTasks(prev => [t, ...prev]);
         setShowModal(false);
         setForm({ title: "", description: "", priority: "medium", category: "general", assigned_to_text: "", resident: "", due_date: "", notes: "" });
-      }
-    } finally {
+        toast("Task created.", "success");
+      } else { toast("Could not create task.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally {
       setSaving(false);
     }
   }
@@ -147,8 +151,10 @@ export default function TasksPage() {
       if (res.ok) {
         const updated = await res.json();
         setTasks(prev => prev.map(t => t.id === task.id ? updated : t));
-      }
-    } finally {
+        toast(`Task marked ${newStatus.replace("_", " ")}.`, "success");
+      } else { toast("Could not update task.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally {
       setUpdatingId(null);
     }
   }

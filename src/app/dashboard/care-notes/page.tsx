@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { BookOpen, Plus, X, Search, Filter, ChevronDown } from "lucide-react";
 import EmptyState from "@/components/ui/EmptyState";
+import { useToast } from "@/components/Toast";
 
 interface CareNote {
   id: number; resident: number; resident_name?: string;
@@ -40,6 +41,7 @@ export default function CareNotesPage() {
   const [filterDate, setFilterDate] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [form, setForm] = useState({ resident: "", shift: "day", category: "general", mood: "", content: "", recorded_at: new Date().toISOString().slice(0,16) });
 
   const load = useCallback(() => {
@@ -70,8 +72,10 @@ export default function CareNotesPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, resident: Number(form.resident) }),
       });
-      if (res.ok) { const n = await res.json(); setNotes(p => [n, ...p]); setShowModal(false); setForm({ resident: "", shift: "day", category: "general", mood: "", content: "", recorded_at: new Date().toISOString().slice(0,16) }); }
-    } finally { setSaving(false); }
+      if (res.ok) { const n = await res.json(); setNotes(p => [n, ...p]); setShowModal(false); setForm({ resident: "", shift: "day", category: "general", mood: "", content: "", recorded_at: new Date().toISOString().slice(0,16) }); toast("Care note added.", "success"); }
+      else { toast("Could not save care note.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   const filtered = notes.filter(n => {

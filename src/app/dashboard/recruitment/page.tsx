@@ -5,6 +5,7 @@ import {
   Briefcase, Plus, X, Search, Filter, ChevronDown,
   Users, CheckCircle, UserCheck, Building2,
 } from "lucide-react";
+import { useToast } from "@/components/Toast";
 import EmptyState from "@/components/ui/EmptyState";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -101,6 +102,7 @@ export default function RecruitmentPage() {
   const [showAppModal, setShowAppModal] = useState(false);
   const [editingApp, setEditingApp] = useState<Applicant | null>(null);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
 
   // Job form
   const [jobForm, setJobForm] = useState({
@@ -192,8 +194,10 @@ export default function RecruitmentPage() {
         setJobs(p => [j, ...p]);
         setShowJobModal(false);
         setJobForm({ title: "", department: "", contract_type: "full_time", description: "", salary_range: "", status: "draft", posted_date: "", closing_date: "" });
-      }
-    } finally { setSaving(false); }
+        toast("Job posting created.", "success");
+      } else { toast("Could not create job posting.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   async function handleSaveApplicant() {
@@ -216,7 +220,8 @@ export default function RecruitmentPage() {
           const updated = await res.json();
           setApplicants(p => p.map(a => a.id === updated.id ? updated : a));
           closeAppModal();
-        }
+          toast("Applicant updated.", "success");
+        } else { toast("Could not update applicant.", "error"); }
       } else {
         const res = await fetch("/api/v1/recruitment/applicants/", {
           method: "POST", credentials: "include",
@@ -227,9 +232,11 @@ export default function RecruitmentPage() {
           const a = await res.json();
           setApplicants(p => [a, ...p]);
           closeAppModal();
-        }
+          toast("Applicant added.", "success");
+        } else { toast("Could not add applicant.", "error"); }
       }
-    } finally { setSaving(false); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   function openEditApp(a: Applicant) {
@@ -343,7 +350,7 @@ export default function RecruitmentPage() {
           {/* Job list */}
           {loading ? (
             <div className="flex justify-center py-12">
-              <div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" />
+              <div className="w-6 h-6 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
             </div>
           ) : filteredJobs.length === 0 ? (
             <EmptyState icon={Briefcase} title="No job postings found"
@@ -458,7 +465,7 @@ export default function RecruitmentPage() {
           {/* Applicant list */}
           {appLoading ? (
             <div className="flex justify-center py-12">
-              <div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" />
+              <div className="w-6 h-6 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
             </div>
           ) : filteredApplicants.length === 0 ? (
             <EmptyState icon={Users} title="No applicants found"

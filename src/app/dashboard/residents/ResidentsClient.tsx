@@ -251,7 +251,7 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
     try {
       await residentsApi.delete(id);
       setList((l) => l.filter((r) => r.id !== id)); setTotal((t) => t - 1);
-      toast("Resident discharged.", "warning");
+      toast("Resident discharged.", "error");
     } catch { toast("Failed to remove resident.", "error"); }
     finally { setDeletingId(null); setConfirmId(null); }
   }

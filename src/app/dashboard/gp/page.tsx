@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Stethoscope, Plus, X, Search, Filter, ChevronDown, Phone, Mail, MapPin, Building2, User, AlertCircle } from "lucide-react";
+import { useToast } from "@/components/Toast";
 import EmptyState from "@/components/ui/EmptyState";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -143,6 +144,7 @@ export default function GPIntegrationPage() {
   const [showNewGP, setShowNewGP] = useState(false);
   const [showNewHospital, setShowNewHospital] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
 
   // new referral form
   const [refForm, setRefForm] = useState({
@@ -269,8 +271,10 @@ export default function GPIntegrationPage() {
         setReferrals(p => [n, ...p]);
         setShowNewReferral(false);
         setRefForm({ resident: "", referral_type: "gp", referred_to: "", reason: "", urgency: "routine", referral_date: new Date().toISOString().slice(0, 10), appointment_date: "" });
-      }
-    } finally { setSaving(false); }
+        toast("Referral created.", "success");
+      } else { toast("Could not create referral.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   async function handleSaveGPContact() {
@@ -287,8 +291,10 @@ export default function GPIntegrationPage() {
         setGpContacts(p => [...p, n]);
         setShowNewGP(false);
         setGpForm({ practice_name: "", gp_name: "", phone: "", fax: "", email: "", address: "" });
-      }
-    } finally { setSaving(false); }
+        toast("GP contact added.", "success");
+      } else { toast("Could not add GP contact.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   async function handleSaveHospitalContact() {
@@ -305,8 +311,10 @@ export default function GPIntegrationPage() {
         setHospitalContacts(p => [...p, n]);
         setShowNewHospital(false);
         setHospForm({ hospital_name: "", department: "", phone: "", address: "", notes: "" });
-      }
-    } finally { setSaving(false); }
+        toast("Hospital contact added.", "success");
+      } else { toast("Could not add hospital contact.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   // ─────────────────────────────────────────────────────────────────────────

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { AlertCircle, Plus, X } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 interface FallsAssessment {
   id: number; resident: number; resident_name?: string;
@@ -53,6 +54,7 @@ export default function FallsRiskPage() {
   const [loading, setLoading] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [form, setForm] = useState({
     assessment_date: isoDate(new Date()),
     history_of_falls: false, secondary_diagnosis: false,
@@ -88,8 +90,10 @@ export default function FallsRiskPage() {
         setAssessments(p => [n, ...p]);
         setShowCreate(false);
         setForm({ assessment_date:isoDate(new Date()), history_of_falls:false, secondary_diagnosis:false, ambulatory_aid:"none", iv_access:false, gait:"normal", mental_status:"oriented", action_plan:"", next_review_date:"" });
-      }
-    } finally { setSaving(false); }
+        toast("Falls risk assessment saved.", "success");
+      } else { toast("Could not save assessment.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   const latest = assessments[0];

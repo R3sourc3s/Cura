@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Utensils, Plus, X, Droplets } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 interface FluidRecord {
   id: number; resident: number; recorded_by_name?: string;
@@ -31,6 +32,7 @@ export default function NutritionPage() {
   const [showFluid, setShowFluid] = useState(false);
   const [showMeal, setShowMeal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [fluidForm, setFluidForm] = useState({ fluid_type:"water", amount_ml:"200", notes:"" });
   const [mealForm, setMealForm] = useState({ meal_type:"breakfast", completion_percent:"100", appetite:"good", notes:"" });
 
@@ -58,8 +60,10 @@ export default function NutritionPage() {
     try {
       const body = { resident: selectedResident, fluid_type: fluidForm.fluid_type, amount_ml: Number(fluidForm.amount_ml), notes: fluidForm.notes };
       const res = await fetch("/api/v1/nutrition/fluid/", { method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) });
-      if (res.ok) { const n = await res.json(); setFluids(p => [...p, n]); setShowFluid(false); setFluidForm({ fluid_type:"water", amount_ml:"200", notes:"" }); }
-    } finally { setSaving(false); }
+      if (res.ok) { const n = await res.json(); setFluids(p => [...p, n]); setShowFluid(false); setFluidForm({ fluid_type:"water", amount_ml:"200", notes:"" }); toast("Fluid intake logged.", "success"); }
+      else { toast("Could not log fluid intake.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   async function handleAddMeal() {
@@ -68,8 +72,10 @@ export default function NutritionPage() {
     try {
       const body = { resident: selectedResident, meal_type: mealForm.meal_type, completion_percent: Number(mealForm.completion_percent), appetite: mealForm.appetite, notes: mealForm.notes };
       const res = await fetch("/api/v1/nutrition/meals/", { method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) });
-      if (res.ok) { const n = await res.json(); setMeals(p => [...p, n]); setShowMeal(false); setMealForm({ meal_type:"breakfast", completion_percent:"100", appetite:"good", notes:"" }); }
-    } finally { setSaving(false); }
+      if (res.ok) { const n = await res.json(); setMeals(p => [...p, n]); setShowMeal(false); setMealForm({ meal_type:"breakfast", completion_percent:"100", appetite:"good", notes:"" }); toast("Meal logged.", "success"); }
+      else { toast("Could not log meal.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   const totalFluidMl = fluids.reduce((acc, f) => acc + f.amount_ml, 0);

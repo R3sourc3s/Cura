@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Moon, Plus, X, CheckCircle, AlertTriangle } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 interface OvernightCheck {
   id: number; resident: number; resident_name?: string;
@@ -28,6 +29,7 @@ export default function OvernightChecksPage() {
   const [date, setDate] = useState(isoDate(new Date()));
   const [showCreate, setShowCreate] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [form, setForm] = useState({ resident: "", status: "asleep", notes: "" });
 
   useEffect(() => {
@@ -51,8 +53,10 @@ export default function OvernightChecksPage() {
     setSaving(true);
     try {
       const res = await fetch("/api/v1/overnight-checks/", { method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ ...form, resident: Number(form.resident) }) });
-      if (res.ok) { const n = await res.json(); setChecks(p => [n, ...p]); setShowCreate(false); setForm({ resident:"", status:"asleep", notes:"" }); }
-    } finally { setSaving(false); }
+      if (res.ok) { const n = await res.json(); setChecks(p => [n, ...p]); setShowCreate(false); setForm({ resident:"", status:"asleep", notes:"" }); toast("Check logged.", "success"); }
+      else { toast("Could not log check.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   const totalChecks = checks.length;

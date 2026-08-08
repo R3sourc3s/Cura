@@ -5,6 +5,7 @@ import {
   Heart, Plus, X, Search, Filter, ChevronDown, Star, Phone, Mail,
   Shield, Key, MessageSquare, Users, ArrowDownLeft, ArrowUpRight,
 } from "lucide-react";
+import { useToast } from "@/components/Toast";
 import EmptyState from "@/components/ui/EmptyState";
 
 /* ─── Types ─────────────────────────────────────────────────── */
@@ -112,6 +113,7 @@ export default function FamilyPage() {
   const [showMemberModal, setShowMemberModal] = useState(false);
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
 
   /* forms */
   const blankMemberForm = {
@@ -211,8 +213,10 @@ export default function FamilyPage() {
         setMembers(p => [m, ...p]);
         setShowMemberModal(false);
         setMemberForm(blankMemberForm);
-      }
-    } finally { setSaving(false); }
+        toast("Family member added.", "success");
+      } else { toast("Could not add family member.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   /* save message */
@@ -237,8 +241,10 @@ export default function FamilyPage() {
         setMessages(p => [msg, ...p]);
         setShowMessageModal(false);
         setMessageForm(blankMessageForm);
-      }
-    } finally { setSaving(false); }
+        toast("Message sent.", "success");
+      } else { toast("Could not send message.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   /* mark message as read */

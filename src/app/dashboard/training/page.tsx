@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { GraduationCap, Plus, X, AlertTriangle, CheckCircle, Clock } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 interface TrainingRecord {
   id: number; staff_member: number; staff_member_name?: string;
@@ -27,6 +28,7 @@ export default function TrainingPage() {
   const [filterStatus, setFilterStatus] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [form, setForm] = useState({ staff_member:"", course_name:"", completed_date:"", expiry_date:"", provider:"", notes:"" });
 
   useEffect(() => {
@@ -53,8 +55,10 @@ export default function TrainingPage() {
     try {
       const body = { staff_member: Number(form.staff_member), course_name: form.course_name, completed_date: form.completed_date || null, expiry_date: form.expiry_date || null, provider: form.provider, notes: form.notes };
       const res = await fetch("/api/v1/training/records/", { method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) });
-      if (res.ok) { const n = await res.json(); setRecords(p => [...p, n]); setShowCreate(false); setForm({ staff_member:"", course_name:"", completed_date:"", expiry_date:"", provider:"", notes:"" }); }
-    } finally { setSaving(false); }
+      if (res.ok) { const n = await res.json(); setRecords(p => [...p, n]); setShowCreate(false); setForm({ staff_member:"", course_name:"", completed_date:"", expiry_date:"", provider:"", notes:"" }); toast("Training record added.", "success"); }
+      else { toast("Could not add training record.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   const filtered = records.filter(r => !filterStatus || r.status === filterStatus);

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { CalendarDays, Plus, X, ChevronLeft, ChevronRight, Users } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 interface Shift {
   id: number; staff_member: number; staff_member_name?: string;
@@ -29,6 +30,7 @@ export default function RotaPage() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [form, setForm] = useState({ staff_member: "", shift_type: "day", date: isoDate(new Date()), start_time: "07:00", end_time: "15:00", is_agency: false, notes: "" });
 
   const load = useCallback(() => {
@@ -52,8 +54,10 @@ export default function RotaPage() {
     setSaving(true);
     try {
       const res = await fetch("/api/v1/staff/shifts/", { method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ ...form, staff_member: Number(form.staff_member) }) });
-      if (res.ok) { const n = await res.json(); setShifts(p=>[...p,n]); setShowCreate(false); setForm({ staff_member:"", shift_type:"day", date:isoDate(new Date()), start_time:"07:00", end_time:"15:00", is_agency:false, notes:"" }); }
-    } finally { setSaving(false); }
+      if (res.ok) { const n = await res.json(); setShifts(p=>[...p,n]); setShowCreate(false); setForm({ staff_member:"", shift_type:"day", date:isoDate(new Date()), start_time:"07:00", end_time:"15:00", is_agency:false, notes:"" }); toast("Shift added.", "success"); }
+      else { toast("Could not add shift.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   async function deleteShift(id: number) {

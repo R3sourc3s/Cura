@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Smile, Plus, X, ChevronLeft, ChevronRight, CheckCircle } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 interface Activity {
   id: number; name: string; activity_type: "group"|"one_to_one"|"external"|"virtual";
@@ -23,6 +24,7 @@ export default function ActivitiesPage() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [form, setForm] = useState({ name: "", activity_type: "group", scheduled_date: isoDate(new Date()), scheduled_time: "", duration_minutes: "60", location: "", description: "" });
 
   const load = useCallback(() => {
@@ -43,13 +45,16 @@ export default function ActivitiesPage() {
     try {
       const body = { ...form, duration_minutes: Number(form.duration_minutes), scheduled_time: form.scheduled_time || null };
       const res = await fetch("/api/v1/activities/", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-      if (res.ok) { const n = await res.json(); setActivities(p => [...p, n]); setShowCreate(false); setForm({ name: "", activity_type: "group", scheduled_date: isoDate(new Date()), scheduled_time: "", duration_minutes: "60", location: "", description: "" }); }
-    } finally { setSaving(false); }
+      if (res.ok) { const n = await res.json(); setActivities(p => [...p, n]); setShowCreate(false); setForm({ name: "", activity_type: "group", scheduled_date: isoDate(new Date()), scheduled_time: "", duration_minutes: "60", location: "", description: "" }); toast("Activity added.", "success"); }
+      else { toast("Could not add activity.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   async function markComplete(id: number) {
     const res = await fetch(`/api/v1/activities/${id}/`, { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ is_completed: true }) });
-    if (res.ok) { const u = await res.json(); setActivities(p => p.map(a => a.id === id ? u : a)); }
+    if (res.ok) { const u = await res.json(); setActivities(p => p.map(a => a.id === id ? u : a)); toast("Activity marked complete.", "success"); }
+    else { toast("Could not update activity.", "error"); }
   }
 
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));

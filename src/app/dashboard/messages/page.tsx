@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { MessageSquare, Send, Plus, X, Pin } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 interface Message {
   id: number; channel: string; author_name?: string; author_role?: string;
@@ -34,6 +35,7 @@ export default function MessagesPage() {
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
+  const { toast } = useToast();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const load = useCallback(() => {
@@ -60,7 +62,9 @@ export default function MessagesPage() {
     try {
       const res = await fetch("/api/v1/messages/", { method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ channel, content: content.trim() }) });
       if (res.ok) { const n = await res.json(); setMessages(p => [...p, n]); setContent(""); }
-    } finally { setSending(false); }
+      else { toast("Could not send message.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSending(false); }
   }
 
   function handleKey(e: React.KeyboardEvent) {
@@ -69,7 +73,8 @@ export default function MessagesPage() {
 
   async function togglePin(id: number, pinned: boolean) {
     const res = await fetch(`/api/v1/messages/${id}/`, { method:"PATCH", credentials:"include", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ is_pinned: !pinned }) });
-    if (res.ok) { const u = await res.json(); setMessages(p => p.map(m => m.id===id ? u : m)); }
+    if (res.ok) { const u = await res.json(); setMessages(p => p.map(m => m.id===id ? u : m)); toast(pinned ? "Message unpinned." : "Message pinned.", "success"); }
+    else { toast("Could not update message.", "error"); }
   }
 
   const pinned = messages.filter(m => m.is_pinned);

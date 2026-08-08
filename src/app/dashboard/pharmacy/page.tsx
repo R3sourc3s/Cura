@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Package, Plus, X, Search, ChevronDown, AlertTriangle, FlaskConical, Building2 } from "lucide-react";
+import { useToast } from "@/components/Toast";
 import EmptyState from "@/components/ui/EmptyState";
 
 interface MedicationStock {
@@ -74,6 +75,7 @@ export default function PharmacyPage() {
   const [stockSearch, setStockSearch] = useState("");
   const [showStockModal, setShowStockModal] = useState(false);
   const [savingStock, setSavingStock] = useState(false);
+  const { toast } = useToast();
   const [stockForm, setStockForm] = useState({
     medication_name: "", supplier: "", quantity_on_hand: "0",
     unit: "tablets", reorder_threshold: "10",
@@ -168,8 +170,10 @@ export default function PharmacyPage() {
         setStock(p => [n, ...p]);
         setShowStockModal(false);
         setStockForm({ medication_name: "", supplier: "", quantity_on_hand: "0", unit: "tablets", reorder_threshold: "10" });
-      }
-    } finally { setSavingStock(false); }
+        toast("Stock item added.", "success");
+      } else { toast("Could not add stock item.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSavingStock(false); }
   }
 
   async function handleSaveCd() {
@@ -196,8 +200,10 @@ export default function PharmacyPage() {
         setCdEntries(p => [n, ...p]);
         setShowCdModal(false);
         setCdForm({ medication_name: "", resident: "", entry_type: "administered", quantity: "", balance_after: "", witnessed_by: "", recorded_at: new Date().toISOString().slice(0, 16), notes: "" });
-      }
-    } finally { setSavingCd(false); }
+        toast("Controlled drug entry recorded.", "success");
+      } else { toast("Could not record CD entry.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSavingCd(false); }
   }
 
   async function handleSaveSupplier() {
@@ -214,8 +220,10 @@ export default function PharmacyPage() {
         setSuppliers(p => [...p, n].sort((a, b) => a.name.localeCompare(b.name)));
         setShowSupplierModal(false);
         setSupplierForm({ name: "", contact_name: "", phone: "", email: "", address: "" });
-      }
-    } finally { setSavingSupplier(false); }
+        toast("Supplier added.", "success");
+      } else { toast("Could not add supplier.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSavingSupplier(false); }
   }
 
   // Stats

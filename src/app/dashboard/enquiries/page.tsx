@@ -5,6 +5,7 @@ import {
   ClipboardPlus, Plus, X, Search, Filter, ChevronDown,
   User, Phone, Mail, CalendarDays, CheckCircle2, ArrowRight,
 } from "lucide-react";
+import { useToast } from "@/components/Toast";
 import EmptyState from "@/components/ui/EmptyState";
 
 interface Enquiry {
@@ -80,6 +81,7 @@ export default function EnquiriesPage() {
   const [filterFunding, setFilterFunding] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [form, setForm] = useState({ ...EMPTY_FORM });
 
   const load = useCallback(() => {
@@ -115,8 +117,10 @@ export default function EnquiriesPage() {
         setEnquiries(prev => [created, ...prev]);
         setShowModal(false);
         setForm({ ...EMPTY_FORM });
-      }
-    } finally {
+        toast("Enquiry added.", "success");
+      } else { toast("Could not add enquiry.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally {
       setSaving(false);
     }
   }

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Wrench, Plus, X, Search, ChevronDown } from "lucide-react";
 import EmptyState from "@/components/ui/EmptyState";
+import { useToast } from "@/components/Toast";
 
 interface MaintenanceIssue {
   id: number; reported_by_name?: string; assigned_to: string;
@@ -24,6 +25,7 @@ export default function MaintenancePage() {
   const [showCreate, setShowCreate] = useState(false);
   const [editIssue, setEditIssue] = useState<MaintenanceIssue | null>(null);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [form, setForm] = useState({ title: "", category: "other", description: "", location: "", priority: "medium", assigned_to: "" });
   const [editForm, setEditForm] = useState({ status: "open", assigned_to: "", resolution_notes: "" });
 
@@ -45,8 +47,10 @@ export default function MaintenancePage() {
     setSaving(true);
     try {
       const res = await fetch("/api/v1/maintenance/", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
-      if (res.ok) { const n = await res.json(); setIssues(p => [n, ...p]); setShowCreate(false); setForm({ title: "", category: "other", description: "", location: "", priority: "medium", assigned_to: "" }); }
-    } finally { setSaving(false); }
+      if (res.ok) { const n = await res.json(); setIssues(p => [n, ...p]); setShowCreate(false); setForm({ title: "", category: "other", description: "", location: "", priority: "medium", assigned_to: "" }); toast("Issue reported.", "success"); }
+      else { toast("Could not report issue.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   async function handleUpdate() {
@@ -54,8 +58,10 @@ export default function MaintenancePage() {
     setSaving(true);
     try {
       const res = await fetch(`/api/v1/maintenance/${editIssue.id}/`, { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(editForm) });
-      if (res.ok) { const updated = await res.json(); setIssues(p => p.map(i => i.id === editIssue.id ? updated : i)); setEditIssue(null); }
-    } finally { setSaving(false); }
+      if (res.ok) { const updated = await res.json(); setIssues(p => p.map(i => i.id === editIssue.id ? updated : i)); setEditIssue(null); toast("Issue updated.", "success"); }
+      else { toast("Could not update issue.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   function openEdit(issue: MaintenanceIssue) {
@@ -113,7 +119,7 @@ export default function MaintenancePage() {
         ))}
       </div>
 
-      {loading ? <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div> : (
+      {loading ? <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" /></div> : (
         <div className="space-y-3">
           {filtered.length === 0 ? (
             <EmptyState icon={Wrench} title="No maintenance issues" description="Report a new issue to get started." action={{ label: "Report Issue", onClick: () => setShowCreate(true) }} />

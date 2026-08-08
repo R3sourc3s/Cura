@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Pill, Plus, X, Clock, CheckCircle, AlertTriangle, ChevronDown } from "lucide-react";
+import { useToast } from "@/components/Toast";
 
 interface Resident { id: number; full_name: string; room_number?: string; }
 
@@ -52,6 +53,7 @@ export default function PRNPage() {
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
 
   const [form, setForm] = useState({
     medication: "",
@@ -105,8 +107,10 @@ export default function PRNPage() {
         setShowForm(false);
         setForm({ medication: "", reason: "", dose_given: "", effectiveness: "unknown", effectiveness_notes: "" });
         load();
-      }
-    } finally { setSaving(false); }
+        toast("PRN administration recorded.", "success");
+      } else { toast("Could not record PRN.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setSaving(false); }
   }
 
   return (

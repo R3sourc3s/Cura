@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { FolderOpen, Plus, X, Search, Download, FileText, AlertTriangle, Eye, Pencil, Trash2, User, UserRound } from "lucide-react";
 import { useUser } from "@/context/UserContext";
+import { useToast } from "@/components/Toast";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import FilePreviewModal from "@/components/documents/FilePreviewModal";
 
 interface DocFile {
@@ -36,10 +38,13 @@ function canPreview(f: DocFile) { return isImageType(f.file_type) || isPdfType(f
 
 export default function DocumentsPage() {
   const { can } = useUser();
+  const { toast } = useToast();
   const [docs, setDocs] = useState<Doc[]>([]);
   const [loading, setLoading] = useState(true);
-  const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Doc | null>(null);
+  const [confirmUpdate, setConfirmUpdate] = useState(false);
+  const [fileToRemove, setFileToRemove] = useState<DocFile | null>(null);
+  const [busy, setBusy] = useState(false);
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("");
   const [filterResident, setFilterResident] = useState("");
@@ -90,10 +95,17 @@ export default function DocumentsPage() {
     return err ? Object.entries(err as Record<string, unknown>).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`).join(" · ") : `Failed (error ${status}).`;
   }
 
-  async function handleSave() {
+  // Create saves immediately; updates go through a confirmation modal first.
+  function handleSaveClick() {
     setError(null);
     if (!form.title.trim()) { setError("Please give the record a title."); return; }
     if (!editDoc && files.length === 0) { setError("Please add at least one file."); return; }
+    if (editDoc) { setConfirmUpdate(true); return; }
+    doSave();
+  }
+
+  async function doSave() {
+    const isEdit = !!editDoc;
     setSaving(true);
     try {
       const fd = new FormData();
@@ -112,36 +124,54 @@ export default function DocumentsPage() {
       if (res.ok) {
         const n: Doc = await res.json();
         setDocs(p => editDoc ? p.map(d => d.id === n.id ? n : d) : [n, ...p]);
-        setShowModal(false); setForm(emptyForm); setFiles([]); setEditDoc(null);
+        setShowModal(false); setForm(emptyForm); setFiles([]); setEditDoc(null); setConfirmUpdate(false);
+        toast(isEdit ? "Document updated." : "Document uploaded.", "success");
       } else {
-        setError(parseErr(await res.json().catch(() => null), res.status));
+        const msg = parseErr(await res.json().catch(() => null), res.status);
+        setError(msg); setConfirmUpdate(false);
+        toast(msg, "error");
       }
     } catch {
-      setError("Network error — please try again.");
+      setError("Network error — please try again."); setConfirmUpdate(false);
+      toast("Network error — please try again.", "error");
     } finally { setSaving(false); }
   }
 
-  async function handleDeleteDoc(id: number) {
-    setDeletingId(id);
+  async function doDeleteDoc() {
+    if (!deleteTarget) return;
+    setBusy(true);
     try {
-      const res = await fetch(`/api/v1/documents/${id}/`, { method: "DELETE", credentials: "include" });
+      const res = await fetch(`/api/v1/documents/${deleteTarget.id}/`, { method: "DELETE", credentials: "include" });
       if (res.ok || res.status === 204) {
-        setDocs(p => p.filter(d => d.id !== id));
-        setConfirmDelete(null);
+        setDocs(p => p.filter(d => d.id !== deleteTarget.id));
+        toast("Document deleted.", "error");
+        setDeleteTarget(null);
+      } else {
+        toast("Could not delete the document.", "error");
       }
-    } finally { setDeletingId(null); }
+    } catch {
+      toast("Network error — please try again.", "error");
+    } finally { setBusy(false); }
   }
 
-  async function removeExistingFile(fileId: number) {
-    if (!editDoc) return;
-    const res = await fetch(`/api/v1/documents/files/${fileId}/`, { method: "DELETE", credentials: "include" });
-    if (res.ok || res.status === 204) {
-      const upd = (d: Doc): Doc => ({ ...d, files: d.files.filter(f => f.id !== fileId), file_count: Math.max(0, d.file_count - 1) });
-      setEditDoc(d => d ? upd(d) : d);
-      setDocs(p => p.map(d => d.id === editDoc.id ? upd(d) : d));
-    } else {
-      setError("Could not remove that file.");
-    }
+  async function doRemoveFile() {
+    if (!editDoc || !fileToRemove) return;
+    const fileId = fileToRemove.id;
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/v1/documents/files/${fileId}/`, { method: "DELETE", credentials: "include" });
+      if (res.ok || res.status === 204) {
+        const upd = (d: Doc): Doc => ({ ...d, files: d.files.filter(f => f.id !== fileId), file_count: Math.max(0, d.file_count - 1) });
+        setEditDoc(d => d ? upd(d) : d);
+        setDocs(p => p.map(d => d.id === editDoc.id ? upd(d) : d));
+        toast("File removed.", "error");
+        setFileToRemove(null);
+      } else {
+        toast("Could not remove that file.", "error");
+      }
+    } catch {
+      toast("Network error — please try again.", "error");
+    } finally { setBusy(false); }
   }
 
   const filtered = docs.filter(d => !search.trim() || d.title.toLowerCase().includes(search.toLowerCase()));
@@ -216,27 +246,13 @@ export default function DocumentsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 flex-shrink-0">
-                  {confirmDelete === doc.id ? (
-                    <>
-                      <button onClick={() => handleDeleteDoc(doc.id)} disabled={deletingId === doc.id}
-                        className="text-xs font-semibold px-2 h-8 rounded-lg text-white disabled:opacity-50" style={{ background: "#dc2626" }}>
-                        {deletingId === doc.id ? "…" : "Delete"}
-                      </button>
-                      <button onClick={() => setConfirmDelete(null)} className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ background: "var(--bg-card-hover)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>
-                        <X size={12} />
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button onClick={() => openEdit(doc)} title="Edit" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ background: "var(--bg-card-hover)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>
-                        <Pencil size={12} />
-                      </button>
-                      {can("staff.manage") && (
-                        <button onClick={() => setConfirmDelete(doc.id)} title="Delete record" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ background: "rgba(239,68,68,0.1)", color: "var(--c-red)", border: "1px solid rgba(239,68,68,0.2)" }}>
-                          <Trash2 size={12} />
-                        </button>
-                      )}
-                    </>
+                  <button onClick={() => openEdit(doc)} title="Edit" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ background: "var(--bg-card-hover)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>
+                    <Pencil size={12} />
+                  </button>
+                  {can("staff.manage") && (
+                    <button onClick={() => setDeleteTarget(doc)} title="Delete record" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ background: "rgba(239,68,68,0.1)", color: "var(--c-red)", border: "1px solid rgba(239,68,68,0.2)" }}>
+                      <Trash2 size={12} />
+                    </button>
                   )}
                 </div>
               </div>
@@ -336,7 +352,7 @@ export default function DocumentsPage() {
                       <div key={f.id} className="flex items-center gap-2 text-xs px-2.5 py-1.5 rounded-lg" style={{ background:"var(--input-bg)", color:"var(--text-secondary)" }}>
                         <FileText size={13} className="flex-shrink-0" style={{ color: isPdfType(f.file_type) ? "var(--c-red)" : "var(--c-teal2)" }} />
                         <span className="flex-1 truncate">{f.name} · {formatBytes(f.file_size)}</span>
-                        <button onClick={()=>removeExistingFile(f.id)} className="flex-shrink-0" style={{ color:"var(--c-red)" }} title="Remove file"><Trash2 size={12} /></button>
+                        <button onClick={()=>setFileToRemove(f)} className="flex-shrink-0" style={{ color:"var(--c-red)" }} title="Remove file"><Trash2 size={12} /></button>
                       </div>
                     ))}
                   </div>
@@ -375,7 +391,7 @@ export default function DocumentsPage() {
             {error && <p className="mt-3 text-xs px-3 py-2 rounded-lg" style={{ background: "rgba(225,29,72,0.1)", color: "var(--c-red)" }}>{error}</p>}
             <div className="flex gap-3 mt-5">
               <button onClick={()=>setShowModal(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--border)",color:"var(--text-secondary)",border:"1px solid var(--border-strong)"}}>Cancel</button>
-              <button onClick={handleSave} disabled={saving||!form.title.trim()||(!editDoc&&files.length===0)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#0d9488,#10b981)"}}>{saving?(editDoc?"Saving…":`Uploading…`):(editDoc?"Save Changes":(files.length>1?`Upload ${files.length} files`:"Upload"))}</button>
+              <button onClick={handleSaveClick} disabled={saving||!form.title.trim()||(!editDoc&&files.length===0)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#0d9488,#10b981)"}}>{saving?(editDoc?"Saving…":`Uploading…`):(editDoc?"Save Changes":(files.length>1?`Upload ${files.length} files`:"Upload"))}</button>
             </div>
           </div>
         </div>
@@ -383,6 +399,34 @@ export default function DocumentsPage() {
 
       {/* Preview modal */}
       {previewFile && <FilePreviewModal file={previewFile} onClose={() => setPreviewFile(null)} />}
+
+      {/* Confirmations */}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete document record?"
+        message={deleteTarget ? `This will permanently delete “${deleteTarget.title}” and its ${deleteTarget.file_count} file${deleteTarget.file_count === 1 ? "" : "s"}. This cannot be undone.` : ""}
+        confirmLabel={busy ? "Deleting…" : "Delete"}
+        danger
+        onConfirm={doDeleteDoc}
+        onCancel={() => setDeleteTarget(null)}
+      />
+      <ConfirmDialog
+        open={confirmUpdate}
+        title="Save changes?"
+        message="Update this document record with your changes?"
+        confirmLabel={saving ? "Saving…" : "Save changes"}
+        onConfirm={doSave}
+        onCancel={() => setConfirmUpdate(false)}
+      />
+      <ConfirmDialog
+        open={!!fileToRemove}
+        title="Remove file?"
+        message={fileToRemove ? `Remove “${fileToRemove.name}” from this record? This cannot be undone.` : ""}
+        confirmLabel={busy ? "Removing…" : "Remove file"}
+        danger
+        onConfirm={doRemoveFile}
+        onCancel={() => setFileToRemove(null)}
+      />
     </div>
   );
 }
