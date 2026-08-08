@@ -11,9 +11,9 @@ interface Shift {
 interface StaffMember { id: number; full_name: string; role: string; }
 
 const SHIFT_CFG = {
-  day:     { label:"Day",     color:"#fbbf24", bg:"rgba(251,191,36,0.15)",  time:"07:00–15:00" },
-  evening: { label:"Evening", color:"#60a5fa", bg:"rgba(96,165,250,0.15)", time:"15:00–23:00" },
-  night:   { label:"Night",   color:"#a78bfa", bg:"rgba(124,58,237,0.15)", time:"23:00–07:00" },
+  day:     { label:"Day",     color:"var(--c-amber)", bg:"rgba(251,191,36,0.15)",  time:"07:00–15:00" },
+  evening: { label:"Evening", color:"var(--c-teal2)", bg:"rgba(45, 212, 191,0.15)", time:"15:00–23:00" },
+  night:   { label:"Night",   color:"var(--c-teal)", bg:"rgba(13, 148, 136,0.15)", time:"23:00–07:00" },
 } as const;
 
 const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -74,7 +74,7 @@ export default function RotaPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(251,191,36,0.12)", border:"1px solid rgba(251,191,36,0.2)" }}>
-            <CalendarDays size={16} style={{ color:"#fbbf24" }} />
+            <CalendarDays size={16} style={{ color:"var(--c-amber)" }} />
           </div>
           <div><h1 className="text-lg font-bold text-white">Staff Rota</h1><p className="text-xs" style={{ color:"var(--text-muted)" }}>Weekly shift schedule</p></div>
         </div>
@@ -84,16 +84,16 @@ export default function RotaPage() {
             <span className="text-sm px-3 font-medium" style={{ color:"var(--text-secondary)" }}>{isoDate(weekStart)} – {isoDate(addDays(weekStart,6))}</span>
             <button onClick={()=>setWeekStart(d=>addDays(d,7))} className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background:"var(--bg-card)", border:"1px solid var(--border)" }}><ChevronRight size={14} style={{ color:"var(--text-secondary)" }} /></button>
           </div>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#7c3aed,#3b82f6)" }}><Plus size={14} /> Add Shift</button>
+          <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#0d9488,#10b981)" }}><Plus size={14} /> Add Shift</button>
         </div>
       </div>
 
       {/* Summary */}
       <div className="flex gap-4 flex-wrap">
         <div className="text-xs px-3 py-1.5 rounded-xl" style={{ background:"var(--bg-card)", color:"var(--text-secondary)" }}>
-          <Users size={11} className="inline mr-1.5" /><strong style={{ color:"white" }}>{totalThisWeek}</strong> shifts this week
+          <Users size={11} className="inline mr-1.5" /><strong style={{ color:"var(--text-primary)" }}>{totalThisWeek}</strong> shifts this week
         </div>
-        {agencyCount > 0 && <div className="text-xs px-3 py-1.5 rounded-xl" style={{ background:"rgba(251,146,60,0.1)", color:"#fb923c" }}><strong>{agencyCount}</strong> agency shifts</div>}
+        {agencyCount > 0 && <div className="text-xs px-3 py-1.5 rounded-xl" style={{ background:"rgba(251,146,60,0.1)", color:"var(--c-orange)" }}><strong>{agencyCount}</strong> agency shifts</div>}
       </div>
 
       {/* Rota grid */}
@@ -105,8 +105,8 @@ export default function RotaPage() {
             {days.map((day, i) => {
               const d = isoDate(day); const isToday = d === today;
               return (
-                <div key={i} className="px-2 py-3 text-center" style={{ borderLeft:"1px solid var(--border)", background: isToday ? "rgba(124,58,237,0.08)" : "transparent" }}>
-                  <div className="text-xs font-semibold" style={{ color: isToday ? "#a78bfa" : "var(--text-secondary)" }}>{DAYS[i]}</div>
+                <div key={i} className="px-2 py-3 text-center" style={{ borderLeft:"1px solid var(--border)", background: isToday ? "rgba(13, 148, 136,0.08)" : "transparent" }}>
+                  <div className="text-xs font-semibold" style={{ color: isToday ? "var(--c-teal)" : "var(--text-secondary)" }}>{DAYS[i]}</div>
                   <div className="text-sm font-bold mt-0.5" style={{ color: isToday ? "white" : "var(--text-secondary)" }}>{day.getDate()}</div>
                 </div>
               );
@@ -127,7 +127,7 @@ export default function RotaPage() {
                   const dayShifts = shifts.filter(s => s.date === d && s.shift_type === type);
                   const isToday = d === today;
                   return (
-                    <div key={i} className="p-1.5 min-h-[80px]" style={{ borderLeft:"1px solid var(--border)", background: isToday ? "rgba(124,58,237,0.03)" : "transparent" }}>
+                    <div key={i} className="p-1.5 min-h-[80px]" style={{ borderLeft:"1px solid var(--border)", background: isToday ? "rgba(13, 148, 136,0.03)" : "transparent" }}>
                       {dayShifts.length === 0 ? (
                         <button onClick={() => { setForm(f => ({ ...f, shift_type: type, date: d, start_time: cfg.time.split("–")[0], end_time: cfg.time.split("–")[1] })); setShowCreate(true); }}
                           className="w-full h-full min-h-[70px] rounded-lg flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
@@ -138,8 +138,8 @@ export default function RotaPage() {
                         <div key={s.id} className="rounded-lg px-2 py-1.5 mb-1 group relative" style={{ background: s.is_agency ? "rgba(251,146,60,0.12)" : cfg.bg }}>
                           <div className="text-xs font-medium leading-snug" style={{ color:"var(--text-primary)" }}>{s.staff_member_name?.split(" ")[0] ?? `#${s.staff_member}`}</div>
                           <div className="text-xs" style={{ color:"var(--text-muted)" }}>{s.start_time.slice(0,5)}–{s.end_time.slice(0,5)}</div>
-                          {s.is_agency && <div className="text-xs" style={{ color:"#fb923c" }}>Agency</div>}
-                          <button onClick={()=>deleteShift(s.id)} className="absolute top-1 right-1 opacity-0 group-hover:opacity-60 hover:!opacity-100 transition-opacity" style={{ color:"#f87171" }}><X size={10} /></button>
+                          {s.is_agency && <div className="text-xs" style={{ color:"var(--c-orange)" }}>Agency</div>}
+                          <button onClick={()=>deleteShift(s.id)} className="absolute top-1 right-1 opacity-0 group-hover:opacity-60 hover:!opacity-100 transition-opacity" style={{ color:"var(--c-red)" }}><X size={10} /></button>
                         </div>
                       ))}
                     </div>
@@ -153,7 +153,7 @@ export default function RotaPage() {
 
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(124,58,237,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Shift</h3><button onClick={()=>setShowCreate(false)} style={{ color:"var(--text-muted)" }}><X size={18}/></button></div>
             <div className="space-y-3">
               {[
@@ -171,7 +171,7 @@ export default function RotaPage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={()=>setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card)",color:"var(--text-secondary)",border:"1px solid var(--border)"}}>Cancel</button>
-              <button onClick={handleCreate} disabled={saving||!form.staff_member} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#7c3aed,#3b82f6)"}}>{saving?"Saving…":"Add Shift"}</button>
+              <button onClick={handleCreate} disabled={saving||!form.staff_member} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#0d9488,#10b981)"}}>{saving?"Saving…":"Add Shift"}</button>
             </div>
           </div>
         </div>

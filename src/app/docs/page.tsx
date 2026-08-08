@@ -48,7 +48,7 @@ const quickStart = [
     label: "API Reference",
     desc: "Full REST & GraphQL API docs",
     badge: "Reference",
-    color: "#3b82f6",
+    color: "#14b8a6",
   },
   {
     icon: Plug,
@@ -79,7 +79,7 @@ const categories = [
   },
   {
     title: "Resident Management",
-    color: "#3b82f6",
+    color: "#14b8a6",
     items: [
       { icon: UserCircle,    label: "Resident Profiles" },
       { icon: ClipboardList, label: "Care Plans" },
@@ -291,7 +291,7 @@ export default function DocsPage() {
             <a
               href="/contact"
               className="inline-flex items-center gap-2 px-8 py-3 rounded-full text-white font-semibold glow-button"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+              style={{ background: "linear-gradient(135deg, #7c3aed, #14b8a6)" }}
             >
               Contact Support
               <ArrowRight size={16} />

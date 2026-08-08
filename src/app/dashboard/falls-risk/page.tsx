@@ -15,9 +15,9 @@ interface FallsAssessment {
 interface Resident { id: number; full_name: string; }
 
 const RISK_CFG = {
-  low:    { label:"Low Risk",    color:"#34d399", bg:"rgba(52,211,153,0.12)",  range:"0–24" },
-  medium: { label:"Medium Risk", color:"#fbbf24", bg:"rgba(251,191,36,0.12)",  range:"25–44" },
-  high:   { label:"High Risk",   color:"#f87171", bg:"rgba(239,68,68,0.12)",   range:"≥45" },
+  low:    { label:"Low Risk",    color:"var(--c-green)", bg:"rgba(52,211,153,0.12)",  range:"0–24" },
+  medium: { label:"Medium Risk", color:"var(--c-amber)", bg:"rgba(251,191,36,0.12)",  range:"25–44" },
+  high:   { label:"High Risk",   color:"var(--c-red)", bg:"rgba(239,68,68,0.12)",   range:"≥45" },
 };
 
 const inputStyle = { background:"var(--input-bg)", border:"1px solid var(--border-strong)", color:"var(--text-primary)" };
@@ -99,7 +99,7 @@ export default function FallsRiskPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(251,191,36,0.12)", border:"1px solid rgba(251,191,36,0.2)" }}>
-            <AlertCircle size={16} style={{ color:"#fbbf24" }} />
+            <AlertCircle size={16} style={{ color:"var(--c-amber)" }} />
           </div>
           <div><h1 className="text-lg font-bold text-white">Falls Risk Assessment</h1><p className="text-xs" style={{ color:"var(--text-muted)" }}>Morse Fall Scale scoring & history</p></div>
         </div>
@@ -109,7 +109,7 @@ export default function FallsRiskPage() {
             {residents.map(r => <option key={r.id} value={r.id}>{r.full_name}</option>)}
           </select>
           {selectedResident && (
-            <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#7c3aed,#3b82f6)" }}><Plus size={14} /> New Assessment</button>
+            <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#0d9488,#10b981)" }}><Plus size={14} /> New Assessment</button>
           )}
         </div>
       </div>
@@ -158,7 +158,7 @@ export default function FallsRiskPage() {
                 </div>
               )}
               {latest.next_review_date && (
-                <div className="mt-2 text-xs" style={{ color:"#fbbf24" }}>Next review: {new Date(latest.next_review_date).toLocaleDateString("en-GB")}</div>
+                <div className="mt-2 text-xs" style={{ color:"var(--c-amber)" }}>Next review: {new Date(latest.next_review_date).toLocaleDateString("en-GB")}</div>
               )}
             </div>
           )}
@@ -203,7 +203,7 @@ export default function FallsRiskPage() {
 
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(124,58,237,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">New Falls Risk Assessment</h3><button onClick={()=>setShowCreate(false)} style={{color:"var(--text-muted)"}}><X size={18}/></button></div>
 
             <ScorePreview form={form as Record<string, string | boolean>} />
@@ -258,7 +258,7 @@ export default function FallsRiskPage() {
 
             <div className="flex gap-3 mt-5">
               <button onClick={()=>setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--border)",color:"var(--text-secondary)",border:"1px solid var(--border-strong)"}}>Cancel</button>
-              <button onClick={handleCreate} disabled={saving} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#7c3aed,#3b82f6)"}}>{saving?"Saving…":"Save Assessment"}</button>
+              <button onClick={handleCreate} disabled={saving} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#0d9488,#10b981)"}}>{saving?"Saving…":"Save Assessment"}</button>
             </div>
           </div>
         </div>

@@ -17,14 +17,14 @@ type Category =
   | "Business";
 
 const categoryColors: Record<Category, { bg: string; text: string; border: string }> = {
-  All:              { bg: "rgba(45,90,61,0.1)",   text: "#2d5a3d",  border: "rgba(45,90,61,0.25)" },
-  Compliance:       { bg: "rgba(184,146,58,0.1)",  text: "#b8923a",  border: "rgba(184,146,58,0.3)" },
-  "AI & Technology":{ bg: "rgba(45,90,61,0.1)",   text: "#2d5a3d",  border: "rgba(45,90,61,0.25)" },
-  Industry:         { bg: "rgba(122,116,104,0.1)", text: "#7a7468",  border: "rgba(122,116,104,0.3)" },
-  "HR & Staffing":  { bg: "rgba(45,90,61,0.1)",   text: "#2d5a3d",  border: "rgba(45,90,61,0.25)" },
-  "Care Quality":   { bg: "rgba(184,146,58,0.1)",  text: "#b8923a",  border: "rgba(184,146,58,0.3)" },
-  Safeguarding:     { bg: "rgba(122,116,104,0.1)", text: "#7a7468",  border: "rgba(122,116,104,0.3)" },
-  Business:         { bg: "rgba(184,146,58,0.1)",  text: "#b8923a",  border: "rgba(184,146,58,0.3)" },
+  All:              { bg: "rgba(13, 148, 136,0.1)",   text: "#0d9488",  border: "rgba(13, 148, 136,0.25)" },
+  Compliance:       { bg: "rgba(16, 185, 129,0.1)",  text: "#10b981",  border: "rgba(16, 185, 129,0.3)" },
+  "AI & Technology":{ bg: "rgba(13, 148, 136,0.1)",   text: "#0d9488",  border: "rgba(13, 148, 136,0.25)" },
+  Industry:         { bg: "rgba(100,116,139,0.1)", text: "var(--text-muted)",  border: "rgba(100,116,139,0.3)" },
+  "HR & Staffing":  { bg: "rgba(13, 148, 136,0.1)",   text: "#0d9488",  border: "rgba(13, 148, 136,0.25)" },
+  "Care Quality":   { bg: "rgba(16, 185, 129,0.1)",  text: "#10b981",  border: "rgba(16, 185, 129,0.3)" },
+  Safeguarding:     { bg: "rgba(100,116,139,0.1)", text: "var(--text-muted)",  border: "rgba(100,116,139,0.3)" },
+  Business:         { bg: "rgba(16, 185, 129,0.1)",  text: "#10b981",  border: "rgba(16, 185, 129,0.3)" },
 };
 
 const posts = [
@@ -136,7 +136,7 @@ export default function BlogPage() {
   const showFeatured = filteredPosts.some((p) => p.featured) && activeCategory === "All" && searchQuery === "";
 
   return (
-    <main style={{ background: "#faf7f0", minHeight: "100vh" }}>
+    <main style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
       <Navbar />
 
       <section className="relative pt-32 pb-16 overflow-hidden">
@@ -144,14 +144,14 @@ export default function BlogPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
             className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 text-sm font-medium"
-              style={{ background: "rgba(45,90,61,0.1)", border: "1px solid rgba(45,90,61,0.3)", color: "#2d5a3d" }}>
-              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#2d5a3d" }} />
+              style={{ background: "rgba(13, 148, 136,0.1)", border: "1px solid rgba(13, 148, 136,0.3)", color: "#0d9488" }}>
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#0d9488" }} />
               Insights &amp; Resources
             </div>
-            <h1 className="lp-serif text-5xl lg:text-6xl font-extrabold mb-4" style={{ color: "#1c1a14" }}>
-              The <span style={{ color: "#2d5a3d" }}>Cura Blog</span>
+            <h1 className="lp-serif text-5xl lg:text-6xl font-extrabold mb-4" style={{ color: "var(--text-primary)" }}>
+              The <span style={{ color: "#0d9488" }}>Cura Blog</span>
             </h1>
-            <p className="text-xl max-w-xl mx-auto" style={{ color: "#7a7468" }}>
+            <p className="text-xl max-w-xl mx-auto" style={{ color: "var(--text-muted)" }}>
               Practical guides, industry insights, and expert advice for care home managers and operators across the UK.
             </p>
           </motion.div>
@@ -159,11 +159,11 @@ export default function BlogPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.15 }}
             className="max-w-lg mx-auto mb-8">
             <div className="relative">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: "#a89f94" }} />
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
               <input type="text" placeholder="Search articles..."
                 value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-4 py-3.5 rounded-xl text-sm outline-none transition-all"
-                style={{ background: "#ffffff", border: "1px solid #dfd8cc", color: "#1c1a14" }} />
+                style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }} />
             </div>
           </motion.div>
 
@@ -176,9 +176,9 @@ export default function BlogPage() {
                 <button key={cat} onClick={() => setActiveCategory(cat)}
                   className="text-sm px-4 py-2 rounded-full font-medium transition-all duration-200"
                   style={{
-                    background: isActive ? colors.bg : "#ffffff",
-                    border: isActive ? `1px solid ${colors.border}` : "1px solid #dfd8cc",
-                    color: isActive ? colors.text : "#7a7468",
+                    background: isActive ? colors.bg : "var(--bg-card)",
+                    border: isActive ? `1px solid ${colors.border}` : "1px solid var(--border)",
+                    color: isActive ? colors.text : "var(--text-muted)",
                   }}>
                   {cat}
                 </button>
@@ -191,26 +191,26 @@ export default function BlogPage() {
       {showFeatured && featuredPost && (
         <section className="pb-12">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "#7a7468" }}>Featured</div>
+            <div className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "var(--text-muted)" }}>Featured</div>
             <motion.a href="/blog" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               transition={{ duration: 0.6 }}
               className="lp-card rounded-2xl p-8 lg:p-12 grid lg:grid-cols-2 gap-8 items-center block">
               <div>
                 <div className="mb-4"><CategoryBadge category={featuredPost.category} /></div>
-                <h2 className="lp-serif text-3xl lg:text-4xl font-bold leading-tight mb-4" style={{ color: "#1c1a14" }}>
+                <h2 className="lp-serif text-3xl lg:text-4xl font-bold leading-tight mb-4" style={{ color: "var(--text-primary)" }}>
                   {featuredPost.title}
                 </h2>
-                <p className="text-lg leading-relaxed mb-6" style={{ color: "#7a7468" }}>{featuredPost.excerpt}</p>
-                <div className="flex items-center gap-4 text-sm" style={{ color: "#a89f94" }}>
+                <p className="text-lg leading-relaxed mb-6" style={{ color: "var(--text-muted)" }}>{featuredPost.excerpt}</p>
+                <div className="flex items-center gap-4 text-sm" style={{ color: "var(--text-muted)" }}>
                   <span className="flex items-center gap-1.5"><Calendar size={13} />{featuredPost.date}</span>
                   <span>{featuredPost.readTime}</span>
                 </div>
               </div>
               <div className="rounded-xl flex items-center justify-center h-64 relative overflow-hidden"
-                style={{ background: "rgba(45,90,61,0.06)", border: "1px solid rgba(45,90,61,0.15)" }}>
+                style={{ background: "rgba(13, 148, 136,0.06)", border: "1px solid rgba(13, 148, 136,0.15)" }}>
                 <div className="text-center px-6">
-                  <div className="lp-serif text-6xl font-black leading-none mb-2" style={{ color: "#2d5a3d" }}>2025</div>
-                  <div className="font-medium" style={{ color: "#7a7468" }}>CQC Inspection Checklist</div>
+                  <div className="lp-serif text-6xl font-black leading-none mb-2" style={{ color: "#0d9488" }}>2025</div>
+                  <div className="font-medium" style={{ color: "var(--text-muted)" }}>CQC Inspection Checklist</div>
                 </div>
               </div>
             </motion.a>
@@ -222,12 +222,12 @@ export default function BlogPage() {
         <div className="max-w-7xl mx-auto px-6">
           {regularPosts.length === 0 && !showFeatured ? (
             <div className="text-center py-20">
-              <p className="text-lg" style={{ color: "#7a7468" }}>No articles found. Try a different search or category.</p>
+              <p className="text-lg" style={{ color: "var(--text-muted)" }}>No articles found. Try a different search or category.</p>
             </div>
           ) : (
             <>
               {(showFeatured || regularPosts.length > 0) && (
-                <div className="text-xs font-semibold uppercase tracking-widest mb-6" style={{ color: "#7a7468" }}>
+                <div className="text-xs font-semibold uppercase tracking-widest mb-6" style={{ color: "var(--text-muted)" }}>
                   {activeCategory === "All" && searchQuery === ""
                     ? "Recent Articles"
                     : `${filteredPosts.filter((p) => !p.featured).length} article${regularPosts.length !== 1 ? "s" : ""}`}
@@ -239,16 +239,16 @@ export default function BlogPage() {
                     viewport={{ once: true }} variants={fadeUp}
                     className="lp-card rounded-2xl p-6 flex flex-col group block">
                     <div className="mb-4"><CategoryBadge category={post.category} /></div>
-                    <h3 className="text-lg font-bold leading-snug mb-3 transition-colors" style={{ color: "#1c1a14" }}>
+                    <h3 className="text-lg font-bold leading-snug mb-3 transition-colors" style={{ color: "var(--text-primary)" }}>
                       {post.title}
                     </h3>
-                    <p className="text-sm leading-relaxed flex-1 mb-5" style={{ color: "#7a7468" }}>{post.excerpt}</p>
-                    <div className="flex items-center justify-between pt-4" style={{ borderTop: "1px solid #dfd8cc" }}>
-                      <div className="flex items-center gap-3 text-xs" style={{ color: "#a89f94" }}>
+                    <p className="text-sm leading-relaxed flex-1 mb-5" style={{ color: "var(--text-muted)" }}>{post.excerpt}</p>
+                    <div className="flex items-center justify-between pt-4" style={{ borderTop: "1px solid var(--border)" }}>
+                      <div className="flex items-center gap-3 text-xs" style={{ color: "var(--text-muted)" }}>
                         <span className="flex items-center gap-1"><Calendar size={11} />{post.date}</span>
                         <span>{post.readTime}</span>
                       </div>
-                      <span className="flex items-center gap-1 text-xs font-semibold group-hover:gap-2 transition-all" style={{ color: "#2d5a3d" }}>
+                      <span className="flex items-center gap-1 text-xs font-semibold group-hover:gap-2 transition-all" style={{ color: "#0d9488" }}>
                         Read more <ArrowRight size={12} />
                       </span>
                     </div>
@@ -264,17 +264,17 @@ export default function BlogPage() {
         <div className="max-w-2xl mx-auto px-6 text-center">
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="lp-card rounded-2xl p-10">
-            <h3 className="lp-serif text-2xl font-bold mb-3" style={{ color: "#1c1a14" }}>Stay ahead in care</h3>
-            <p className="mb-6" style={{ color: "#7a7468" }}>
+            <h3 className="lp-serif text-2xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>Stay ahead in care</h3>
+            <p className="mb-6" style={{ color: "var(--text-muted)" }}>
               Get the latest insights, CQC updates, and best practices delivered to your inbox every two weeks.
             </p>
             <div className="flex gap-3">
               <input type="email" placeholder="your@email.com" className="flex-1 px-4 py-3 rounded-xl text-sm outline-none"
-                style={{ background: "#faf7f0", border: "1px solid #dfd8cc", color: "#1c1a14" }} />
+                style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }} />
               <button className="px-6 py-3 rounded-xl font-semibold text-white text-sm"
-                style={{ background: "#2d5a3d" }}>Subscribe</button>
+                style={{ background: "#0d9488" }}>Subscribe</button>
             </div>
-            <p className="text-xs mt-3" style={{ color: "#a89f94" }}>No spam. Unsubscribe at any time.</p>
+            <p className="text-xs mt-3" style={{ color: "var(--text-muted)" }}>No spam. Unsubscribe at any time.</p>
           </motion.div>
         </div>
       </section>

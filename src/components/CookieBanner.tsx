@@ -29,19 +29,19 @@ export default function CookieBanner() {
       <div
         className="max-w-3xl mx-auto rounded-2xl p-5 sm:p-6 shadow-xl"
         style={{
-          background: "#ffffff",
-          border: "1px solid #dfd8cc",
-          boxShadow: "0 8px 40px rgba(28,26,20,0.16)",
+          background: "var(--bg-card)",
+          border: "1px solid var(--border)",
+          boxShadow: "0 8px 40px rgba(15,23,42,0.16)",
         }}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <p className="font-semibold text-sm mb-1.5" style={{ color: "#1c1a14" }}>
+            <p className="font-semibold text-sm mb-1.5" style={{ color: "var(--text-primary)" }}>
               We use cookies
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: "#7a7468" }}>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>
               We use essential cookies to keep Cura running and optional analytics cookies to understand how visitors use our site — no personal data is shared with third parties.{" "}
-              <a href="/privacy" className="underline underline-offset-2" style={{ color: "#2d5a3d" }}>
+              <a href="/privacy" className="underline underline-offset-2" style={{ color: "#0d9488" }}>
                 Privacy policy
               </a>
             </p>
@@ -49,7 +49,7 @@ export default function CookieBanner() {
           <button
             onClick={() => accept("essential")}
             className="flex-shrink-0 p-1 rounded-lg transition-colors"
-            style={{ color: "#a89f94" }}
+            style={{ color: "var(--text-muted)" }}
             aria-label="Dismiss — essential cookies only"
           >
             <X size={18} />

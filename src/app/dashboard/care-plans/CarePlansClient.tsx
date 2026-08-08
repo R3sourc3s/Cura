@@ -8,10 +8,10 @@ import { ClipboardList, Bot, Calendar, Filter, Plus, X, Save } from "lucide-reac
 import { useToast } from "@/components/Toast";
 
 const STATUS = {
-  active:       { bg: "rgba(52,211,153,0.12)",  text: "#34d399",  label: "Active" },
+  active:       { bg: "rgba(52,211,153,0.12)",  text: "var(--c-green)",  label: "Active" },
   draft:        { bg: "var(--bg-card)",            text: "var(--text-secondary)", label: "Draft" },
-  under_review: { bg: "rgba(251,146,60,0.12)",   text: "#fb923c",  label: "Under Review" },
-  archived:     { bg: "rgba(124,58,237,0.12)",   text: "#a78bfa",  label: "Archived" },
+  under_review: { bg: "rgba(251,146,60,0.12)",   text: "var(--c-orange)",  label: "Under Review" },
+  archived:     { bg: "rgba(13, 148, 136,0.12)",   text: "var(--c-teal)",  label: "Archived" },
 } as const;
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
@@ -61,7 +61,7 @@ function NewPlanModal({ residents, onClose, onCreated }: { residents: Resident[]
           style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+              style={{ background: "#0d9488" }}>
               <ClipboardList size={14} className="text-white" />
             </div>
             <h2 className="text-base font-bold text-white">New Care Plan</h2>
@@ -109,7 +109,7 @@ function NewPlanModal({ residents, onClose, onCreated }: { residents: Resident[]
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Save size={14} />{saving ? "Creating…" : "Create Plan"}
           </button>
         </div>
@@ -174,7 +174,7 @@ export default function CarePlansClient({ initialPlans, initialResidents }: Prop
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-            <ClipboardList size={22} style={{ color: "#60a5fa" }} /> Care Plans
+            <ClipboardList size={22} style={{ color: "var(--c-teal2)" }} /> Care Plans
           </h1>
           <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
             {plans.length} plan{plans.length !== 1 ? "s" : ""} {filter ? `· ${filter}` : ""}
@@ -182,7 +182,7 @@ export default function CarePlansClient({ initialPlans, initialResidents }: Prop
         </div>
         <button onClick={() => setShowNew(true)}
           className="flex-shrink-0 flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+          style={{ background: "#0d9488" }}>
           <Plus size={14} /> <span className="hidden sm:inline">New Plan</span><span className="sm:hidden">New</span>
         </button>
       </div>
@@ -194,9 +194,9 @@ export default function CarePlansClient({ initialPlans, initialResidents }: Prop
           <button key={v} onClick={() => handleFilterChange(v)}
             className="px-3 py-1.5 text-xs font-medium rounded-lg transition-all"
             style={{
-              background: filter === v ? "rgba(124,58,237,0.2)" : "var(--bg-card)",
-              color: filter === v ? "#a78bfa" : "var(--text-muted)",
-              border: filter === v ? "1px solid rgba(124,58,237,0.3)" : "1px solid transparent",
+              background: filter === v ? "rgba(13, 148, 136,0.2)" : "var(--bg-card)",
+              color: filter === v ? "var(--c-teal)" : "var(--text-muted)",
+              border: filter === v ? "1px solid rgba(13, 148, 136,0.3)" : "1px solid transparent",
             }}>
             {v === "" ? "All" : v.replace("_", " ").replace(/^\w/, c => c.toUpperCase())}
           </button>
@@ -214,7 +214,7 @@ export default function CarePlansClient({ initialPlans, initialResidents }: Prop
           <p className="text-sm" style={{ color: "var(--text-muted)" }}>No care plans found.</p>
           <button onClick={() => setShowNew(true)}
             className="mt-4 px-4 py-2 text-sm font-semibold rounded-xl text-white inline-flex items-center gap-2"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Plus size={14} /> Create First Plan
           </button>
         </div>
@@ -227,7 +227,7 @@ export default function CarePlansClient({ initialPlans, initialResidents }: Prop
             return (
               <div key={plan.id} className="rounded-2xl p-5 flex flex-col gap-4 transition-all cursor-pointer"
                 style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(124,58,237,0.25)")}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(13, 148, 136,0.25)")}
                 onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border-strong)")}
                 onClick={() => router.push(`/dashboard/care-plans/${plan.id}`)}>
                 <div className="flex items-start justify-between">
@@ -243,10 +243,10 @@ export default function CarePlansClient({ initialPlans, initialResidents }: Prop
                 </div>
 
                 {plan.ai_summary ? (
-                  <div className="rounded-xl p-3" style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.15)" }}>
+                  <div className="rounded-xl p-3" style={{ background: "rgba(13, 148, 136,0.08)", border: "1px solid rgba(13, 148, 136,0.15)" }}>
                     <div className="flex items-center gap-1.5 mb-1.5">
-                      <Bot size={11} style={{ color: "#a78bfa" }} />
-                      <span className="text-xs font-medium" style={{ color: "#a78bfa" }}>AI Summary</span>
+                      <Bot size={11} style={{ color: "var(--c-teal)" }} />
+                      <span className="text-xs font-medium" style={{ color: "var(--c-teal)" }}>AI Summary</span>
                     </div>
                     <p className="text-xs leading-relaxed line-clamp-3" style={{ color: "var(--text-secondary)" }}>
                       {plan.ai_summary}
@@ -259,8 +259,8 @@ export default function CarePlansClient({ initialPlans, initialResidents }: Prop
                 )}
 
                 <div className="flex items-center gap-2">
-                  <Calendar size={12} style={{ color: overdue ? "#f87171" : "var(--text-muted)" }} />
-                  <span className="text-xs" style={{ color: overdue ? "#f87171" : "var(--text-muted)" }}>
+                  <Calendar size={12} style={{ color: overdue ? "var(--c-red)" : "var(--text-muted)" }} />
+                  <span className="text-xs" style={{ color: overdue ? "var(--c-red)" : "var(--text-muted)" }}>
                     {plan.next_review_date
                       ? `Review: ${new Date(plan.next_review_date).toLocaleDateString("en-GB")}${overdue ? " (overdue)" : ""}`
                       : "No review date set"}
@@ -302,7 +302,7 @@ export default function CarePlansClient({ initialPlans, initialResidents }: Prop
                       finally { setSummaryLoading(null); }
                     }}
                     className="flex-1 py-2 text-xs font-semibold rounded-xl flex items-center justify-center gap-1"
-                    style={{ background: "rgba(124,58,237,0.15)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}>
+                    style={{ background: "rgba(13, 148, 136,0.15)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
                     <Bot size={11} />
                     {summaryLoading === plan.id ? "Generating…" : "AI Summary"}
                   </button>

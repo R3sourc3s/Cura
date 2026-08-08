@@ -5,7 +5,7 @@ export default function NotFound() {
     <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "#050914" }}>
       <div className="text-center max-w-md">
         <div className="text-8xl font-black mb-2" style={{
-          background: "linear-gradient(135deg, #7c3aed, #3b82f6)",
+          background: "linear-gradient(135deg, #7c3aed, #14b8a6)",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
         }}>
@@ -17,7 +17,7 @@ export default function NotFound() {
         </p>
         <Link href="/dashboard"
           className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl text-white"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+          style={{ background: "linear-gradient(135deg, #7c3aed, #14b8a6)" }}>
           Back to Dashboard
         </Link>
       </div>

@@ -10,10 +10,10 @@ import { Search, Filter, Users, AlertTriangle, Plus, Eye, Edit2, Trash2, X, Save
 import EmptyState from "@/components/ui/EmptyState";
 
 const RISK = {
-  critical: { bg: "rgba(239,68,68,0.15)",  text: "#f87171", dot: "#ef4444" },
-  high:     { bg: "rgba(251,146,60,0.15)",  text: "#fb923c", dot: "#f97316" },
-  medium:   { bg: "rgba(250,204,21,0.12)",  text: "#fbbf24", dot: "#eab308" },
-  low:      { bg: "rgba(52,211,153,0.12)",  text: "#34d399", dot: "#10b981" },
+  critical: { bg: "rgba(239,68,68,0.15)",  text: "var(--c-red)", dot: "#ef4444" },
+  high:     { bg: "rgba(251,146,60,0.15)",  text: "var(--c-orange)", dot: "#f97316" },
+  medium:   { bg: "rgba(250,204,21,0.12)",  text: "var(--c-amber)", dot: "#eab308" },
+  low:      { bg: "rgba(52,211,153,0.12)",  text: "var(--c-green)", dot: "#10b981" },
 } as const;
 
 function RiskBadge({ level }: { level: string }) {
@@ -59,7 +59,7 @@ const BLANK_FORM = {
 };
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" };
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
@@ -114,7 +114,7 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
           style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+              style={{ background: "#0d9488" }}>
               <Plus size={14} className="text-white" />
             </div>
             <h2 className="text-base font-bold text-white">Add New Resident</h2>
@@ -134,8 +134,8 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
             <label className="block text-xs font-medium mb-2" style={{ color: "var(--text-muted)" }}>Profile Photo</label>
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0"
-                style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
-                {photoPreview ? <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" /> : <Upload size={18} style={{ color: "#a78bfa" }} />}
+                style={{ background: "rgba(13, 148, 136,0.12)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
+                {photoPreview ? <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" /> : <Upload size={18} style={{ color: "var(--c-teal)" }} />}
               </div>
               <label className="flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-xl cursor-pointer"
                 style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
@@ -192,7 +192,7 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Save size={14} />{saving ? "Creating…" : "Create Resident"}
           </button>
         </div>
@@ -267,7 +267,7 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-            <Users size={22} style={{ color: "#7c3aed" }} /> Residents
+            <Users size={22} style={{ color: "#0d9488" }} /> Residents
           </h1>
           <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
             {total} active resident{total !== 1 ? "s" : ""}
@@ -276,7 +276,7 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
         {can("residents.create") && (
           <button onClick={() => setShowCreate(true)}
             className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white flex-shrink-0"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Plus size={15} /> <span className="hidden sm:inline">Add Resident</span><span className="sm:hidden">Add</span>
           </button>
         )}
@@ -288,7 +288,7 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
           <input value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, NHS, room…" className="w-full pl-9 pr-3 py-2 text-sm rounded-xl outline-none"
-            style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" }} />
+            style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" }} />
         </div>
         <div className="flex items-center gap-2">
           <Filter size={14} style={{ color: "var(--text-muted)" }} />
@@ -328,13 +328,13 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
             <div className="flex items-center gap-2">
               <button onClick={() => router.push(`/dashboard/residents/${r.id}`)}
                 className="flex-1 flex items-center justify-center gap-1 text-xs font-medium py-2 rounded-lg"
-                style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}>
+                style={{ background: "rgba(13, 148, 136,0.12)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
                 <Eye size={12} /> View
               </button>
               {can("residents.edit") && (
                 <button onClick={() => router.push(`/dashboard/residents/${r.id}/edit`)}
                   className="flex-1 flex items-center justify-center gap-1 text-xs font-medium py-2 rounded-lg"
-                  style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.2)" }}>
+                  style={{ background: "rgba(45, 212, 191,0.1)", color: "var(--c-teal2)", border: "1px solid rgba(45, 212, 191,0.2)" }}>
                   <Edit2 size={12} /> Edit
                 </button>
               )}
@@ -351,7 +351,7 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
               ) : (
                 <button onClick={() => setConfirmId(r.id)}
                   className="w-9 flex items-center justify-center py-2 rounded-lg"
-                  style={{ background: "rgba(239,68,68,0.08)", color: "#f87171", border: "1px solid rgba(239,68,68,0.15)" }}>
+                  style={{ background: "rgba(239,68,68,0.08)", color: "var(--c-red)", border: "1px solid rgba(239,68,68,0.15)" }}>
                   <Trash2 size={12} />
                 </button>
               ))}
@@ -376,8 +376,8 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
             ) : list.length === 0 ? (
               <tr><td colSpan={7}><EmptyState icon={Users} title="No residents found" description="Add your first resident to get started." action={{ label: "Add Resident", onClick: () => setShowCreate(true) }} /></td></tr>
             ) : list.map((r) => (
-              <tr key={r.id} className="transition-all" style={{ borderBottom: "1px solid var(--bg-card)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.02)")}
+              <tr key={r.id} className="transition-all" style={{ borderBottom: "1px solid var(--border)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(var(--fg-rgb),0.02)")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
@@ -406,13 +406,13 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
                   <div className="flex items-center gap-2">
                     <button onClick={() => router.push(`/dashboard/residents/${r.id}`)}
                       className="flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg"
-                      style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}>
+                      style={{ background: "rgba(13, 148, 136,0.12)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
                       <Eye size={12} /> View
                     </button>
                     {can("residents.edit") && (
                       <button onClick={() => router.push(`/dashboard/residents/${r.id}/edit`)}
                         className="flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg"
-                        style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.2)" }}>
+                        style={{ background: "rgba(45, 212, 191,0.1)", color: "var(--c-teal2)", border: "1px solid rgba(45, 212, 191,0.2)" }}>
                         <Edit2 size={12} /> Edit
                       </button>
                     )}
@@ -429,7 +429,7 @@ export default function ResidentsClient({ initialList, initialTotal }: { initial
                     ) : (
                       <button onClick={() => setConfirmId(r.id)}
                         className="flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg"
-                        style={{ background: "rgba(239,68,68,0.08)", color: "#f87171", border: "1px solid rgba(239,68,68,0.15)" }}>
+                        style={{ background: "rgba(239,68,68,0.08)", color: "var(--c-red)", border: "1px solid rgba(239,68,68,0.15)" }}>
                         <Trash2 size={12} />
                       </button>
                     ))}

@@ -22,7 +22,7 @@ class Command(BaseCommand):
         from apps.medications.models import Medication, MAREntry
         from apps.care_plans.models import CarePlan, CarePlanSection
         from apps.compliance.models import ComplianceAudit
-        from apps.authentication.models import User
+        from apps.authentication.models import User, FamilyContact
 
         # ── Care Home ──────────────────────────────────────────────────────────
         home, _ = CareHome.objects.get_or_create(
@@ -132,6 +132,49 @@ class Command(BaseCommand):
                 ),
             )
             residents.append(r)
+
+        # ── Family Portal Users ─────────────────────────────────────────────────
+        # One family login per resident, derived from the next-of-kin details.
+        for resident, rdata in zip(residents, residents_data):
+            nok_name, nok_phone, nok_rel = rdata[8], rdata[9], rdata[10]
+            parts = nok_name.split()
+            first = parts[0]
+            last = parts[-1] if len(parts) > 1 else resident.last_name
+
+            # Find a free username, but reuse the existing one if it already
+            # belongs to this resident's family contact (keeps seed idempotent).
+            base_uname = f"{first[0].lower()}.{last.lower()}"
+            uname = base_uname
+            suffix = 1
+            existing = User.objects.filter(username=uname).first()
+            while existing and not (
+                existing.role == "family"
+                and hasattr(existing, "family_contact")
+                and existing.family_contact.resident_id == resident.id
+            ):
+                suffix += 1
+                uname = f"{base_uname}{suffix}"
+                existing = User.objects.filter(username=uname).first()
+
+            fam_user, created = User.objects.get_or_create(
+                username=uname,
+                defaults=dict(
+                    first_name=first,
+                    last_name=last,
+                    email=f"{uname}@family.sunrisecare.co.uk",
+                    role="family",
+                    care_home=home,
+                    phone=nok_phone,
+                ),
+            )
+            if created:
+                fam_user.set_password("family1234")
+                fam_user.save()
+
+            FamilyContact.objects.get_or_create(
+                user=fam_user,
+                defaults=dict(resident=resident, relationship=nok_rel),
+            )
 
         # ── Conditions ─────────────────────────────────────────────────────────
         conditions_pool = [

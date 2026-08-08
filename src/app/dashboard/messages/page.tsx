@@ -10,11 +10,11 @@ interface Message {
 }
 
 const CHANNELS = [
-  { id:"general",    label:"General",      color:"#60a5fa" },
-  { id:"handover",   label:"Handover",     color:"#a78bfa" },
-  { id:"clinical",   label:"Clinical",     color:"#34d399" },
-  { id:"management", label:"Management",   color:"#fbbf24" },
-  { id:"urgent",     label:"🚨 Urgent",    color:"#f87171" },
+  { id:"general",    label:"General",      color:"var(--c-teal2)" },
+  { id:"handover",   label:"Handover",     color:"var(--c-teal)" },
+  { id:"clinical",   label:"Clinical",     color:"var(--c-green)" },
+  { id:"management", label:"Management",   color:"var(--c-amber)" },
+  { id:"urgent",     label:"🚨 Urgent",    color:"var(--c-red)" },
 ];
 
 function timeAgo(iso: string) {
@@ -26,7 +26,7 @@ function timeAgo(iso: string) {
   return `${d}d ago`;
 }
 
-const ROLE_COLOR: Record<string,string> = { admin:"#f87171", manager:"#fbbf24", nurse:"#34d399", carer:"#60a5fa", hr:"#a78bfa" };
+const ROLE_COLOR: Record<string,string> = { admin:"var(--c-red)", manager:"var(--c-amber)", nurse:"var(--c-green)", carer:"var(--c-teal2)", hr:"var(--c-teal)" };
 
 export default function MessagesPage() {
   const [channel, setChannel] = useState("general");
@@ -86,7 +86,7 @@ export default function MessagesPage() {
         {CHANNELS.map(ch => (
           <button key={ch.id} onClick={() => setChannel(ch.id)}
             className="w-full text-left flex items-center gap-2 px-3 py-2 rounded-xl text-sm transition-all"
-            style={{ background: channel===ch.id ? `${ch.color}18` : "transparent", color: channel===ch.id ? ch.color : "rgba(255,255,255,0.5)", border: channel===ch.id ? `1px solid ${ch.color}30` : "1px solid transparent" }}>
+            style={{ background: channel===ch.id ? `${ch.color}18` : "transparent", color: channel===ch.id ? ch.color : "rgba(var(--fg-rgb),0.5)", border: channel===ch.id ? `1px solid ${ch.color}30` : "1px solid transparent" }}>
             <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: ch.color }} />
             {ch.label}
           </button>
@@ -100,7 +100,7 @@ export default function MessagesPage() {
           <div className="w-2 h-2 rounded-full" style={{ background: channelCfg.color }} />
           <span className="text-sm font-semibold text-white">{channelCfg.label}</span>
           {pinned.length > 0 && (
-            <span className="text-xs px-2 py-0.5 rounded ml-auto" style={{ background:"rgba(251,191,36,0.1)", color:"#fbbf24" }}>
+            <span className="text-xs px-2 py-0.5 rounded ml-auto" style={{ background:"rgba(251,191,36,0.1)", color:"var(--c-amber)" }}>
               <Pin size={10} className="inline mr-1" />{pinned.length} pinned
             </span>
           )}
@@ -111,8 +111,8 @@ export default function MessagesPage() {
           <div className="px-4 py-2 space-y-1" style={{ background:"rgba(251,191,36,0.04)", borderBottom:"1px solid rgba(251,191,36,0.1)" }}>
             {pinned.map(m => (
               <div key={m.id} className="flex items-center gap-2 text-xs" style={{ color:"var(--text-secondary)" }}>
-                <Pin size={9} style={{ color:"#fbbf24" }} />
-                <span style={{ color:"#fbbf24" }}>{m.author_name}:</span>
+                <Pin size={9} style={{ color:"var(--c-amber)" }} />
+                <span style={{ color:"var(--c-amber)" }}>{m.author_name}:</span>
                 <span className="truncate">{m.content}</span>
               </div>
             ))}
@@ -129,7 +129,7 @@ export default function MessagesPage() {
               <p className="text-sm" style={{ color:"var(--text-muted)" }}>No messages yet. Start the conversation!</p>
             </div>
           ) : messages.map(m => {
-            const roleColor = ROLE_COLOR[m.author_role ?? ""] ?? "#a78bfa";
+            const roleColor = ROLE_COLOR[m.author_role ?? ""] ?? "var(--c-teal)";
             return (
               <div key={m.id} className="group flex gap-3">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5" style={{ background:`${roleColor}20`, color:roleColor }}>
@@ -143,7 +143,7 @@ export default function MessagesPage() {
                     <button onClick={() => togglePin(m.id, m.is_pinned)}
                       className="opacity-0 group-hover:opacity-60 hover:!opacity-100 transition-opacity ml-auto"
                       title={m.is_pinned ? "Unpin" : "Pin"}>
-                      <Pin size={11} style={{ color: m.is_pinned ? "#fbbf24" : "var(--text-muted)" }} />
+                      <Pin size={11} style={{ color: m.is_pinned ? "var(--c-amber)" : "var(--text-muted)" }} />
                     </button>
                   </div>
                   <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color:"var(--text-secondary)" }}>{m.content}</p>
@@ -163,7 +163,7 @@ export default function MessagesPage() {
               className="flex-1 text-sm px-3 py-2 rounded-xl outline-none resize-none"
               style={{ background:"var(--input-bg)", border:"1px solid var(--border-strong)", color:"var(--text-primary)" }} />
             <button onClick={handleSend} disabled={sending||!content.trim()} className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 disabled:opacity-40"
-              style={{ background:"linear-gradient(135deg,#7c3aed,#3b82f6)" }}>
+              style={{ background:"linear-gradient(135deg,#0d9488,#10b981)" }}>
               <Send size={14} className="text-white" />
             </button>
           </div>

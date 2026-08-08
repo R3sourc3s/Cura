@@ -10,7 +10,7 @@ interface Activity {
   is_completed: boolean; attendee_count?: number;
 }
 
-const TYPE_CFG = { group: { label:"Group", color:"#a78bfa", bg:"rgba(124,58,237,0.12)" }, one_to_one: { label:"1:1", color:"#60a5fa", bg:"rgba(96,165,250,0.12)" }, external: { label:"External", color:"#34d399", bg:"rgba(52,211,153,0.12)" }, virtual: { label:"Virtual", color:"#2dd4bf", bg:"rgba(45,212,191,0.1)" } } as const;
+const TYPE_CFG = { group: { label:"Group", color:"var(--c-teal)", bg:"rgba(13, 148, 136,0.12)" }, one_to_one: { label:"1:1", color:"var(--c-teal2)", bg:"rgba(45, 212, 191,0.12)" }, external: { label:"External", color:"var(--c-green)", bg:"rgba(52,211,153,0.12)" }, virtual: { label:"Virtual", color:"var(--c-teal2)", bg:"rgba(45,212,191,0.1)" } } as const;
 
 function startOfWeek(d: Date) { const day = d.getDay(); const diff = d.getDate() - day + (day === 0 ? -6 : 1); return new Date(d.setDate(diff)); }
 function addDays(d: Date, n: number) { return new Date(new Date(d).setDate(d.getDate() + n)); }
@@ -60,7 +60,7 @@ export default function ActivitiesPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(52,211,153,0.12)", border: "1px solid rgba(52,211,153,0.2)" }}>
-            <Smile size={16} style={{ color: "#34d399" }} />
+            <Smile size={16} style={{ color: "var(--c-green)" }} />
           </div>
           <div><h1 className="text-lg font-bold text-white">Activities & Wellbeing</h1></div>
         </div>
@@ -70,7 +70,7 @@ export default function ActivitiesPage() {
             <span className="text-sm px-3" style={{ color: "var(--text-secondary)" }}>{isoDate(weekStart)} – {isoDate(addDays(weekStart, 6))}</span>
             <button onClick={() => setWeekStart(d => addDays(d, 7))} className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "var(--input-bg)", border: "1px solid var(--bg-card-hover)" }}><ChevronRight size={14} style={{ color: "var(--text-secondary)" }} /></button>
           </div>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}><Plus size={14} /> Add Activity</button>
+          <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background: "#0d9488" }}><Plus size={14} /> Add Activity</button>
         </div>
       </div>
 
@@ -81,9 +81,9 @@ export default function ActivitiesPage() {
             const dayActivities = activities.filter(a => a.scheduled_date === dateStr);
             const isToday = dateStr === isoDate(new Date());
             return (
-              <div key={i} className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${isToday ? "rgba(124,58,237,0.4)" : "var(--border)"}` }}>
-                <div className="px-2 py-2.5 text-center" style={{ background: isToday ? "rgba(124,58,237,0.12)" : "var(--bg-card)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                  <div className="text-xs font-semibold" style={{ color: isToday ? "#a78bfa" : "var(--text-secondary)" }}>{DAYS[i]}</div>
+              <div key={i} className="rounded-2xl overflow-hidden" style={{ background: "rgba(var(--fg-rgb),0.02)", border: `1px solid ${isToday ? "rgba(13, 148, 136,0.4)" : "var(--border)"}` }}>
+                <div className="px-2 py-2.5 text-center" style={{ background: isToday ? "rgba(13, 148, 136,0.12)" : "var(--bg-card)", borderBottom: "1px solid rgba(var(--fg-rgb),0.05)" }}>
+                  <div className="text-xs font-semibold" style={{ color: isToday ? "var(--c-teal)" : "var(--text-secondary)" }}>{DAYS[i]}</div>
                   <div className="text-sm font-bold mt-0.5" style={{ color: isToday ? "white" : "var(--text-secondary)" }}>{day.getDate()}</div>
                 </div>
                 <div className="p-1.5 space-y-1">
@@ -91,11 +91,11 @@ export default function ActivitiesPage() {
                     const t = TYPE_CFG[a.activity_type as keyof typeof TYPE_CFG] ?? TYPE_CFG.group;
                     return (
                       <div key={a.id} className="rounded-lg px-2 py-1.5 relative" style={{ background: a.is_completed ? "rgba(52,211,153,0.06)" : t.bg, border: `1px solid ${a.is_completed ? "rgba(52,211,153,0.15)" : "transparent"}` }}>
-                        <div className="text-xs font-medium leading-snug" style={{ color: a.is_completed ? "#34d399" : "var(--text-primary)" }}>{a.name}</div>
+                        <div className="text-xs font-medium leading-snug" style={{ color: a.is_completed ? "var(--c-green)" : "var(--text-primary)" }}>{a.name}</div>
                         {a.scheduled_time && <div className="text-xs" style={{ color: "var(--text-muted)" }}>{a.scheduled_time.slice(0,5)}</div>}
                         <div className="flex items-center justify-between mt-0.5">
                           <span className="text-xs" style={{ color: t.color }}>{t.label}</span>
-                          {!a.is_completed && <button onClick={() => markComplete(a.id)} title="Mark complete" className="opacity-40 hover:opacity-80"><CheckCircle size={11} style={{ color: "#34d399" }} /></button>}
+                          {!a.is_completed && <button onClick={() => markComplete(a.id)} title="Mark complete" className="opacity-40 hover:opacity-80"><CheckCircle size={11} style={{ color: "var(--c-green)" }} /></button>}
                         </div>
                       </div>
                     );
@@ -109,7 +109,7 @@ export default function ActivitiesPage() {
 
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(124,58,237,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Activity</h3><button onClick={() => setShowCreate(false)} style={{ color: "var(--text-muted)" }}><X size={18} /></button></div>
             <div className="space-y-3">
               {[
@@ -124,7 +124,7 @@ export default function ActivitiesPage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{ background: "var(--bg-card-hover)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>Cancel</button>
-              <button onClick={handleCreate} disabled={saving || !form.name} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>{saving ? "Saving…" : "Create"}</button>
+              <button onClick={handleCreate} disabled={saving || !form.name} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{ background: "#0d9488" }}>{saving ? "Saving…" : "Create"}</button>
             </div>
           </div>
         </div>

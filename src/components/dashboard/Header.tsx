@@ -41,7 +41,7 @@ function NotifIcon({ type }: { type: Notif["notif_type"] }) {
   if (type === "stock") return <Pill size={14} className="text-red-400 flex-shrink-0" />;
   if (type === "incident") return <Shield size={14} className="text-orange-400 flex-shrink-0" />;
   if (type === "handover") return <ClipboardList size={14} className="text-purple-400 flex-shrink-0" />;
-  return <Bell size={14} className="text-blue-400 flex-shrink-0" />;
+  return <Bell size={14} className="text-teal-400 flex-shrink-0" />;
 }
 
 function SearchInput({ mobile = false, inputRef }: { mobile?: boolean; inputRef?: React.RefObject<HTMLInputElement | null> }) {
@@ -93,11 +93,11 @@ function SearchInput({ mobile = false, inputRef }: { mobile?: boolean; inputRef?
         placeholder="Search residents…"
         className={`text-sm pl-9 pr-4 py-1.5 rounded-lg outline-none transition-all ${mobile ? "w-full py-2 rounded-xl" : "w-56 lg:w-72"}`}
         style={inputStyle}
-        onFocus={e => (e.target.style.borderColor = "rgba(45,90,61,0.5)")}
+        onFocus={e => (e.target.style.borderColor = "rgba(13, 148, 136,0.5)")}
         onBlur={e => (e.target.style.borderColor = "var(--border-strong)")}
       />
       {loading && (
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "#2d5a3d", borderTopColor: "transparent" }} />
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "#0d9488", borderTopColor: "transparent" }} />
       )}
       {open && results.length > 0 && (
         <div className="absolute top-full mt-1.5 left-0 w-72 rounded-xl py-1 z-50 overflow-hidden"
@@ -109,7 +109,7 @@ function SearchInput({ mobile = false, inputRef }: { mobile?: boolean; inputRef?
               onMouseEnter={e => (e.currentTarget.style.background = "var(--input-bg)")}
               onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
               <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                style={{ background: "#2d5a3d" }}>
+                style={{ background: "#0d9488" }}>
                 {r.full_name[0]}
               </div>
               <div>
@@ -199,7 +199,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
   return (
     <>
       <header className="h-14 flex items-center justify-between px-4 md:px-6 flex-shrink-0 z-10"
-        style={{ background: "var(--header-bg)", borderBottom: "1px solid var(--border)", backdropFilter: "blur(20px)" }}>
+        style={{ background: "var(--header-bg)", borderBottom: "1px solid var(--border)", boxShadow: "0 1px 0 var(--border)" }}>
 
         {/* Left */}
         <div className="flex items-center gap-3">
@@ -244,7 +244,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
           <div className="relative" ref={notifsRef}>
             <button onClick={openNotifs}
               className="relative w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: notifsOpen ? "rgba(45,90,61,0.08)" : "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
+              style={{ background: notifsOpen ? "rgba(13, 148, 136,0.08)" : "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
               <Bell size={15} style={{ color: "var(--text-secondary)" }} />
               {notifsLoaded && unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full border-2 text-white text-[10px] font-bold flex items-center justify-center">
@@ -259,7 +259,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
                 <div className="px-4 py-2.5 border-b flex items-center justify-between" style={{ borderColor: "var(--border)" }}>
                   <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>Notifications</span>
                   {notifs.length > 0 && (
-                    <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#f87171" }}>
+                    <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "var(--c-red)" }}>
                       {notifs.length}
                     </span>
                   )}
@@ -273,7 +273,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
                     {notifs.map(n => (
                       <div key={n.id}
                         className="flex items-start gap-3 px-4 py-3 border-b"
-                        style={{ borderColor: "var(--bg-card)", background: n.is_read ? "transparent" : "rgba(45,90,61,0.04)" }}>
+                        style={{ borderColor: "var(--bg-card)", background: n.is_read ? "transparent" : "rgba(13, 148, 136,0.04)" }}>
                         <div className="mt-0.5"><NotifIcon type={n.notif_type} /></div>
                         <Link href={n.link || "#"} onClick={() => { dismissNotif(n.id); setNotifsOpen(false); }}
                           className="flex-1 text-xs leading-relaxed hover:underline"
@@ -295,9 +295,9 @@ export default function Header({ onMenuClick }: HeaderProps) {
           <div className="relative" ref={menuRef}>
             <button onClick={() => setMenuOpen(!menuOpen)}
               className="flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-xl transition-all"
-              style={{ background: menuOpen ? "rgba(45,90,61,0.08)" : "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
+              style={{ background: menuOpen ? "rgba(13, 148, 136,0.08)" : "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
               <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                style={{ background: "#2d5a3d" }}>
+                style={{ background: "#0d9488" }}>
                 {initials}
               </div>
               <div className="text-left hidden sm:block">
@@ -328,7 +328,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
                 <div style={{ borderTop: "1px solid var(--border)", margin: "4px 0" }} />
                 <button onClick={() => doLogout()}
                   className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm transition-colors"
-                  style={{ color: "#f87171" }}
+                  style={{ color: "var(--c-red)" }}
                   onMouseEnter={e => (e.currentTarget.style.background = "rgba(239,68,68,0.08)")}
                   onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
                   <LogOut size={14} /> Sign out

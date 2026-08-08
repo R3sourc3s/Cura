@@ -70,27 +70,27 @@ const releases = [
 ];
 
 const typeConfig = {
-  major:       { label: "Major release", color: "#2d5a3d", icon: Star },
-  feature:     { label: "Feature update", color: "#b8923a", icon: Zap },
-  improvement: { label: "Improvement",   color: "#2d5a3d", icon: TrendingUp },
-  fix:         { label: "Bug fix",       color: "#b8923a", icon: Wrench },
+  major:       { label: "Major release", color: "#0d9488", icon: Star },
+  feature:     { label: "Feature update", color: "#10b981", icon: Zap },
+  improvement: { label: "Improvement",   color: "#0d9488", icon: TrendingUp },
+  fix:         { label: "Bug fix",       color: "#10b981", icon: Wrench },
 } as const;
 
 export default function ChangelogPage() {
   return (
-    <main style={{ background: "#faf7f0", minHeight: "100vh" }}>
+    <main style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
       <Navbar />
 
       <section className="pt-32 pb-20 px-6">
         <div className="max-w-3xl mx-auto">
           <div className="mb-16">
-            <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: "#2d5a3d" }}>Changelog</p>
-            <h1 className="lp-serif text-4xl font-bold mb-3" style={{ color: "#1c1a14" }}>What&apos;s new in Cura</h1>
-            <p style={{ color: "#7a7468" }}>New features, improvements, and fixes — delivered every few weeks.</p>
+            <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: "#0d9488" }}>Changelog</p>
+            <h1 className="lp-serif text-4xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>What&apos;s new in Cura</h1>
+            <p style={{ color: "var(--text-muted)" }}>New features, improvements, and fixes — delivered every few weeks.</p>
           </div>
 
           <div className="relative">
-            <div className="absolute left-4 top-0 bottom-0 w-px" style={{ background: "#dfd8cc" }} />
+            <div className="absolute left-4 top-0 bottom-0 w-px" style={{ background: "var(--border)" }} />
 
             <div className="space-y-12">
               {releases.map((release) => {
@@ -105,22 +105,22 @@ export default function ChangelogPage() {
 
                     <div className="lp-card rounded-2xl p-6">
                       <div className="flex items-center gap-3 flex-wrap mb-4">
-                        <span className="font-bold text-lg" style={{ color: "#1c1a14" }}>{release.version}</span>
+                        <span className="font-bold text-lg" style={{ color: "var(--text-primary)" }}>{release.version}</span>
                         <span className="text-xs px-2.5 py-1 rounded-full font-medium"
                           style={{ background: `${cfg.color}12`, color: cfg.color }}>{cfg.label}</span>
-                        <span className="text-sm ml-auto" style={{ color: "#7a7468" }}>{release.date}</span>
+                        <span className="text-sm ml-auto" style={{ color: "var(--text-muted)" }}>{release.date}</span>
                       </div>
                       <ul className="space-y-2">
                         {release.changes.map((change, i) => {
                           const prefix = change.split(":")[0];
                           const rest = change.includes(":") ? change.slice(prefix.length + 1) : change;
                           const prefixColor =
-                            prefix === "New"         ? "#2d5a3d" :
+                            prefix === "New"         ? "#0d9488" :
                             prefix === "Fix"         ? "#b91c1c" :
-                            prefix === "Improvement" ? "#b8923a" : undefined;
+                            prefix === "Improvement" ? "#10b981" : undefined;
                           return (
-                            <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "#7a7468" }}>
-                              <span className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ background: "#dfd8cc" }} />
+                            <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "var(--text-muted)" }}>
+                              <span className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ background: "var(--border)" }} />
                               {prefixColor && change.includes(":") ? (
                                 <span><span className="font-semibold" style={{ color: prefixColor }}>{prefix}:</span>{rest}</span>
                               ) : (
@@ -138,13 +138,13 @@ export default function ChangelogPage() {
           </div>
 
           <div className="mt-16 lp-card rounded-2xl p-8 text-center">
-            <h3 className="font-semibold mb-2" style={{ color: "#1c1a14" }}>Stay up to date</h3>
-            <p className="text-sm mb-5" style={{ color: "#7a7468" }}>Get release notes delivered to your inbox.</p>
+            <h3 className="font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Stay up to date</h3>
+            <p className="text-sm mb-5" style={{ color: "var(--text-muted)" }}>Get release notes delivered to your inbox.</p>
             <div className="flex gap-2 max-w-sm mx-auto">
               <input type="email" placeholder="your@email.com" className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none"
-                style={{ background: "#faf7f0", border: "1px solid #dfd8cc", color: "#1c1a14" }} />
+                style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }} />
               <button className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
-                style={{ background: "#2d5a3d" }}>Subscribe</button>
+                style={{ background: "#0d9488" }}>Subscribe</button>
             </div>
           </div>
         </div>

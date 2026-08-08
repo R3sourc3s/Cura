@@ -39,20 +39,20 @@ const modules = [
 
 export default function FeaturesPage() {
   return (
-    <main style={{ background: "#faf7f0", minHeight: "100vh" }}>
+    <main style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
       <Navbar />
 
       <section className="pt-32 pb-20 relative overflow-hidden">
         <div className="max-w-5xl mx-auto px-6 text-center relative">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6"
-            style={{ background: "rgba(45,90,61,0.1)", border: "1px solid rgba(45,90,61,0.25)", color: "#2d5a3d" }}>
+            style={{ background: "rgba(13, 148, 136,0.1)", border: "1px solid rgba(13, 148, 136,0.25)", color: "#0d9488" }}>
             30+ Modules Included
           </div>
-          <h1 className="lp-serif text-5xl lg:text-6xl font-extrabold mb-6 leading-tight" style={{ color: "#1c1a14" }}>
+          <h1 className="lp-serif text-5xl lg:text-6xl font-extrabold mb-6 leading-tight" style={{ color: "var(--text-primary)" }}>
             Everything your<br />
-            <span style={{ color: "#2d5a3d" }}>care home needs</span>
+            <span style={{ color: "#0d9488" }}>care home needs</span>
           </h1>
-          <p className="text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: "#7a7468" }}>
+          <p className="text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: "var(--text-muted)" }}>
             One platform. 30+ modules. Zero compromise.<br />
             Built for the realities of UK care — from CQC inspections to midnight medication rounds.
           </p>
@@ -65,12 +65,12 @@ export default function FeaturesPage() {
             {modules.map(({ icon: Icon, title, desc }, i) => (
               <div key={i} className="lp-card rounded-2xl p-6 flex gap-4">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-                  style={{ background: i % 2 === 0 ? "rgba(45,90,61,0.1)" : "rgba(184,146,58,0.1)", border: i % 2 === 0 ? "1px solid rgba(45,90,61,0.2)" : "1px solid rgba(184,146,58,0.2)" }}>
-                  <Icon size={18} style={{ color: i % 2 === 0 ? "#2d5a3d" : "#b8923a" }} />
+                  style={{ background: i % 2 === 0 ? "rgba(13, 148, 136,0.1)" : "rgba(16, 185, 129,0.1)", border: i % 2 === 0 ? "1px solid rgba(13, 148, 136,0.2)" : "1px solid rgba(16, 185, 129,0.2)" }}>
+                  <Icon size={18} style={{ color: i % 2 === 0 ? "#0d9488" : "#10b981" }} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm mb-1" style={{ color: "#1c1a14" }}>{title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: "#7a7468" }}>{desc}</p>
+                  <h3 className="font-semibold text-sm mb-1" style={{ color: "var(--text-primary)" }}>{title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{desc}</p>
                 </div>
               </div>
             ))}
@@ -81,7 +81,7 @@ export default function FeaturesPage() {
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-6">
           <div className="relative rounded-3xl overflow-hidden p-12 text-center"
-            style={{ background: "#2d5a3d" }}>
+            style={{ background: "#0d9488" }}>
             <h2 className="lp-serif text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight">
               Start your free trial today
             </h2>
@@ -91,7 +91,7 @@ export default function FeaturesPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="mailto:info@cura.com"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold transition-all"
-                style={{ background: "#ffffff", color: "#2d5a3d" }}>
+                style={{ background: "#ffffff", color: "#0d9488" }}>
                 Start Free Trial <ArrowRight size={16} />
               </a>
               <a href="/pricing"

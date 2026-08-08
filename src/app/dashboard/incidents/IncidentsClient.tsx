@@ -12,16 +12,16 @@ import {
 import EmptyState from "@/components/ui/EmptyState";
 
 const SEVERITY = {
-  critical: { bg: "rgba(239,68,68,0.15)",  text: "#f87171",  dot: "#ef4444" },
-  high:     { bg: "rgba(251,146,60,0.15)",  text: "#fb923c",  dot: "#f97316" },
-  medium:   { bg: "rgba(250,204,21,0.12)",  text: "#fbbf24",  dot: "#eab308" },
-  low:      { bg: "rgba(52,211,153,0.12)",  text: "#34d399",  dot: "#10b981" },
+  critical: { bg: "rgba(239,68,68,0.15)",  text: "var(--c-red)",  dot: "#ef4444" },
+  high:     { bg: "rgba(251,146,60,0.15)",  text: "var(--c-orange)",  dot: "#f97316" },
+  medium:   { bg: "rgba(250,204,21,0.12)",  text: "var(--c-amber)",  dot: "#eab308" },
+  low:      { bg: "rgba(52,211,153,0.12)",  text: "var(--c-green)",  dot: "#10b981" },
 } as const;
 
 const STATUS = {
-  open:         { color: "#f87171", bg: "rgba(239,68,68,0.12)",   label: "Open" },
-  under_review: { color: "#fbbf24", bg: "rgba(250,204,21,0.12)",  label: "Under Review" },
-  closed:       { color: "#34d399", bg: "rgba(52,211,153,0.12)",  label: "Closed" },
+  open:         { color: "var(--c-red)", bg: "rgba(239,68,68,0.12)",   label: "Open" },
+  under_review: { color: "var(--c-amber)", bg: "rgba(250,204,21,0.12)",  label: "Under Review" },
+  closed:       { color: "var(--c-green)", bg: "rgba(52,211,153,0.12)",  label: "Closed" },
 } as const;
 
 const TYPE_LABELS: Record<string, string> = {
@@ -30,7 +30,7 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" };
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
@@ -179,7 +179,7 @@ function CreateIncidentModal({
             </label>
             <label className="flex items-center gap-3 cursor-pointer">
               <div className="w-10 h-5 rounded-full flex items-center px-0.5"
-                style={{ background: form.injury_sustained ? "#ef4444" : "rgba(255,255,255,0.12)" }}>
+                style={{ background: form.injury_sustained ? "#ef4444" : "rgba(var(--fg-rgb),0.12)" }}>
                 <div className={`w-4 h-4 bg-white rounded-full shadow transition-transform ${form.injury_sustained ? "translate-x-5" : "translate-x-0"}`} />
               </div>
               <input type="checkbox" className="hidden" checked={form.injury_sustained}
@@ -200,7 +200,7 @@ function CreateIncidentModal({
               return (
                 <label key={key} className="flex items-center gap-3 cursor-pointer">
                   <div className="w-10 h-5 rounded-full flex items-center px-0.5"
-                    style={{ background: form[key] ? "#7c3aed" : "rgba(255,255,255,0.12)" }}>
+                    style={{ background: form[key] ? "#0d9488" : "rgba(var(--fg-rgb),0.12)" }}>
                     <div className={`w-4 h-4 bg-white rounded-full shadow transition-transform ${form[key] ? "translate-x-5" : "translate-x-0"}`} />
                   </div>
                   <input type="checkbox" className="hidden" checked={form[key]}
@@ -293,13 +293,13 @@ function IncidentDetail({ incident, onClose, onUpdate }: {
               style={{ background: st.bg, color: st.color }}>{st.label}</span>
             {incident.injury_sustained && (
               <span className="text-xs px-2.5 py-1 rounded-full font-medium"
-                style={{ background: "rgba(239,68,68,0.12)", color: "#f87171" }}>Injury</span>
+                style={{ background: "rgba(239,68,68,0.12)", color: "var(--c-red)" }}>Injury</span>
             )}
           </div>
 
           {incident.resident_name && (
             <div className="px-4 py-3 rounded-xl text-sm text-white"
-              style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.2)" }}>
+              style={{ background: "rgba(13, 148, 136,0.1)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
               Resident: <strong>{incident.resident_name}</strong>
             </div>
           )}
@@ -323,9 +323,9 @@ function IncidentDetail({ incident, onClose, onUpdate }: {
           </div>
 
           <div className="flex gap-2 flex-wrap">
-            {incident.reported_to_gp && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(52,211,153,0.1)", color: "#34d399" }}>GP Notified</span>}
-            {incident.reported_to_family && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(52,211,153,0.1)", color: "#34d399" }}>Family Notified</span>}
-            {incident.reported_to_cqc && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(52,211,153,0.1)", color: "#34d399" }}>CQC Notified</span>}
+            {incident.reported_to_gp && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(52,211,153,0.1)", color: "var(--c-green)" }}>GP Notified</span>}
+            {incident.reported_to_family && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(52,211,153,0.1)", color: "var(--c-green)" }}>Family Notified</span>}
+            {incident.reported_to_cqc && <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(52,211,153,0.1)", color: "var(--c-green)" }}>CQC Notified</span>}
           </div>
 
           {can("incidents.manage") && incident.status !== "closed" && (
@@ -333,13 +333,13 @@ function IncidentDetail({ incident, onClose, onUpdate }: {
               {incident.status === "open" && (
                 <button onClick={() => changeStatus("under_review")} disabled={updatingStatus}
                   className="flex-1 py-2 text-xs font-semibold rounded-xl disabled:opacity-50"
-                  style={{ background: "rgba(250,204,21,0.1)", color: "#fbbf24", border: "1px solid rgba(250,204,21,0.2)" }}>
+                  style={{ background: "rgba(250,204,21,0.1)", color: "var(--c-amber)", border: "1px solid rgba(250,204,21,0.2)" }}>
                   Mark Under Review
                 </button>
               )}
               <button onClick={() => changeStatus("closed")} disabled={updatingStatus}
                 className="flex-1 py-2 text-xs font-semibold rounded-xl disabled:opacity-50"
-                style={{ background: "rgba(52,211,153,0.1)", color: "#34d399", border: "1px solid rgba(52,211,153,0.2)" }}>
+                style={{ background: "rgba(52,211,153,0.1)", color: "var(--c-green)", border: "1px solid rgba(52,211,153,0.2)" }}>
                 <CheckCircle size={12} className="inline mr-1" />Close Incident
               </button>
             </div>
@@ -350,7 +350,7 @@ function IncidentDetail({ incident, onClose, onUpdate }: {
             {(incident.follow_ups ?? []).map((fu) => (
               <div key={fu.id} className="flex gap-3 mb-3">
                 <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold"
-                  style={{ background: "rgba(124,58,237,0.2)", color: "#a78bfa" }}>
+                  style={{ background: "rgba(13, 148, 136,0.2)", color: "var(--c-teal)" }}>
                   {(fu.actioned_by_name?.[0] ?? "?").toUpperCase()}
                 </div>
                 <div className="flex-1 px-3 py-2 rounded-xl text-sm text-white"
@@ -369,7 +369,7 @@ function IncidentDetail({ incident, onClose, onUpdate }: {
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); submitFollowUp(); } }} />
               <button onClick={submitFollowUp} disabled={addingFollowUp || !followUpText.trim()}
                 className="px-3 py-2 text-sm font-semibold rounded-xl text-white disabled:opacity-40"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {addingFollowUp ? "…" : "Add"}
               </button>
             </div>
@@ -440,10 +440,10 @@ export default function IncidentsClient({ initialIncidents, initialTotal, reside
       {/* Stats row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Total", value: total, color: "#a78bfa" },
-          { label: "Open", value: openCount, color: "#f87171" },
+          { label: "Total", value: total, color: "var(--c-teal)" },
+          { label: "Open", value: openCount, color: "var(--c-red)" },
           { label: "Critical", value: criticalCount, color: "#ef4444" },
-          { label: "Closed", value: list.filter((i) => i.status === "closed").length, color: "#34d399" },
+          { label: "Closed", value: list.filter((i) => i.status === "closed").length, color: "var(--c-green)" },
         ].map(({ label, value, color }) => (
           <div key={label} className="px-4 py-3 rounded-2xl"
             style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
@@ -486,13 +486,13 @@ export default function IncidentsClient({ initialIncidents, initialTotal, reside
             ) : filtered.map((inc) => {
               const st = STATUS[inc.status as keyof typeof STATUS] ?? STATUS.open;
               return (
-                <tr key={inc.id} className="transition-all" style={{ borderBottom: "1px solid var(--bg-card)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.02)")}
+                <tr key={inc.id} className="transition-all" style={{ borderBottom: "1px solid var(--border)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(var(--fg-rgb),0.02)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
                   <td className="px-4 py-3">
                     <span className="text-sm font-medium text-white">{TYPE_LABELS[inc.incident_type]}</span>
                     {inc.injury_sustained && (
-                      <span className="ml-2 text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(239,68,68,0.12)", color: "#f87171" }}>Injury</span>
+                      <span className="ml-2 text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(239,68,68,0.12)", color: "var(--c-red)" }}>Injury</span>
                     )}
                   </td>
                   <td className="px-4 py-3 text-sm" style={{ color: "var(--text-secondary)" }}>
@@ -512,7 +512,7 @@ export default function IncidentsClient({ initialIncidents, initialTotal, reside
                   <td className="px-4 py-3">
                     <button onClick={() => setSelected(inc)}
                       className="flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg"
-                      style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}>
+                      style={{ background: "rgba(13, 148, 136,0.12)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
                       <Eye size={12} /> View
                     </button>
                   </td>

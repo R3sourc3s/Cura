@@ -49,11 +49,11 @@ const HEAD_SIDES = [
 const inputStyle = { background:"var(--input-bg)", border:"1px solid var(--border-strong)", color:"var(--text-primary)" };
 
 function gradeColor(grade: string) {
-  if (grade === "1") return "#34d399";
-  if (grade === "2") return "#fbbf24";
-  if (grade === "3") return "#fb923c";
-  if (grade === "4" || grade === "unstageable") return "#f87171";
-  return "#a78bfa";
+  if (grade === "1") return "var(--c-green)";
+  if (grade === "2") return "var(--c-amber)";
+  if (grade === "3") return "var(--c-orange)";
+  if (grade === "4" || grade === "unstageable") return "var(--c-red)";
+  return "var(--c-teal)";
 }
 
 function isoDate(d: Date) { return d.toISOString().slice(0,10); }
@@ -72,6 +72,7 @@ export default function BodyMapPage() {
   const [showAddAssessment, setShowAddAssessment] = useState(false);
   const [pendingClick, setPendingClick] = useState<{x:number;y:number} | null>(null);
   const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [deleteModal, setDeleteModal] = useState<{ wound: WoundRecord } | null>(null);
   const [deleteReason, setDeleteReason] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -99,14 +100,17 @@ export default function BodyMapPage() {
   function handleBodyClick(x: number, y: number) {
     if (!selectedResident) return;
     setPendingClick({ x, y });
+    setFormError(null);
     setShowAddWound(true);
   }
 
   async function handleCreateWound() {
     if (!selectedResident || !pendingClick) return;
+    if (!woundForm.description.trim()) { setFormError("Please add a description."); return; }
     setSaving(true);
+    setFormError(null);
     try {
-      const body = { ...woundForm, resident: selectedResident, body_side: side, location_x: pendingClick.x, location_y: pendingClick.y, is_active: true };
+      const body = { ...woundForm, description: woundForm.description.trim(), resident: selectedResident, body_side: side, location_x: pendingClick.x, location_y: pendingClick.y, is_active: true };
       const res = await fetch("/api/v1/body-map/wounds/", { method:"POST", credentials:"include", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) });
       if (res.ok) {
         const n = await res.json();
@@ -114,7 +118,15 @@ export default function BodyMapPage() {
         setShowAddWound(false);
         setPendingClick(null);
         setWoundForm({ wound_type:"pressure_ulcer", grade:"2", first_observed:isoDate(new Date()), description:"" });
+      } else {
+        const err = await res.json().catch(() => null);
+        const msg = err
+          ? Object.entries(err).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`).join(" · ")
+          : `Could not save wound (error ${res.status}).`;
+        setFormError(msg);
       }
+    } catch {
+      setFormError("Network error — please try again.");
     } finally { setSaving(false); }
   }
 
@@ -183,8 +195,8 @@ export default function BodyMapPage() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(96,165,250,0.12)", border:"1px solid rgba(96,165,250,0.2)" }}>
-            <Stethoscope size={16} style={{ color:"#60a5fa" }} />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(45, 212, 191,0.12)", border:"1px solid rgba(45, 212, 191,0.2)" }}>
+            <Stethoscope size={16} style={{ color:"var(--c-teal2)" }} />
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Body Map</h1>
@@ -226,11 +238,11 @@ export default function BodyMapPage() {
                       setSelectedWound(null);
                     }}
                       className="flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all relative capitalize"
-                      style={{ background: active ? "rgba(96,165,250,0.2)" : "transparent", color: active ? "#60a5fa" : "var(--text-muted)", border: active ? "1px solid rgba(96,165,250,0.3)" : "1px solid transparent" }}>
+                      style={{ background: active ? "rgba(45, 212, 191,0.2)" : "transparent", color: active ? "var(--c-teal2)" : "var(--text-muted)", border: active ? "1px solid rgba(45, 212, 191,0.3)" : "1px solid transparent" }}>
                       {sec}
                       {totalActive > 0 && (
                         <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-0.5 rounded-full text-[9px] font-bold flex items-center justify-center"
-                          style={{ background: "#f87171", color: "#fff" }}>{totalActive}</span>
+                          style={{ background: "var(--c-red)", color: "#fff" }}>{totalActive}</span>
                       )}
                     </button>
                   );
@@ -245,11 +257,11 @@ export default function BodyMapPage() {
                   return (
                     <button key={s.id} onClick={() => { setSide(s.id); setSelectedWound(null); }}
                       className="flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all relative"
-                      style={{ background: active ? "rgba(96,165,250,0.2)" : "transparent", color: active ? "#60a5fa" : "var(--text-muted)", border: active ? "1px solid rgba(96,165,250,0.3)" : "1px solid transparent" }}>
+                      style={{ background: active ? "rgba(45, 212, 191,0.2)" : "transparent", color: active ? "var(--c-teal2)" : "var(--text-muted)", border: active ? "1px solid rgba(45, 212, 191,0.3)" : "1px solid transparent" }}>
                       {s.label}
                       {cnt > 0 && (
                         <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-0.5 rounded-full text-[9px] font-bold flex items-center justify-center"
-                          style={{ background: "#f87171", color: "#fff" }}>{cnt}</span>
+                          style={{ background: "var(--c-red)", color: "#fff" }}>{cnt}</span>
                       )}
                     </button>
                   );
@@ -291,8 +303,8 @@ export default function BodyMapPage() {
                 return (
                   <button key={s.id} onClick={() => { setSection("body"); setSide(s.id); setSelectedWound(null); }}
                     className="rounded-xl p-2 text-center transition-all"
-                    style={{ background: side === s.id ? "rgba(96,165,250,0.1)" : "var(--bg-card)", border: `1px solid ${side === s.id ? "rgba(96,165,250,0.25)" : "var(--border)"}` }}>
-                    <div className="text-base font-bold" style={{ color: active > 0 ? "#f87171" : "#34d399" }}>{active}</div>
+                    style={{ background: side === s.id ? "rgba(45, 212, 191,0.1)" : "var(--bg-card)", border: `1px solid ${side === s.id ? "rgba(45, 212, 191,0.25)" : "var(--border)"}` }}>
+                    <div className="text-base font-bold" style={{ color: active > 0 ? "var(--c-red)" : "var(--c-green)" }}>{active}</div>
                     <div className="text-xs" style={{ color:"var(--text-muted)" }}>{s.label}</div>
                     {total > active && <div className="text-xs" style={{ color:"var(--text-muted)" }}>{total-active} healed</div>}
                   </button>
@@ -308,8 +320,8 @@ export default function BodyMapPage() {
                 return (
                   <button key={s.id} onClick={() => { setSection("head"); setSide(s.id); setSelectedWound(null); }}
                     className="rounded-xl p-2 text-center transition-all"
-                    style={{ background: side === s.id ? "rgba(96,165,250,0.1)" : "var(--bg-card)", border: `1px solid ${side === s.id ? "rgba(96,165,250,0.25)" : "var(--border)"}` }}>
-                    <div className="text-base font-bold" style={{ color: active > 0 ? "#f87171" : "#34d399" }}>{active}</div>
+                    style={{ background: side === s.id ? "rgba(45, 212, 191,0.1)" : "var(--bg-card)", border: `1px solid ${side === s.id ? "rgba(45, 212, 191,0.25)" : "var(--border)"}` }}>
+                    <div className="text-base font-bold" style={{ color: active > 0 ? "var(--c-red)" : "var(--c-green)" }}>{active}</div>
                     <div className="text-xs" style={{ color:"var(--text-muted)" }}>{s.label}</div>
                     {total > active && <div className="text-xs" style={{ color:"var(--text-muted)" }}>{total-active} healed</div>}
                   </button>
@@ -321,7 +333,7 @@ export default function BodyMapPage() {
           {/* Wound list + detail */}
           <div className="lg:col-span-3 space-y-3">
             {loading ? (
-              <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" /></div>
+              <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" /></div>
             ) : (
               <>
                 <div className="rounded-2xl p-4" style={{ background:"var(--bg-card)", border:"1px solid var(--border)" }}>
@@ -347,7 +359,7 @@ export default function BodyMapPage() {
                         const isSelected = selectedWound?.id === w.id;
                         return (
                           <button key={w.id} onClick={() => setSelectedWound(isSelected ? null : w)} className="w-full text-left rounded-xl px-3 py-2.5 transition-all"
-                            style={{ background: isSelected ? "rgba(96,165,250,0.08)" : "var(--bg-card)", border: `1px solid ${isSelected ? "rgba(96,165,250,0.3)" : "var(--border)"}` }}>
+                            style={{ background: isSelected ? "rgba(45, 212, 191,0.08)" : "var(--bg-card)", border: `1px solid ${isSelected ? "rgba(45, 212, 191,0.3)" : "var(--border)"}` }}>
                             <div className="flex items-center gap-2">
                               <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: gradeColor(w.grade), opacity: w.is_active ? 1 : 0.4 }} />
                               <div className="flex-1 min-w-0">
@@ -358,7 +370,7 @@ export default function BodyMapPage() {
                                   <span className="text-xs px-1.5 py-0.5 rounded" style={{ background:"var(--bg-card)", color:"var(--text-muted)" }}>
                                     {GRADE_LABEL[w.grade] ?? w.grade}
                                   </span>
-                                  {!w.is_active && <span className="text-xs px-1.5 py-0.5 rounded" style={{ background:"rgba(52,211,153,0.1)", color:"#34d399" }}>Healed</span>}
+                                  {!w.is_active && <span className="text-xs px-1.5 py-0.5 rounded" style={{ background:"rgba(52,211,153,0.1)", color:"var(--c-green)" }}>Healed</span>}
                                 </div>
                                 <div className="text-xs mt-0.5" style={{ color:"var(--text-muted)" }}>
                                   First observed {new Date(w.first_observed).toLocaleDateString("en-GB")}
@@ -383,7 +395,7 @@ export default function BodyMapPage() {
                           const isHead = s.id.startsWith("head-");
                           return (
                             <button key={s.id} onClick={() => { setSection(isHead ? "head" : "body"); setSide(s.id); setSelectedWound(null); }}
-                              className="mr-2 underline" style={{ color:"rgba(96,165,250,0.7)" }}>
+                              className="mr-2 underline" style={{ color:"rgba(45, 212, 191,0.7)" }}>
                               {n} on {isHead ? `head ${s.label.toLowerCase()}` : s.label.toLowerCase()}
                             </button>
                           );
@@ -395,7 +407,7 @@ export default function BodyMapPage() {
 
                 {/* Wound detail */}
                 {selectedWound && (
-                  <div className="rounded-2xl p-4 space-y-4" style={{ background:"rgba(96,165,250,0.04)", border:"1px solid rgba(96,165,250,0.15)" }}>
+                  <div className="rounded-2xl p-4 space-y-4" style={{ background:"rgba(45, 212, 191,0.04)", border:"1px solid rgba(45, 212, 191,0.15)" }}>
                     <div className="flex items-start justify-between">
                       <div>
                         <h3 className="text-sm font-bold text-white">{WOUND_TYPE_LABEL[selectedWound.wound_type] ?? selectedWound.wound_type}</h3>
@@ -408,13 +420,13 @@ export default function BodyMapPage() {
                         {selectedWound.is_active && (
                           <button onClick={() => handleMarkHealed(selectedWound.id)}
                             className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg"
-                            style={{ background:"rgba(52,211,153,0.1)", color:"#34d399", border:"1px solid rgba(52,211,153,0.2)" }}>
+                            style={{ background:"rgba(52,211,153,0.1)", color:"var(--c-green)", border:"1px solid rgba(52,211,153,0.2)" }}>
                             <CheckCircle size={11} /> Mark Healed
                           </button>
                         )}
                         <button onClick={() => setShowAddAssessment(true)}
                           className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg"
-                          style={{ background:"rgba(96,165,250,0.1)", color:"#60a5fa", border:"1px solid rgba(96,165,250,0.2)" }}>
+                          style={{ background:"rgba(45, 212, 191,0.1)", color:"var(--c-teal2)", border:"1px solid rgba(45, 212, 191,0.2)" }}>
                           <Plus size={11} /> Assessment
                         </button>
                         <button onClick={() => { setDeleteModal({ wound: selectedWound }); setDeleteReason(""); }}
@@ -448,7 +460,7 @@ export default function BodyMapPage() {
                         {selectedWound.latest_assessment.appearance && <p className="text-xs" style={{ color:"var(--text-secondary)" }}><span style={{ color:"var(--text-muted)" }}>Appearance: </span>{selectedWound.latest_assessment.appearance}</p>}
                         {selectedWound.latest_assessment.treatment && <p className="text-xs" style={{ color:"var(--text-secondary)" }}><span style={{ color:"var(--text-muted)" }}>Treatment: </span>{selectedWound.latest_assessment.treatment}</p>}
                         {selectedWound.latest_assessment.dressing_used && <p className="text-xs" style={{ color:"var(--text-secondary)" }}><span style={{ color:"var(--text-muted)" }}>Dressing: </span>{selectedWound.latest_assessment.dressing_used}</p>}
-                        {selectedWound.latest_assessment.next_review && <p className="text-xs" style={{ color:"#fbbf24" }}>Next review: {new Date(selectedWound.latest_assessment.next_review).toLocaleDateString("en-GB")}</p>}
+                        {selectedWound.latest_assessment.next_review && <p className="text-xs" style={{ color:"var(--c-amber)" }}>Next review: {new Date(selectedWound.latest_assessment.next_review).toLocaleDateString("en-GB")}</p>}
                       </div>
                     ) : (
                       <p className="text-xs" style={{ color:"var(--text-muted)" }}>No assessments recorded yet.</p>
@@ -464,10 +476,10 @@ export default function BodyMapPage() {
       {/* Add wound modal */}
       {showAddWound && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-sm" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(96,165,250,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-sm" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(45, 212, 191,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Add Wound — {[...BODY_SIDES, ...HEAD_SIDES].find(s=>s.id===side)?.label ?? side}{side.startsWith("head-") ? " (Head)" : ""}</h3>
-              <button onClick={() => { setShowAddWound(false); setPendingClick(null); }} style={{ color:"var(--text-muted)" }}><X size={18}/></button>
+              <button onClick={() => { setShowAddWound(false); setPendingClick(null); setFormError(null); }} style={{ color:"var(--text-muted)" }}><X size={18}/></button>
             </div>
             <div className="space-y-3">
               <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Wound Type</label>
@@ -480,15 +492,18 @@ export default function BodyMapPage() {
               </select></div>
               <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>First Observed *</label>
               <input type="date" value={woundForm.first_observed} onChange={e=>setWoundForm(f=>({...f,first_observed:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}/></div>
-              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Description</label>
-              <textarea rows={2} value={woundForm.description} onChange={e=>setWoundForm(f=>({...f,description:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle}/></div>
+              <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Description <span style={{color:"#e11d48"}}>*</span></label>
+              <textarea rows={2} value={woundForm.description} onChange={e=>{setWoundForm(f=>({...f,description:e.target.value})); if(formError) setFormError(null);}} placeholder="Describe the wound (required)" className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle}/></div>
               <p className="text-xs px-2 py-1.5 rounded-lg" style={{ color:"var(--text-muted)", background:"var(--bg-card)" }}>
                 📍 {[...BODY_SIDES, ...HEAD_SIDES].find(s=>s.id===side)?.label ?? side}{side.startsWith("head-") ? " (Head)" : ""} · {pendingClick?.x}%, {pendingClick?.y}%
               </p>
             </div>
+            {formError && (
+              <p className="mt-3 text-xs px-3 py-2 rounded-lg" style={{ background:"rgba(225,29,72,0.1)", color:"#e11d48" }}>{formError}</p>
+            )}
             <div className="flex gap-3 mt-5">
-              <button onClick={() => { setShowAddWound(false); setPendingClick(null); }} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card)",color:"var(--text-secondary)",border:"1px solid var(--border)"}}>Cancel</button>
-              <button onClick={handleCreateWound} disabled={saving||!woundForm.first_observed} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#3b82f6,#7c3aed)"}}>{saving?"Saving…":"Add Wound"}</button>
+              <button onClick={() => { setShowAddWound(false); setPendingClick(null); setFormError(null); }} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card)",color:"var(--text-secondary)",border:"1px solid var(--border)"}}>Cancel</button>
+              <button onClick={handleCreateWound} disabled={saving||!woundForm.first_observed||!woundForm.description.trim()} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#10b981,#0d9488)"}}>{saving?"Saving…":"Add Wound"}</button>
             </div>
           </div>
         </div>
@@ -497,7 +512,7 @@ export default function BodyMapPage() {
       {/* Add assessment modal */}
       {showAddAssessment && selectedWound && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(96,165,250,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(45, 212, 191,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">New Assessment</h3>
               <button onClick={() => setShowAddAssessment(false)} style={{ color:"var(--text-muted)" }}><X size={18}/></button>
@@ -522,7 +537,7 @@ export default function BodyMapPage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowAddAssessment(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card)",color:"var(--text-secondary)",border:"1px solid var(--border)"}}>Cancel</button>
-              <button onClick={handleCreateAssessment} disabled={saving||!assessForm.assessment_date} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#3b82f6,#7c3aed)"}}>{saving?"Saving…":"Save Assessment"}</button>
+              <button onClick={handleCreateAssessment} disabled={saving||!assessForm.assessment_date} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#10b981,#0d9488)"}}>{saving?"Saving…":"Save Assessment"}</button>
             </div>
           </div>
         </div>
@@ -534,7 +549,7 @@ export default function BodyMapPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background:"rgba(248,113,113,0.12)", border:"1px solid rgba(248,113,113,0.2)" }}>
-                  <Trash2 size={14} style={{ color:"#f87171" }} />
+                  <Trash2 size={14} style={{ color:"var(--c-red)" }} />
                 </div>
                 <h3 className="text-base font-bold text-white">Delete Wound Record</h3>
               </div>
@@ -555,7 +570,7 @@ export default function BodyMapPage() {
             <div className="space-y-3">
               <div>
                 <label className="block text-xs font-semibold mb-1.5" style={{ color:"var(--text-secondary)" }}>
-                  Reason for deletion <span style={{ color:"#f87171" }}>*</span>
+                  Reason for deletion <span style={{ color:"var(--c-red)" }}>*</span>
                 </label>
                 <textarea
                   rows={3}

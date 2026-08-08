@@ -5,8 +5,8 @@ import { Heart, Eye, CheckCircle, TrendingUp, ArrowRight, Users } from "lucide-r
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const GREEN = "#2d5a3d";
-const GOLD = "#b8923a";
+const GREEN = "#0d9488";
+const GOLD = "#10b981";
 
 const stats = [
   { value: "500+",   label: "Care Homes",          color: GREEN },
@@ -36,7 +36,7 @@ const fadeUp = {
 
 export default function AboutPage() {
   return (
-    <main style={{ background: "#faf7f0", minHeight: "100vh" }}>
+    <main style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
       <Navbar />
 
       {/* Hero */}
@@ -44,16 +44,16 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 text-sm font-medium"
-            style={{ background: "rgba(45,90,61,0.1)", border: "1px solid rgba(45,90,61,0.25)", color: GREEN }}>
+            style={{ background: "rgba(13, 148, 136,0.1)", border: "1px solid rgba(13, 148, 136,0.25)", color: GREEN }}>
             Our Story
           </motion.div>
           <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="lp-serif text-5xl lg:text-6xl font-bold leading-tight mb-6" style={{ color: "#1c1a14" }}>
+            className="lp-serif text-5xl lg:text-6xl font-bold leading-tight mb-6" style={{ color: "var(--text-primary)" }}>
             Built by people who&apos;ve
             <br /><span style={{ color: GREEN }}>worked in care</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-            className="text-xl max-w-2xl mx-auto leading-relaxed mb-14" style={{ color: "#7a7468" }}>
+            className="text-xl max-w-2xl mx-auto leading-relaxed mb-14" style={{ color: "var(--text-muted)" }}>
             We didn&apos;t set out to build software. We set out to solve a problem we experienced first-hand — and the only way to do that properly was to build something new entirely.
           </motion.p>
 
@@ -64,10 +64,10 @@ export default function AboutPage() {
               { src: "https://images.unsplash.com/photo-1773227059780-5e865ce7fb13?w=600&h=400&fit=crop&crop=center&auto=format&q=80", alt: "Residents and carers laughing together", label: "Community & connection" },
               { src: "https://images.unsplash.com/photo-1762955913084-96ea3f986468?w=600&h=400&fit=crop&crop=center&auto=format&q=80", alt: "Young carer helping elderly residents", label: "Skilled, caring teams" },
             ].map((img) => (
-              <div key={img.label} className="relative rounded-2xl overflow-hidden group" style={{ height: "200px", border: "1px solid #dfd8cc" }}>
+              <div key={img.label} className="relative rounded-2xl overflow-hidden group" style={{ height: "200px", border: "1px solid var(--border)" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={img.src} alt={img.alt} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(28,26,20,0.7) 0%, transparent 55%)" }} />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(15,23,42,0.7) 0%, transparent 55%)" }} />
                 <span className="absolute bottom-3 left-4 text-xs font-medium text-white">{img.label}</span>
               </div>
             ))}
@@ -76,27 +76,27 @@ export default function AboutPage() {
       </section>
 
       {/* Story */}
-      <section className="py-20" style={{ background: "#ffffff" }}>
+      <section className="py-20" style={{ background: "var(--bg-card)" }}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div initial={{ opacity: 0, x: -32 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <span className="inline-flex px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
-                style={{ background: "rgba(45,90,61,0.1)", border: "1px solid rgba(45,90,61,0.25)", color: GREEN }}>
+                style={{ background: "rgba(13, 148, 136,0.1)", border: "1px solid rgba(13, 148, 136,0.25)", color: GREEN }}>
                 Founded 2022
               </span>
-              <h2 className="lp-serif text-4xl font-bold mb-6" style={{ color: "#1c1a14" }}>We built what we wished existed</h2>
-              <div className="space-y-4 text-lg leading-relaxed" style={{ color: "#7a7468" }}>
+              <h2 className="lp-serif text-4xl font-bold mb-6" style={{ color: "var(--text-primary)" }}>We built what we wished existed</h2>
+              <div className="space-y-4 text-lg leading-relaxed" style={{ color: "var(--text-muted)" }}>
                 <p>Cura was founded in 2022 after our founders spent years working in care homes and watching staff struggle with paper-based systems. Medication rounds were tracked on paper charts. Care plans lived in lever-arch folders. Incident reports were faxed to regulators.</p>
                 <p>Meanwhile, care professionals — some of the most dedicated people in the country — were spending hours each shift on paperwork instead of with the people who needed them.</p>
                 <p>We built Cura because we believed care homes deserved software that was actually designed for the care environment — not adapted from a generic business tool.</p>
               </div>
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 32 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative">
-              <div className="relative rounded-3xl overflow-hidden" style={{ height: "460px", border: "1px solid #dfd8cc" }}>
+              <div className="relative rounded-3xl overflow-hidden" style={{ height: "460px", border: "1px solid var(--border)" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="https://images.unsplash.com/photo-1773227055624-07b515ba87c5?w=800&h=900&fit=crop&crop=center&auto=format&q=80"
                   alt="Carer holding hands with a smiling elderly resident" className="w-full h-full object-cover" />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(28,26,20,0.9) 0%, rgba(28,26,20,0.2) 60%, transparent 100%)" }} />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(15,23,42,0.9) 0%, rgba(15,23,42,0.2) 60%, transparent 100%)" }} />
                 <div className="absolute bottom-6 left-6 right-6">
                   <p className="text-sm leading-relaxed italic mb-4" style={{ color: "rgba(255,255,255,0.85)" }}>
                     &ldquo;Our mission is to give every care professional back time — so they can focus on what matters: the people in their care.&rdquo;
@@ -104,7 +104,7 @@ export default function AboutPage() {
                   <div className="flex items-center gap-3">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=faces&auto=format&q=80"
-                      alt="James Owusu" className="w-9 h-9 rounded-full object-cover" style={{ border: "2px solid rgba(184,146,58,0.6)" }} />
+                      alt="James Owusu" className="w-9 h-9 rounded-full object-cover" style={{ border: "2px solid rgba(16, 185, 129,0.6)" }} />
                     <div>
                       <div className="text-sm font-semibold text-white">James Owusu</div>
                       <div className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>CEO &amp; Co-Founder</div>
@@ -118,14 +118,14 @@ export default function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section className="py-16" style={{ background: "#faf7f0" }}>
+      <section className="py-16" style={{ background: "var(--bg-secondary)" }}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, i) => (
               <motion.div key={stat.label} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
                 className="lp-card rounded-2xl p-6 text-center">
                 <div className="lp-serif text-4xl font-bold mb-2" style={{ color: stat.color }}>{stat.value}</div>
-                <div className="text-sm" style={{ color: "#7a7468" }}>{stat.label}</div>
+                <div className="text-sm" style={{ color: "var(--text-muted)" }}>{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -133,15 +133,15 @@ export default function AboutPage() {
       </section>
 
       {/* Team */}
-      <section className="py-24" style={{ background: "#ffffff" }}>
+      <section className="py-24" style={{ background: "var(--bg-card)" }}>
         <div className="max-w-7xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4"
-              style={{ background: "rgba(45,90,61,0.1)", border: "1px solid rgba(45,90,61,0.25)", color: GREEN }}>
+              style={{ background: "rgba(13, 148, 136,0.1)", border: "1px solid rgba(13, 148, 136,0.25)", color: GREEN }}>
               <Users size={12} /> Leadership
             </div>
-            <h2 className="lp-serif text-4xl font-bold mb-4" style={{ color: "#1c1a14" }}>Meet the team</h2>
-            <p className="text-lg max-w-xl mx-auto" style={{ color: "#7a7468" }}>
+            <h2 className="lp-serif text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>Meet the team</h2>
+            <p className="text-lg max-w-xl mx-auto" style={{ color: "var(--text-muted)" }}>
               Operators, engineers, and designers who have lived the problem and are dedicated to solving it.
             </p>
           </motion.div>
@@ -152,17 +152,17 @@ export default function AboutPage() {
                 <div className="relative w-16 h-16 mb-5">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={member.photo} alt={member.name} className="w-16 h-16 rounded-2xl object-cover"
-                    style={{ border: `2px solid rgba(45,90,61,0.25)` }}
+                    style={{ border: `2px solid rgba(13, 148, 136,0.25)` }}
                     onError={(e) => { const t = e.currentTarget; t.style.display = "none"; const fb = t.nextElementSibling as HTMLElement; if (fb) fb.style.display = "flex"; }} />
                   <div className="w-16 h-16 rounded-2xl items-center justify-center text-xl font-bold text-white"
                     style={{ background: GREEN, display: "none" }}>
                     {member.initials}
                   </div>
                 </div>
-                <div className="font-bold text-lg mb-1" style={{ color: "#1c1a14" }}>{member.name}</div>
+                <div className="font-bold text-lg mb-1" style={{ color: "var(--text-primary)" }}>{member.name}</div>
                 <div className="text-xs font-semibold mb-3 px-2 py-1 rounded-full inline-block"
-                  style={{ background: "rgba(45,90,61,0.1)", color: GREEN }}>{member.title}</div>
-                <p className="text-sm leading-relaxed" style={{ color: "#7a7468" }}>{member.bio}</p>
+                  style={{ background: "rgba(13, 148, 136,0.1)", color: GREEN }}>{member.title}</div>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{member.bio}</p>
               </motion.div>
             ))}
           </div>
@@ -170,11 +170,11 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="py-24" style={{ background: "#faf7f0" }}>
+      <section className="py-24" style={{ background: "var(--bg-secondary)" }}>
         <div className="max-w-7xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
-            <h2 className="lp-serif text-4xl font-bold mb-4" style={{ color: "#1c1a14" }}>What we stand for</h2>
-            <p className="text-lg max-w-xl mx-auto" style={{ color: "#7a7468" }}>
+            <h2 className="lp-serif text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>What we stand for</h2>
+            <p className="text-lg max-w-xl mx-auto" style={{ color: "var(--text-muted)" }}>
               Our values aren&apos;t a poster on a wall. They&apos;re the principles that guide every decision we make.
             </p>
           </motion.div>
@@ -185,8 +185,8 @@ export default function AboutPage() {
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: `${value.color}15` }}>
                   <value.icon size={22} style={{ color: value.color }} />
                 </div>
-                <h3 className="font-bold text-lg mb-3" style={{ color: "#1c1a14" }}>{value.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#7a7468" }}>{value.description}</p>
+                <h3 className="font-bold text-lg mb-3" style={{ color: "var(--text-primary)" }}>{value.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{value.description}</p>
               </motion.div>
             ))}
           </div>
@@ -194,18 +194,18 @@ export default function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-24" style={{ background: "#ffffff" }}>
+      <section className="py-24" style={{ background: "var(--bg-card)" }}>
         <div className="max-w-4xl mx-auto px-6 text-center">
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="rounded-3xl p-16 relative overflow-hidden"
-            style={{ background: "#2d5a3d" }}>
+            style={{ background: "#0d9488" }}>
             <h2 className="lp-serif text-4xl font-bold text-white mb-4">Want to shape the future of care?</h2>
             <p className="text-lg mb-10 max-w-lg mx-auto" style={{ color: "rgba(255,255,255,0.75)" }}>
               We&apos;re a remote-first team building software that improves the lives of millions of people. Come build it with us.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="/careers" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-base transition-all"
-                style={{ background: "#ffffff", color: "#2d5a3d" }}>
+                style={{ background: "#ffffff", color: "#0d9488" }}>
                 Join the team <ArrowRight size={16} />
               </a>
               <a href="/contact" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-white text-base transition-all"

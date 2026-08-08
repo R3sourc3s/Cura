@@ -4,8 +4,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Pill, Heart, UserCheck, Calendar, ClipboardList, ShieldCheck, CheckCircle, ArrowRight } from "lucide-react";
 
-const GREEN = "#2d5a3d";
-const GOLD = "#b8923a";
+const GREEN = "#0d9488";
+const GOLD = "#10b981";
 
 const features = [
   {
@@ -101,9 +101,9 @@ const features = [
 ];
 
 const statusConfig: Record<string, { bg: string; color: string; label: string }> = {
-  done:     { bg: "rgba(45,90,61,0.1)",    color: "#2d5a3d", label: "Done" },
-  pending:  { bg: "rgba(184,146,58,0.12)", color: "#8a6a1c", label: "Pending" },
-  upcoming: { bg: "rgba(122,116,104,0.1)", color: "#7a7468", label: "Upcoming" },
+  done:     { bg: "rgba(13, 148, 136,0.1)",    color: "#0d9488", label: "Done" },
+  pending:  { bg: "rgba(16, 185, 129,0.12)", color: "#8a6a1c", label: "Pending" },
+  upcoming: { bg: "rgba(100,116,139,0.1)", color: "var(--text-muted)", label: "Upcoming" },
 };
 
 export default function Features() {
@@ -111,13 +111,13 @@ export default function Features() {
   const feature = features[active];
 
   return (
-    <section id="features" className="py-28" style={{ background: "#faf7f0" }}>
+    <section id="features" className="py-28" style={{ background: "var(--bg-secondary)" }}>
       <div className="max-w-7xl mx-auto px-6">
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-14">
-          <h2 className="lp-serif text-3xl lg:text-5xl font-bold mb-4" style={{ color: "#1c1a14" }}>
+          <h2 className="lp-serif text-3xl lg:text-5xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
             Built for every role in your care home
           </h2>
-          <p className="text-lg max-w-2xl mx-auto" style={{ color: "#7a7468" }}>
+          <p className="text-lg max-w-2xl mx-auto" style={{ color: "var(--text-muted)" }}>
             Six modules, one platform — no more switching between systems or chasing paper trails.
           </p>
         </motion.div>
@@ -129,9 +129,9 @@ export default function Features() {
               onClick={() => setActive(i)}
               className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200"
               style={{
-                background: active === i ? f.color : "#ffffff",
-                border: `1px solid ${active === i ? f.color : "#dfd8cc"}`,
-                color: active === i ? "#ffffff" : "#7a7468",
+                background: active === i ? f.color : "var(--bg-card)",
+                border: `1px solid ${active === i ? f.color : "var(--border)"}`,
+                color: active === i ? "#ffffff" : "var(--text-muted)",
                 boxShadow: active === i ? `0 2px 10px ${f.color}40` : "none",
               }}
             >
@@ -154,11 +154,11 @@ export default function Features() {
                 <feature.icon size={22} style={{ color: feature.color }} />
               </div>
               <p className="text-sm font-semibold mb-1" style={{ color: feature.color }}>{feature.subtitle}</p>
-              <h3 className="lp-serif text-2xl font-bold mb-4" style={{ color: "#1c1a14" }}>{feature.title}</h3>
-              <p className="leading-relaxed mb-8" style={{ color: "#7a7468" }}>{feature.description}</p>
+              <h3 className="lp-serif text-2xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>{feature.title}</h3>
+              <p className="leading-relaxed mb-8" style={{ color: "var(--text-muted)" }}>{feature.description}</p>
               <ul className="space-y-3 mb-8">
                 {feature.bullets.map((b, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm" style={{ color: "#4a4438" }}>
+                  <li key={i} className="flex items-center gap-3 text-sm" style={{ color: "var(--text-secondary)" }}>
                     <CheckCircle size={15} style={{ color: feature.color, flexShrink: 0 }} />
                     {b}
                   </li>
@@ -174,7 +174,7 @@ export default function Features() {
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: `${feature.color}20` }}>
                   <feature.icon size={14} style={{ color: feature.color }} />
                 </div>
-                <span className="font-semibold text-sm" style={{ color: "#1c1a14" }}>{feature.preview.header}</span>
+                <span className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>{feature.preview.header}</span>
               </div>
               <div className="p-5 space-y-2.5">
                 {feature.preview.rows.map((row, i) => {
@@ -186,7 +186,7 @@ export default function Features() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.07 }}
                       className="flex items-center justify-between p-3 rounded-xl"
-                      style={{ background: "#faf7f0", border: "1px solid #dfd8cc" }}
+                      style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
                     >
                       <div className="flex items-center gap-3">
                         {row.time && (
@@ -195,8 +195,8 @@ export default function Features() {
                           </span>
                         )}
                         <div>
-                          <div className="text-sm font-medium" style={{ color: "#1c1a14" }}>{row.name}</div>
-                          <div className="text-xs" style={{ color: "#a89f94" }}>{row.detail}</div>
+                          <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{row.name}</div>
+                          <div className="text-xs" style={{ color: "var(--text-muted)" }}>{row.detail}</div>
                         </div>
                       </div>
                       <span className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: s.bg, color: s.color }}>

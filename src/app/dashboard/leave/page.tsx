@@ -31,16 +31,16 @@ interface LeaveRequest {
 }
 
 const STATUS_CFG: Record<string, { label: string; color: string; bg: string }> = {
-  pending:   { label: "Pending",   color: "#fbbf24", bg: "rgba(251,191,36,0.12)" },
-  approved:  { label: "Approved",  color: "#34d399", bg: "rgba(52,211,153,0.12)" },
-  declined:  { label: "Declined",  color: "#f87171", bg: "rgba(239,68,68,0.12)" },
+  pending:   { label: "Pending",   color: "var(--c-amber)", bg: "rgba(251,191,36,0.12)" },
+  approved:  { label: "Approved",  color: "var(--c-green)", bg: "rgba(52,211,153,0.12)" },
+  declined:  { label: "Declined",  color: "var(--c-red)", bg: "rgba(239,68,68,0.12)" },
   cancelled: { label: "Cancelled", color: "#6b7280", bg: "rgba(107,114,128,0.12)" },
 };
 
 const inputStyle = {
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  color: "rgba(255,255,255,0.8)",
+  background: "rgba(var(--fg-rgb),0.05)",
+  border: "1px solid rgba(var(--fg-rgb),0.1)",
+  color: "rgba(var(--fg-rgb),0.8)",
 } as const;
 
 function formatDate(d: string) {
@@ -72,7 +72,7 @@ export default function LeavePage() {
   const [typeForm, setTypeForm] = useState({
     name: "",
     days_entitlement: "28",
-    color: "#7c3aed",
+    color: "#0d9488",
   });
 
   // Review notes modal
@@ -146,7 +146,7 @@ export default function LeavePage() {
         const created = await res.json();
         setLeaveTypes(p => [...p, created]);
         setShowTypeModal(false);
-        setTypeForm({ name: "", days_entitlement: "28", color: "#7c3aed" });
+        setTypeForm({ name: "", days_entitlement: "28", color: "#0d9488" });
       }
     } finally {
       setSavingType(false);
@@ -191,9 +191,9 @@ export default function LeavePage() {
         <div className="flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}
+            style={{ background: "rgba(13, 148, 136,0.12)", border: "1px solid rgba(13, 148, 136,0.2)" }}
           >
-            <CalendarOff size={16} style={{ color: "#a78bfa" }} />
+            <CalendarOff size={16} style={{ color: "var(--c-teal)" }} />
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Leave Management</h1>
@@ -203,7 +203,7 @@ export default function LeavePage() {
         <button
           onClick={() => setShowRequestModal(true)}
           className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+          style={{ background: "#0d9488" }}
         >
           <Plus size={14} /> Request Leave
         </button>
@@ -212,10 +212,10 @@ export default function LeavePage() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Total Requests", value: total,         color: "#a78bfa" },
-          { label: "Pending Approval", value: pendingCount,  color: "#fbbf24" },
-          { label: "Approved",        value: approvedCount, color: "#34d399" },
-          { label: "Declined",        value: declinedCount, color: "#f87171" },
+          { label: "Total Requests", value: total,         color: "var(--c-teal)" },
+          { label: "Pending Approval", value: pendingCount,  color: "var(--c-amber)" },
+          { label: "Approved",        value: approvedCount, color: "var(--c-green)" },
+          { label: "Declined",        value: declinedCount, color: "var(--c-red)" },
         ].map(({ label, value, color }) => (
           <div
             key={label}
@@ -237,7 +237,7 @@ export default function LeavePage() {
             className="flex-1 py-2 text-sm font-semibold rounded-lg transition-all"
             style={
               activeTab === t.key
-                ? { background: "linear-gradient(135deg, #7c3aed, #3b82f6)", color: "#fff" }
+                ? { background: "#0d9488", color: "#fff" }
                 : { color: "var(--text-muted)" }
             }
           >
@@ -252,12 +252,12 @@ export default function LeavePage() {
           {/* Filters */}
           <div className="flex flex-wrap gap-3">
             <div className="relative">
-              <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+              <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(var(--fg-rgb),0.25)" }} />
               <select
                 value={filterStatus}
                 onChange={e => setFilterStatus(e.target.value)}
                 className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}
+                style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.08)", color: "rgba(var(--fg-rgb),0.6)" }}
               >
                 <option value="">All Statuses</option>
                 <option value="pending">Pending</option>
@@ -265,22 +265,22 @@ export default function LeavePage() {
                 <option value="declined">Declined</option>
                 <option value="cancelled">Cancelled</option>
               </select>
-              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
             </div>
             <div className="relative">
-              <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+              <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(var(--fg-rgb),0.25)" }} />
               <select
                 value={filterType}
                 onChange={e => setFilterType(e.target.value)}
                 className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}
+                style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.08)", color: "rgba(var(--fg-rgb),0.6)" }}
               >
                 <option value="">All Types</option>
                 {leaveTypes.map(lt => (
                   <option key={lt.id} value={lt.id}>{lt.name}</option>
                 ))}
               </select>
-              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
             </div>
           </div>
 
@@ -304,7 +304,7 @@ export default function LeavePage() {
                   <div
                     key={req.id}
                     className="rounded-2xl p-4"
-                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+                    style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
@@ -321,29 +321,29 @@ export default function LeavePage() {
                           {req.leave_type_name && (
                             <span
                               className="text-xs px-2 py-0.5 rounded-full"
-                              style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa" }}
+                              style={{ background: "rgba(13, 148, 136,0.12)", color: "var(--c-teal)" }}
                             >
                               {req.leave_type_name}
                             </span>
                           )}
                         </div>
-                        <div className="text-sm" style={{ color: "rgba(255,255,255,0.55)" }}>
+                        <div className="text-sm" style={{ color: "rgba(var(--fg-rgb),0.55)" }}>
                           {formatDate(req.start_date)} — {formatDate(req.end_date)}
-                          <span className="ml-2 text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+                          <span className="ml-2 text-xs" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>
                             ({req.days_requested} {req.days_requested === 1 ? "day" : "days"})
                           </span>
                         </div>
                         {req.reason && (
-                          <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>{req.reason}</p>
+                          <p className="text-xs mt-1" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>{req.reason}</p>
                         )}
                         {req.reviewed_by_name && req.reviewed_at && (
-                          <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.3)" }}>
+                          <p className="text-xs mt-1" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
                             Reviewed by {req.reviewed_by_name} on {formatDate(req.reviewed_at)}
                           </p>
                         )}
                       </div>
                       <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                        <div className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+                        <div className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>
                           {formatDate(req.created_at)}
                         </div>
                         {req.status === "pending" && (
@@ -351,14 +351,14 @@ export default function LeavePage() {
                             <button
                               onClick={() => { setReviewTarget({ id: req.id, action: "approved" }); setReviewNotes(""); }}
                               className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg"
-                              style={{ background: "rgba(52,211,153,0.15)", color: "#34d399", border: "1px solid rgba(52,211,153,0.25)" }}
+                              style={{ background: "rgba(52,211,153,0.15)", color: "var(--c-green)", border: "1px solid rgba(52,211,153,0.25)" }}
                             >
                               <Check size={11} /> Approve
                             </button>
                             <button
                               onClick={() => { setReviewTarget({ id: req.id, action: "declined" }); setReviewNotes(""); }}
                               className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg"
-                              style={{ background: "rgba(239,68,68,0.12)", color: "#f87171", border: "1px solid rgba(239,68,68,0.2)" }}
+                              style={{ background: "rgba(239,68,68,0.12)", color: "var(--c-red)", border: "1px solid rgba(239,68,68,0.2)" }}
                             >
                               <Ban size={11} /> Decline
                             </button>
@@ -381,7 +381,7 @@ export default function LeavePage() {
             <button
               onClick={() => setShowTypeModal(true)}
               className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+              style={{ background: "#0d9488" }}
             >
               <Plus size={14} /> Add Leave Type
             </button>
@@ -400,7 +400,7 @@ export default function LeavePage() {
                 <div
                   key={lt.id}
                   className="rounded-2xl p-4 flex items-center justify-between"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+                  style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}
                 >
                   <div className="flex items-center gap-3">
                     <div
@@ -412,7 +412,7 @@ export default function LeavePage() {
                   <div className="flex items-center gap-2">
                     <span
                       className="text-xs px-3 py-1 rounded-full font-medium"
-                      style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa" }}
+                      style={{ background: "rgba(13, 148, 136,0.12)", color: "var(--c-teal)" }}
                     >
                       {lt.days_entitlement} days/year
                     </span>
@@ -432,17 +432,17 @@ export default function LeavePage() {
         >
           <div
             className="rounded-2xl p-6 w-full max-w-lg"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}
           >
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Request Leave</h3>
-              <button onClick={() => setShowRequestModal(false)} style={{ color: "rgba(255,255,255,0.4)" }}>
+              <button onClick={() => setShowRequestModal(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                 <X size={18} />
               </button>
             </div>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Leave Type *</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Leave Type *</label>
                 <select
                   value={requestForm.leave_type}
                   onChange={e => setRequestForm(f => ({ ...f, leave_type: e.target.value }))}
@@ -457,7 +457,7 @@ export default function LeavePage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Start Date *</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Start Date *</label>
                   <input
                     type="date"
                     value={requestForm.start_date}
@@ -467,7 +467,7 @@ export default function LeavePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>End Date *</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>End Date *</label>
                   <input
                     type="date"
                     value={requestForm.end_date}
@@ -478,7 +478,7 @@ export default function LeavePage() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Days Requested *</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Days Requested *</label>
                 <input
                   type="number"
                   min="1"
@@ -490,7 +490,7 @@ export default function LeavePage() {
                 />
               </div>
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Reason (optional)</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Reason (optional)</label>
                 <textarea
                   rows={3}
                   placeholder="Briefly describe the reason for your leave…"
@@ -505,7 +505,7 @@ export default function LeavePage() {
               <button
                 onClick={() => setShowRequestModal(false)}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}
               >
                 Cancel
               </button>
@@ -513,7 +513,7 @@ export default function LeavePage() {
                 onClick={handleSubmitRequest}
                 disabled={saving || !requestForm.leave_type || !requestForm.start_date || !requestForm.end_date || !requestForm.days_requested}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+                style={{ background: "#0d9488" }}
               >
                 {saving ? "Submitting…" : "Submit Request"}
               </button>
@@ -530,17 +530,17 @@ export default function LeavePage() {
         >
           <div
             className="rounded-2xl p-6 w-full max-w-md"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}
           >
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Add Leave Type</h3>
-              <button onClick={() => setShowTypeModal(false)} style={{ color: "rgba(255,255,255,0.4)" }}>
+              <button onClick={() => setShowTypeModal(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                 <X size={18} />
               </button>
             </div>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Name *</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Name *</label>
                 <input
                   type="text"
                   placeholder="e.g. Annual Leave"
@@ -551,7 +551,7 @@ export default function LeavePage() {
                 />
               </div>
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Days Entitlement per Year</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Days Entitlement per Year</label>
                 <input
                   type="number"
                   min="1"
@@ -562,16 +562,16 @@ export default function LeavePage() {
                 />
               </div>
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Colour</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Colour</label>
                 <div className="flex items-center gap-3">
                   <input
                     type="color"
                     value={typeForm.color}
                     onChange={e => setTypeForm(f => ({ ...f, color: e.target.value }))}
                     className="w-10 h-10 rounded-lg cursor-pointer"
-                    style={{ background: "none", border: "1px solid rgba(255,255,255,0.1)", padding: "2px" }}
+                    style={{ background: "none", border: "1px solid rgba(var(--fg-rgb),0.1)", padding: "2px" }}
                   />
-                  <span className="text-sm font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>{typeForm.color}</span>
+                  <span className="text-sm font-mono" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>{typeForm.color}</span>
                 </div>
               </div>
             </div>
@@ -579,7 +579,7 @@ export default function LeavePage() {
               <button
                 onClick={() => setShowTypeModal(false)}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}
               >
                 Cancel
               </button>
@@ -587,7 +587,7 @@ export default function LeavePage() {
                 onClick={handleSubmitType}
                 disabled={savingType || !typeForm.name}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+                style={{ background: "#0d9488" }}
               >
                 {savingType ? "Saving…" : "Add Type"}
               </button>
@@ -604,18 +604,18 @@ export default function LeavePage() {
         >
           <div
             className="rounded-2xl p-6 w-full max-w-md"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}
           >
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white capitalize">
                 {reviewTarget.action === "approved" ? "Approve" : "Decline"} Leave Request
               </h3>
-              <button onClick={() => setReviewTarget(null)} style={{ color: "rgba(255,255,255,0.4)" }}>
+              <button onClick={() => setReviewTarget(null)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                 <X size={18} />
               </button>
             </div>
             <div>
-              <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Review Notes (optional)</label>
+              <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Review Notes (optional)</label>
               <textarea
                 rows={4}
                 placeholder="Add any notes for the staff member…"
@@ -629,7 +629,7 @@ export default function LeavePage() {
               <button
                 onClick={() => setReviewTarget(null)}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}
               >
                 Cancel
               </button>
@@ -639,8 +639,8 @@ export default function LeavePage() {
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
                 style={
                   reviewTarget.action === "approved"
-                    ? { background: "linear-gradient(135deg, #059669, #34d399)" }
-                    : { background: "linear-gradient(135deg, #dc2626, #f87171)" }
+                    ? { background: "linear-gradient(135deg, #059669, var(--c-green))" }
+                    : { background: "linear-gradient(135deg, #dc2626, var(--c-red))" }
                 }
               >
                 {savingReview

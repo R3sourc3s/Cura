@@ -28,7 +28,7 @@ const photos = [
 
 export default function CareGallery() {
   return (
-    <section className="py-24" style={{ background: "#ffffff" }}>
+    <section className="py-24" style={{ background: "var(--bg-card)" }}>
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -36,10 +36,10 @@ export default function CareGallery() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <h2 className="lp-serif text-3xl lg:text-4xl font-bold mb-4" style={{ color: "#1c1a14" }}>
+          <h2 className="lp-serif text-3xl lg:text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
             Built for the people who matter most
           </h2>
-          <p className="max-w-xl mx-auto text-lg leading-relaxed" style={{ color: "#7a7468" }}>
+          <p className="max-w-xl mx-auto text-lg leading-relaxed" style={{ color: "var(--text-muted)" }}>
             Good care runs on trust, routine, and having the right information at the right moment.
             Cura makes that possible for every resident, every shift.
           </p>
@@ -61,7 +61,7 @@ export default function CareGallery() {
               style={{
                 height: i === 0 ? "100%" : "220px",
                 minHeight: "220px",
-                border: "1px solid #dfd8cc",
+                border: "1px solid var(--border)",
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -73,15 +73,15 @@ export default function CareGallery() {
               <div
                 className="absolute inset-0"
                 style={{
-                  background: "linear-gradient(to top, rgba(28,26,20,0.75) 0%, transparent 60%)",
+                  background: "linear-gradient(to top, rgba(15,23,42,0.75) 0%, transparent 60%)",
                 }}
               />
               <div className="absolute bottom-0 left-0 right-0 p-5">
                 <span
                   className="text-xs font-semibold px-2.5 py-1 rounded-full mb-2 inline-block"
                   style={{
-                    background: "rgba(45,90,61,0.35)",
-                    border: "1px solid rgba(45,90,61,0.5)",
+                    background: "rgba(13, 148, 136,0.35)",
+                    border: "1px solid rgba(13, 148, 136,0.5)",
                     color: "#a8e6b8",
                   }}
                 >

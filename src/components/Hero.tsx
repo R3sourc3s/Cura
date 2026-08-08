@@ -7,7 +7,7 @@ export default function Hero() {
   return (
     <section
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: "#faf7f0", paddingTop: "100px" }}
+      style={{ background: "var(--bg-secondary)", paddingTop: "100px" }}
     >
       <div className="relative z-10 max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-16">
         {/* Left */}
@@ -18,9 +18,9 @@ export default function Hero() {
             transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 text-sm font-medium"
             style={{
-              background: "rgba(45,90,61,0.08)",
-              border: "1px solid rgba(45,90,61,0.25)",
-              color: "#2d5a3d",
+              background: "rgba(13, 148, 136,0.08)",
+              border: "1px solid rgba(13, 148, 136,0.25)",
+              color: "#0d9488",
             }}
           >
             Made for UK care homes
@@ -31,11 +31,11 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="lp-serif text-5xl lg:text-6xl font-bold leading-tight mb-6"
-            style={{ color: "#1c1a14" }}
+            style={{ color: "var(--text-primary)" }}
           >
             Your care home,
             <br />
-            <span style={{ color: "#2d5a3d" }}>running exactly</span>
+            <span style={{ color: "#0d9488" }}>running exactly</span>
             <br />
             as it should.
           </motion.h1>
@@ -45,7 +45,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg lg:text-xl max-w-xl mb-10 leading-relaxed"
-            style={{ color: "#7a7468" }}
+            style={{ color: "var(--text-muted)" }}
           >
             Cura connects medication records, care plans, staff rotas, and
             compliance tracking — built around how care homes actually work,
@@ -76,7 +76,7 @@ export default function Hero() {
               <span
                 key={badge}
                 className="text-xs font-medium px-3 py-1.5 rounded-full"
-                style={{ background: "#ffffff", border: "1px solid #dfd8cc", color: "#7a7468" }}
+                style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-muted)" }}
               >
                 {badge}
               </span>
@@ -92,34 +92,34 @@ export default function Hero() {
           className="flex-1 hidden lg:grid gap-3"
           style={{ gridTemplateColumns: "1fr 1fr", gridTemplateRows: "1fr 1fr", height: "520px" }}
         >
-          <div className="relative rounded-2xl overflow-hidden row-span-2" style={{ border: "1px solid rgba(45,90,61,0.2)" }}>
+          <div className="relative rounded-2xl overflow-hidden row-span-2" style={{ border: "1px solid rgba(13, 148, 136,0.2)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://images.unsplash.com/photo-1773227055624-07b515ba87c5?w=600&h=900&fit=crop&crop=center&auto=format&q=80" alt="Carer holding hands with a smiling elderly resident" className="w-full h-full object-cover" />
-            <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(28,26,20,0.6) 0%, transparent 55%)" }} />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(15,23,42,0.6) 0%, transparent 55%)" }} />
             <span className="absolute bottom-3 left-3 text-xs text-white font-medium">Person-centred care</span>
           </div>
 
-          <div className="relative rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(45,90,61,0.15)" }}>
+          <div className="relative rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(13, 148, 136,0.15)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://images.unsplash.com/photo-1765896387387-0538bc9f997e?w=600&h=400&fit=crop&crop=faces&auto=format&q=80" alt="Care home nurse with elderly resident" className="w-full h-full object-cover" />
-            <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(28,26,20,0.6) 0%, transparent 55%)" }} />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(15,23,42,0.6) 0%, transparent 55%)" }} />
             <span className="absolute bottom-3 left-3 text-xs text-white font-medium">Dedicated care teams</span>
           </div>
 
           <div className="lp-card rounded-2xl p-4 flex flex-col justify-between">
             <div className="flex items-center gap-2 mb-3">
               <span className="w-2 h-2 rounded-full bg-green-600" />
-              <span className="text-xs font-medium" style={{ color: "#7a7468" }}>Today at a glance</span>
+              <span className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Today at a glance</span>
             </div>
             <div className="grid grid-cols-2 gap-2 flex-1">
               {[
-                { label: "Residents", value: "127", color: "#2d5a3d" },
-                { label: "Meds on time", value: "100%", color: "#2d5a3d" },
-                { label: "Staff on shift", value: "48", color: "#b8923a" },
-                { label: "Tasks done", value: "92%", color: "#b8923a" },
+                { label: "Residents", value: "127", color: "#0d9488" },
+                { label: "Meds on time", value: "100%", color: "#0d9488" },
+                { label: "Staff on shift", value: "48", color: "#10b981" },
+                { label: "Tasks done", value: "92%", color: "#10b981" },
               ].map((s) => (
-                <div key={s.label} className="rounded-xl p-2.5" style={{ background: "#faf7f0" }}>
-                  <div className="text-xs mb-1" style={{ color: "#a89f94" }}>{s.label}</div>
+                <div key={s.label} className="rounded-xl p-2.5" style={{ background: "var(--bg-secondary)" }}>
+                  <div className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>{s.label}</div>
                   <div className="text-sm font-bold" style={{ color: s.color }}>{s.value}</div>
                 </div>
               ))}

@@ -72,14 +72,14 @@ export default function AIPage() {
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+          style={{ background: "#0d9488" }}>
           <Bot size={18} className="text-white" />
         </div>
         <div>
           <h1 className="text-xl font-bold text-white flex items-center gap-2">
             AI Assistant
             <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-              style={{ background: "rgba(124,58,237,0.15)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}>
+              style={{ background: "rgba(13, 148, 136,0.15)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
               Claude
             </span>
           </h1>
@@ -98,7 +98,7 @@ export default function AIPage() {
             <div className={`w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center ${msg.role === "assistant" ? "mt-0.5" : ""}`}
               style={{
                 background: msg.role === "assistant"
-                  ? "linear-gradient(135deg, #7c3aed, #3b82f6)"
+                  ? "#0d9488"
                   : "var(--bg-card-hover)",
               }}>
               {msg.role === "assistant"
@@ -111,10 +111,10 @@ export default function AIPage() {
             }`}
               style={{
                 background: msg.role === "user"
-                  ? "linear-gradient(135deg, rgba(124,58,237,0.4), rgba(59,130,246,0.3))"
+                  ? "linear-gradient(135deg, rgba(13, 148, 136,0.4), rgba(20, 184, 166,0.3))"
                   : "var(--input-bg)",
                 border: msg.role === "user"
-                  ? "1px solid rgba(124,58,237,0.3)"
+                  ? "1px solid rgba(13, 148, 136,0.3)"
                   : "1px solid var(--border-strong)",
                 color: msg.role === "user" ? "var(--text-primary)" : "var(--text-secondary)",
                 whiteSpace: "pre-wrap",
@@ -129,7 +129,7 @@ export default function AIPage() {
         {loading && (
           <div className="flex gap-3">
             <div className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+              style={{ background: "#0d9488" }}>
               <Sparkles size={12} className="text-white" />
             </div>
             <div className="rounded-2xl rounded-tl-sm px-4 py-3"
@@ -137,7 +137,7 @@ export default function AIPage() {
               <div className="flex gap-1 items-center h-4">
                 {[0, 1, 2].map((i) => (
                   <div key={i} className="w-1.5 h-1.5 rounded-full animate-bounce"
-                    style={{ background: "#a78bfa", animationDelay: `${i * 0.15}s` }} />
+                    style={{ background: "var(--c-teal)", animationDelay: `${i * 0.15}s` }} />
                 ))}
               </div>
             </div>
@@ -154,9 +154,9 @@ export default function AIPage() {
               key={s}
               onClick={() => send(s)}
               className="text-xs px-3 py-1.5 rounded-xl transition-all"
-              style={{ background: "rgba(124,58,237,0.1)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(124,58,237,0.2)")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(124,58,237,0.1)")}
+              style={{ background: "rgba(13, 148, 136,0.1)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.2)" }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(13, 148, 136,0.2)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(13, 148, 136,0.1)")}
             >
               {s}
             </button>
@@ -168,7 +168,7 @@ export default function AIPage() {
       <div className="flex gap-3 items-end rounded-2xl px-4 py-3"
         style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
         <div className="flex items-center gap-1.5 mb-1">
-          <Zap size={12} style={{ color: "#7c3aed" }} />
+          <Zap size={12} style={{ color: "#0d9488" }} />
         </div>
         <textarea
           ref={textareaRef}
@@ -185,7 +185,7 @@ export default function AIPage() {
           onClick={() => send()}
           disabled={!input.trim() || loading}
           className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all disabled:opacity-40"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+          style={{ background: "#0d9488" }}
         >
           <Send size={14} className="text-white" />
         </button>

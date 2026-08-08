@@ -9,31 +9,32 @@ import {
   Edit2, Trash2, User, Phone, Heart, Pill,
   ClipboardList, AlertTriangle, CheckCircle, Clock, XCircle,
   Activity, Shield, ChevronRight, Sparkles, Plus, Thermometer,
-  NotebookPen, CalendarDays, X,
+  NotebookPen, CalendarDays, X, FolderOpen,
 } from "lucide-react";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import LinkedDocuments from "@/components/documents/LinkedDocuments";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 const RISK_STYLE = {
-  critical: { bg: "rgba(239,68,68,0.15)", text: "#f87171", dot: "#ef4444" },
-  high:     { bg: "rgba(251,146,60,0.15)", text: "#fb923c", dot: "#f97316" },
-  medium:   { bg: "rgba(250,204,21,0.12)", text: "#fbbf24", dot: "#eab308" },
-  low:      { bg: "rgba(52,211,153,0.12)",  text: "#34d399", dot: "#10b981" },
+  critical: { bg: "rgba(239,68,68,0.15)", text: "var(--c-red)", dot: "#ef4444" },
+  high:     { bg: "rgba(251,146,60,0.15)", text: "var(--c-orange)", dot: "#f97316" },
+  medium:   { bg: "rgba(250,204,21,0.12)", text: "var(--c-amber)", dot: "#eab308" },
+  low:      { bg: "rgba(52,211,153,0.12)",  text: "var(--c-green)", dot: "#10b981" },
 } as const;
 
 const STATUS_CFG = {
-  given:   { icon: CheckCircle, color: "#34d399", bg: "rgba(52,211,153,0.12)",  label: "Given" },
-  pending: { icon: Clock,       color: "#fb923c", bg: "rgba(251,146,60,0.12)",  label: "Pending" },
-  refused: { icon: XCircle,     color: "#f87171", bg: "rgba(239,68,68,0.12)",   label: "Refused" },
-  omitted: { icon: XCircle,     color: "#a78bfa", bg: "rgba(124,58,237,0.12)",  label: "Omitted" },
+  given:   { icon: CheckCircle, color: "var(--c-green)", bg: "rgba(52,211,153,0.12)",  label: "Given" },
+  pending: { icon: Clock,       color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)",  label: "Pending" },
+  refused: { icon: XCircle,     color: "var(--c-red)", bg: "rgba(239,68,68,0.12)",   label: "Refused" },
+  omitted: { icon: XCircle,     color: "var(--c-teal)", bg: "rgba(13, 148, 136,0.12)",  label: "Omitted" },
 } as const;
 
 const PLAN_STATUS = {
-  active:       { color: "#34d399", bg: "rgba(52,211,153,0.12)",  label: "Active" },
-  draft:        { color: "#fb923c", bg: "rgba(251,146,60,0.12)",  label: "Draft" },
-  under_review: { color: "#60a5fa", bg: "rgba(96,165,250,0.12)",  label: "Under Review" },
+  active:       { color: "var(--c-green)", bg: "rgba(52,211,153,0.12)",  label: "Active" },
+  draft:        { color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)",  label: "Draft" },
+  under_review: { color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)",  label: "Under Review" },
   archived:     { color: "#6b7280", bg: "rgba(107,114,128,0.12)", label: "Archived" },
 } as const;
 
@@ -60,7 +61,7 @@ function GlassCard({ children, className = "" }: { children: React.ReactNode; cl
 function SectionHeading({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
   return (
     <div className="flex items-center gap-2 mb-4">
-      <Icon size={14} style={{ color: "#7c3aed" }} />
+      <Icon size={14} style={{ color: "#0d9488" }} />
       <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
         {label}
       </span>
@@ -104,7 +105,7 @@ function Avatar({ resident, size = 80 }: { resident: Resident; size?: number }) 
 
 // ── Sparkline ─────────────────────────────────────────────────────────────────
 
-function Sparkline({ values, color = "#7c3aed", height = 32 }: { values: number[]; color?: string; height?: number }) {
+function Sparkline({ values, color = "#0d9488", height = 32 }: { values: number[]; color?: string; height?: number }) {
   if (values.length < 2) return <div className="text-xs" style={{ color: "var(--text-muted)" }}>—</div>;
   const min = Math.min(...values);
   const max = Math.max(...values);
@@ -123,12 +124,12 @@ function Sparkline({ values, color = "#7c3aed", height = 32 }: { values: number[
 // ── Vitals Tab ────────────────────────────────────────────────────────────────
 
 const VITAL_FIELDS: { key: keyof VitalSign; label: string; unit: string; color: string; normal?: string }[] = [
-  { key: "bp_systolic",       label: "Systolic BP",  unit: "mmHg", color: "#f87171", normal: "90–120" },
-  { key: "bp_diastolic",      label: "Diastolic BP", unit: "mmHg", color: "#fb923c", normal: "60–80" },
-  { key: "pulse",             label: "Pulse",        unit: "bpm",  color: "#34d399", normal: "60–100" },
-  { key: "temperature",       label: "Temperature",  unit: "°C",   color: "#fbbf24", normal: "36.1–37.2" },
-  { key: "oxygen_saturation", label: "SpO₂",         unit: "%",    color: "#60a5fa", normal: "95–100" },
-  { key: "weight",            label: "Weight",       unit: "kg",   color: "#a78bfa" },
+  { key: "bp_systolic",       label: "Systolic BP",  unit: "mmHg", color: "var(--c-red)", normal: "90–120" },
+  { key: "bp_diastolic",      label: "Diastolic BP", unit: "mmHg", color: "var(--c-orange)", normal: "60–80" },
+  { key: "pulse",             label: "Pulse",        unit: "bpm",  color: "var(--c-green)", normal: "60–100" },
+  { key: "temperature",       label: "Temperature",  unit: "°C",   color: "var(--c-amber)", normal: "36.1–37.2" },
+  { key: "oxygen_saturation", label: "SpO₂",         unit: "%",    color: "var(--c-teal2)", normal: "95–100" },
+  { key: "weight",            label: "Weight",       unit: "kg",   color: "var(--c-teal)" },
   { key: "blood_glucose",     label: "Glucose",      unit: "mmol/L", color: "#f472b6", normal: "4–7" },
 ];
 
@@ -203,11 +204,11 @@ function VitalsTab({ residentId, canEdit }: { residentId: number; canEdit: boole
         {canEdit && (
           <button onClick={() => setShowForm(true)}
             className="rounded-2xl p-4 flex flex-col items-center justify-center gap-2 transition-all"
-            style={{ background: "rgba(124,58,237,0.05)", border: "1px dashed rgba(124,58,237,0.3)" }}
-            onMouseEnter={e => (e.currentTarget.style.background = "rgba(124,58,237,0.1)")}
-            onMouseLeave={e => (e.currentTarget.style.background = "rgba(124,58,237,0.05)")}>
-            <Plus size={20} style={{ color: "#7c3aed" }} />
-            <span className="text-xs font-medium" style={{ color: "#a78bfa" }}>Log Vitals</span>
+            style={{ background: "rgba(13, 148, 136,0.05)", border: "1px dashed rgba(13, 148, 136,0.3)" }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(13, 148, 136,0.1)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "rgba(13, 148, 136,0.05)")}>
+            <Plus size={20} style={{ color: "#0d9488" }} />
+            <span className="text-xs font-medium" style={{ color: "var(--c-teal)" }}>Log Vitals</span>
           </button>
         )}
       </div>
@@ -234,7 +235,7 @@ function VitalsTab({ residentId, canEdit }: { residentId: number; canEdit: boole
               </thead>
               <tbody>
                 {vitals.slice(0, 20).map(v => (
-                  <tr key={v.id} style={{ borderBottom: "1px solid var(--bg-card)" }}>
+                  <tr key={v.id} style={{ borderBottom: "1px solid var(--border)" }}>
                     <td className="px-4 py-2.5 text-xs" style={{ color: "var(--text-secondary)" }}>
                       {new Date(v.recorded_at).toLocaleDateString("en-GB")}{" "}
                       <span style={{ color: "var(--text-muted)" }}>{new Date(v.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</span>
@@ -268,7 +269,7 @@ function VitalsTab({ residentId, canEdit }: { residentId: number; canEdit: boole
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-lg"
-            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Log Vitals</h3>
               <button onClick={() => setShowForm(false)} style={{ color: "var(--text-muted)" }}><XCircle size={18} /></button>
@@ -308,7 +309,7 @@ function VitalsTab({ residentId, canEdit }: { residentId: number; canEdit: boole
               </button>
               <button onClick={handleSave} disabled={saving || !form.recorded_at}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {saving ? "Saving…" : "Save Vitals"}
               </button>
             </div>
@@ -321,7 +322,7 @@ function VitalsTab({ residentId, canEdit }: { residentId: number; canEdit: boole
 
 // ── Tabs ─────────────────────────────────────────────────────────────────────
 
-type Tab = "overview" | "medications" | "care-plans" | "mar" | "vitals" | "care-notes" | "appointments";
+type Tab = "overview" | "medications" | "care-plans" | "mar" | "vitals" | "care-notes" | "appointments" | "documents";
 
 const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: "overview",     label: "Overview",     icon: User },
@@ -329,6 +330,7 @@ const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: "care-plans",   label: "Care Plans",   icon: ClipboardList },
   { id: "care-notes",   label: "Care Notes",   icon: NotebookPen },
   { id: "appointments", label: "Appointments", icon: CalendarDays },
+  { id: "documents",    label: "Documents",    icon: FolderOpen },
   { id: "mar",          label: "MAR History",  icon: Activity },
   { id: "vitals",       label: "Vitals",       icon: Thermometer },
 ];
@@ -380,7 +382,7 @@ function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate }: { resident
             <div className="text-sm font-medium text-white">{resident.next_of_kin_name || "—"}</div>
             {resident.next_of_kin_phone && (
               <a href={`tel:${resident.next_of_kin_phone}`}
-                className="text-xs mt-0.5 block hover:underline" style={{ color: "#60a5fa" }}>
+                className="text-xs mt-0.5 block hover:underline" style={{ color: "var(--c-teal2)" }}>
                 {resident.next_of_kin_phone}
               </a>
             )}
@@ -390,7 +392,7 @@ function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate }: { resident
             <div className="text-sm font-medium text-white">{resident.gp_name || "—"}</div>
             {resident.gp_phone && (
               <a href={`tel:${resident.gp_phone}`}
-                className="text-xs mt-0.5 block hover:underline" style={{ color: "#60a5fa" }}>
+                className="text-xs mt-0.5 block hover:underline" style={{ color: "var(--c-teal2)" }}>
                 {resident.gp_phone}
               </a>
             )}
@@ -418,7 +420,7 @@ function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate }: { resident
                 {canRecalculate && (
                   <button onClick={recalculateRisk} disabled={scoringLoading}
                     className="flex items-center gap-1 text-xs px-2 py-1 rounded-lg disabled:opacity-40"
-                    style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}>
+                    style={{ background: "rgba(13, 148, 136,0.12)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
                     <Sparkles size={10} />{scoringLoading ? "…" : "Recalculate"}
                   </button>
                 )}
@@ -455,7 +457,7 @@ function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate }: { resident
                 </div>
                 {c.icd_code && (
                   <span className="text-xs px-1.5 py-0.5 rounded font-mono ml-3"
-                    style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa" }}>
+                    style={{ background: "rgba(13, 148, 136,0.12)", color: "var(--c-teal)" }}>
                     {c.icd_code}
                   </span>
                 )}
@@ -498,11 +500,11 @@ function MedicationsTab({ residentId }: { residentId: number }) {
                 <span className="text-sm font-bold text-white">{med.drug_name}</span>
                 {med.is_controlled && (
                   <span className="text-xs px-1.5 py-0.5 rounded font-semibold"
-                    style={{ background: "rgba(124,58,237,0.15)", color: "#a78bfa" }}>CD</span>
+                    style={{ background: "rgba(13, 148, 136,0.15)", color: "var(--c-teal)" }}>CD</span>
                 )}
                 {med.is_low_stock && (
                   <span className="flex items-center gap-1 text-xs px-1.5 py-0.5 rounded"
-                    style={{ background: "rgba(239,68,68,0.12)", color: "#f87171" }}>
+                    style={{ background: "rgba(239,68,68,0.12)", color: "var(--c-red)" }}>
                     <AlertTriangle size={10} /> Low stock
                   </span>
                 )}
@@ -519,7 +521,7 @@ function MedicationsTab({ residentId }: { residentId: number }) {
               </div>
             </div>
             <div className="ml-4 text-right">
-              <div className="text-lg font-bold" style={{ color: med.is_low_stock ? "#f87171" : "#34d399" }}>
+              <div className="text-lg font-bold" style={{ color: med.is_low_stock ? "var(--c-red)" : "var(--c-green)" }}>
                 {med.stock_count}
               </div>
               <div className="text-xs" style={{ color: "var(--text-muted)" }}>units</div>
@@ -528,7 +530,7 @@ function MedicationsTab({ residentId }: { residentId: number }) {
                   <div className="h-full rounded-full"
                     style={{
                       width: `${Math.min((med.stock_count / Math.max(med.reorder_threshold * 4, 1)) * 100, 100)}%`,
-                      background: med.is_low_stock ? "#ef4444" : "#34d399",
+                      background: med.is_low_stock ? "#ef4444" : "var(--c-green)",
                     }} />
                 </div>
               </div>
@@ -590,7 +592,7 @@ function CarePlansTab({ residentId }: { residentId: number }) {
               <div className="px-5 pb-5 space-y-3" style={{ borderTop: "1px solid var(--border)" }}>
                 {plan.ai_summary && (
                   <div className="mt-3 px-3 py-2.5 rounded-xl text-xs leading-relaxed"
-                    style={{ background: "rgba(124,58,237,0.08)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(124,58,237,0.15)" }}>
+                    style={{ background: "rgba(13, 148, 136,0.08)", color: "rgba(var(--fg-rgb),0.6)", border: "1px solid rgba(13, 148, 136,0.15)" }}>
                     {plan.ai_summary}
                   </div>
                 )}
@@ -659,7 +661,7 @@ function MARTab({ residentId }: { residentId: number }) {
             const cfg = STATUS_CFG[entry.status] ?? STATUS_CFG.pending;
             const Icon = cfg.icon;
             return (
-              <tr key={entry.id} style={{ borderBottom: "1px solid var(--bg-card)" }}>
+              <tr key={entry.id} style={{ borderBottom: "1px solid var(--border)" }}>
                 <td className="px-4 py-3">
                   <div className="text-sm font-medium text-white">{entry.drugName}</div>
                   <div className="text-xs" style={{ color: "var(--text-muted)" }}>{entry.dose}</div>
@@ -696,7 +698,7 @@ function MARTab({ residentId }: { residentId: number }) {
 const SHIFT_LABEL: Record<string, string> = { day:"Day", evening:"Evening", night:"Night" };
 const NOTE_CAT_LABEL: Record<string, string> = { personal_care:"Personal Care", nutrition:"Nutrition", mobility:"Mobility", mood:"Mood", sleep:"Sleep", health:"Health", social:"Social", general:"General" };
 const MOOD_EMOJI: Record<string, string> = { happy:"😊", calm:"😌", anxious:"😟", confused:"😕", distressed:"😢", agitated:"😤", unresponsive:"😶" };
-const NOTE_SHIFT_COLOR: Record<string, string> = { day:"#fbbf24", evening:"#60a5fa", night:"#a78bfa" };
+const NOTE_SHIFT_COLOR: Record<string, string> = { day:"var(--c-amber)", evening:"var(--c-teal2)", night:"var(--c-teal)" };
 
 function CareNotesTab({ residentId }: { residentId: number }) {
   const [notes, setNotes] = useState<Array<{id:number;shift:string;category:string;mood?:string;content:string;recorded_at:string;author_name?:string}>>([]);
@@ -728,7 +730,7 @@ function CareNotesTab({ residentId }: { residentId: number }) {
   return (
     <div className="space-y-3">
       <div className="flex justify-end">
-        <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#7c3aed,#3b82f6)" }}><Plus size={14} /> Add Note</button>
+        <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#0d9488,#10b981)" }}><Plus size={14} /> Add Note</button>
       </div>
       {notes.length === 0 ? (
         <div className="text-center py-12 rounded-2xl" style={{ background:"var(--bg-card)", border:"1px solid var(--border)" }}>
@@ -749,7 +751,7 @@ function CareNotesTab({ residentId }: { residentId: number }) {
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(124,58,237,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Care Note</h3><button onClick={()=>setShowForm(false)} style={{color:"var(--text-muted)"}}><X size={18}/></button></div>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-2">
@@ -767,12 +769,12 @@ function CareNotesTab({ residentId }: { residentId: number }) {
                 <option value="">Not recorded</option>
                 {Object.entries(MOOD_EMOJI).map(([k,v])=><option key={k} value={k}>{v} {k}</option>)}
               </select></div>
-              <div><label className="block text-xs mb-1" style={{color:"rgba(255,255,255,0.5)"}}>Note *</label>
+              <div><label className="block text-xs mb-1" style={{color:"rgba(var(--fg-rgb),0.5)"}}>Note *</label>
               <textarea rows={4} value={form.content} onChange={e=>setForm(f=>({...f,content:e.target.value}))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputSt} placeholder="Enter care note…"/></div>
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={()=>setShowForm(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"rgba(255,255,255,0.06)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.08)"}}>Cancel</button>
-              <button onClick={handleSave} disabled={saving||!form.content} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#7c3aed,#3b82f6)"}}>{saving?"Saving…":"Save Note"}</button>
+              <button onClick={()=>setShowForm(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"rgba(var(--fg-rgb),0.06)",color:"rgba(var(--fg-rgb),0.7)",border:"1px solid rgba(var(--fg-rgb),0.08)"}}>Cancel</button>
+              <button onClick={handleSave} disabled={saving||!form.content} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#0d9488,#10b981)"}}>{saving?"Saving…":"Save Note"}</button>
             </div>
           </div>
         </div>
@@ -785,10 +787,10 @@ function CareNotesTab({ residentId }: { residentId: number }) {
 
 const APPT_TYPE_LABEL: Record<string,string> = { gp:"GP", hospital:"Hospital", specialist:"Specialist", dentist:"Dentist", optician:"Optician", physio:"Physiotherapy", other:"Other" };
 const APPT_STATUS_CFG: Record<string,{color:string;bg:string}> = {
-  scheduled:  { color:"#60a5fa", bg:"rgba(96,165,250,0.12)" },
-  completed:  { color:"#34d399", bg:"rgba(52,211,153,0.12)" },
-  cancelled:  { color:"#f87171", bg:"rgba(239,68,68,0.12)" },
-  dna:        { color:"#fbbf24", bg:"rgba(251,191,36,0.12)" },
+  scheduled:  { color:"var(--c-teal2)", bg:"rgba(45, 212, 191,0.12)" },
+  completed:  { color:"var(--c-green)", bg:"rgba(52,211,153,0.12)" },
+  cancelled:  { color:"var(--c-red)", bg:"rgba(239,68,68,0.12)" },
+  dna:        { color:"var(--c-amber)", bg:"rgba(251,191,36,0.12)" },
 };
 
 function AppointmentsTab({ residentId }: { residentId: number }) {
@@ -809,9 +811,9 @@ function AppointmentsTab({ residentId }: { residentId: number }) {
   const past = appointments.filter(a => a.scheduled_at < now || a.status !== "scheduled");
 
   if (appointments.length === 0) return (
-    <div className="text-center py-12 rounded-2xl" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)" }}>
-      <CalendarDays size={28} className="mx-auto mb-2" style={{ color:"rgba(255,255,255,0.15)" }} />
-      <p className="text-sm" style={{ color:"rgba(255,255,255,0.3)" }}>No appointments recorded.</p>
+    <div className="text-center py-12 rounded-2xl" style={{ background:"rgba(var(--fg-rgb),0.02)", border:"1px solid rgba(var(--fg-rgb),0.06)" }}>
+      <CalendarDays size={28} className="mx-auto mb-2" style={{ color:"rgba(var(--fg-rgb),0.15)" }} />
+      <p className="text-sm" style={{ color:"rgba(var(--fg-rgb),0.3)" }}>No appointments recorded.</p>
     </div>
   );
 
@@ -819,18 +821,18 @@ function AppointmentsTab({ residentId }: { residentId: number }) {
     const cfg = APPT_STATUS_CFG[a.status] ?? APPT_STATUS_CFG.scheduled;
     const dt = new Date(a.scheduled_at);
     return (
-      <div className="rounded-2xl p-4" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)" }}>
+      <div className="rounded-2xl p-4" style={{ background:"rgba(var(--fg-rgb),0.02)", border:"1px solid rgba(var(--fg-rgb),0.07)" }}>
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm font-semibold text-white">{APPT_TYPE_LABEL[a.appointment_type] ?? a.appointment_type}</span>
-              {a.provider_name && <span className="text-xs" style={{ color:"rgba(255,255,255,0.5)" }}>with {a.provider_name}</span>}
+              {a.provider_name && <span className="text-xs" style={{ color:"rgba(var(--fg-rgb),0.5)" }}>with {a.provider_name}</span>}
             </div>
-            <div className="text-xs mt-1" style={{ color:"rgba(255,255,255,0.4)" }}>
+            <div className="text-xs mt-1" style={{ color:"rgba(var(--fg-rgb),0.4)" }}>
               {dt.toLocaleDateString("en-GB")} at {dt.toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit" })}
               {a.location && ` · ${a.location}`}
             </div>
-            {a.outcome && <p className="text-xs mt-1.5" style={{ color:"rgba(255,255,255,0.5)" }}>{a.outcome}</p>}
+            {a.outcome && <p className="text-xs mt-1.5" style={{ color:"rgba(var(--fg-rgb),0.5)" }}>{a.outcome}</p>}
           </div>
           <span className="text-xs px-2 py-0.5 rounded-lg flex-shrink-0 capitalize" style={{ background:cfg.bg, color:cfg.color }}>{a.status}</span>
         </div>
@@ -842,13 +844,13 @@ function AppointmentsTab({ residentId }: { residentId: number }) {
     <div className="space-y-4">
       {upcoming.length > 0 && (
         <div>
-          <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color:"rgba(255,255,255,0.35)" }}>Upcoming</div>
+          <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color:"rgba(var(--fg-rgb),0.35)" }}>Upcoming</div>
           <div className="space-y-2">{upcoming.map(a => <ApptCard key={a.id} a={a} />)}</div>
         </div>
       )}
       {past.length > 0 && (
         <div>
-          <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color:"rgba(255,255,255,0.35)" }}>Past</div>
+          <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color:"rgba(var(--fg-rgb),0.35)" }}>Past</div>
           <div className="space-y-2">{past.map(a => <ApptCard key={a.id} a={a} />)}</div>
         </div>
       )}
@@ -906,18 +908,18 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
 
       {/* Header card */}
       <div className="rounded-2xl p-4 sm:p-6"
-        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+        style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <Avatar resident={resident} size={80} />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-1 flex-wrap">
               <h1 className="text-xl sm:text-2xl font-bold text-white">{resident.full_name}</h1>
               <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                style={{ background: resident.is_active ? "rgba(52,211,153,0.12)" : "rgba(107,114,128,0.12)", color: resident.is_active ? "#34d399" : "#9ca3af" }}>
+                style={{ background: resident.is_active ? "rgba(52,211,153,0.12)" : "rgba(107,114,128,0.12)", color: resident.is_active ? "var(--c-green)" : "#9ca3af" }}>
                 {resident.is_active ? "Active" : "Discharged"}
               </span>
             </div>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm" style={{ color: "rgba(var(--fg-rgb),0.45)" }}>
               <span>Room {resident.room_number}</span>
               {resident.nhs_number && <span>NHS: {resident.nhs_number}</span>}
               <span>Age {resident.age}</span>
@@ -925,24 +927,24 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
             </div>
             <div className="flex items-center gap-2 mt-3 flex-wrap">
               <RiskBadge level={resident.fall_risk} />
-              <span className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>fall risk</span>
-              <span className="mx-1" style={{ color: "rgba(255,255,255,0.15)" }}>·</span>
+              <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.25)" }}>fall risk</span>
+              <span className="mx-1" style={{ color: "rgba(var(--fg-rgb),0.15)" }}>·</span>
               <RiskBadge level={resident.pressure_ulcer_risk} />
-              <span className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>pressure ulcer</span>
+              <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.25)" }}>pressure ulcer</span>
             </div>
           </div>
           <div className="flex sm:flex-col gap-2 flex-shrink-0">
             <button
               onClick={() => router.push(`/dashboard/residents/${resident.id}/timeline`)}
               className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all"
-              style={{ background:"rgba(124,58,237,0.1)", color:"#a78bfa", border:"1px solid rgba(124,58,237,0.2)" }}>
+              style={{ background:"rgba(13, 148, 136,0.1)", color:"var(--c-teal)", border:"1px solid rgba(13, 148, 136,0.2)" }}>
               <Activity size={14} /> Timeline
             </button>
             {can("residents.edit") && (
               <button
                 onClick={() => router.push(`/dashboard/residents/${resident.id}/edit`)}
                 className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white transition-all"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 <Edit2 size={14} /> Edit
               </button>
             )}
@@ -950,7 +952,7 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
               <button
                 onClick={() => setConfirmDelete(true)}
                 className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all"
-                style={{ background: "rgba(239,68,68,0.1)", color: "#f87171", border: "1px solid rgba(239,68,68,0.2)" }}>
+                style={{ background: "rgba(239,68,68,0.1)", color: "var(--c-red)", border: "1px solid rgba(239,68,68,0.2)" }}>
                 <Trash2 size={14} /> Delete
               </button>
             )}
@@ -960,14 +962,14 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
 
       {/* Tabs */}
       <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-        <div className="flex gap-1 p-1 rounded-xl min-w-max sm:min-w-0" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="flex gap-1 p-1 rounded-xl min-w-max sm:min-w-0" style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.06)" }}>
           {TABS.map(({ id: tid, label, icon: Icon }) => (
             <button key={tid} onClick={() => setTab(tid)}
               className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all sm:flex-1 justify-center whitespace-nowrap"
               style={{
-                background: tab === tid ? "rgba(124,58,237,0.2)" : "transparent",
-                color: tab === tid ? "#a78bfa" : "rgba(255,255,255,0.4)",
-                border: tab === tid ? "1px solid rgba(124,58,237,0.3)" : "1px solid transparent",
+                background: tab === tid ? "rgba(13, 148, 136,0.2)" : "transparent",
+                color: tab === tid ? "var(--c-teal)" : "rgba(var(--fg-rgb),0.4)",
+                border: tab === tid ? "1px solid rgba(13, 148, 136,0.3)" : "1px solid transparent",
               }}>
               <Icon size={14} />{label}
             </button>
@@ -981,6 +983,7 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
       {tab === "care-plans"    && <CarePlansTab residentId={resident.id} />}
       {tab === "care-notes"    && <CareNotesTab residentId={resident.id} />}
       {tab === "appointments"  && <AppointmentsTab residentId={resident.id} />}
+      {tab === "documents"     && <LinkedDocuments residentId={resident.id} emptyHint="Upload one in the Document Vault and link it to this resident." />}
       {tab === "mar"           && <MARTab residentId={resident.id} />}
       {tab === "vitals"        && <VitalsTab residentId={resident.id} canEdit={can("residents.edit")} />}
 

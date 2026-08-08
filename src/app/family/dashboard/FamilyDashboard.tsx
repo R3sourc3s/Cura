@@ -154,7 +154,7 @@ export default function FamilyDashboard({ resident, medications, carePlans }: Pr
 
       {/* Key contacts */}
       {(resident.gp_name || resident.next_of_kin_name) && (
-        <Card title="Key Contacts" icon={<Phone size={15} style={{ color: "#60a5fa" }} />}>
+        <Card title="Key Contacts" icon={<Phone size={15} style={{ color: "#2dd4bf" }} />}>
           <div className="space-y-3">
             {resident.gp_name && (
               <div className="flex items-start justify-between">
@@ -164,7 +164,7 @@ export default function FamilyDashboard({ resident, medications, carePlans }: Pr
                 </div>
                 {resident.gp_phone && (
                   <a href={`tel:${resident.gp_phone}`} className="text-xs px-2.5 py-1 rounded-lg"
-                    style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.2)" }}>
+                    style={{ background: "rgba(45, 212, 191,0.1)", color: "#2dd4bf", border: "1px solid rgba(45, 212, 191,0.2)" }}>
                     {resident.gp_phone}
                   </a>
                 )}
@@ -178,7 +178,7 @@ export default function FamilyDashboard({ resident, medications, carePlans }: Pr
                 </div>
                 {resident.next_of_kin_phone && (
                   <a href={`tel:${resident.next_of_kin_phone}`} className="text-xs px-2.5 py-1 rounded-lg"
-                    style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa", border: "1px solid rgba(96,165,250,0.2)" }}>
+                    style={{ background: "rgba(45, 212, 191,0.1)", color: "#2dd4bf", border: "1px solid rgba(45, 212, 191,0.2)" }}>
                     {resident.next_of_kin_phone}
                   </a>
                 )}

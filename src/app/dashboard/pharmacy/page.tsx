@@ -53,16 +53,16 @@ interface Resident { id: number; full_name: string; }
 type Tab = "stock" | "controlled" | "suppliers";
 
 const ENTRY_TYPE_CFG = {
-  received:     { label: "Received",     color: "#34d399", bg: "rgba(52,211,153,0.12)" },
-  administered: { label: "Administered", color: "#60a5fa", bg: "rgba(96,165,250,0.12)" },
-  destroyed:    { label: "Destroyed",    color: "#f87171", bg: "rgba(239,68,68,0.12)"  },
-  returned:     { label: "Returned",     color: "#fbbf24", bg: "rgba(251,191,36,0.12)" },
+  received:     { label: "Received",     color: "var(--c-green)", bg: "rgba(52,211,153,0.12)" },
+  administered: { label: "Administered", color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)" },
+  destroyed:    { label: "Destroyed",    color: "var(--c-red)", bg: "rgba(239,68,68,0.12)"  },
+  returned:     { label: "Returned",     color: "var(--c-amber)", bg: "rgba(251,191,36,0.12)" },
 } as const;
 
 const inputStyle = {
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  color: "rgba(255,255,255,0.8)",
+  background: "rgba(var(--fg-rgb),0.05)",
+  border: "1px solid rgba(var(--fg-rgb),0.1)",
+  color: "rgba(var(--fg-rgb),0.8)",
 } as const;
 
 export default function PharmacyPage() {
@@ -236,8 +236,8 @@ export default function PharmacyPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
-            <Package size={16} style={{ color: "#a78bfa" }} />
+            style={{ background: "rgba(13, 148, 136,0.12)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
+            <Package size={16} style={{ color: "var(--c-teal)" }} />
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Pharmacy</h1>
@@ -247,21 +247,21 @@ export default function PharmacyPage() {
         {tab === "stock" && (
           <button onClick={() => setShowStockModal(true)}
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Plus size={14} /> Add Stock
           </button>
         )}
         {tab === "controlled" && (
           <button onClick={() => setShowCdModal(true)}
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Plus size={14} /> Add Entry
           </button>
         )}
         {tab === "suppliers" && (
           <button onClick={() => setShowSupplierModal(true)}
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Plus size={14} /> Add Supplier
           </button>
         )}
@@ -270,10 +270,10 @@ export default function PharmacyPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Total Stock Items",       value: totalStock,      color: "#a78bfa" },
-          { label: "Low Stock",               value: lowStockCount,   color: "#f87171" },
-          { label: "CD Register Entries",     value: cdCount,         color: "#60a5fa" },
-          { label: "Active Suppliers",        value: activeSuppliers, color: "#34d399" },
+          { label: "Total Stock Items",       value: totalStock,      color: "var(--c-teal)" },
+          { label: "Low Stock",               value: lowStockCount,   color: "var(--c-red)" },
+          { label: "CD Register Entries",     value: cdCount,         color: "var(--c-teal2)" },
+          { label: "Active Suppliers",        value: activeSuppliers, color: "var(--c-green)" },
         ].map(({ label, value, color }) => (
           <div key={label} className="rounded-2xl p-4 text-center"
             style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
@@ -289,7 +289,7 @@ export default function PharmacyPage() {
           <button key={key} onClick={() => setTab(key)}
             className="flex items-center gap-2 flex-1 justify-center py-2 text-sm font-medium rounded-lg transition-colors"
             style={tab === key
-              ? { background: "linear-gradient(135deg, #7c3aed, #3b82f6)", color: "#fff" }
+              ? { background: "#0d9488", color: "#fff" }
               : { color: "var(--text-muted)" }}>
             <Icon size={13} />
             {label}
@@ -318,14 +318,14 @@ export default function PharmacyPage() {
             <div className="space-y-2">
               {stock.map(item => (
                 <div key={item.id} className="rounded-2xl p-4"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                  style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-sm font-semibold text-white">{item.medication_name}</span>
                         {item.is_low_stock && (
                           <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium"
-                            style={{ background: "rgba(239,68,68,0.12)", color: "#f87171" }}>
+                            style={{ background: "rgba(239,68,68,0.12)", color: "var(--c-red)" }}>
                             <AlertTriangle size={10} /> Low Stock
                           </span>
                         )}
@@ -337,7 +337,7 @@ export default function PharmacyPage() {
                       )}
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <div className="text-sm font-semibold" style={{ color: item.is_low_stock ? "#f87171" : "var(--text-primary)" }}>
+                      <div className="text-sm font-semibold" style={{ color: item.is_low_stock ? "var(--c-red)" : "var(--text-primary)" }}>
                         {item.quantity_on_hand} {item.unit}
                       </div>
                       <div className="text-xs" style={{ color: "var(--text-muted)" }}>
@@ -389,7 +389,7 @@ export default function PharmacyPage() {
                 const cfg = ENTRY_TYPE_CFG[entry.entry_type] ?? ENTRY_TYPE_CFG.administered;
                 return (
                   <div key={entry.id} className="rounded-2xl p-4"
-                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                    style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -411,26 +411,26 @@ export default function PharmacyPage() {
                           )}
                         </div>
                         {entry.notes && (
-                          <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.4)" }}>{entry.notes}</p>
+                          <p className="text-xs mt-1" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>{entry.notes}</p>
                         )}
                         <div className="flex items-center gap-3 mt-1 flex-wrap">
                           {entry.recorded_by_name && (
-                            <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                            <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
                               Recorded by: {entry.recorded_by_name}
                             </span>
                           )}
                           {entry.witnessed_by_name && (
-                            <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                            <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
                               Witnessed by: {entry.witnessed_by_name}
                             </span>
                           )}
                         </div>
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <div className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+                        <div className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                           {new Date(entry.recorded_at).toLocaleDateString("en-GB")}
                         </div>
-                        <div className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>
+                        <div className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.25)" }}>
                           {new Date(entry.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
                         </div>
                       </div>
@@ -464,7 +464,7 @@ export default function PharmacyPage() {
             <div className="space-y-2">
               {suppliers.map(sup => (
                 <div key={sup.id} className="rounded-2xl p-4"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                  style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
@@ -483,14 +483,14 @@ export default function PharmacyPage() {
                         )}
                         {sup.email && (
                           <a href={`mailto:${sup.email}`} className="text-xs hover:underline"
-                            style={{ color: "#60a5fa" }}>{sup.email}</a>
+                            style={{ color: "var(--c-teal2)" }}>{sup.email}</a>
                         )}
                       </div>
                       {sup.address && (
-                        <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.3)" }}>{sup.address}</div>
+                        <div className="text-xs mt-0.5" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>{sup.address}</div>
                       )}
                     </div>
-                    <div className="text-xs flex-shrink-0" style={{ color: "rgba(255,255,255,0.25)" }}>
+                    <div className="text-xs flex-shrink-0" style={{ color: "rgba(var(--fg-rgb),0.25)" }}>
                       {new Date(sup.created_at).toLocaleDateString("en-GB")}
                     </div>
                   </div>
@@ -506,10 +506,10 @@ export default function PharmacyPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-md"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Add Stock Item</h3>
-              <button onClick={() => setShowStockModal(false)} style={{ color: "rgba(255,255,255,0.4)" }}><X size={18} /></button>
+              <button onClick={() => setShowStockModal(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}><X size={18} /></button>
             </div>
             <div className="space-y-3">
               {[
@@ -547,7 +547,7 @@ export default function PharmacyPage() {
                 },
               ].map(({ label, el }) => (
                 <div key={label}>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>{label}</label>
                   {el}
                 </div>
               ))}
@@ -555,12 +555,12 @@ export default function PharmacyPage() {
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowStockModal(false)}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button onClick={handleSaveStock} disabled={savingStock || !stockForm.medication_name}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {savingStock ? "Saving…" : "Save"}
               </button>
             </div>
@@ -573,10 +573,10 @@ export default function PharmacyPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-md overflow-y-auto max-h-screen"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Add CD Register Entry</h3>
-              <button onClick={() => setShowCdModal(false)} style={{ color: "rgba(255,255,255,0.4)" }}><X size={18} /></button>
+              <button onClick={() => setShowCdModal(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}><X size={18} /></button>
             </div>
             <div className="space-y-3">
               {[
@@ -638,7 +638,7 @@ export default function PharmacyPage() {
                 },
               ].map(({ label, el }) => (
                 <div key={label}>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>{label}</label>
                   {el}
                 </div>
               ))}
@@ -646,13 +646,13 @@ export default function PharmacyPage() {
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowCdModal(false)}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button onClick={handleSaveCd}
                 disabled={savingCd || !cdForm.medication_name || !cdForm.quantity || !cdForm.balance_after}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {savingCd ? "Saving…" : "Save Entry"}
               </button>
             </div>
@@ -665,10 +665,10 @@ export default function PharmacyPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-md"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Add Supplier</h3>
-              <button onClick={() => setShowSupplierModal(false)} style={{ color: "rgba(255,255,255,0.4)" }}><X size={18} /></button>
+              <button onClick={() => setShowSupplierModal(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}><X size={18} /></button>
             </div>
             <div className="space-y-3">
               {[
@@ -699,7 +699,7 @@ export default function PharmacyPage() {
                 },
               ].map(({ label, el }) => (
                 <div key={label}>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>{label}</label>
                   {el}
                 </div>
               ))}
@@ -707,12 +707,12 @@ export default function PharmacyPage() {
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowSupplierModal(false)}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button onClick={handleSaveSupplier} disabled={savingSupplier || !supplierForm.name}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {savingSupplier ? "Saving…" : "Save Supplier"}
               </button>
             </div>

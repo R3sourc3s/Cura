@@ -52,10 +52,10 @@ interface Stats {
 }
 
 function ratingLabel(pct: number) {
-  if (pct >= 90) return { label: "Outstanding", color: "#34d399", bg: "rgba(52,211,153,0.15)" };
-  if (pct >= 75) return { label: "Good", color: "#60a5fa", bg: "rgba(96,165,250,0.15)" };
-  if (pct >= 55) return { label: "Requires Improvement", color: "#fbbf24", bg: "rgba(251,191,36,0.15)" };
-  return { label: "Inadequate", color: "#f87171", bg: "rgba(239,68,68,0.15)" };
+  if (pct >= 90) return { label: "Outstanding", color: "var(--c-green)", bg: "rgba(52,211,153,0.15)" };
+  if (pct >= 75) return { label: "Good", color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.15)" };
+  if (pct >= 55) return { label: "Requires Improvement", color: "var(--c-amber)", bg: "rgba(251,191,36,0.15)" };
+  return { label: "Inadequate", color: "var(--c-red)", bg: "rgba(239,68,68,0.15)" };
 }
 
 function ScoreRing({ score, max, color }: { score: number; max: number; color: string }) {
@@ -65,7 +65,7 @@ function ScoreRing({ score, max, color }: { score: number; max: number; color: s
   const dash = circ * pct;
   return (
     <svg width="88" height="88" viewBox="0 0 88 88">
-      <circle cx="44" cy="44" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
+      <circle cx="44" cy="44" r={r} fill="none" stroke="rgba(var(--fg-rgb),0.06)" strokeWidth="8" />
       <circle cx="44" cy="44" r={r} fill="none" stroke={color} strokeWidth="8"
         strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
         transform="rotate(-90 44 44)" style={{ transition: "stroke-dasharray 0.6s ease" }} />
@@ -125,7 +125,7 @@ export default function CQCReadinessPage() {
       label: "Safe",
       question: "Are people protected from abuse and avoidable harm?",
       icon: Shield,
-      color: "#f87171",
+      color: "var(--c-red)",
       bg: "rgba(239,68,68,0.1)",
       score: Math.max(0, 40 - n("incidents_open") * 4 - n("safeguarding_open") * 8 - n("falls_high_risk") * 2),
       maxScore: 40,
@@ -147,8 +147,8 @@ export default function CQCReadinessPage() {
       label: "Effective",
       question: "Do people's care and treatment achieve good outcomes?",
       icon: Zap,
-      color: "#60a5fa",
-      bg: "rgba(96,165,250,0.1)",
+      color: "var(--c-teal2)",
+      bg: "rgba(45, 212, 191,0.1)",
       score: Math.max(0, 40 - n("training_expired") * 3 - n("training_expiring") - (n("care_plans_active") === 0 ? 10 : 0)),
       maxScore: 40,
       evidence: [
@@ -189,7 +189,7 @@ export default function CQCReadinessPage() {
       label: "Responsive",
       question: "Are services organised to meet people's needs?",
       icon: RefreshCw,
-      color: "#34d399",
+      color: "var(--c-green)",
       bg: "rgba(52,211,153,0.1)",
       score: 32,
       maxScore: 40,
@@ -210,8 +210,8 @@ export default function CQCReadinessPage() {
       label: "Well-led",
       question: "Is the leadership, management and governance effective?",
       icon: Award,
-      color: "#a78bfa",
-      bg: "rgba(124,58,237,0.1)",
+      color: "var(--c-teal)",
+      bg: "rgba(13, 148, 136,0.1)",
       score: Math.max(0, 40 - n("training_expired") * 2),
       maxScore: 40,
       evidence: [
@@ -234,9 +234,9 @@ export default function CQCReadinessPage() {
   const overallPct = totalMax > 0 ? (totalScore / totalMax) * 100 : 0;
   const overallRating = ratingLabel(overallPct);
 
-  const priorityColor: Record<string, string> = { high: "#f87171", medium: "#fbbf24", low: "#34d399" };
+  const priorityColor: Record<string, string> = { high: "var(--c-red)", medium: "var(--c-amber)", low: "var(--c-green)" };
   const statusIcon = { good: CheckCircle, warning: AlertTriangle, critical: XCircle };
-  const statusColor = { good: "#34d399", warning: "#fbbf24", critical: "#f87171" };
+  const statusColor = { good: "var(--c-green)", warning: "var(--c-amber)", critical: "var(--c-red)" };
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -244,8 +244,8 @@ export default function CQCReadinessPage() {
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
-            <Star size={18} style={{ color: "#a78bfa" }} />
+            style={{ background: "rgba(13, 148, 136,0.12)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
+            <Star size={18} style={{ color: "var(--c-teal)" }} />
           </div>
           <div>
             <h1 className="text-xl font-bold text-white">CQC Readiness</h1>
@@ -257,7 +257,7 @@ export default function CQCReadinessPage() {
       </div>
 
       {/* Overall score banner */}
-      <div className="rounded-2xl p-6" style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(59,130,246,0.1))", border: "1px solid rgba(124,58,237,0.2)" }}>
+      <div className="rounded-2xl p-6" style={{ background: "linear-gradient(135deg, rgba(13, 148, 136,0.15), rgba(20, 184, 166,0.1))", border: "1px solid rgba(13, 148, 136,0.2)" }}>
         <div className="flex items-center gap-6">
           <ScoreRing score={totalScore} max={totalMax} color={overallRating.color} />
           <div className="flex-1">
@@ -292,11 +292,11 @@ export default function CQCReadinessPage() {
             ].map(item => (
               <div key={item.label} className="flex items-center gap-2 text-xs">
                 {item.bad
-                  ? <XCircle size={13} style={{ color: "#f87171" }} />
-                  : <CheckCircle size={13} style={{ color: "#34d399" }} />
+                  ? <XCircle size={13} style={{ color: "var(--c-red)" }} />
+                  : <CheckCircle size={13} style={{ color: "var(--c-green)" }} />
                 }
                 <span style={{ color: "var(--text-secondary)" }}>{item.label}:</span>
-                <span className="font-semibold" style={{ color: item.bad ? "#f87171" : "#34d399" }}>{item.val}</span>
+                <span className="font-semibold" style={{ color: item.bad ? "var(--c-red)" : "var(--c-green)" }}>{item.val}</span>
               </div>
             ))}
           </div>
@@ -329,7 +329,7 @@ export default function CQCReadinessPage() {
                         {rating.label}
                       </span>
                       {highActions.length > 0 && (
-                        <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#f87171" }}>
+                        <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "var(--c-red)" }}>
                           {highActions.length} urgent action{highActions.length > 1 ? "s" : ""}
                         </span>
                       )}
@@ -396,13 +396,13 @@ export default function CQCReadinessPage() {
         <div className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--text-muted)" }}>Quick Links to Evidence</div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {[
-            { label: "Incidents", href: "/dashboard/incidents", icon: AlertTriangle, color: "#f87171" },
-            { label: "Safeguarding", href: "/dashboard/safeguarding", icon: Shield, color: "#a78bfa" },
-            { label: "Staff Training", href: "/dashboard/training", icon: TrendingUp, color: "#60a5fa" },
-            { label: "Care Plans", href: "/dashboard/care-plans", icon: ClipboardList, color: "#34d399" },
-            { label: "Medications (MAR)", href: "/dashboard/mar", icon: Pill, color: "#fbbf24" },
-            { label: "Body Map", href: "/dashboard/body-map", icon: Activity, color: "#2dd4bf" },
-            { label: "Audit Trail", href: "/dashboard/audit", icon: FileText, color: "#fb923c" },
+            { label: "Incidents", href: "/dashboard/incidents", icon: AlertTriangle, color: "var(--c-red)" },
+            { label: "Safeguarding", href: "/dashboard/safeguarding", icon: Shield, color: "var(--c-teal)" },
+            { label: "Staff Training", href: "/dashboard/training", icon: TrendingUp, color: "var(--c-teal2)" },
+            { label: "Care Plans", href: "/dashboard/care-plans", icon: ClipboardList, color: "var(--c-green)" },
+            { label: "Medications (MAR)", href: "/dashboard/mar", icon: Pill, color: "var(--c-amber)" },
+            { label: "Body Map", href: "/dashboard/body-map", icon: Activity, color: "var(--c-teal2)" },
+            { label: "Audit Trail", href: "/dashboard/audit", icon: FileText, color: "var(--c-orange)" },
             { label: "Handover", href: "/dashboard/handover", icon: BookOpen, color: "#818cf8" },
           ].map(link => {
             const LIcon = link.icon;

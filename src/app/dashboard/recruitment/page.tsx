@@ -46,19 +46,19 @@ interface Applicant {
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 const JOB_STATUS_CFG: Record<string, { label: string; color: string; bg: string }> = {
-  open:   { label: "Open",   color: "#34d399", bg: "rgba(52,211,153,0.12)" },
-  draft:  { label: "Draft",  color: "#fbbf24", bg: "rgba(251,191,36,0.12)" },
+  open:   { label: "Open",   color: "var(--c-green)", bg: "rgba(52,211,153,0.12)" },
+  draft:  { label: "Draft",  color: "var(--c-amber)", bg: "rgba(251,191,36,0.12)" },
   closed: { label: "Closed", color: "#94a3b8", bg: "rgba(148,163,184,0.12)" },
   filled: { label: "Filled", color: "#c084fc", bg: "rgba(192,132,252,0.12)" },
 };
 
 const APP_STATUS_CFG: Record<string, { label: string; color: string; bg: string }> = {
-  applied:     { label: "Applied",     color: "#60a5fa", bg: "rgba(96,165,250,0.12)" },
-  shortlisted: { label: "Shortlisted", color: "#fbbf24", bg: "rgba(251,191,36,0.12)" },
-  interviewed: { label: "Interviewed", color: "#fb923c", bg: "rgba(251,146,60,0.12)" },
+  applied:     { label: "Applied",     color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)" },
+  shortlisted: { label: "Shortlisted", color: "var(--c-amber)", bg: "rgba(251,191,36,0.12)" },
+  interviewed: { label: "Interviewed", color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)" },
   offered:     { label: "Offered",     color: "#c084fc", bg: "rgba(192,132,252,0.12)" },
-  hired:       { label: "Hired",       color: "#34d399", bg: "rgba(52,211,153,0.12)" },
-  rejected:    { label: "Rejected",    color: "#f87171", bg: "rgba(248,113,113,0.12)" },
+  hired:       { label: "Hired",       color: "var(--c-green)", bg: "rgba(52,211,153,0.12)" },
+  rejected:    { label: "Rejected",    color: "var(--c-red)", bg: "rgba(248,113,113,0.12)" },
   withdrawn:   { label: "Withdrawn",   color: "#94a3b8", bg: "rgba(148,163,184,0.12)" },
 };
 
@@ -70,12 +70,12 @@ const CONTRACT_LABELS: Record<string, string> = {
 };
 
 const FIELD_STYLE = {
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  color: "rgba(255,255,255,0.8)",
+  background: "rgba(var(--fg-rgb),0.05)",
+  border: "1px solid rgba(var(--fg-rgb),0.1)",
+  color: "rgba(var(--fg-rgb),0.8)",
 } as const;
 
-const LABEL_STYLE = { color: "rgba(255,255,255,0.5)" } as const;
+const LABEL_STYLE = { color: "rgba(var(--fg-rgb),0.5)" } as const;
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
@@ -264,8 +264,8 @@ export default function RecruitmentPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
-            <Briefcase size={16} style={{ color: "#a78bfa" }} />
+            style={{ background: "rgba(13, 148, 136,0.12)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
+            <Briefcase size={16} style={{ color: "var(--c-teal)" }} />
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Recruitment</h1>
@@ -275,7 +275,7 @@ export default function RecruitmentPage() {
         <button
           onClick={() => tab === "jobs" ? setShowJobModal(true) : setShowAppModal(true)}
           className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+          style={{ background: "#0d9488" }}>
           <Plus size={14} />
           {tab === "jobs" ? "Add Job" : "Add Applicant"}
         </button>
@@ -284,9 +284,9 @@ export default function RecruitmentPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Open Positions",  value: openCount,       color: "#34d399", icon: <Building2 size={14} /> },
-          { label: "Total Applicants", value: totalApplicants, color: "#60a5fa", icon: <Users size={14} /> },
-          { label: "Shortlisted",     value: shortlistedCount, color: "#fbbf24", icon: <Filter size={14} /> },
+          { label: "Open Positions",  value: openCount,       color: "var(--c-green)", icon: <Building2 size={14} /> },
+          { label: "Total Applicants", value: totalApplicants, color: "var(--c-teal2)", icon: <Users size={14} /> },
+          { label: "Shortlisted",     value: shortlistedCount, color: "var(--c-amber)", icon: <Filter size={14} /> },
           { label: "Hired This Month", value: hiredThisMonth,  color: "#c084fc", icon: <UserCheck size={14} /> },
         ].map(({ label, value, color, icon }) => (
           <div key={label} className="rounded-2xl p-4 text-center"
@@ -300,13 +300,13 @@ export default function RecruitmentPage() {
 
       {/* Tabs */}
       <div className="flex gap-1 p-1 rounded-xl w-fit"
-        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
+        style={{ background: "rgba(var(--fg-rgb),0.04)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
         {(["jobs", "applicants"] as const).map(t => (
           <button key={t} onClick={() => setTab(t)}
             className="px-5 py-2 text-sm font-semibold rounded-lg transition-all"
             style={tab === t
-              ? { background: "linear-gradient(135deg, #7c3aed, #3b82f6)", color: "#fff" }
-              : { color: "rgba(255,255,255,0.45)" }}>
+              ? { background: "#0d9488", color: "#fff" }
+              : { color: "rgba(var(--fg-rgb),0.45)" }}>
             {t === "jobs" ? "Job Postings" : "Applicants"}
           </button>
         ))}
@@ -329,13 +329,13 @@ export default function RecruitmentPage() {
               { value: jobContractFilter, set: setJobContractFilter, opts: [["", "All Contracts"], ["full_time", "Full Time"], ["part_time", "Part Time"], ["bank", "Bank"], ["agency", "Agency"]] },
             ].map((f, i) => (
               <div key={i} className="relative">
-                <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+                <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(var(--fg-rgb),0.25)" }} />
                 <select value={f.value} onChange={e => f.set(e.target.value)}
                   className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}>
+                  style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.08)", color: "rgba(var(--fg-rgb),0.6)" }}>
                   {f.opts.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                 </select>
-                <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+                <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
               </div>
             ))}
           </div>
@@ -355,7 +355,7 @@ export default function RecruitmentPage() {
                 const sc = JOB_STATUS_CFG[job.status] ?? JOB_STATUS_CFG.draft;
                 return (
                   <div key={job.id} className="rounded-2xl p-4 cursor-pointer transition-colors"
-                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+                    style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}
                     onClick={() => { setSelectedJob(job.id); setTab("applicants"); }}>
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
@@ -364,28 +364,28 @@ export default function RecruitmentPage() {
                           <span className="text-xs px-2 py-0.5 rounded-full font-medium"
                             style={{ background: sc.bg, color: sc.color }}>{sc.label}</span>
                           <span className="text-xs px-2 py-0.5 rounded-full"
-                            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.45)" }}>
+                            style={{ background: "rgba(var(--fg-rgb),0.05)", color: "rgba(var(--fg-rgb),0.45)" }}>
                             {CONTRACT_LABELS[job.contract_type] ?? job.contract_type}
                           </span>
                           {job.department && (
                             <span className="text-xs px-2 py-0.5 rounded-full"
-                              style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)" }}>
+                              style={{ background: "rgba(var(--fg-rgb),0.05)", color: "rgba(var(--fg-rgb),0.4)" }}>
                               {job.department}
                             </span>
                           )}
                         </div>
                         {job.description && (
                           <p className="text-sm leading-relaxed line-clamp-2 mt-1"
-                            style={{ color: "rgba(255,255,255,0.55)" }}>{job.description}</p>
+                            style={{ color: "rgba(var(--fg-rgb),0.55)" }}>{job.description}</p>
                         )}
                         <div className="flex flex-wrap gap-3 mt-2">
                           {job.salary_range && (
-                            <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+                            <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                               Salary: {job.salary_range}
                             </span>
                           )}
                           {job.closing_date && (
-                            <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+                            <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                               Closes: {new Date(job.closing_date).toLocaleDateString("en-GB")}
                             </span>
                           )}
@@ -393,12 +393,12 @@ export default function RecruitmentPage() {
                       </div>
                       <div className="text-right flex-shrink-0">
                         <div className="flex items-center gap-1 justify-end"
-                          style={{ color: "#60a5fa" }}>
+                          style={{ color: "var(--c-teal2)" }}>
                           <Users size={13} />
                           <span className="text-sm font-bold">{job.applicant_count}</span>
                         </div>
-                        <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.3)" }}>applicants</div>
-                        <div className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.25)" }}>
+                        <div className="text-xs mt-0.5" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>applicants</div>
+                        <div className="text-xs mt-2" style={{ color: "rgba(var(--fg-rgb),0.25)" }}>
                           {new Date(job.created_at).toLocaleDateString("en-GB")}
                         </div>
                       </div>
@@ -423,9 +423,9 @@ export default function RecruitmentPage() {
                   onClick={() => setAppStatusFilter(appStatusFilter === key ? "" : key)}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
                   style={{
-                    background: appStatusFilter === key ? cfg.bg : "rgba(255,255,255,0.04)",
-                    border: `1px solid ${appStatusFilter === key ? cfg.color + "40" : "rgba(255,255,255,0.07)"}`,
-                    color: appStatusFilter === key ? cfg.color : "rgba(255,255,255,0.45)",
+                    background: appStatusFilter === key ? cfg.bg : "rgba(var(--fg-rgb),0.04)",
+                    border: `1px solid ${appStatusFilter === key ? cfg.color + "40" : "rgba(var(--fg-rgb),0.07)"}`,
+                    color: appStatusFilter === key ? cfg.color : "rgba(var(--fg-rgb),0.45)",
                   }}>
                   {cfg.label}
                   <span className="font-bold">{count}</span>
@@ -444,14 +444,14 @@ export default function RecruitmentPage() {
                 style={{ background: "var(--input-bg)", border: "1px solid var(--bg-card-hover)", color: "var(--text-secondary)" }} />
             </div>
             <div className="relative">
-              <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+              <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(var(--fg-rgb),0.25)" }} />
               <select value={selectedJob} onChange={e => setSelectedJob(e.target.value === "" ? "" : Number(e.target.value))}
                 className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.08)", color: "rgba(var(--fg-rgb),0.6)" }}>
                 <option value="">All Jobs</option>
                 {jobs.map(j => <option key={j.id} value={j.id}>{j.title}</option>)}
               </select>
-              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
             </div>
           </div>
 
@@ -472,7 +472,7 @@ export default function RecruitmentPage() {
                 return (
                   <div key={app.id}
                     className="rounded-2xl p-4 cursor-pointer transition-colors"
-                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+                    style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}
                     onClick={() => openEditApp(app)}>
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
@@ -484,34 +484,34 @@ export default function RecruitmentPage() {
                             style={{ background: sc.bg, color: sc.color }}>{sc.label}</span>
                           {app.right_to_work_verified && (
                             <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
-                              style={{ background: "rgba(52,211,153,0.1)", color: "#34d399" }}>
+                              style={{ background: "rgba(52,211,153,0.1)", color: "var(--c-green)" }}>
                               <CheckCircle size={10} /> RTW
                             </span>
                           )}
                           {app.dbs_check_requested && (
                             <span className="text-xs px-2 py-0.5 rounded-full"
-                              style={{ background: "rgba(251,191,36,0.1)", color: "#fbbf24" }}>
+                              style={{ background: "rgba(251,191,36,0.1)", color: "var(--c-amber)" }}>
                               DBS
                             </span>
                           )}
                         </div>
                         <div className="flex flex-wrap gap-3 mt-0.5">
-                          <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{app.email}</span>
-                          {app.phone && <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{app.phone}</span>}
+                          <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>{app.email}</span>
+                          {app.phone && <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>{app.phone}</span>}
                         </div>
                         {job && (
-                          <div className="mt-1 text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                          <div className="mt-1 text-xs" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
                             {job.title}
                           </div>
                         )}
                         {app.interview_date && (
-                          <div className="mt-1 text-xs" style={{ color: "#fb923c" }}>
+                          <div className="mt-1 text-xs" style={{ color: "var(--c-orange)" }}>
                             Interview: {new Date(app.interview_date).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}
                           </div>
                         )}
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <div className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                        <div className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
                           {new Date(app.applied_at).toLocaleDateString("en-GB")}
                         </div>
                       </div>
@@ -529,10 +529,10 @@ export default function RecruitmentPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Add Job Posting</h3>
-              <button onClick={() => setShowJobModal(false)} style={{ color: "rgba(255,255,255,0.4)" }}>
+              <button onClick={() => setShowJobModal(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                 <X size={18} />
               </button>
             </div>
@@ -604,12 +604,12 @@ export default function RecruitmentPage() {
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowJobModal(false)}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button onClick={handleSaveJob} disabled={saving || !jobForm.title}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {saving ? "Saving…" : "Create Posting"}
               </button>
             </div>
@@ -622,12 +622,12 @@ export default function RecruitmentPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">
                 {editingApp ? "Edit Applicant" : "Add Applicant"}
               </h3>
-              <button onClick={closeAppModal} style={{ color: "rgba(255,255,255,0.4)" }}>
+              <button onClick={closeAppModal} style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                 <X size={18} />
               </button>
             </div>
@@ -707,7 +707,7 @@ export default function RecruitmentPage() {
                     <input type="checkbox" checked={appForm[key]}
                       onChange={e => setAppForm(f => ({ ...f, [key]: e.target.checked }))}
                       className="rounded" />
-                    <span className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>{label}</span>
+                    <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.6)" }}>{label}</span>
                   </label>
                 ))}
               </div>
@@ -715,14 +715,14 @@ export default function RecruitmentPage() {
             <div className="flex gap-3 mt-5">
               <button onClick={closeAppModal}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button
                 onClick={handleSaveApplicant}
                 disabled={saving || !appForm.job_posting || !appForm.first_name || !appForm.last_name || !appForm.email}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {saving ? "Saving…" : editingApp ? "Save Changes" : "Add Applicant"}
               </button>
             </div>

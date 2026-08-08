@@ -12,7 +12,7 @@ export default function DashboardError({ error, reset }: { error: Error & { dige
       <div className="text-center max-w-sm">
         <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
           style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}>
-          <AlertTriangle size={24} style={{ color: "#f87171" }} />
+          <AlertTriangle size={24} style={{ color: "var(--c-red)" }} />
         </div>
         <h2 className="text-lg font-bold mb-1" style={{ color: "var(--text-primary)" }}>Page error</h2>
         <p className="text-sm mb-5" style={{ color: "var(--text-muted)" }}>
@@ -26,7 +26,7 @@ export default function DashboardError({ error, reset }: { error: Error & { dige
           </Link>
           <button onClick={reset}
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <RefreshCw size={14} /> Retry
           </button>
         </div>

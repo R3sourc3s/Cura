@@ -87,14 +87,14 @@ export default function VisitorsPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(52,211,153,0.12)", border: "1px solid rgba(52,211,153,0.2)" }}>
-            <Users size={16} style={{ color: "#34d399" }} />
+            <Users size={16} style={{ color: "var(--c-green)" }} />
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Visitor Log</h1>
             <p className="text-xs" style={{ color: "var(--text-muted)" }}>Sign in / sign out tracking</p>
           </div>
         </div>
-        <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+        <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background: "#0d9488" }}>
           <Plus size={14} /> Log Visitor
         </button>
       </div>
@@ -102,9 +102,9 @@ export default function VisitorsPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: "Currently Inside", value: currentlyIn.length, color: "#34d399" },
-          { label: "Visits Today", value: todayVisits, color: "#60a5fa" },
-          { label: "This Week", value: weekVisits, color: "#a78bfa" },
+          { label: "Currently Inside", value: currentlyIn.length, color: "var(--c-green)" },
+          { label: "Visits Today", value: todayVisits, color: "var(--c-teal2)" },
+          { label: "This Week", value: weekVisits, color: "var(--c-teal)" },
         ].map(({ label, value, color }) => (
           <div key={label} className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
             <div className="text-2xl font-bold" style={{ color }}>{value}</div>
@@ -116,14 +116,14 @@ export default function VisitorsPage() {
       {/* Currently in */}
       {currentlyIn.length > 0 && (
         <div className="rounded-2xl p-4" style={{ background: "rgba(52,211,153,0.05)", border: "1px solid rgba(52,211,153,0.15)" }}>
-          <p className="text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color: "#34d399" }}>
+          <p className="text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color: "var(--c-green)" }}>
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" /> Currently Signed In
           </p>
           <div className="space-y-2">
             {currentlyIn.map(v => (
               <div key={v.id} className="flex items-center justify-between px-3 py-2.5 rounded-xl" style={{ background: "var(--bg-card)" }}>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>{v.visitor_name[0]}</div>
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white" style={{ background: "#0d9488" }}>{v.visitor_name[0]}</div>
                   <div>
                     <div className="text-sm font-medium text-white">{v.visitor_name}</div>
                     <div className="text-xs" style={{ color: "var(--text-muted)" }}>{v.relationship} of {v.resident_name} · in since {new Date(v.signed_in).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</div>
@@ -131,7 +131,7 @@ export default function VisitorsPage() {
                 </div>
                 <button onClick={() => handleSignOut(v.id)} disabled={signingOut === v.id}
                   className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg disabled:opacity-50"
-                  style={{ background: "rgba(239,68,68,0.12)", color: "#f87171", border: "1px solid rgba(239,68,68,0.2)" }}>
+                  style={{ background: "rgba(239,68,68,0.12)", color: "var(--c-red)", border: "1px solid rgba(239,68,68,0.2)" }}>
                   <LogOut size={12} />{signingOut === v.id ? "…" : "Sign Out"}
                 </button>
               </div>
@@ -164,13 +164,13 @@ export default function VisitorsPage() {
               ))}
             </tr>
           </thead>
-          <tbody style={{ background: "rgba(5,9,20,0.6)" }}>
+          <tbody style={{ background: "var(--bg-card)" }}>
             {loading ? (
-              <tr><td colSpan={6} className="py-12 text-center"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin mx-auto" /></td></tr>
+              <tr><td colSpan={6} className="py-12 text-center"><div className="w-6 h-6 rounded-full border-2 border-teal-500 border-t-transparent animate-spin mx-auto" /></td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={6} className="py-12 text-center text-sm" style={{ color: "var(--text-muted)" }}>No visitor records found</td></tr>
             ) : filtered.map(v => (
-              <tr key={v.id} style={{ borderBottom: "1px solid var(--bg-card)" }}>
+              <tr key={v.id} style={{ borderBottom: "1px solid var(--border)" }}>
                 <td className="px-4 py-3">
                   <div className="text-sm font-medium text-white">{v.visitor_name}</div>
                   {v.relationship && <div className="text-xs" style={{ color: "var(--text-muted)" }}>{v.relationship}</div>}
@@ -182,13 +182,13 @@ export default function VisitorsPage() {
                 <td className="px-4 py-3 text-xs">
                   {v.signed_out
                     ? <span style={{ color: "var(--text-secondary)" }}>{new Date(v.signed_out).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</span>
-                    : <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: "rgba(52,211,153,0.12)", color: "#34d399" }}>Still in</span>}
+                    : <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: "rgba(52,211,153,0.12)", color: "var(--c-green)" }}>Still in</span>}
                 </td>
                 <td className="px-4 py-3 text-xs" style={{ color: "var(--text-secondary)" }}>{v.purpose || "—"}</td>
                 <td className="px-4 py-3">
                   {v.health_screening_passed
-                    ? <CheckCircle size={16} style={{ color: "#34d399" }} />
-                    : <XCircle size={16} style={{ color: "#f87171" }} />}
+                    ? <CheckCircle size={16} style={{ color: "var(--c-green)" }} />
+                    : <XCircle size={16} style={{ color: "var(--c-red)" }} />}
                 </td>
               </tr>
             ))}
@@ -199,7 +199,7 @@ export default function VisitorsPage() {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(124,58,237,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Log Visitor</h3>
               <button onClick={() => setShowModal(false)} style={{ color: "var(--text-muted)" }}><X size={18} /></button>
@@ -226,7 +226,7 @@ export default function VisitorsPage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowModal(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{ background: "var(--bg-card-hover)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>Cancel</button>
-              <button onClick={handleSave} disabled={saving || !form.resident || !form.visitor_name} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>{saving ? "Saving…" : "Log Visitor"}</button>
+              <button onClick={handleSave} disabled={saving || !form.resident || !form.visitor_name} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{ background: "#0d9488" }}>{saving ? "Saving…" : "Log Visitor"}</button>
             </div>
           </div>
         </div>

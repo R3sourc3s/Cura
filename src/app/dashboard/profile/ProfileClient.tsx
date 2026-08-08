@@ -4,21 +4,22 @@ import { useState } from "react";
 import { auth as authApi } from "@/lib/api";
 import type { User } from "@/types";
 import { useToast } from "@/components/Toast";
-import { UserCircle, Save, Lock, Phone, Mail, BadgeCheck } from "lucide-react";
+import { UserCircle, Save, Lock, Phone, Mail, BadgeCheck, FolderOpen } from "lucide-react";
+import LinkedDocuments from "@/components/documents/LinkedDocuments";
 
 const ROLE_LABELS: Record<string, string> = {
   admin: "Admin", manager: "Care Manager", nurse: "Nurse", carer: "Carer", hr: "HR",
 };
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" };
 
 function Section({ title, icon: Icon, children }: { title: string; icon: React.ElementType; children: React.ReactNode }) {
   return (
     <div className="rounded-2xl overflow-hidden"
       style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
       <div className="flex items-center gap-2.5 px-5 py-4 border-b" style={{ borderColor: "var(--border)" }}>
-        <Icon size={15} style={{ color: "#a78bfa" }} />
+        <Icon size={15} style={{ color: "var(--c-teal)" }} />
         <h2 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{title}</h2>
       </div>
       <div className="px-5 py-5">{children}</div>
@@ -81,7 +82,7 @@ export default function ProfileClient({ initialUser }: { initialUser: User }) {
     <div className="space-y-5 max-w-2xl">
       <div>
         <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-          <UserCircle size={22} style={{ color: "#a78bfa" }} /> My Profile
+          <UserCircle size={22} style={{ color: "var(--c-teal)" }} /> My Profile
         </h1>
         <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
           Manage your account details and password
@@ -91,7 +92,7 @@ export default function ProfileClient({ initialUser }: { initialUser: User }) {
       <div className="rounded-2xl p-5 flex items-center gap-5"
         style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold flex-shrink-0 text-white"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+          style={{ background: "#0d9488" }}>
           {user.avatar
             ? <img src={user.avatar} alt={user.full_name} className="w-full h-full rounded-2xl object-cover" />
             : initials}
@@ -100,8 +101,8 @@ export default function ProfileClient({ initialUser }: { initialUser: User }) {
           <div className="text-lg font-bold text-white">{user.full_name}</div>
           <div className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>@{user.username}</div>
           <div className="flex items-center gap-1.5 mt-1.5">
-            <BadgeCheck size={12} style={{ color: "#a78bfa" }} />
-            <span className="text-xs font-medium" style={{ color: "#a78bfa" }}>
+            <BadgeCheck size={12} style={{ color: "var(--c-teal)" }} />
+            <span className="text-xs font-medium" style={{ color: "var(--c-teal)" }}>
               {ROLE_LABELS[user.role] ?? user.role}
             </span>
           </div>
@@ -133,7 +134,7 @@ export default function ProfileClient({ initialUser }: { initialUser: User }) {
           </Field>
           <button type="submit" disabled={savingProfile}
             className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Save size={14} />{savingProfile ? "Saving…" : "Save Changes"}
           </button>
         </form>
@@ -156,10 +157,14 @@ export default function ProfileClient({ initialUser }: { initialUser: User }) {
           </Field>
           <button type="submit" disabled={savingPw}
             className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Lock size={14} />{savingPw ? "Updating…" : "Change Password"}
           </button>
         </form>
+      </Section>
+
+      <Section title="My Documents" icon={FolderOpen}>
+        <LinkedDocuments staffId={user.id} emptyHint="Documents linked to you in the Document Vault will appear here." />
       </Section>
     </div>
   );

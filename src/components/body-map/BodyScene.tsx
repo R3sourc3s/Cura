@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useCallback, useEffect } from "react";
+import { useTheme } from "@/context/ThemeContext";
 
 interface WoundRecord {
   id: number;
@@ -151,6 +152,8 @@ function isOnBody(mask: BodyMask, xPct: number, yPct: number): boolean {
 export default function BodyScene({
   side, wounds, selectedWoundId, canPlace, onBodyClick, onWoundClick,
 }: BodySceneProps) {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef       = useRef<HTMLImageElement>(null);
   const maskRef      = useRef<BodyMask | null>(null);
@@ -217,7 +220,7 @@ export default function BodyScene({
       style={{
         position: "relative", width: "100%", height: "100%",
         display: "flex", alignItems: "center", justifyContent: "center",
-        background: "#0a101e", overflow: "hidden",
+        background: isLight ? "#ffffff" : "#0a101e", overflow: "hidden",
       }}
     >
       {imgSrc && (
@@ -230,7 +233,8 @@ export default function BodyScene({
           draggable={false}
           style={{
             height: "100%", width: "auto", maxWidth: "100%", display: "block",
-            filter: "invert(1)", mixBlendMode: "screen",
+            filter: isLight ? "none" : "invert(1)",
+            mixBlendMode: isLight ? "multiply" : "screen",
             userSelect: "none", pointerEvents: "none",
           }}
         />
@@ -252,7 +256,7 @@ export default function BodyScene({
               width: size, height: size,
               transform: "translate(-50%, -50%)",
               borderRadius: "50%", background: color,
-              border: `2px solid ${isSelected ? "#fff" : "rgba(255,255,255,0.55)"}`,
+              border: `2px solid ${isSelected ? (isLight ? "var(--text-primary)" : "#fff") : (isLight ? "rgba(15,23,42,0.55)" : "rgba(255,255,255,0.55)")}`,
               opacity: w.is_active ? 1 : 0.4,
               boxShadow: isSelected
                 ? `0 0 0 5px ${color}38, 0 0 14px ${color}90`
@@ -267,7 +271,7 @@ export default function BodyScene({
         <div style={{
           position: "absolute", bottom: 10, left: "50%",
           transform: "translateX(-50%)", fontSize: 11,
-          color: "rgba(255,255,255,0.3)", pointerEvents: "none", whiteSpace: "nowrap",
+          color: isLight ? "rgba(15,23,42,0.4)" : "rgba(255,255,255,0.3)", pointerEvents: "none", whiteSpace: "nowrap",
         }}>
           Click body to place wound
         </div>

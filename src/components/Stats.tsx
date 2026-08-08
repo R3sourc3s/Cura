@@ -23,7 +23,7 @@ const points = [
 
 export default function Stats() {
   return (
-    <section className="py-20" style={{ background: "#ffffff" }}>
+    <section className="py-20" style={{ background: "var(--bg-card)" }}>
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -31,10 +31,10 @@ export default function Stats() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <h2 className="lp-serif text-3xl lg:text-4xl font-bold mb-4" style={{ color: "#1c1a14" }}>
+          <h2 className="lp-serif text-3xl lg:text-4xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>
             Built around what matters most
           </h2>
-          <p className="text-lg max-w-xl mx-auto" style={{ color: "#7a7468" }}>
+          <p className="text-lg max-w-xl mx-auto" style={{ color: "var(--text-muted)" }}>
             Not features for their own sake — tools that make a measurable difference to your team and your residents.
           </p>
         </motion.div>
@@ -49,11 +49,11 @@ export default function Stats() {
               transition={{ duration: 0.5, delay: i * 0.1 }}
               className="lp-card rounded-2xl p-8"
             >
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: "rgba(45,90,61,0.1)" }}>
-                <p.icon size={22} style={{ color: "#2d5a3d" }} />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: "rgba(13, 148, 136,0.1)" }}>
+                <p.icon size={22} style={{ color: "#0d9488" }} />
               </div>
-              <h3 className="lp-serif text-lg font-bold mb-3" style={{ color: "#1c1a14" }}>{p.heading}</h3>
-              <p className="text-sm leading-relaxed" style={{ color: "#7a7468" }}>{p.body}</p>
+              <h3 className="lp-serif text-lg font-bold mb-3" style={{ color: "var(--text-primary)" }}>{p.heading}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>{p.body}</p>
             </motion.div>
           ))}
         </div>

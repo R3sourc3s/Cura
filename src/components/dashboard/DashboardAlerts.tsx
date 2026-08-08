@@ -95,9 +95,9 @@ export default function DashboardAlerts() {
   if (visible.length === 0) return null;
 
   const typeStyle = {
-    critical: { bg: "rgba(239,68,68,0.08)", border: "rgba(239,68,68,0.2)", color: "#f87171", dot: "#ef4444" },
-    warning:  { bg: "rgba(251,191,36,0.08)", border: "rgba(251,191,36,0.2)", color: "#fbbf24", dot: "#f59e0b" },
-    info:     { bg: "rgba(96,165,250,0.08)", border: "rgba(96,165,250,0.2)", color: "#60a5fa", dot: "#3b82f6" },
+    critical: { bg: "#fef2f2", border: "#fecaca", color: "#dc2626", dot: "#ef4444", iconBg: "#fee2e2" },
+    warning:  { bg: "#fffbeb", border: "#fde68a", color: "#d97706", dot: "#f59e0b", iconBg: "#fef3c7" },
+    info:     { bg: "#f0fdfa", border: "#bfdbfe", color: "#0f766e", dot: "#14b8a6", iconBg: "#ccfbf1" },
   };
 
   return (
@@ -108,15 +108,16 @@ export default function DashboardAlerts() {
         return (
           <div key={alert.id} className="flex items-center gap-3 px-4 py-3 rounded-xl"
             style={{ background: s.bg, border: `1px solid ${s.border}` }}>
-            <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 animate-pulse" style={{ background: s.dot }} />
-            <Icon size={13} style={{ color: s.color, flexShrink: 0 }} />
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: s.iconBg }}>
+              <Icon size={12} style={{ color: s.color }} />
+            </div>
             <span className="text-sm flex-1 font-medium" style={{ color: s.color }}>{alert.message}</span>
-            <Link href={alert.href} className="text-xs flex items-center gap-1 flex-shrink-0 hover:underline"
+            <Link href={alert.href} className="text-xs font-semibold flex items-center gap-1 flex-shrink-0 hover:underline"
               style={{ color: s.color }}>
               View <ChevronRight size={11} />
             </Link>
-            <button onClick={() => setDismissed(d => new Set([...d, alert.id]))} className="flex-shrink-0 opacity-50 hover:opacity-100 transition-opacity">
-              <X size={13} style={{ color: s.color }} />
+            <button onClick={() => setDismissed(d => new Set([...d, alert.id]))} className="flex-shrink-0 opacity-40 hover:opacity-80 transition-opacity ml-1">
+              <X size={12} style={{ color: s.color }} />
             </button>
           </div>
         );

@@ -22,35 +22,35 @@ interface CommandItem {
 }
 
 const COMMANDS: CommandItem[] = [
-  { id:"dashboard",    label:"Overview",           sub:"Main dashboard",            href:"/dashboard",                  icon:LayoutDashboard, color:"#a78bfa", keywords:["home","overview","main"] },
-  { id:"residents",    label:"Residents",           sub:"View all residents",         href:"/dashboard/residents",        icon:Users,           color:"#60a5fa", keywords:["patient","service user","resident"] },
-  { id:"medications",  label:"Medications",         sub:"Medication management",      href:"/dashboard/medications",      icon:Pill,            color:"#34d399", keywords:["drugs","meds","prescriptions"] },
-  { id:"mar",          label:"MAR Chart",           sub:"Medication administration",  href:"/dashboard/mar",              icon:Table2,          color:"#fbbf24", keywords:["mar","administration record"] },
-  { id:"care-plans",   label:"Care Plans",          sub:"View care plans",            href:"/dashboard/care-plans",       icon:ClipboardList,   color:"#a78bfa", keywords:["care plan","plan"] },
+  { id:"dashboard",    label:"Overview",           sub:"Main dashboard",            href:"/dashboard",                  icon:LayoutDashboard, color:"var(--c-violet)", keywords:["home","overview","main"] },
+  { id:"residents",    label:"Residents",           sub:"View all residents",         href:"/dashboard/residents",        icon:Users,           color:"var(--c-teal2)", keywords:["patient","service user","resident"] },
+  { id:"medications",  label:"Medications",         sub:"Medication management",      href:"/dashboard/medications",      icon:Pill,            color:"var(--c-green)", keywords:["drugs","meds","prescriptions"] },
+  { id:"mar",          label:"MAR Chart",           sub:"Medication administration",  href:"/dashboard/mar",              icon:Table2,          color:"var(--c-amber)", keywords:["mar","administration record"] },
+  { id:"care-plans",   label:"Care Plans",          sub:"View care plans",            href:"/dashboard/care-plans",       icon:ClipboardList,   color:"var(--c-violet)", keywords:["care plan","plan"] },
   { id:"care-notes",   label:"Care Notes",          sub:"Daily care notes",           href:"/dashboard/care-notes",       icon:NotebookPen,     color:"#818cf8", keywords:["notes","daily","diary"] },
-  { id:"body-map",     label:"Body Map",            sub:"Wound and skin assessments", href:"/dashboard/body-map",         icon:Stethoscope,     color:"#2dd4bf", keywords:["wound","skin","body","pressure"] },
-  { id:"falls-risk",   label:"Falls Risk",          sub:"Falls risk assessments",     href:"/dashboard/falls-risk",       icon:AlertCircle,     color:"#f87171", keywords:["falls","morse","risk"] },
-  { id:"nutrition",    label:"Fluid & Nutrition",   sub:"Food and fluid monitoring",  href:"/dashboard/nutrition",        icon:Utensils,        color:"#fb923c", keywords:["food","fluid","nutrition","hydration"] },
+  { id:"body-map",     label:"Body Map",            sub:"Wound and skin assessments", href:"/dashboard/body-map",         icon:Stethoscope,     color:"var(--c-teal2)", keywords:["wound","skin","body","pressure"] },
+  { id:"falls-risk",   label:"Falls Risk",          sub:"Falls risk assessments",     href:"/dashboard/falls-risk",       icon:AlertCircle,     color:"var(--c-red)", keywords:["falls","morse","risk"] },
+  { id:"nutrition",    label:"Fluid & Nutrition",   sub:"Food and fluid monitoring",  href:"/dashboard/nutrition",        icon:Utensils,        color:"var(--c-orange)", keywords:["food","fluid","nutrition","hydration"] },
   { id:"overnight",    label:"Overnight Checks",    sub:"Night safety checks",        href:"/dashboard/overnight-checks", icon:Moon,            color:"#818cf8", keywords:["night","overnight","sleep","check"] },
-  { id:"appointments", label:"Appointments",        sub:"Medical appointments",       href:"/dashboard/appointments",     icon:CalendarDays,    color:"#60a5fa", keywords:["appointment","GP","doctor","hospital"] },
-  { id:"incidents",    label:"Incidents",           sub:"Incident reporting",         href:"/dashboard/incidents",        icon:AlertTriangle,   color:"#f87171", keywords:["incident","accident","report"] },
-  { id:"safeguarding", label:"Safeguarding",        sub:"Safeguarding register",      href:"/dashboard/safeguarding",     icon:ShieldAlert,     color:"#a78bfa", keywords:["safeguarding","abuse","neglect"] },
+  { id:"appointments", label:"Appointments",        sub:"Medical appointments",       href:"/dashboard/appointments",     icon:CalendarDays,    color:"var(--c-teal2)", keywords:["appointment","GP","doctor","hospital"] },
+  { id:"incidents",    label:"Incidents",           sub:"Incident reporting",         href:"/dashboard/incidents",        icon:AlertTriangle,   color:"var(--c-red)", keywords:["incident","accident","report"] },
+  { id:"safeguarding", label:"Safeguarding",        sub:"Safeguarding register",      href:"/dashboard/safeguarding",     icon:ShieldAlert,     color:"var(--c-violet)", keywords:["safeguarding","abuse","neglect"] },
   { id:"handover",     label:"Handover",            sub:"Shift handover notes",       href:"/dashboard/handover",         icon:BookOpen,        color:"#818cf8", keywords:["handover","shift","handoff"] },
-  { id:"activities",   label:"Activities",          sub:"Resident activities",        href:"/dashboard/activities",       icon:Smile,           color:"#34d399", keywords:["activity","events","social"] },
-  { id:"visitors",     label:"Visitors",            sub:"Visitor log",                href:"/dashboard/visitors",         icon:DoorOpen,        color:"#60a5fa", keywords:["visitor","family","guest"] },
-  { id:"maintenance",  label:"Maintenance",         sub:"Maintenance requests",       href:"/dashboard/maintenance",      icon:Wrench,          color:"#fbbf24", keywords:["maintenance","repair","fix"] },
-  { id:"documents",    label:"Documents",           sub:"File storage",               href:"/dashboard/documents",        icon:FolderOpen,      color:"#fb923c", keywords:["documents","files","uploads","forms"] },
-  { id:"rota",         label:"Staff Rota",          sub:"Shift scheduling",           href:"/dashboard/rota",             icon:CalendarRange,   color:"#34d399", keywords:["rota","schedule","shifts","roster"] },
-  { id:"training",     label:"Staff Training",      sub:"Training records",           href:"/dashboard/training",         icon:GraduationCap,   color:"#60a5fa", keywords:["training","certificates","cpd"] },
-  { id:"prn",          label:"PRN Medications",      sub:"As-needed medication log",   href:"/dashboard/prn",              icon:Pill,            color:"#34d399", keywords:["prn","as needed","pain relief","medication"] },
-  { id:"messages",     label:"Messages",            sub:"Staff messaging",            href:"/dashboard/messages",         icon:MessageSquare,   color:"#a78bfa", keywords:["message","chat","communicate","staff"] },
-  { id:"cqc",          label:"CQC Readiness",       sub:"Inspection readiness",       href:"/dashboard/cqc",              icon:Star,            color:"#fbbf24", keywords:["cqc","ofsted","inspection","regulation"] },
-  { id:"kpi",          label:"KPI Dashboard",       sub:"Key performance indicators", href:"/dashboard/kpi",              icon:TrendingUp,      color:"#34d399", keywords:["kpi","stats","metrics","performance"] },
-  { id:"staff",        label:"Staff",               sub:"Staff management",           href:"/dashboard/staff",            icon:UserCheck,       color:"#60a5fa", keywords:["staff","employees","workers"] },
-  { id:"team",         label:"Team",                sub:"Team overview",              href:"/dashboard/team",             icon:UsersRound,      color:"#a78bfa", keywords:["team","group"] },
-  { id:"compliance",   label:"Compliance",          sub:"Compliance monitoring",      href:"/dashboard/compliance",       icon:ShieldCheck,     color:"#34d399", keywords:["compliance","policy","regulation"] },
-  { id:"audit",        label:"Audit Trail",         sub:"System audit log",           href:"/dashboard/audit",            icon:ClipboardCheck,  color:"#60a5fa", keywords:["audit","log","history","changes"] },
-  { id:"ai",           label:"AI Assistant",        sub:"Ask AI anything",            href:"/dashboard/ai",               icon:Bot,             color:"#a78bfa", keywords:["ai","assistant","chat","ask","help"] },
+  { id:"activities",   label:"Activities",          sub:"Resident activities",        href:"/dashboard/activities",       icon:Smile,           color:"var(--c-green)", keywords:["activity","events","social"] },
+  { id:"visitors",     label:"Visitors",            sub:"Visitor log",                href:"/dashboard/visitors",         icon:DoorOpen,        color:"var(--c-teal2)", keywords:["visitor","family","guest"] },
+  { id:"maintenance",  label:"Maintenance",         sub:"Maintenance requests",       href:"/dashboard/maintenance",      icon:Wrench,          color:"var(--c-amber)", keywords:["maintenance","repair","fix"] },
+  { id:"documents",    label:"Documents",           sub:"File storage",               href:"/dashboard/documents",        icon:FolderOpen,      color:"var(--c-orange)", keywords:["documents","files","uploads","forms"] },
+  { id:"rota",         label:"Staff Rota",          sub:"Shift scheduling",           href:"/dashboard/rota",             icon:CalendarRange,   color:"var(--c-green)", keywords:["rota","schedule","shifts","roster"] },
+  { id:"training",     label:"Staff Training",      sub:"Training records",           href:"/dashboard/training",         icon:GraduationCap,   color:"var(--c-teal2)", keywords:["training","certificates","cpd"] },
+  { id:"prn",          label:"PRN Medications",      sub:"As-needed medication log",   href:"/dashboard/prn",              icon:Pill,            color:"var(--c-green)", keywords:["prn","as needed","pain relief","medication"] },
+  { id:"messages",     label:"Messages",            sub:"Staff messaging",            href:"/dashboard/messages",         icon:MessageSquare,   color:"var(--c-violet)", keywords:["message","chat","communicate","staff"] },
+  { id:"cqc",          label:"CQC Readiness",       sub:"Inspection readiness",       href:"/dashboard/cqc",              icon:Star,            color:"var(--c-amber)", keywords:["cqc","ofsted","inspection","regulation"] },
+  { id:"kpi",          label:"KPI Dashboard",       sub:"Key performance indicators", href:"/dashboard/kpi",              icon:TrendingUp,      color:"var(--c-green)", keywords:["kpi","stats","metrics","performance"] },
+  { id:"staff",        label:"Staff",               sub:"Staff management",           href:"/dashboard/staff",            icon:UserCheck,       color:"var(--c-teal2)", keywords:["staff","employees","workers"] },
+  { id:"team",         label:"Team",                sub:"Team overview",              href:"/dashboard/team",             icon:UsersRound,      color:"var(--c-violet)", keywords:["team","group"] },
+  { id:"compliance",   label:"Compliance",          sub:"Compliance monitoring",      href:"/dashboard/compliance",       icon:ShieldCheck,     color:"var(--c-green)", keywords:["compliance","policy","regulation"] },
+  { id:"audit",        label:"Audit Trail",         sub:"System audit log",           href:"/dashboard/audit",            icon:ClipboardCheck,  color:"var(--c-teal2)", keywords:["audit","log","history","changes"] },
+  { id:"ai",           label:"AI Assistant",        sub:"Ask AI anything",            href:"/dashboard/ai",               icon:Bot,             color:"var(--c-violet)", keywords:["ai","assistant","chat","ask","help"] },
 ];
 
 function score(item: CommandItem, q: string): number {
@@ -137,7 +137,7 @@ export default function CommandPalette() {
               return (
                 <button key={item.id}
                   className="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-none"
-                  style={{ background: active ? "rgba(124,58,237,0.15)" : "transparent" }}
+                  style={{ background: active ? "rgba(13, 148, 136,0.15)" : "transparent" }}
                   onMouseEnter={() => setSelected(i)}
                   onClick={() => navigate(item.href)}>
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"

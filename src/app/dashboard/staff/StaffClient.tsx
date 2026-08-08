@@ -11,25 +11,25 @@ import {
 } from "lucide-react";
 
 const SHIFT_CONFIG = {
-  day:     { color: "#fbbf24", bg: "rgba(250,204,21,0.12)", label: "Day" },
-  evening: { color: "#fb923c", bg: "rgba(251,146,60,0.12)",  label: "Evening" },
-  night:   { color: "#60a5fa", bg: "rgba(96,165,250,0.12)",  label: "Night" },
+  day:     { color: "var(--c-amber)", bg: "rgba(250,204,21,0.12)", label: "Day" },
+  evening: { color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)",  label: "Evening" },
+  night:   { color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)",  label: "Night" },
 } as const;
 
 const LEAVE_STATUS = {
-  pending:  { color: "#fbbf24", bg: "rgba(250,204,21,0.12)"  },
-  approved: { color: "#34d399", bg: "rgba(52,211,153,0.12)"  },
-  rejected: { color: "#f87171", bg: "rgba(239,68,68,0.12)"   },
+  pending:  { color: "var(--c-amber)", bg: "rgba(250,204,21,0.12)"  },
+  approved: { color: "var(--c-green)", bg: "rgba(52,211,153,0.12)"  },
+  rejected: { color: "var(--c-red)", bg: "rgba(239,68,68,0.12)"   },
 } as const;
 
 const TRAINING_STATUS = {
-  pending:   { color: "#fbbf24", bg: "rgba(250,204,21,0.12)",   label: "Pending" },
-  completed: { color: "#34d399", bg: "rgba(52,211,153,0.12)",   label: "Completed" },
-  expired:   { color: "#f87171", bg: "rgba(239,68,68,0.12)",    label: "Expired" },
+  pending:   { color: "var(--c-amber)", bg: "rgba(250,204,21,0.12)",   label: "Pending" },
+  completed: { color: "var(--c-green)", bg: "rgba(52,211,153,0.12)",   label: "Completed" },
+  expired:   { color: "var(--c-red)", bg: "rgba(239,68,68,0.12)",    label: "Expired" },
 } as const;
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" };
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
@@ -113,7 +113,7 @@ function AddShiftModal({ users, onClose, onAdded }: { users: User[]; onClose: ()
           style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #34d399, #059669)" }}>
+              style={{ background: "linear-gradient(135deg, var(--c-green), #059669)" }}>
               <Clock size={14} className="text-white" />
             </div>
             <h2 className="text-base font-bold text-white">Add Shift</h2>
@@ -164,7 +164,7 @@ function AddShiftModal({ users, onClose, onAdded }: { users: User[]; onClose: ()
           </div>
           <label className="flex items-center gap-3 cursor-pointer">
             <div className="w-10 h-5 rounded-full flex items-center px-0.5 transition-colors"
-              style={{ background: form.is_agency ? "#7c3aed" : "rgba(255,255,255,0.12)" }}>
+              style={{ background: form.is_agency ? "#0d9488" : "rgba(var(--fg-rgb),0.12)" }}>
               <div className={`w-4 h-4 bg-white rounded-full shadow transition-transform ${form.is_agency ? "translate-x-5" : "translate-x-0"}`} />
             </div>
             <input type="checkbox" className="hidden" checked={form.is_agency}
@@ -181,7 +181,7 @@ function AddShiftModal({ users, onClose, onAdded }: { users: User[]; onClose: ()
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Save size={14} />{saving ? "Adding…" : "Add Shift"}
           </button>
         </div>
@@ -262,7 +262,7 @@ function LeaveModal({ onClose, onAdded }: { onClose: () => void; onAdded: (l: Le
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Save size={14} />{saving ? "Submitting…" : "Submit Request"}
           </button>
         </div>
@@ -315,7 +315,7 @@ function AddTrainingModal({ users, onClose, onAdded }: { users: User[]; onClose:
           style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #a78bfa, #7c3aed)" }}>
+              style={{ background: "linear-gradient(135deg, var(--c-teal), #0d9488)" }}>
               <BookOpen size={14} className="text-white" />
             </div>
             <h2 className="text-base font-bold text-white">Add Training Record</h2>
@@ -373,7 +373,7 @@ function AddTrainingModal({ users, onClose, onAdded }: { users: User[]; onClose:
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Save size={14} />{saving ? "Saving…" : "Add Record"}
           </button>
         </div>
@@ -431,7 +431,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-            <UserCheck size={22} style={{ color: "#34d399" }} /> Staff
+            <UserCheck size={22} style={{ color: "var(--c-green)" }} /> Staff
           </h1>
           <p className="text-sm mt-0.5 truncate" style={{ color: "var(--text-muted)" }}>
             {upcomingShifts.length} shifts this week · {pendingLeave.length} leave pending
@@ -448,7 +448,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
           {can("staff.manage") && (
             <button onClick={() => setShowShift(true)}
               className="flex items-center gap-1.5 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+              style={{ background: "#0d9488" }}>
               <Plus size={14} /> <span className="hidden sm:inline">Add Shift</span><span className="sm:hidden">Shift</span>
             </button>
           )}
@@ -474,9 +474,9 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
                 <div key={date}>
                   {/* Date header */}
                   <div className="flex items-center gap-3 px-5 py-2.5"
-                    style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--bg-card)" }}>
+                    style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--border)" }}>
                     <span className="text-xs font-semibold uppercase tracking-wider"
-                      style={{ color: date === today() ? "#a78bfa" : "var(--text-muted)" }}>
+                      style={{ color: date === today() ? "var(--c-teal)" : "var(--text-muted)" }}>
                       {fmtDateHeader(date)}
                     </span>
                     <span className="text-xs" style={{ color: "var(--text-muted)" }}>
@@ -490,7 +490,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
                     const role = s.staff_member_name?.match(/\((.+?)\)/)?.[1] ?? "";
                     return (
                       <div key={s.id} className="flex items-center gap-3 px-5 py-3"
-                        style={{ borderBottom: "1px solid var(--bg-card)" }}>
+                        style={{ borderBottom: "1px solid var(--border)" }}>
                         {/* Avatar */}
                         <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
                           style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}30` }}>
@@ -532,7 +532,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
             <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--border)" }}>
               <h2 className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>Leave Requests</h2>
               {pendingLeave.length > 0 && (
-                <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(250,204,21,0.15)", color: "#fbbf24" }}>
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(250,204,21,0.15)", color: "var(--c-amber)" }}>
                   {pendingLeave.length} pending
                 </span>
               )}
@@ -546,9 +546,9 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
                 const role = req.staff_member_name?.match(/\((.+?)\)/)?.[1] ?? "";
                 return (
                   <div key={req.id} className="flex items-start gap-3 px-5 py-3.5"
-                    style={{ borderBottom: "1px solid var(--bg-card)" }}>
+                    style={{ borderBottom: "1px solid var(--border)" }}>
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                      style={{ background: "rgba(124,58,237,0.2)", color: "#a78bfa" }}>
+                      style={{ background: "rgba(13, 148, 136,0.2)", color: "var(--c-teal)" }}>
                       {initials(req.staff_member_name || "?")}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -567,12 +567,12 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
                         <button onClick={() => updateLeave(req.id, "approved")} disabled={updating === req.id}
                           className="w-7 h-7 rounded-lg flex items-center justify-center disabled:opacity-50"
                           style={{ background: "rgba(52,211,153,0.15)", border: "1px solid rgba(52,211,153,0.25)" }}>
-                          <CheckCircle size={13} style={{ color: "#34d399" }} />
+                          <CheckCircle size={13} style={{ color: "var(--c-green)" }} />
                         </button>
                         <button onClick={() => updateLeave(req.id, "rejected")} disabled={updating === req.id}
                           className="w-7 h-7 rounded-lg flex items-center justify-center disabled:opacity-50"
                           style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.2)" }}>
-                          <XCircle size={13} style={{ color: "#f87171" }} />
+                          <XCircle size={13} style={{ color: "var(--c-red)" }} />
                         </button>
                       </div>
                     ) : (
@@ -591,7 +591,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
             <div className="flex items-center justify-between px-5 py-4"
               style={{ background: "var(--bg-card)", borderBottom: showTraining ? "1px solid var(--border)" : "none" }}>
               <button className="flex items-center gap-2 flex-1 text-left" onClick={() => setShowTraining((v) => !v)}>
-                <GraduationCap size={15} style={{ color: "#a78bfa" }} />
+                <GraduationCap size={15} style={{ color: "var(--c-teal)" }} />
                 <h2 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
                   Training Records
                 </h2>
@@ -603,7 +603,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
               {can("staff.manage") && (
                 <button onClick={() => setShowAddTraining(true)}
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl text-white ml-3 flex-shrink-0"
-                  style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                  style={{ background: "#0d9488" }}>
                   <Plus size={12} /> Add Record
                 </button>
               )}
@@ -620,7 +620,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
                     const isExpired = t.expiry_date && new Date(t.expiry_date) < new Date();
                     return (
                       <div key={t.id} className="flex items-center gap-3 px-5 py-3"
-                        style={{ borderBottom: "1px solid var(--bg-card)" }}>
+                        style={{ borderBottom: "1px solid var(--border)" }}>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium text-white truncate">
                             {(t.staff_member_name || `Staff #${t.staff_member}`).replace(/\s*\(.*?\)/, "")}
@@ -631,7 +631,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
                           <span className="text-xs px-2 py-0.5 rounded-full font-medium"
                             style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
                           {t.expiry_date && (
-                            <div className="text-xs mt-1" style={{ color: isExpired ? "#f87171" : "var(--text-muted)" }}>
+                            <div className="text-xs mt-1" style={{ color: isExpired ? "var(--c-red)" : "var(--text-muted)" }}>
                               exp. {new Date(t.expiry_date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" })}
                             </div>
                           )}

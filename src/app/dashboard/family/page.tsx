@@ -56,28 +56,28 @@ const REL_LABEL: Record<string, string> = {
 
 const REL_COLOR: Record<string, { color: string; bg: string }> = {
   spouse:        { color: "#f472b6", bg: "rgba(244,114,182,0.12)" },
-  child:         { color: "#60a5fa", bg: "rgba(96,165,250,0.12)" },
-  sibling:       { color: "#2dd4bf", bg: "rgba(45,212,191,0.12)" },
-  parent:        { color: "#a78bfa", bg: "rgba(167,139,250,0.12)" },
-  grandchild:    { color: "#fb923c", bg: "rgba(251,146,60,0.12)" },
-  legal_guardian:{ color: "#f87171", bg: "rgba(248,113,113,0.12)" },
+  child:         { color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)" },
+  sibling:       { color: "var(--c-teal2)", bg: "rgba(45,212,191,0.12)" },
+  parent:        { color: "var(--c-teal)", bg: "rgba(167,139,250,0.12)" },
+  grandchild:    { color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)" },
+  legal_guardian:{ color: "var(--c-red)", bg: "rgba(248,113,113,0.12)" },
   friend:        { color: "#94a3b8", bg: "rgba(148,163,184,0.12)" },
   other:         { color: "#94a3b8", bg: "rgba(148,163,184,0.12)" },
 };
 
 const STATUS_CFG: Record<string, { label: string; color: string; bg: string }> = {
-  unread:   { label: "Unread",   color: "#fbbf24", bg: "rgba(251,191,36,0.12)" },
+  unread:   { label: "Unread",   color: "var(--c-amber)", bg: "rgba(251,191,36,0.12)" },
   read:     { label: "Read",     color: "#94a3b8", bg: "rgba(148,163,184,0.10)" },
-  replied:  { label: "Replied",  color: "#34d399", bg: "rgba(52,211,153,0.12)" },
+  replied:  { label: "Replied",  color: "var(--c-green)", bg: "rgba(52,211,153,0.12)" },
   archived: { label: "Archived", color: "#475569", bg: "rgba(71,85,105,0.12)" },
 };
 
 /* ─── Helpers ────────────────────────────────────────────────── */
 function fieldStyle() {
   return {
-    background: "rgba(255,255,255,0.05)",
-    border: "1px solid rgba(255,255,255,0.1)",
-    color: "rgba(255,255,255,0.8)",
+    background: "rgba(var(--fg-rgb),0.05)",
+    border: "1px solid rgba(var(--fg-rgb),0.1)",
+    color: "rgba(var(--fg-rgb),0.8)",
   } as React.CSSProperties;
 }
 
@@ -279,7 +279,7 @@ export default function FamilyPage() {
         <button
           onClick={() => activeTab === "members" ? setShowMemberModal(true) : setShowMessageModal(true)}
           className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+          style={{ background: "#0d9488" }}>
           <Plus size={14} />
           {activeTab === "members" ? "Add Family Member" : "New Message"}
         </button>
@@ -289,9 +289,9 @@ export default function FamilyPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: "Family Members", value: totalMembers, color: "#f472b6", icon: Users },
-          { label: "Primary Contacts", value: primaryContacts, color: "#34d399", icon: Star },
-          { label: "Unread Messages", value: unreadMessages, color: "#fbbf24", icon: MessageSquare },
-          { label: "Has Portal Access", value: portalAccess, color: "#60a5fa", icon: Key },
+          { label: "Primary Contacts", value: primaryContacts, color: "var(--c-green)", icon: Star },
+          { label: "Unread Messages", value: unreadMessages, color: "var(--c-amber)", icon: MessageSquare },
+          { label: "Has Portal Access", value: portalAccess, color: "var(--c-teal2)", icon: Key },
         ].map(({ label, value, color, icon: Icon }) => (
           <div key={label} className="rounded-2xl p-4 text-center"
             style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
@@ -311,7 +311,7 @@ export default function FamilyPage() {
           <button key={tab} onClick={() => setActiveTab(tab)}
             className="px-4 py-1.5 text-sm font-medium rounded-lg transition-colors"
             style={activeTab === tab
-              ? { background: "linear-gradient(135deg, #7c3aed, #3b82f6)", color: "#fff" }
+              ? { background: "#0d9488", color: "#fff" }
               : { color: "var(--text-muted)" }}>
             {tab === "members" ? "Family Members" : "Messages"}
           </button>
@@ -349,7 +349,7 @@ export default function FamilyPage() {
                       const rel = REL_COLOR[member.relationship] ?? REL_COLOR.other;
                       return (
                         <div key={member.id} className="rounded-2xl p-4"
-                          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                          style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
                           <div className="flex items-start justify-between gap-2 mb-2">
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
@@ -357,7 +357,7 @@ export default function FamilyPage() {
                                   {member.first_name} {member.last_name}
                                 </span>
                                 {member.is_primary_contact && (
-                                  <Star size={12} style={{ color: "#fbbf24", fill: "#fbbf24", flexShrink: 0 }} />
+                                  <Star size={12} style={{ color: "var(--c-amber)", fill: "var(--c-amber)", flexShrink: 0 }} />
                                 )}
                               </div>
                               <div className="flex items-center gap-1.5 mt-1 flex-wrap">
@@ -367,19 +367,19 @@ export default function FamilyPage() {
                                 </span>
                                 {member.is_emergency_contact && (
                                   <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                                    style={{ background: "rgba(248,113,113,0.12)", color: "#f87171" }}>
+                                    style={{ background: "rgba(248,113,113,0.12)", color: "var(--c-red)" }}>
                                     <Shield size={10} className="inline mr-0.5" />Emergency
                                   </span>
                                 )}
                                 {member.has_lasting_power_of_attorney && (
                                   <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                                    style={{ background: "rgba(251,191,36,0.12)", color: "#fbbf24" }}>
+                                    style={{ background: "rgba(251,191,36,0.12)", color: "var(--c-amber)" }}>
                                     <Key size={10} className="inline mr-0.5" />LPA
                                   </span>
                                 )}
                                 {member.portal_access && (
                                   <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                                    style={{ background: "rgba(96,165,250,0.12)", color: "#60a5fa" }}>
+                                    style={{ background: "rgba(45, 212, 191,0.12)", color: "var(--c-teal2)" }}>
                                     Portal
                                   </span>
                                 )}
@@ -388,13 +388,13 @@ export default function FamilyPage() {
                           </div>
                           <div className="space-y-1 mt-2">
                             {member.phone && (
-                              <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+                              <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>
                                 <Phone size={11} style={{ flexShrink: 0 }} />
                                 <span className="truncate">{member.phone}</span>
                               </div>
                             )}
                             {member.email && (
-                              <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+                              <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>
                                 <Mail size={11} style={{ flexShrink: 0 }} />
                                 <span className="truncate">{member.email}</span>
                               </div>
@@ -402,7 +402,7 @@ export default function FamilyPage() {
                           </div>
                           {member.notes && (
                             <p className="text-xs mt-2 leading-relaxed"
-                              style={{ color: "rgba(255,255,255,0.35)" }}>
+                              style={{ color: "rgba(var(--fg-rgb),0.35)" }}>
                               {member.notes}
                             </p>
                           )}
@@ -441,14 +441,14 @@ export default function FamilyPage() {
             ].map((f, i) => (
               <div key={i} className="relative">
                 <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2"
-                  style={{ color: "rgba(255,255,255,0.25)" }} />
+                  style={{ color: "rgba(var(--fg-rgb),0.25)" }} />
                 <select value={f.value} onChange={e => f.set(e.target.value)}
                   className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}>
+                  style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.08)", color: "rgba(var(--fg-rgb),0.6)" }}>
                   {f.opts.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                 </select>
                 <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"
-                  style={{ color: "rgba(255,255,255,0.3)" }} />
+                  style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
               </div>
             ))}
           </div>
@@ -473,10 +473,10 @@ export default function FamilyPage() {
                     style={{
                       background: msg.status === "unread"
                         ? "rgba(251,191,36,0.04)"
-                        : "rgba(255,255,255,0.02)",
+                        : "rgba(var(--fg-rgb),0.02)",
                       border: msg.status === "unread"
                         ? "1px solid rgba(251,191,36,0.15)"
-                        : "1px solid rgba(255,255,255,0.06)",
+                        : "1px solid rgba(var(--fg-rgb),0.06)",
                     }}>
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
@@ -484,8 +484,8 @@ export default function FamilyPage() {
                           {/* direction badge */}
                           <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium"
                             style={isInbound
-                              ? { background: "rgba(96,165,250,0.12)", color: "#60a5fa" }
-                              : { background: "rgba(167,139,250,0.12)", color: "#a78bfa" }}>
+                              ? { background: "rgba(45, 212, 191,0.12)", color: "var(--c-teal2)" }
+                              : { background: "rgba(167,139,250,0.12)", color: "var(--c-teal)" }}>
                             {isInbound
                               ? <ArrowDownLeft size={10} />
                               : <ArrowUpRight size={10} />}
@@ -498,27 +498,27 @@ export default function FamilyPage() {
                           </span>
                         </div>
                         <p className="text-sm font-semibold text-white truncate">{msg.subject}</p>
-                        <p className="text-xs mt-0.5 line-clamp-1" style={{ color: "rgba(255,255,255,0.45)" }}>
+                        <p className="text-xs mt-0.5 line-clamp-1" style={{ color: "rgba(var(--fg-rgb),0.45)" }}>
                           {msg.body}
                         </p>
                         <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-                          <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+                          <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                             {msg.resident_name ?? `Resident #${msg.resident}`}
                           </span>
                           {msg.family_member_name && (
-                            <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                            <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
                               {msg.family_member_name}
                             </span>
                           )}
                           {msg.sent_by_name && (
-                            <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                            <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
                               {msg.sent_by_name}
                             </span>
                           )}
                         </div>
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <div className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>{timeAgo(msg.sent_at)}</div>
+                        <div className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>{timeAgo(msg.sent_at)}</div>
                       </div>
                     </div>
                   </div>
@@ -534,18 +534,18 @@ export default function FamilyPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-lg my-4"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Add Family Member</h3>
               <button onClick={() => { setShowMemberModal(false); setMemberForm(blankMemberForm); }}
-                style={{ color: "rgba(255,255,255,0.4)" }}>
+                style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                 <X size={18} />
               </button>
             </div>
             <div className="space-y-3">
               {/* Resident */}
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Resident *</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Resident *</label>
                 <select value={memberForm.resident}
                   onChange={e => setMemberForm(f => ({ ...f, resident: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={fieldStyle()}>
@@ -556,13 +556,13 @@ export default function FamilyPage() {
               {/* Name row */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>First Name *</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>First Name *</label>
                   <input type="text" placeholder="First name" value={memberForm.first_name}
                     onChange={e => setMemberForm(f => ({ ...f, first_name: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={fieldStyle()} />
                 </div>
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Last Name *</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Last Name *</label>
                   <input type="text" placeholder="Last name" value={memberForm.last_name}
                     onChange={e => setMemberForm(f => ({ ...f, last_name: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={fieldStyle()} />
@@ -570,7 +570,7 @@ export default function FamilyPage() {
               </div>
               {/* Relationship */}
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Relationship</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Relationship</label>
                 <select value={memberForm.relationship}
                   onChange={e => setMemberForm(f => ({ ...f, relationship: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={fieldStyle()}>
@@ -580,13 +580,13 @@ export default function FamilyPage() {
               {/* Contact */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Phone</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Phone</label>
                   <input type="tel" placeholder="+44…" value={memberForm.phone}
                     onChange={e => setMemberForm(f => ({ ...f, phone: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={fieldStyle()} />
                 </div>
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Email</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Email</label>
                   <input type="email" placeholder="email@example.com" value={memberForm.email}
                     onChange={e => setMemberForm(f => ({ ...f, email: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={fieldStyle()} />
@@ -605,13 +605,13 @@ export default function FamilyPage() {
                       checked={memberForm[key as keyof typeof memberForm] as boolean}
                       onChange={e => setMemberForm(f => ({ ...f, [key]: e.target.checked }))}
                       className="rounded accent-purple-500" />
-                    <span className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>{label}</span>
+                    <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.6)" }}>{label}</span>
                   </label>
                 ))}
               </div>
               {/* Notes */}
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Notes</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Notes</label>
                 <textarea rows={3} placeholder="Any additional notes…" value={memberForm.notes}
                   onChange={e => setMemberForm(f => ({ ...f, notes: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={fieldStyle()} />
@@ -620,13 +620,13 @@ export default function FamilyPage() {
             <div className="flex gap-3 mt-5">
               <button onClick={() => { setShowMemberModal(false); setMemberForm(blankMemberForm); }}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button onClick={handleSaveMember}
                 disabled={saving || !memberForm.resident || !memberForm.first_name || !memberForm.last_name}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {saving ? "Saving…" : "Save"}
               </button>
             </div>
@@ -639,18 +639,18 @@ export default function FamilyPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-lg my-4"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">New Message to Family</h3>
               <button onClick={() => { setShowMessageModal(false); setMessageForm(blankMessageForm); }}
-                style={{ color: "rgba(255,255,255,0.4)" }}>
+                style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                 <X size={18} />
               </button>
             </div>
             <div className="space-y-3">
               {/* Resident */}
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Resident *</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Resident *</label>
                 <select value={messageForm.resident}
                   onChange={e => setMessageForm(f => ({ ...f, resident: e.target.value, family_member: "" }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={fieldStyle()}>
@@ -660,7 +660,7 @@ export default function FamilyPage() {
               </div>
               {/* Family Member (optional) */}
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Family Member (optional)</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Family Member (optional)</label>
                 <select value={messageForm.family_member}
                   onChange={e => setMessageForm(f => ({ ...f, family_member: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={fieldStyle()}
@@ -673,14 +673,14 @@ export default function FamilyPage() {
               </div>
               {/* Subject */}
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Subject *</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Subject *</label>
                 <input type="text" placeholder="Message subject…" value={messageForm.subject}
                   onChange={e => setMessageForm(f => ({ ...f, subject: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={fieldStyle()} />
               </div>
               {/* Body */}
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Message *</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Message *</label>
                 <textarea rows={5} placeholder="Write your message…" value={messageForm.body}
                   onChange={e => setMessageForm(f => ({ ...f, body: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={fieldStyle()} />
@@ -689,13 +689,13 @@ export default function FamilyPage() {
             <div className="flex gap-3 mt-5">
               <button onClick={() => { setShowMessageModal(false); setMessageForm(blankMessageForm); }}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button onClick={handleSaveMessage}
                 disabled={saving || !messageForm.resident || !messageForm.subject || !messageForm.body}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {saving ? "Sending…" : "Send Message"}
               </button>
             </div>

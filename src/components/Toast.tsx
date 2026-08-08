@@ -28,7 +28,7 @@ const STYLES: Record<ToastType, { color: string; bg: string; border: string }> =
   success: { color: "#34d399", bg: "rgba(52,211,153,0.1)",  border: "rgba(52,211,153,0.25)"  },
   error:   { color: "#f87171", bg: "rgba(239,68,68,0.1)",   border: "rgba(239,68,68,0.25)"   },
   warning: { color: "#fbbf24", bg: "rgba(250,204,21,0.1)",  border: "rgba(250,204,21,0.25)"  },
-  info:    { color: "#60a5fa", bg: "rgba(96,165,250,0.1)",  border: "rgba(96,165,250,0.25)"  },
+  info:    { color: "#2dd4bf", bg: "rgba(45, 212, 191,0.1)",  border: "rgba(45, 212, 191,0.25)"  },
 };
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {

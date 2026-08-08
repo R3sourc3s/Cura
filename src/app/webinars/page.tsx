@@ -71,7 +71,7 @@ const past = [
     views: "2,104",
     duration: "44 min",
     tag: "Strategy",
-    tagColor: "#3b82f6",
+    tagColor: "#14b8a6",
   },
   {
     title: "Setting Up Your First Rota",
@@ -189,7 +189,7 @@ export default function WebinarsPage() {
 
               <button
                 className="w-full py-3 rounded-xl text-white font-semibold text-sm transition-all hover:opacity-90"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+                style={{ background: "linear-gradient(135deg, #7c3aed, #14b8a6)" }}
               >
                 Register Free
               </button>
@@ -290,7 +290,7 @@ export default function WebinarsPage() {
               />
               <button
                 className="px-6 py-3 rounded-xl text-white font-semibold text-sm glow-button shrink-0"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+                style={{ background: "linear-gradient(135deg, #7c3aed, #14b8a6)" }}
               >
                 Subscribe
               </button>

@@ -23,7 +23,7 @@ interface KPI {
 function OccupancyRing({ pct }: { pct: number }) {
   const r = 36; const circ = 2 * Math.PI * r;
   const dash = (pct / 100) * circ;
-  const color = pct >= 90 ? "#34d399" : pct >= 70 ? "#fbbf24" : "#f87171";
+  const color = pct >= 90 ? "var(--c-green)" : pct >= 70 ? "var(--c-amber)" : "var(--c-red)";
   return (
     <svg width="96" height="96" className="mx-auto">
       <circle cx="48" cy="48" r={r} fill="none" stroke="var(--border)" strokeWidth="8" />
@@ -92,8 +92,8 @@ export default function KPIPage() {
     <div className="space-y-5 max-w-6xl mx-auto">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
-            <BarChart2 size={16} style={{ color: "#a78bfa" }} />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(13, 148, 136,0.12)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
+            <BarChart2 size={16} style={{ color: "var(--c-teal)" }} />
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Analytics & KPIs</h1>
@@ -117,9 +117,9 @@ export default function KPIPage() {
         </div>
 
         {[
-          { icon: AlertTriangle, label: "Open Incidents", value: incidents.open, sub: `${incidents.last_30_days} this month`, color: incidents.open > 5 ? "#f87171" : "#fbbf24" },
-          { icon: Pill, label: "Low Stock Meds", value: medications.low_stock_count, sub: "need reordering", color: medications.low_stock_count > 0 ? "#f87171" : "#34d399" },
-          { icon: ClipboardList, label: "Overdue Reviews", value: care.overdue_reviews, sub: "care plans", color: care.overdue_reviews > 0 ? "#fb923c" : "#34d399" },
+          { icon: AlertTriangle, label: "Open Incidents", value: incidents.open, sub: `${incidents.last_30_days} this month`, color: incidents.open > 5 ? "var(--c-red)" : "var(--c-amber)" },
+          { icon: Pill, label: "Low Stock Meds", value: medications.low_stock_count, sub: "need reordering", color: medications.low_stock_count > 0 ? "var(--c-red)" : "var(--c-green)" },
+          { icon: ClipboardList, label: "Overdue Reviews", value: care.overdue_reviews, sub: "care plans", color: care.overdue_reviews > 0 ? "var(--c-orange)" : "var(--c-green)" },
         ].map(({ icon: Icon, label, value, sub, color }) => (
           <div key={label} className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
             <div className="flex items-center justify-between mb-3">
@@ -165,7 +165,7 @@ export default function KPIPage() {
               <span className="text-xs" style={{ color: "var(--text-secondary)" }}>{label}: <strong style={{ color: "var(--text-primary)" }}>{residents.risk_breakdown[key]}</strong></span>
             </div>
           ))}
-          <div className="ml-auto text-xs" style={{ color: "var(--text-muted)" }}>Avg AI risk: <strong style={{ color: "#a78bfa" }}>{residents.avg_ai_risk_score}/100</strong></div>
+          <div className="ml-auto text-xs" style={{ color: "var(--text-muted)" }}>Avg AI risk: <strong style={{ color: "var(--c-teal)" }}>{residents.avg_ai_risk_score}/100</strong></div>
         </div>
       </div>
 
@@ -174,7 +174,7 @@ export default function KPIPage() {
         {/* Staff */}
         <div className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
           <div className="flex items-center gap-2 mb-4">
-            <UserCheck size={14} style={{ color: "#7c3aed" }} />
+            <UserCheck size={14} style={{ color: "#0d9488" }} />
             <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Staff Overview</p>
           </div>
           <p className="text-3xl font-bold text-white mb-1">{staff.total}</p>
@@ -186,12 +186,12 @@ export default function KPIPage() {
                   <span style={{ color: "var(--text-secondary)" }}>{ROLE_LABELS[role] ?? role}</span>
                   <span style={{ color: "var(--text-secondary)" }}>{count}</span>
                 </div>
-                <MiniBar value={count} max={staff.total} color="#7c3aed" />
+                <MiniBar value={count} max={staff.total} color="#0d9488" />
               </div>
             ))}
           </div>
           {staff.pending_leave > 0 && (
-            <div className="mt-3 px-3 py-2 rounded-xl text-xs" style={{ background: "rgba(251,146,60,0.1)", color: "#fb923c" }}>
+            <div className="mt-3 px-3 py-2 rounded-xl text-xs" style={{ background: "rgba(251,146,60,0.1)", color: "var(--c-orange)" }}>
               {staff.pending_leave} pending leave request{staff.pending_leave > 1 ? "s" : ""}
             </div>
           )}
@@ -200,28 +200,28 @@ export default function KPIPage() {
         {/* Care Quality */}
         <div className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp size={14} style={{ color: "#7c3aed" }} />
+            <TrendingUp size={14} style={{ color: "#0d9488" }} />
             <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Care Quality</p>
           </div>
           <div className="space-y-4">
             {[
-              { label: "Overdue Care Plan Reviews", value: care.overdue_reviews, color: care.overdue_reviews > 0 ? "#f87171" : "#34d399", good: care.overdue_reviews === 0 },
-              { label: "Critical Handovers (30d)", value: care.critical_handovers_last_30, color: care.critical_handovers_last_30 > 3 ? "#f87171" : "#fbbf24", good: false },
-              { label: "Residents Admitted (30d)", value: residents.admitted_last_30, color: "#60a5fa", good: false },
-              { label: "Residents Discharged (30d)", value: residents.discharged_last_30, color: "#a78bfa", good: false },
+              { label: "Overdue Care Plan Reviews", value: care.overdue_reviews, color: care.overdue_reviews > 0 ? "var(--c-red)" : "var(--c-green)", good: care.overdue_reviews === 0 },
+              { label: "Critical Handovers (30d)", value: care.critical_handovers_last_30, color: care.critical_handovers_last_30 > 3 ? "var(--c-red)" : "var(--c-amber)", good: false },
+              { label: "Residents Admitted (30d)", value: residents.admitted_last_30, color: "var(--c-teal2)", good: false },
+              { label: "Residents Discharged (30d)", value: residents.discharged_last_30, color: "var(--c-teal)", good: false },
             ].map(({ label, value, color, good }) => (
               <div key={label} className="flex items-center justify-between">
                 <span className="text-xs" style={{ color: "var(--text-secondary)" }}>{label}</span>
-                <span className="text-sm font-bold" style={{ color: good ? "#34d399" : color }}>{value}</span>
+                <span className="text-sm font-bold" style={{ color: good ? "var(--c-green)" : color }}>{value}</span>
               </div>
             ))}
             <div>
               <div className="flex justify-between text-xs mb-1.5">
                 <span style={{ color: "var(--text-secondary)" }}>Avg AI Risk Score</span>
-                <span style={{ color: "#a78bfa" }}>{residents.avg_ai_risk_score}/100</span>
+                <span style={{ color: "var(--c-teal)" }}>{residents.avg_ai_risk_score}/100</span>
               </div>
               <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
-                <div className="h-full rounded-full" style={{ width: `${residents.avg_ai_risk_score}%`, background: "linear-gradient(90deg, #7c3aed, #3b82f6)" }} />
+                <div className="h-full rounded-full" style={{ width: `${residents.avg_ai_risk_score}%`, background: "linear-gradient(90deg, #0d9488, #10b981)" }} />
               </div>
             </div>
           </div>
@@ -230,14 +230,14 @@ export default function KPIPage() {
         {/* Incidents */}
         <div className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
           <div className="flex items-center gap-2 mb-4">
-            <AlertTriangle size={14} style={{ color: "#7c3aed" }} />
+            <AlertTriangle size={14} style={{ color: "#0d9488" }} />
             <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Incidents</p>
           </div>
           <div className="grid grid-cols-2 gap-3 mb-4">
             {[
-              { label: "Last 30 days", value: incidents.last_30_days, color: "#fbbf24" },
-              { label: "Last 90 days", value: incidents.last_90_days, color: "#a78bfa" },
-              { label: "Currently Open", value: incidents.open, color: "#f87171" },
+              { label: "Last 30 days", value: incidents.last_30_days, color: "var(--c-amber)" },
+              { label: "Last 90 days", value: incidents.last_90_days, color: "var(--c-teal)" },
+              { label: "Currently Open", value: incidents.open, color: "var(--c-red)" },
               { label: "Critical (30d)", value: incidents.critical_last_30, color: "#ef4444" },
             ].map(({ label, value, color }) => (
               <div key={label} className="rounded-xl px-3 py-2" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>

@@ -16,10 +16,10 @@ interface MAREntry {
 interface Resident { id: number; full_name: string; }
 
 const STATUS_CFG = {
-  given:   { icon: CheckCircle, color:"#34d399", bg:"rgba(52,211,153,0.15)",  label:"Given" },
-  pending: { icon: Clock,       color:"#fb923c", bg:"rgba(251,146,60,0.15)",  label:"Pending" },
-  refused: { icon: XCircle,     color:"#f87171", bg:"rgba(239,68,68,0.15)",   label:"Refused" },
-  omitted: { icon: XCircle,     color:"#a78bfa", bg:"rgba(124,58,237,0.15)",  label:"Omitted" },
+  given:   { icon: CheckCircle, color:"var(--c-green)", bg:"rgba(52,211,153,0.15)",  label:"Given" },
+  pending: { icon: Clock,       color:"var(--c-orange)", bg:"rgba(251,146,60,0.15)",  label:"Pending" },
+  refused: { icon: XCircle,     color:"var(--c-red)", bg:"rgba(239,68,68,0.15)",   label:"Refused" },
+  omitted: { icon: XCircle,     color:"var(--c-teal)", bg:"rgba(13, 148, 136,0.15)",  label:"Omitted" },
 };
 
 function isoDate(d: Date) { return d.toISOString().slice(0,10); }
@@ -70,8 +70,8 @@ export default function MARPage() {
     <div className="space-y-5 max-w-6xl mx-auto">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(96,165,250,0.12)", border:"1px solid rgba(96,165,250,0.2)" }}>
-            <Table2 size={16} style={{ color:"#60a5fa" }} />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(45, 212, 191,0.12)", border:"1px solid rgba(45, 212, 191,0.2)" }}>
+            <Table2 size={16} style={{ color:"var(--c-teal2)" }} />
           </div>
           <div><h1 className="text-lg font-bold text-white">MAR Chart</h1><p className="text-xs" style={{ color:"var(--text-muted)" }}>Medication administration record</p></div>
         </div>
@@ -109,7 +109,7 @@ export default function MARPage() {
           <p className="text-sm" style={{ color:"var(--text-muted)" }}>Select a resident to view their MAR chart</p>
         </div>
       ) : loading ? (
-        <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" /></div>
+        <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" /></div>
       ) : medications.length === 0 ? (
         <div className="text-center py-12 rounded-2xl" style={{ background:"var(--bg-card)", border:"1px solid var(--border)" }}>
           <p className="text-sm" style={{ color:"var(--text-muted)" }}>No active medications for this resident.</p>
@@ -127,7 +127,7 @@ export default function MARPage() {
             </thead>
             <tbody>
               {medications.map(med => (
-                <tr key={med.id} style={{ borderBottom:"1px solid var(--bg-card)" }}>
+                <tr key={med.id} style={{ borderBottom:"1px solid var(--border)" }}>
                   <td className="px-4 py-3">
                     <div className="text-sm font-semibold text-white">{med.drug_name}</div>
                     <div className="text-xs mt-0.5" style={{ color:"var(--text-muted)" }}>{med.dosage} · {med.route}</div>
@@ -147,7 +147,7 @@ export default function MARPage() {
                       <td key={t} className="px-3 py-3 text-center">
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center mx-auto" title={entry ? `${cfg?.label} by ${entry.administered_by_name ?? "—"}` : "Pending"}
                           style={{ background: cfg ? cfg.bg : "rgba(251,146,60,0.12)", border: `1px solid ${cfg ? cfg.color + "40" : "rgba(251,146,60,0.3)"}` }}>
-                          {cfg ? <cfg.icon size={13} style={{ color:cfg.color }} /> : <Clock size={13} style={{ color:"#fb923c" }} />}
+                          {cfg ? <cfg.icon size={13} style={{ color:cfg.color }} /> : <Clock size={13} style={{ color:"var(--c-orange)" }} />}
                         </div>
                       </td>
                     );

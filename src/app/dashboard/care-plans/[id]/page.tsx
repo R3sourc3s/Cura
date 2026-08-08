@@ -11,16 +11,16 @@ import {
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 const STATUS = {
-  active:       { bg: "rgba(52,211,153,0.12)",  text: "#34d399",  label: "Active" },
+  active:       { bg: "rgba(52,211,153,0.12)",  text: "var(--c-green)",  label: "Active" },
   draft:        { bg: "var(--bg-card)",            text: "var(--text-secondary)", label: "Draft" },
-  under_review: { bg: "rgba(251,146,60,0.12)",   text: "#fb923c",  label: "Under Review" },
-  archived:     { bg: "rgba(124,58,237,0.12)",   text: "#a78bfa",  label: "Archived" },
+  under_review: { bg: "rgba(251,146,60,0.12)",   text: "var(--c-orange)",  label: "Under Review" },
+  archived:     { bg: "rgba(13, 148, 136,0.12)",   text: "var(--c-teal)",  label: "Archived" },
 } as const;
 
 const RISK_STYLE = {
-  low:    { bg: "rgba(52,211,153,0.12)",  text: "#34d399" },
-  medium: { bg: "rgba(250,204,21,0.12)",  text: "#fbbf24" },
-  high:   { bg: "rgba(239,68,68,0.12)",   text: "#f87171" },
+  low:    { bg: "rgba(52,211,153,0.12)",  text: "var(--c-green)" },
+  medium: { bg: "rgba(250,204,21,0.12)",  text: "var(--c-amber)" },
+  high:   { bg: "rgba(239,68,68,0.12)",   text: "var(--c-red)" },
 } as const;
 
 function GlassCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -80,7 +80,7 @@ function SectionEditor({
 
   return (
     <div className="rounded-2xl p-4 space-y-3"
-      style={{ background: "var(--bg-card)", border: "1px solid rgba(124,58,237,0.25)" }}>
+      style={{ background: "var(--bg-card)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
       {error && (
         <p className="text-xs text-red-400">{error}</p>
       )}
@@ -109,13 +109,13 @@ function SectionEditor({
         </button>
         {section && onDeleted && (
           <button onClick={del} disabled={saving} className="py-2 px-3 text-xs rounded-xl"
-            style={{ background: "rgba(239,68,68,0.1)", color: "#f87171" }}>
+            style={{ background: "rgba(239,68,68,0.1)", color: "var(--c-red)" }}>
             <Trash2 size={12} />
           </button>
         )}
         <button onClick={save} disabled={saving || !title.trim()}
           className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-xl text-white disabled:opacity-50"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+          style={{ background: "#0d9488" }}>
           <Save size={12} />{saving ? "Saving…" : "Save"}
         </button>
       </div>
@@ -227,7 +227,7 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
               {plan.created_by_name && <span>Created by {plan.created_by_name}</span>}
               <span>Created {new Date(plan.created_at).toLocaleDateString("en-GB")}</span>
               {plan.next_review_date && (
-                <span style={{ color: overdue ? "#f87171" : undefined }}>
+                <span style={{ color: overdue ? "var(--c-red)" : undefined }}>
                   <Calendar size={10} className="inline mr-1" />
                   Review: {new Date(plan.next_review_date).toLocaleDateString("en-GB")}
                   {overdue ? " (overdue)" : ""}
@@ -259,17 +259,17 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
       <GlassCard>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Bot size={16} style={{ color: "#a78bfa" }} />
+            <Bot size={16} style={{ color: "var(--c-teal)" }} />
             <h2 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>AI Summary</h2>
             {plan.ai_generated && (
-              <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(124,58,237,0.15)", color: "#a78bfa" }}>
+              <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(13, 148, 136,0.15)", color: "var(--c-teal)" }}>
                 Generated
               </span>
             )}
           </div>
           <button onClick={generateSummary} disabled={summaryLoading}
             className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg disabled:opacity-50"
-            style={{ background: "rgba(124,58,237,0.15)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}>
+            style={{ background: "rgba(13, 148, 136,0.15)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
             <Bot size={11} />
             {summaryLoading ? "Generating…" : plan.ai_summary ? "Regenerate" : "Generate"}
           </button>
@@ -293,7 +293,7 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
           </h2>
           <button onClick={() => setEditSection("new")}
             className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Plus size={12} /> Add Section
           </button>
         </div>
@@ -366,7 +366,7 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
               <div className="flex justify-end">
                 <button onClick={addNote} disabled={addingNote || !noteBody.trim()}
                   className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg text-white disabled:opacity-50"
-                  style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                  style={{ background: "#0d9488" }}>
                   <CheckCircle size={12} />{addingNote ? "Adding…" : "Add Note"}
                 </button>
               </div>
@@ -379,7 +379,7 @@ export default function CarePlanDetailPage({ params }: { params: Promise<{ id: s
                   style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold"
-                      style={{ background: "rgba(124,58,237,0.2)", color: "#a78bfa" }}>
+                      style={{ background: "rgba(13, 148, 136,0.2)", color: "var(--c-teal)" }}>
                       {note.author_name?.[0] ?? "?"}
                     </div>
                     <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>{note.author_name ?? "Unknown"}</span>

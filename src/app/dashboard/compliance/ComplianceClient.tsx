@@ -11,35 +11,35 @@ import {
 } from "lucide-react";
 
 const DOMAIN_META: Record<string, { label: string; desc: string; color: string }> = {
-  safe:       { label: "Safe",       desc: "People are protected from abuse and avoidable harm", color: "#f87171" },
-  effective:  { label: "Effective",  desc: "Care, treatment and support achieves good outcomes",  color: "#60a5fa" },
+  safe:       { label: "Safe",       desc: "People are protected from abuse and avoidable harm", color: "var(--c-red)" },
+  effective:  { label: "Effective",  desc: "Care, treatment and support achieves good outcomes",  color: "var(--c-teal2)" },
   caring:     { label: "Caring",     desc: "Staff involve and treat people with compassion",       color: "#f472b6" },
-  responsive: { label: "Responsive", desc: "Services meet people's needs",                         color: "#fb923c" },
-  well_led:   { label: "Well-Led",   desc: "Leadership, management and governance",                color: "#a78bfa" },
+  responsive: { label: "Responsive", desc: "Services meet people's needs",                         color: "var(--c-orange)" },
+  well_led:   { label: "Well-Led",   desc: "Leadership, management and governance",                color: "var(--c-teal)" },
 };
 
 const RATING_CONFIG = {
-  outstanding:          { color: "#34d399", bg: "rgba(52,211,153,0.12)",  label: "Outstanding" },
-  good:                 { color: "#60a5fa", bg: "rgba(96,165,250,0.12)",  label: "Good" },
-  requires_improvement: { color: "#fb923c", bg: "rgba(251,146,60,0.12)",  label: "Requires Improvement" },
-  inadequate:           { color: "#f87171", bg: "rgba(239,68,68,0.12)",   label: "Inadequate" },
+  outstanding:          { color: "var(--c-green)", bg: "rgba(52,211,153,0.12)",  label: "Outstanding" },
+  good:                 { color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)",  label: "Good" },
+  requires_improvement: { color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)",  label: "Requires Improvement" },
+  inadequate:           { color: "var(--c-red)", bg: "rgba(239,68,68,0.12)",   label: "Inadequate" },
 } as const;
 
 const ACTION_PRIORITY = {
-  low:      { color: "#34d399", bg: "rgba(52,211,153,0.12)"  },
-  medium:   { color: "#fbbf24", bg: "rgba(250,204,21,0.12)"  },
-  high:     { color: "#fb923c", bg: "rgba(251,146,60,0.12)"  },
-  critical: { color: "#f87171", bg: "rgba(239,68,68,0.12)"   },
+  low:      { color: "var(--c-green)", bg: "rgba(52,211,153,0.12)"  },
+  medium:   { color: "var(--c-amber)", bg: "rgba(250,204,21,0.12)"  },
+  high:     { color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)"  },
+  critical: { color: "var(--c-red)", bg: "rgba(239,68,68,0.12)"   },
 } as const;
 
 const ACTION_STATUS = {
-  open:        { icon: AlertTriangle, color: "#fb923c", label: "Open" },
-  in_progress: { icon: Clock,         color: "#60a5fa", label: "In Progress" },
-  complete:    { icon: CheckCircle,   color: "#34d399", label: "Complete" },
+  open:        { icon: AlertTriangle, color: "var(--c-orange)", label: "Open" },
+  in_progress: { icon: Clock,         color: "var(--c-teal2)", label: "In Progress" },
+  complete:    { icon: CheckCircle,   color: "var(--c-green)", label: "Complete" },
 } as const;
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" };
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
@@ -59,7 +59,7 @@ function ScoreGauge({ score, color }: { score: number; color: string }) {
   return (
     <div className="relative w-16 h-16 flex-shrink-0">
       <svg className="w-full h-full -rotate-90" viewBox="0 0 64 64">
-        <circle cx="32" cy="32" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="5" />
+        <circle cx="32" cy="32" r={r} fill="none" stroke="rgba(var(--fg-rgb),0.06)" strokeWidth="5" />
         <circle cx="32" cy="32" r={r} fill="none" stroke={color} strokeWidth="5"
           strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
           style={{ transition: "stroke-dasharray 0.6s ease" }} />
@@ -127,7 +127,7 @@ function NewAuditModal({ onClose, onCreated }: { onClose: () => void; onCreated:
           style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #34d399, #059669)" }}>
+              style={{ background: "linear-gradient(135deg, var(--c-green), #059669)" }}>
               <ShieldCheck size={14} className="text-white" />
             </div>
             <h2 className="text-base font-bold text-white">New CQC Audit</h2>
@@ -185,7 +185,7 @@ function NewAuditModal({ onClose, onCreated }: { onClose: () => void; onCreated:
         </form>
 
         <div className="px-6 py-4 flex gap-3"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ borderTop: "1px solid rgba(var(--fg-rgb),0.06)" }}>
           <button type="button" onClick={onClose}
             className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
             style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
@@ -193,7 +193,7 @@ function NewAuditModal({ onClose, onCreated }: { onClose: () => void; onCreated:
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Save size={14} />{saving ? "Saving…" : "Record Audit"}
           </button>
         </div>
@@ -274,7 +274,7 @@ function AddActionModal({ auditId, onClose, onAdded }: { auditId: number; onClos
               onChange={(e) => setForm((f) => ({ ...f, due_date: e.target.value }))} required />
           </Field>
         </form>
-        <div className="px-5 py-4 flex gap-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="px-5 py-4 flex gap-3" style={{ borderTop: "1px solid rgba(var(--fg-rgb),0.06)" }}>
           <button type="button" onClick={onClose}
             className="flex-1 py-2 text-xs font-semibold rounded-xl"
             style={{ background: "var(--input-bg)", color: "var(--text-secondary)" }}>
@@ -282,7 +282,7 @@ function AddActionModal({ auditId, onClose, onAdded }: { auditId: number; onClos
           </button>
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
             className="flex-1 py-2 text-xs font-semibold rounded-xl text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             {saving ? "Adding…" : "Add Action"}
           </button>
         </div>
@@ -302,7 +302,7 @@ function GapReportModal({ report, onClose }: { report: string; onClose: () => vo
           style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+              style={{ background: "#0d9488" }}>
               <Sparkles size={14} className="text-white" />
             </div>
             <div>
@@ -325,7 +325,7 @@ function GapReportModal({ report, onClose }: { report: string; onClose: () => vo
               if (line.startsWith("- ") || line.startsWith("• ")) {
                 return (
                   <div key={i} className="flex gap-2">
-                    <span style={{ color: "#a78bfa" }}>·</span>
+                    <span style={{ color: "var(--c-teal)" }}>·</span>
                     <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{line.slice(2)}</p>
                   </div>
                 );
@@ -335,7 +335,7 @@ function GapReportModal({ report, onClose }: { report: string; onClose: () => vo
             })}
           </div>
         </div>
-        <div className="px-6 py-4 flex-shrink-0" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="px-6 py-4 flex-shrink-0" style={{ borderTop: "1px solid rgba(var(--fg-rgb),0.06)" }}>
           <button onClick={onClose}
             className="w-full py-2.5 text-sm font-semibold rounded-xl"
             style={{ background: "var(--border)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
@@ -394,7 +394,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-            <ShieldCheck size={22} style={{ color: "#34d399" }} /> Compliance
+            <ShieldCheck size={22} style={{ color: "var(--c-green)" }} /> Compliance
           </h1>
           <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
             CQC regulatory compliance overview
@@ -404,7 +404,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
           {can("compliance.ai_report") && (
             <button onClick={generateGapReport} disabled={generatingReport}
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-xl disabled:opacity-50"
-              style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.25)" }}>
+              style={{ background: "rgba(13, 148, 136,0.12)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
               <Sparkles size={13} />
               <span className="hidden sm:inline">{generatingReport ? "Generating…" : "AI Gap Report"}</span>
             </button>
@@ -412,7 +412,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
           {can("compliance.manage") && (
             <button onClick={() => setShowNew(true)}
               className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+              style={{ background: "#0d9488" }}>
               <Plus size={14} /> <span className="hidden sm:inline">New Audit</span><span className="sm:hidden">New</span>
             </button>
           )}
@@ -423,7 +423,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
         style={{ background: "var(--bg-card)", border: "1px solid var(--border-strong)" }}>
         <div className="relative flex-shrink-0">
           <svg className="-rotate-90 w-20 h-20 sm:w-24 sm:h-24" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(var(--fg-rgb),0.06)" strokeWidth="8" />
             <circle cx="50" cy="50" r="40" fill="none" stroke={overallCfg.color} strokeWidth="8"
               strokeDasharray={`${(avg / 100) * 251} 251`} strokeLinecap="round" />
           </svg>
@@ -454,7 +454,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
           {can("compliance.manage") && (
             <button onClick={() => setShowNew(true)}
               className="mt-4 px-4 py-2 text-sm font-semibold rounded-xl text-white inline-flex items-center gap-2"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+              style={{ background: "#0d9488" }}>
               <Plus size={14} /> Record First Audit
             </button>
           )}
@@ -483,7 +483,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
                         </span>
                         {openActions.length > 0 && (
                           <span className="text-xs px-2 py-0.5 rounded-full"
-                            style={{ background: "rgba(251,146,60,0.15)", color: "#fb923c" }}>
+                            style={{ background: "rgba(251,146,60,0.15)", color: "var(--c-orange)" }}>
                             {openActions.length} action{openActions.length !== 1 ? "s" : ""}
                           </span>
                         )}
@@ -529,7 +529,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
                       {can("compliance.manage") && (
                         <button onClick={() => setAddActionAuditId(audit.id)}
                           className="flex items-center gap-1 text-xs font-medium px-2.5 py-1.5 rounded-lg"
-                          style={{ background: "rgba(124,58,237,0.15)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}>
+                          style={{ background: "rgba(13, 148, 136,0.15)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
                           <Plus size={11} /> Add Action
                         </button>
                       )}

@@ -55,9 +55,9 @@ interface FundingSource {
 
 const STATUS_CFG = {
   draft:     { label: "Draft",     color: "#9ca3af", bg: "rgba(156,163,175,0.12)" },
-  sent:      { label: "Sent",      color: "#60a5fa", bg: "rgba(96,165,250,0.12)" },
-  paid:      { label: "Paid",      color: "#34d399", bg: "rgba(52,211,153,0.12)" },
-  overdue:   { label: "Overdue",   color: "#f87171", bg: "rgba(248,113,113,0.12)" },
+  sent:      { label: "Sent",      color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)" },
+  paid:      { label: "Paid",      color: "var(--c-green)", bg: "rgba(52,211,153,0.12)" },
+  overdue:   { label: "Overdue",   color: "var(--c-red)", bg: "rgba(248,113,113,0.12)" },
   cancelled: { label: "Cancelled", color: "#6b7280", bg: "rgba(107,114,128,0.12)" },
 } as const;
 
@@ -69,10 +69,10 @@ const FUNDING_TYPE_LABEL: Record<string, string> = {
 };
 
 const FUNDING_TYPE_CFG: Record<string, { color: string; bg: string }> = {
-  self_funded:     { color: "#fbbf24", bg: "rgba(251,191,36,0.12)" },
-  local_authority: { color: "#60a5fa", bg: "rgba(96,165,250,0.12)" },
-  nhs:             { color: "#34d399", bg: "rgba(52,211,153,0.12)" },
-  mixed:           { color: "#a78bfa", bg: "rgba(124,58,237,0.12)" },
+  self_funded:     { color: "var(--c-amber)", bg: "rgba(251,191,36,0.12)" },
+  local_authority: { color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)" },
+  nhs:             { color: "var(--c-green)", bg: "rgba(52,211,153,0.12)" },
+  mixed:           { color: "var(--c-teal)", bg: "rgba(13, 148, 136,0.12)" },
 };
 
 function fmt(value: string | number): string {
@@ -175,9 +175,9 @@ export default function BillingPage() {
         <div className="flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}
+            style={{ background: "rgba(13, 148, 136,0.12)", border: "1px solid rgba(13, 148, 136,0.2)" }}
           >
-            <Receipt size={16} style={{ color: "#a78bfa" }} />
+            <Receipt size={16} style={{ color: "var(--c-teal)" }} />
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Billing</h1>
@@ -188,7 +188,7 @@ export default function BillingPage() {
           <button
             onClick={() => setShowModal(true)}
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+            style={{ background: "#0d9488" }}
           >
             <Plus size={14} /> New Invoice
           </button>
@@ -198,10 +198,10 @@ export default function BillingPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Total Invoices",  value: totalInvoices,              color: "#a78bfa", display: String(totalInvoices) },
-          { label: "Outstanding",     value: outstanding,                color: "#60a5fa", display: String(outstanding) },
-          { label: "Total Revenue",   value: totalRevenue,               color: "#34d399", display: fmt(totalRevenue) },
-          { label: "Overdue",         value: overdueCount,               color: "#f87171", display: String(overdueCount) },
+          { label: "Total Invoices",  value: totalInvoices,              color: "var(--c-teal)", display: String(totalInvoices) },
+          { label: "Outstanding",     value: outstanding,                color: "var(--c-teal2)", display: String(outstanding) },
+          { label: "Total Revenue",   value: totalRevenue,               color: "var(--c-green)", display: fmt(totalRevenue) },
+          { label: "Overdue",         value: overdueCount,               color: "var(--c-red)", display: String(overdueCount) },
         ].map(({ label, color, display }) => (
           <div
             key={label}
@@ -223,7 +223,7 @@ export default function BillingPage() {
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all"
             style={
               tab === t
-                ? { background: "rgba(124,58,237,0.2)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.3)" }
+                ? { background: "rgba(13, 148, 136,0.2)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.3)" }
                 : { color: "var(--text-muted)", border: "1px solid transparent" }
             }
           >
@@ -250,19 +250,19 @@ export default function BillingPage() {
               />
             </div>
             <div className="relative">
-              <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+              <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(var(--fg-rgb),0.25)" }} />
               <select
                 value={filterStatus}
                 onChange={e => setFilterStatus(e.target.value)}
                 className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}
+                style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.08)", color: "rgba(var(--fg-rgb),0.6)" }}
               >
                 <option value="">All Statuses</option>
                 {(["draft", "sent", "paid", "overdue", "cancelled"] as const).map(s => (
                   <option key={s} value={s}>{STATUS_CFG[s].label}</option>
                 ))}
               </select>
-              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
             </div>
           </div>
 
@@ -287,7 +287,7 @@ export default function BillingPage() {
                   <div
                     key={inv.id}
                     className="rounded-2xl p-4"
-                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+                    style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
@@ -305,11 +305,11 @@ export default function BillingPage() {
                             {inv.resident_name ?? `Resident #${inv.resident}`}
                           </span>
                         </div>
-                        <div className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+                        <div className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                           Period: {new Date(inv.period_start).toLocaleDateString("en-GB")} – {new Date(inv.period_end).toLocaleDateString("en-GB")}
                         </div>
                         {inv.notes && (
-                          <div className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.3)" }}>
+                          <div className="text-xs mt-1" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
                             {inv.notes}
                           </div>
                         )}
@@ -318,12 +318,12 @@ export default function BillingPage() {
                         <div className="text-base font-bold text-white">{fmt(inv.total)}</div>
                         <div
                           className="text-xs mt-0.5"
-                          style={{ color: isOverdue ? "#f87171" : "rgba(255,255,255,0.35)" }}
+                          style={{ color: isOverdue ? "var(--c-red)" : "rgba(var(--fg-rgb),0.35)" }}
                         >
                           Due {new Date(inv.due_date).toLocaleDateString("en-GB")}
                         </div>
                         {inv.created_by_name && (
-                          <div className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.25)" }}>
+                          <div className="text-xs mt-1" style={{ color: "rgba(var(--fg-rgb),0.25)" }}>
                             {inv.created_by_name}
                           </div>
                         )}
@@ -352,12 +352,12 @@ export default function BillingPage() {
                 <div
                   key={residentName}
                   className="rounded-2xl p-4"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+                  style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}
                 >
                   <div className="text-sm font-semibold text-white mb-3">{residentName}</div>
                   <div className="space-y-2">
                     {sources.map(src => {
-                      const ftCfg = FUNDING_TYPE_CFG[src.funding_type] ?? { color: "#a78bfa", bg: "rgba(124,58,237,0.12)" };
+                      const ftCfg = FUNDING_TYPE_CFG[src.funding_type] ?? { color: "var(--c-teal)", bg: "rgba(13, 148, 136,0.12)" };
                       return (
                         <div key={src.id} className="flex items-center justify-between gap-3 flex-wrap">
                           <div className="flex items-center gap-2 flex-wrap">
@@ -368,7 +368,7 @@ export default function BillingPage() {
                               {FUNDING_TYPE_LABEL[src.funding_type] ?? src.funding_type}
                             </span>
                             {src.funder_name && (
-                              <span className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+                              <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>
                                 {src.funder_name}
                               </span>
                             )}
@@ -380,7 +380,7 @@ export default function BillingPage() {
                           </div>
                           <div className="text-right">
                             <div className="text-sm font-semibold text-white">{fmt(src.weekly_rate)}<span className="text-xs font-normal ml-1" style={{ color: "var(--text-muted)" }}>/wk</span></div>
-                            <div className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                            <div className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
                               From {new Date(src.start_date).toLocaleDateString("en-GB")}
                               {src.end_date ? ` – ${new Date(src.end_date).toLocaleDateString("en-GB")}` : ""}
                             </div>
@@ -404,11 +404,11 @@ export default function BillingPage() {
         >
           <div
             className="rounded-2xl p-6 w-full max-w-lg"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}
           >
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">New Invoice</h3>
-              <button onClick={() => setShowModal(false)} style={{ color: "rgba(255,255,255,0.4)" }}>
+              <button onClick={() => setShowModal(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                 <X size={18} />
               </button>
             </div>
@@ -423,7 +423,7 @@ export default function BillingPage() {
                       value={form.resident}
                       onChange={e => setForm(f => ({ ...f, resident: e.target.value }))}
                       className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                      style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                     />
                   ),
                 },
@@ -436,7 +436,7 @@ export default function BillingPage() {
                       value={form.invoice_number}
                       onChange={e => setForm(f => ({ ...f, invoice_number: e.target.value }))}
                       className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                      style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                     />
                   ),
                 },
@@ -448,7 +448,7 @@ export default function BillingPage() {
                       value={form.period_start}
                       onChange={e => setForm(f => ({ ...f, period_start: e.target.value }))}
                       className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                      style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                     />
                   ),
                 },
@@ -460,7 +460,7 @@ export default function BillingPage() {
                       value={form.period_end}
                       onChange={e => setForm(f => ({ ...f, period_end: e.target.value }))}
                       className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                      style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                     />
                   ),
                 },
@@ -472,7 +472,7 @@ export default function BillingPage() {
                       value={form.issue_date}
                       onChange={e => setForm(f => ({ ...f, issue_date: e.target.value }))}
                       className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                      style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                     />
                   ),
                 },
@@ -484,7 +484,7 @@ export default function BillingPage() {
                       value={form.due_date}
                       onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))}
                       className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                      style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                     />
                   ),
                 },
@@ -497,13 +497,13 @@ export default function BillingPage() {
                       value={form.notes}
                       onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                       className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                      style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                     />
                   ),
                 },
               ].map(({ label, el }) => (
                 <div key={label}>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>{label}</label>
                   {el}
                 </div>
               ))}
@@ -512,7 +512,7 @@ export default function BillingPage() {
               <button
                 onClick={() => setShowModal(false)}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}
               >
                 Cancel
               </button>
@@ -520,7 +520,7 @@ export default function BillingPage() {
                 onClick={handleSave}
                 disabled={saving || !form.resident || !form.invoice_number || !form.period_start || !form.period_end || !form.issue_date || !form.due_date}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+                style={{ background: "#0d9488" }}
               >
                 {saving ? "Saving…" : "Create Invoice"}
               </button>

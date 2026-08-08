@@ -69,25 +69,25 @@ interface Resident { id: number; full_name: string; }
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 const REFERRAL_STATUS_CFG: Record<string, { label: string; color: string; bg: string }> = {
-  pending:           { label: "Pending",           color: "#fbbf24", bg: "rgba(251,191,36,0.12)" },
-  sent:              { label: "Sent",               color: "#60a5fa", bg: "rgba(96,165,250,0.12)" },
-  acknowledged:      { label: "Acknowledged",       color: "#a78bfa", bg: "rgba(124,58,237,0.12)" },
-  appointment_booked:{ label: "Appt Booked",        color: "#fb923c", bg: "rgba(251,146,60,0.12)" },
-  completed:         { label: "Completed",          color: "#34d399", bg: "rgba(52,211,153,0.12)" },
-  rejected:          { label: "Rejected",           color: "#f87171", bg: "rgba(239,68,68,0.12)" },
+  pending:           { label: "Pending",           color: "var(--c-amber)", bg: "rgba(251,191,36,0.12)" },
+  sent:              { label: "Sent",               color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)" },
+  acknowledged:      { label: "Acknowledged",       color: "var(--c-teal)", bg: "rgba(13, 148, 136,0.12)" },
+  appointment_booked:{ label: "Appt Booked",        color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)" },
+  completed:         { label: "Completed",          color: "var(--c-green)", bg: "rgba(52,211,153,0.12)" },
+  rejected:          { label: "Rejected",           color: "var(--c-red)", bg: "rgba(239,68,68,0.12)" },
 };
 
 const URGENCY_CFG: Record<string, { label: string; color: string; bg: string }> = {
   routine:   { label: "Routine",   color: "#9ca3af", bg: "rgba(107,114,128,0.1)" },
-  urgent:    { label: "Urgent",    color: "#fb923c", bg: "rgba(251,146,60,0.12)" },
-  emergency: { label: "Emergency", color: "#f87171", bg: "rgba(239,68,68,0.12)" },
+  urgent:    { label: "Urgent",    color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)" },
+  emergency: { label: "Emergency", color: "var(--c-red)", bg: "rgba(239,68,68,0.12)" },
 };
 
 const DISCHARGE_STATUS_CFG: Record<string, { label: string; color: string; bg: string }> = {
-  received:        { label: "Received",        color: "#60a5fa", bg: "rgba(96,165,250,0.12)" },
-  reviewed:        { label: "Reviewed",        color: "#a78bfa", bg: "rgba(124,58,237,0.12)" },
-  action_required: { label: "Action Required", color: "#f87171", bg: "rgba(239,68,68,0.12)" },
-  completed:       { label: "Completed",       color: "#34d399", bg: "rgba(52,211,153,0.12)" },
+  received:        { label: "Received",        color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)" },
+  reviewed:        { label: "Reviewed",        color: "var(--c-teal)", bg: "rgba(13, 148, 136,0.12)" },
+  action_required: { label: "Action Required", color: "var(--c-red)", bg: "rgba(239,68,68,0.12)" },
+  completed:       { label: "Completed",       color: "var(--c-green)", bg: "rgba(52,211,153,0.12)" },
 };
 
 const REFERRAL_TYPES = ["gp","specialist","hospital","community","mental_health","physio","other"];
@@ -98,9 +98,9 @@ const REFERRAL_TYPE_LABEL: Record<string, string> = {
 };
 
 const inputStyle = {
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  color: "rgba(255,255,255,0.8)",
+  background: "rgba(var(--fg-rgb),0.05)",
+  border: "1px solid rgba(var(--fg-rgb),0.1)",
+  color: "rgba(var(--fg-rgb),0.8)",
 } as const;
 
 type Tab = "referrals" | "discharge" | "gp_contacts" | "hospital_contacts";
@@ -326,7 +326,7 @@ export default function GPIntegrationPage() {
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center"
             style={{ background: "rgba(52,211,153,0.12)", border: "1px solid rgba(52,211,153,0.2)" }}>
-            <Stethoscope size={16} style={{ color: "#34d399" }} />
+            <Stethoscope size={16} style={{ color: "var(--c-green)" }} />
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">GP &amp; Hospital Integration</h1>
@@ -336,21 +336,21 @@ export default function GPIntegrationPage() {
         {tab === "referrals" && (
           <button onClick={() => setShowNewReferral(true)}
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Plus size={14} /> New Referral
           </button>
         )}
         {tab === "gp_contacts" && (
           <button onClick={() => setShowNewGP(true)}
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Plus size={14} /> Add GP
           </button>
         )}
         {tab === "hospital_contacts" && (
           <button onClick={() => setShowNewHospital(true)}
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Plus size={14} /> Add Hospital
           </button>
         )}
@@ -359,10 +359,10 @@ export default function GPIntegrationPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Total Referrals",      value: totalReferrals,   color: "#a78bfa" },
-          { label: "Pending Referrals",    value: pendingReferrals, color: "#fbbf24" },
-          { label: "Discharge Summaries",  value: totalDischarges,  color: "#60a5fa" },
-          { label: "Action Required",      value: actionRequired,   color: "#f87171" },
+          { label: "Total Referrals",      value: totalReferrals,   color: "var(--c-teal)" },
+          { label: "Pending Referrals",    value: pendingReferrals, color: "var(--c-amber)" },
+          { label: "Discharge Summaries",  value: totalDischarges,  color: "var(--c-teal2)" },
+          { label: "Action Required",      value: actionRequired,   color: "var(--c-red)" },
         ].map(({ label, value, color }) => (
           <div key={label} className="rounded-2xl p-4 text-center"
             style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
@@ -378,9 +378,9 @@ export default function GPIntegrationPage() {
           <button key={t.key} onClick={() => setTab(t.key)}
             className="flex-1 py-2 text-sm font-medium rounded-lg transition-all"
             style={{
-              background: tab === t.key ? "rgba(124,58,237,0.2)" : "transparent",
-              color: tab === t.key ? "#a78bfa" : "var(--text-muted)",
-              border: tab === t.key ? "1px solid rgba(124,58,237,0.3)" : "1px solid transparent",
+              background: tab === t.key ? "rgba(13, 148, 136,0.2)" : "transparent",
+              color: tab === t.key ? "var(--c-teal)" : "var(--text-muted)",
+              border: tab === t.key ? "1px solid rgba(13, 148, 136,0.3)" : "1px solid transparent",
             }}>
             {t.label}
           </button>
@@ -403,13 +403,13 @@ export default function GPIntegrationPage() {
               { value: filterRefUrgency, set: setFilterRefUrgency, opts: [["","All Urgency"],["routine","Routine"],["urgent","Urgent"],["emergency","Emergency"]] },
             ].map((f, i) => (
               <div key={i} className="relative">
-                <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+                <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(var(--fg-rgb),0.25)" }} />
                 <select value={f.value} onChange={e => f.set(e.target.value)}
                   className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}>
+                  style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.08)", color: "rgba(var(--fg-rgb),0.6)" }}>
                   {f.opts.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                 </select>
-                <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+                <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
               </div>
             ))}
           </div>
@@ -425,7 +425,7 @@ export default function GPIntegrationPage() {
                 const uc = URGENCY_CFG[ref.urgency] ?? URGENCY_CFG.routine;
                 return (
                   <div key={ref.id} className="rounded-2xl p-4"
-                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                    style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-1.5">
@@ -433,29 +433,29 @@ export default function GPIntegrationPage() {
                           <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: sc.bg, color: sc.color }}>{sc.label}</span>
                           <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: uc.bg, color: uc.color }}>{uc.label}</span>
                           <span className="text-xs px-2 py-0.5 rounded-full"
-                            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.45)" }}>
+                            style={{ background: "rgba(var(--fg-rgb),0.05)", color: "rgba(var(--fg-rgb),0.45)" }}>
                             {REFERRAL_TYPE_LABEL[ref.referral_type] ?? ref.referral_type}
                           </span>
                         </div>
-                        <p className="text-sm font-medium mb-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>
+                        <p className="text-sm font-medium mb-0.5" style={{ color: "rgba(var(--fg-rgb),0.75)" }}>
                           To: {ref.referred_to}
                         </p>
-                        <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>{ref.reason}</p>
+                        <p className="text-xs leading-relaxed" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>{ref.reason}</p>
                         {ref.outcome && (
                           <p className="text-xs mt-1.5 italic" style={{ color: "rgba(52,211,153,0.7)" }}>Outcome: {ref.outcome}</p>
                         )}
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <div className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+                        <div className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                           {new Date(ref.referral_date).toLocaleDateString("en-GB")}
                         </div>
                         {ref.appointment_date && (
-                          <div className="text-xs mt-0.5" style={{ color: "#fbbf24" }}>
+                          <div className="text-xs mt-0.5" style={{ color: "var(--c-amber)" }}>
                             Appt: {new Date(ref.appointment_date).toLocaleDateString("en-GB")}
                           </div>
                         )}
                         {ref.referred_by_name && (
-                          <div className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.3)" }}>{ref.referred_by_name}</div>
+                          <div className="text-xs mt-1" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>{ref.referred_by_name}</div>
                         )}
                       </div>
                     </div>
@@ -478,15 +478,15 @@ export default function GPIntegrationPage() {
                 style={{ background: "var(--input-bg)", border: "1px solid var(--bg-card-hover)", color: "var(--text-secondary)" }} />
             </div>
             <div className="relative">
-              <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+              <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(var(--fg-rgb),0.25)" }} />
               <select value={filterDisStatus} onChange={e => setFilterDisStatus(e.target.value)}
                 className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.08)", color: "rgba(var(--fg-rgb),0.6)" }}>
                 {[["","All Status"],["received","Received"],["reviewed","Reviewed"],["action_required","Action Required"],["completed","Completed"]].map(([v,l]) =>
                   <option key={v} value={v}>{l}</option>
                 )}
               </select>
-              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
             </div>
           </div>
 
@@ -500,7 +500,7 @@ export default function GPIntegrationPage() {
                 const sc = DISCHARGE_STATUS_CFG[ds.status] ?? DISCHARGE_STATUS_CFG.received;
                 return (
                   <div key={ds.id} className="rounded-2xl p-4"
-                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                    style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap mb-1.5">
@@ -508,13 +508,13 @@ export default function GPIntegrationPage() {
                           <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: sc.bg, color: sc.color }}>{sc.label}</span>
                           {ds.hospital_name && (
                             <span className="text-xs px-2 py-0.5 rounded-full"
-                              style={{ background: "rgba(96,165,250,0.1)", color: "#60a5fa" }}>
+                              style={{ background: "rgba(45, 212, 191,0.1)", color: "var(--c-teal2)" }}>
                               {ds.hospital_name}
                             </span>
                           )}
                         </div>
                         {ds.diagnosis && (
-                          <p className="text-sm font-medium mb-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>
+                          <p className="text-sm font-medium mb-0.5" style={{ color: "rgba(var(--fg-rgb),0.75)" }}>
                             {ds.diagnosis.length > 120 ? ds.diagnosis.slice(0, 120) + "…" : ds.diagnosis}
                           </p>
                         )}
@@ -524,10 +524,10 @@ export default function GPIntegrationPage() {
                           </p>
                         )}
                         {ds.reviewed_by_name && (
-                          <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.3)" }}>Reviewed by {ds.reviewed_by_name}</p>
+                          <p className="text-xs mt-1" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>Reviewed by {ds.reviewed_by_name}</p>
                         )}
                       </div>
-                      <div className="text-right flex-shrink-0 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+                      <div className="text-right flex-shrink-0 text-xs" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                         <div>Admitted: {new Date(ds.admission_date).toLocaleDateString("en-GB")}</div>
                         <div>Discharged: {new Date(ds.discharge_date).toLocaleDateString("en-GB")}</div>
                       </div>
@@ -558,11 +558,11 @@ export default function GPIntegrationPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {filteredGP.map(gp => (
                 <div key={gp.id} className="rounded-2xl p-4"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                  style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <p className="text-sm font-semibold text-white">{gp.practice_name}</p>
-                      <p className="text-xs" style={{ color: "#a78bfa" }}>{gp.gp_name}</p>
+                      <p className="text-xs" style={{ color: "var(--c-teal)" }}>{gp.gp_name}</p>
                     </div>
                     {!gp.is_active && (
                       <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(107,114,128,0.15)", color: "#9ca3af" }}>Inactive</span>
@@ -570,17 +570,17 @@ export default function GPIntegrationPage() {
                   </div>
                   <div className="space-y-1">
                     {gp.phone && (
-                      <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+                      <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>
                         <Phone size={11} />{gp.phone}
                       </div>
                     )}
                     {gp.email && (
-                      <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+                      <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>
                         <Mail size={11} />{gp.email}
                       </div>
                     )}
                     {gp.address && (
-                      <div className="flex items-start gap-2 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+                      <div className="flex items-start gap-2 text-xs" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                         <MapPin size={11} className="mt-0.5 flex-shrink-0" />{gp.address}
                       </div>
                     )}
@@ -610,11 +610,11 @@ export default function GPIntegrationPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {filteredHospital.map(h => (
                 <div key={h.id} className="rounded-2xl p-4"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                  style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <p className="text-sm font-semibold text-white">{h.hospital_name}</p>
-                      {h.department && <p className="text-xs" style={{ color: "#60a5fa" }}>{h.department}</p>}
+                      {h.department && <p className="text-xs" style={{ color: "var(--c-teal2)" }}>{h.department}</p>}
                     </div>
                     {!h.is_active && (
                       <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "rgba(107,114,128,0.15)", color: "#9ca3af" }}>Inactive</span>
@@ -622,17 +622,17 @@ export default function GPIntegrationPage() {
                   </div>
                   <div className="space-y-1">
                     {h.phone && (
-                      <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+                      <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>
                         <Phone size={11} />{h.phone}
                       </div>
                     )}
                     {h.address && (
-                      <div className="flex items-start gap-2 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+                      <div className="flex items-start gap-2 text-xs" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                         <MapPin size={11} className="mt-0.5 flex-shrink-0" />{h.address}
                       </div>
                     )}
                     {h.notes && (
-                      <p className="text-xs mt-1.5 italic" style={{ color: "rgba(255,255,255,0.35)" }}>{h.notes}</p>
+                      <p className="text-xs mt-1.5 italic" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>{h.notes}</p>
                     )}
                   </div>
                 </div>
@@ -647,10 +647,10 @@ export default function GPIntegrationPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">New Referral</h3>
-              <button onClick={() => setShowNewReferral(false)} style={{ color: "rgba(255,255,255,0.4)" }}><X size={18} /></button>
+              <button onClick={() => setShowNewReferral(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}><X size={18} /></button>
             </div>
             <div className="space-y-3">
               {[
@@ -662,17 +662,17 @@ export default function GPIntegrationPage() {
                 { label: "Appointment Date (if known)", el: <input type="datetime-local" value={refForm.appointment_date} onChange={e => setRefForm(f => ({ ...f, appointment_date: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} /> },
                 { label: "Reason *", el: <textarea rows={3} placeholder="Reason for referral…" value={refForm.reason} onChange={e => setRefForm(f => ({ ...f, reason: e.target.value }))} className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle} /> },
               ].map(({ label, el }) => (
-                <div key={label}><label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</label>{el}</div>
+                <div key={label}><label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>{label}</label>{el}</div>
               ))}
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowNewReferral(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button onClick={handleSaveReferral} disabled={saving || !refForm.resident || !refForm.referred_to || !refForm.reason}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {saving ? "Saving…" : "Save Referral"}
               </button>
             </div>
@@ -685,10 +685,10 @@ export default function GPIntegrationPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-lg"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Add GP Contact</h3>
-              <button onClick={() => setShowNewGP(false)} style={{ color: "rgba(255,255,255,0.4)" }}><X size={18} /></button>
+              <button onClick={() => setShowNewGP(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}><X size={18} /></button>
             </div>
             <div className="space-y-3">
               {[
@@ -698,24 +698,24 @@ export default function GPIntegrationPage() {
                 { label: "Fax",             key: "fax",           placeholder: "01234 567891" },
                 { label: "Email",           key: "email",         placeholder: "admin@practise.nhs.uk" },
               ].map(({ label, key, placeholder }) => (
-                <div key={key}><label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</label>
+                <div key={key}><label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>{label}</label>
                   <input value={gpForm[key as keyof typeof gpForm]} onChange={e => setGpForm(f => ({ ...f, [key]: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder={placeholder} />
                 </div>
               ))}
-              <div><label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Address</label>
+              <div><label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Address</label>
                 <textarea rows={2} value={gpForm.address} onChange={e => setGpForm(f => ({ ...f, address: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle} placeholder="123 High Street, London…" />
               </div>
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowNewGP(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button onClick={handleSaveGPContact} disabled={saving || !gpForm.practice_name || !gpForm.gp_name}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {saving ? "Saving…" : "Save Contact"}
               </button>
             </div>
@@ -728,10 +728,10 @@ export default function GPIntegrationPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-lg"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Add Hospital Contact</h3>
-              <button onClick={() => setShowNewHospital(false)} style={{ color: "rgba(255,255,255,0.4)" }}><X size={18} /></button>
+              <button onClick={() => setShowNewHospital(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}><X size={18} /></button>
             </div>
             <div className="space-y-3">
               {[
@@ -739,28 +739,28 @@ export default function GPIntegrationPage() {
                 { label: "Department",      key: "department",    placeholder: "Cardiology, A&E, Orthopaedics…" },
                 { label: "Phone",           key: "phone",         placeholder: "01234 567890" },
               ].map(({ label, key, placeholder }) => (
-                <div key={key}><label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>{label}</label>
+                <div key={key}><label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>{label}</label>
                   <input value={hospForm[key as keyof typeof hospForm]} onChange={e => setHospForm(f => ({ ...f, [key]: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder={placeholder} />
                 </div>
               ))}
-              <div><label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Address</label>
+              <div><label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Address</label>
                 <textarea rows={2} value={hospForm.address} onChange={e => setHospForm(f => ({ ...f, address: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle} placeholder="Hospital Road, London…" />
               </div>
-              <div><label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Notes</label>
+              <div><label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Notes</label>
                 <textarea rows={2} value={hospForm.notes} onChange={e => setHospForm(f => ({ ...f, notes: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none" style={inputStyle} placeholder="Any additional notes…" />
               </div>
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowNewHospital(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button onClick={handleSaveHospitalContact} disabled={saving || !hospForm.hospital_name}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {saving ? "Saving…" : "Save Contact"}
               </button>
             </div>

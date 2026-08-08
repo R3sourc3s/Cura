@@ -11,8 +11,8 @@ interface MaintenanceIssue {
   resolved_at: string|null; resolution_notes: string; created_at: string; updated_at: string;
 }
 
-const PRIORITY = { urgent: { label:"Urgent", color:"#f87171", bg:"rgba(239,68,68,0.12)" }, high: { label:"High", color:"#fb923c", bg:"rgba(251,146,60,0.12)" }, medium: { label:"Medium", color:"#fbbf24", bg:"rgba(250,204,21,0.12)" }, low: { label:"Low", color:"#34d399", bg:"rgba(52,211,153,0.12)" } } as const;
-const STATUS = { open: { label:"Open", color:"#f87171", bg:"rgba(239,68,68,0.12)" }, in_progress: { label:"In Progress", color:"#60a5fa", bg:"rgba(96,165,250,0.12)" }, resolved: { label:"Resolved", color:"#34d399", bg:"rgba(52,211,153,0.12)" }, closed: { label:"Closed", color:"#6b7280", bg:"rgba(107,114,128,0.1)" } } as const;
+const PRIORITY = { urgent: { label:"Urgent", color:"var(--c-red)", bg:"rgba(239,68,68,0.12)" }, high: { label:"High", color:"var(--c-orange)", bg:"rgba(251,146,60,0.12)" }, medium: { label:"Medium", color:"var(--c-amber)", bg:"rgba(250,204,21,0.12)" }, low: { label:"Low", color:"var(--c-green)", bg:"rgba(52,211,153,0.12)" } } as const;
+const STATUS = { open: { label:"Open", color:"var(--c-red)", bg:"rgba(239,68,68,0.12)" }, in_progress: { label:"In Progress", color:"var(--c-teal2)", bg:"rgba(45, 212, 191,0.12)" }, resolved: { label:"Resolved", color:"var(--c-green)", bg:"rgba(52,211,153,0.12)" }, closed: { label:"Closed", color:"#6b7280", bg:"rgba(107,114,128,0.1)" } } as const;
 const CATEGORIES = ["electrical","plumbing","heating","equipment","safety","cleaning","other"];
 
 export default function MaintenancePage() {
@@ -77,17 +77,17 @@ export default function MaintenancePage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(251,146,60,0.12)", border: "1px solid rgba(251,146,60,0.2)" }}>
-            <Wrench size={16} style={{ color: "#fb923c" }} />
+            <Wrench size={16} style={{ color: "var(--c-orange)" }} />
           </div>
           <div><h1 className="text-lg font-bold text-white">Maintenance</h1><p className="text-xs" style={{ color: "var(--text-muted)" }}>Issue tracker</p></div>
         </div>
-        <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+        <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background: "#0d9488" }}>
           <Plus size={14} /> Report Issue
         </button>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[{ label:"Open Issues", value:open, color:"#f87171" }, { label:"Urgent", value:urgent, color:"#ef4444" }, { label:"In Progress", value:inProgress, color:"#60a5fa" }, { label:"Resolved This Week", value:resolvedWeek, color:"#34d399" }].map(({ label, value, color }) => (
+        {[{ label:"Open Issues", value:open, color:"var(--c-red)" }, { label:"Urgent", value:urgent, color:"#ef4444" }, { label:"In Progress", value:inProgress, color:"var(--c-teal2)" }, { label:"Resolved This Week", value:resolvedWeek, color:"var(--c-green)" }].map(({ label, value, color }) => (
           <div key={label} className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
             <div className="text-2xl font-bold" style={{ color }}>{value}</div>
             <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>{label}</div>
@@ -120,7 +120,7 @@ export default function MaintenancePage() {
           ) : filtered.map(issue => {
             const p = PRIORITY[issue.priority]; const s = STATUS[issue.status];
             return (
-              <div key={issue.id} className="rounded-2xl p-4 cursor-pointer" style={{ background: "var(--bg-card)", border: `1px solid var(--border)` }} onClick={() => openEdit(issue)} onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(124,58,237,0.3)")} onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}>
+              <div key={issue.id} className="rounded-2xl p-4 cursor-pointer" style={{ background: "var(--bg-card)", border: `1px solid var(--border)` }} onClick={() => openEdit(issue)} onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(13, 148, 136,0.3)")} onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -146,7 +146,7 @@ export default function MaintenancePage() {
       {/* Create Modal */}
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(124,58,237,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Report Issue</h3><button onClick={() => setShowCreate(false)} style={{ color: "var(--text-muted)" }}><X size={18} /></button></div>
             <div className="space-y-3">
               {[
@@ -160,7 +160,7 @@ export default function MaintenancePage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{ background: "var(--bg-card-hover)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>Cancel</button>
-              <button onClick={handleCreate} disabled={saving || !form.title} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>{saving ? "Saving…" : "Report"}</button>
+              <button onClick={handleCreate} disabled={saving || !form.title} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{ background: "#0d9488" }}>{saving ? "Saving…" : "Report"}</button>
             </div>
           </div>
         </div>
@@ -169,7 +169,7 @@ export default function MaintenancePage() {
       {/* Edit Modal */}
       {editIssue && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(124,58,237,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-3"><h3 className="text-base font-bold text-white">{editIssue.title}</h3><button onClick={() => setEditIssue(null)} style={{ color: "var(--text-muted)" }}><X size={18} /></button></div>
             <p className="text-sm mb-5" style={{ color: "var(--text-secondary)" }}>{editIssue.description}</p>
             <div className="space-y-3">
@@ -181,7 +181,7 @@ export default function MaintenancePage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={() => setEditIssue(null)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{ background: "var(--bg-card-hover)", color: "var(--text-secondary)", border: "1px solid var(--bg-card-hover)" }}>Cancel</button>
-              <button onClick={handleUpdate} disabled={saving} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>{saving ? "Saving…" : "Update"}</button>
+              <button onClick={handleUpdate} disabled={saving} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{ background: "#0d9488" }}>{saving ? "Saving…" : "Update"}</button>
             </div>
           </div>
         </div>

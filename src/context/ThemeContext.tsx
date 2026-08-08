@@ -14,7 +14,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const stored = localStorage.getItem("cura-theme") as Theme | null;
-    const resolved = stored ?? "dark";
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    const resolved = stored ?? (prefersDark ? "dark" : "light");
     setTheme(resolved);
     document.documentElement.setAttribute("data-theme", resolved);
   }, []);

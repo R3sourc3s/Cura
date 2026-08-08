@@ -22,7 +22,7 @@ const pressCoverage = [
     summary:
       "How a new generation of care management platforms is tackling the sector&apos;s chronic paper-based inefficiency — and what it means for residents and staff.",
     date: "January 2025",
-    color: "#3b82f6",
+    color: "#14b8a6",
     category: "Feature",
   },
   {
@@ -58,7 +58,7 @@ const mediaAssets = [
     title: "Brand Guidelines",
     description: "Colours, typography, voice, and usage rules for all Cura brand assets.",
     fileType: "PDF — 4.1 MB",
-    color: "#3b82f6",
+    color: "#14b8a6",
   },
   {
     icon: Users,
@@ -78,7 +78,7 @@ const mediaAssets = [
 
 const companyFacts = [
   { label: "Founded", value: "2022", icon: Calendar, color: "#7c3aed" },
-  { label: "HQ", value: "London, UK", icon: Building2, color: "#3b82f6" },
+  { label: "HQ", value: "London, UK", icon: Building2, color: "#14b8a6" },
   { label: "Team size", value: "60+ employees", icon: Users, color: "#06b6d4" },
   { label: "Customers", value: "500+ care homes", icon: Building2, color: "#10b981" },
 ];
@@ -105,7 +105,7 @@ export default function PressPage() {
         />
         <div
           className="absolute bottom-0 right-1/3 w-72 h-72 rounded-full blur-3xl pointer-events-none pulse-glow"
-          style={{ background: "rgba(59,130,246,0.1)", animationDelay: "2s" }}
+          style={{ background: "rgba(20, 184, 166,0.1)", animationDelay: "2s" }}
         />
         <div className="relative max-w-7xl mx-auto px-6 text-center">
           <motion.div
@@ -114,12 +114,12 @@ export default function PressPage() {
             transition={{ duration: 0.6 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 text-sm font-medium"
             style={{
-              background: "rgba(59,130,246,0.15)",
-              border: "1px solid rgba(59,130,246,0.4)",
-              color: "#93c5fd",
+              background: "rgba(20, 184, 166,0.15)",
+              border: "1px solid rgba(20, 184, 166,0.4)",
+              color: "#5eead4",
             }}
           >
-            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
             Press &amp; Media
           </motion.div>
           <motion.h1
@@ -342,21 +342,21 @@ export default function PressPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="glass rounded-3xl p-12 relative overflow-hidden"
-            style={{ border: "1px solid rgba(59,130,246,0.2)" }}
+            style={{ border: "1px solid rgba(20, 184, 166,0.2)" }}
           >
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "radial-gradient(ellipse 80% 60% at 50% 100%, rgba(59,130,246,0.1), transparent)",
+                  "radial-gradient(ellipse 80% 60% at 50% 100%, rgba(20, 184, 166,0.1), transparent)",
               }}
             />
             <div className="relative">
               <div
                 className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-6"
-                style={{ background: "rgba(59,130,246,0.2)" }}
+                style={{ background: "rgba(20, 184, 166,0.2)" }}
               >
-                <Mail size={24} style={{ color: "#93c5fd" }} />
+                <Mail size={24} style={{ color: "#5eead4" }} />
               </div>
               <h2 className="text-3xl font-bold text-white mb-4">
                 For media enquiries
@@ -368,9 +368,9 @@ export default function PressPage() {
               <div
                 className="inline-block px-5 py-3 rounded-xl mb-8 font-mono text-sm"
                 style={{
-                  background: "rgba(59,130,246,0.1)",
-                  border: "1px solid rgba(59,130,246,0.2)",
-                  color: "#93c5fd",
+                  background: "rgba(20, 184, 166,0.1)",
+                  border: "1px solid rgba(20, 184, 166,0.2)",
+                  color: "#5eead4",
                 }}
               >
                 press@curacareplatform.co.uk
@@ -379,7 +379,7 @@ export default function PressPage() {
                 <a
                   href="mailto:press@curacareplatform.co.uk"
                   className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white text-lg glow-button"
-                  style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+                  style={{ background: "linear-gradient(135deg, #7c3aed, #14b8a6)" }}
                 >
                   Contact our press team
                   <ArrowRight size={18} />

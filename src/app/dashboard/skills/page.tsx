@@ -36,29 +36,29 @@ interface StaffSkill {
 interface StaffMember { id: number; full_name: string; role: string; }
 
 const CATEGORY_CFG: Record<string, { label: string; color: string; bg: string }> = {
-  clinical:      { label: "Clinical",       color: "#f87171", bg: "rgba(239,68,68,0.12)" },
-  care:          { label: "Care",           color: "#60a5fa", bg: "rgba(96,165,250,0.12)" },
+  clinical:      { label: "Clinical",       color: "var(--c-red)", bg: "rgba(239,68,68,0.12)" },
+  care:          { label: "Care",           color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)" },
   admin:         { label: "Administrative", color: "#9ca3af", bg: "rgba(156,163,175,0.12)" },
-  technical:     { label: "Technical",      color: "#a78bfa", bg: "rgba(124,58,237,0.12)" },
-  leadership:    { label: "Leadership",     color: "#fb923c", bg: "rgba(251,146,60,0.12)" },
-  communication: { label: "Communication",  color: "#2dd4bf", bg: "rgba(45,212,191,0.12)" },
+  technical:     { label: "Technical",      color: "var(--c-teal)", bg: "rgba(13, 148, 136,0.12)" },
+  leadership:    { label: "Leadership",     color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)" },
+  communication: { label: "Communication",  color: "var(--c-teal2)", bg: "rgba(45,212,191,0.12)" },
   other:         { label: "Other",          color: "#9ca3af", bg: "rgba(156,163,175,0.12)" },
 };
 
 const PROFICIENCY_CFG: Record<string, { label: string; color: string; bg: string }> = {
   beginner:   { label: "Beginner",   color: "#9ca3af", bg: "rgba(156,163,175,0.12)" },
-  competent:  { label: "Competent",  color: "#60a5fa", bg: "rgba(96,165,250,0.12)" },
-  proficient: { label: "Proficient", color: "#a78bfa", bg: "rgba(124,58,237,0.12)" },
-  expert:     { label: "Expert",     color: "#fbbf24", bg: "rgba(251,191,36,0.12)" },
+  competent:  { label: "Competent",  color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)" },
+  proficient: { label: "Proficient", color: "var(--c-teal)", bg: "rgba(13, 148, 136,0.12)" },
+  expert:     { label: "Expert",     color: "var(--c-amber)", bg: "rgba(251,191,36,0.12)" },
 };
 
 const CATEGORIES = ["clinical", "care", "admin", "technical", "leadership", "communication", "other"];
 const PROFICIENCIES = ["beginner", "competent", "proficient", "expert"];
 
 const inputStyle = {
-  background: "rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  color: "rgba(255,255,255,0.8)",
+  background: "rgba(var(--fg-rgb),0.05)",
+  border: "1px solid rgba(var(--fg-rgb),0.1)",
+  color: "rgba(var(--fg-rgb),0.8)",
 };
 
 export default function SkillsPage() {
@@ -197,8 +197,8 @@ export default function SkillsPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
-            <Award size={16} style={{ color: "#a78bfa" }} />
+            style={{ background: "rgba(13, 148, 136,0.12)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
+            <Award size={16} style={{ color: "var(--c-teal)" }} />
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Skills &amp; Competencies</h1>
@@ -208,7 +208,7 @@ export default function SkillsPage() {
         <button
           onClick={() => tab === "library" ? setShowAddSkill(true) : setShowAddStaffSkill(true)}
           className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+          style={{ background: "#0d9488" }}>
           <Plus size={14} /> {tab === "library" ? "Add Skill" : "Add Staff Skill"}
         </button>
       </div>
@@ -216,10 +216,10 @@ export default function SkillsPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Total Skills",             value: totalSkills,      color: "#a78bfa" },
-          { label: "Mandatory Skills",          value: mandatorySkills,  color: "#f87171" },
-          { label: "Expiring Certifications",   value: expiringCerts,    color: "#fbbf24" },
-          { label: "Staff-Skill Records",       value: totalStaffSkills, color: "#60a5fa" },
+          { label: "Total Skills",             value: totalSkills,      color: "var(--c-teal)" },
+          { label: "Mandatory Skills",          value: mandatorySkills,  color: "var(--c-red)" },
+          { label: "Expiring Certifications",   value: expiringCerts,    color: "var(--c-amber)" },
+          { label: "Staff-Skill Records",       value: totalStaffSkills, color: "var(--c-teal2)" },
         ].map(({ label, value, color }) => (
           <div key={label} className="rounded-2xl p-4 text-center"
             style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
@@ -232,7 +232,7 @@ export default function SkillsPage() {
       {/* Expiry alert */}
       {expiringCerts > 0 && (
         <div className="flex items-center gap-2 text-xs px-3 py-2 rounded-xl w-fit"
-          style={{ background: "rgba(251,191,36,0.1)", color: "#fbbf24" }}>
+          style={{ background: "rgba(251,191,36,0.1)", color: "var(--c-amber)" }}>
           <AlertTriangle size={12} />
           <strong>{expiringCerts}</strong>&nbsp;certification{expiringCerts !== 1 ? "s" : ""} expiring within 30 days
         </div>
@@ -244,9 +244,9 @@ export default function SkillsPage() {
           <button key={t} onClick={() => setTab(t)}
             className="px-4 py-1.5 text-sm font-medium rounded-lg transition-all"
             style={{
-              background: tab === t ? "rgba(124,58,237,0.2)" : "transparent",
-              color: tab === t ? "#a78bfa" : "var(--text-muted)",
-              border: tab === t ? "1px solid rgba(124,58,237,0.3)" : "1px solid transparent",
+              background: tab === t ? "rgba(13, 148, 136,0.2)" : "transparent",
+              color: tab === t ? "var(--c-teal)" : "var(--text-muted)",
+              border: tab === t ? "1px solid rgba(13, 148, 136,0.3)" : "1px solid transparent",
             }}>
             {t === "library" ? "Skills Library" : "Staff Skills"}
           </button>
@@ -260,17 +260,17 @@ export default function SkillsPage() {
           <div className="flex items-center gap-2 flex-wrap">
             <div className="relative">
               <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2"
-                style={{ color: "rgba(255,255,255,0.25)" }} />
+                style={{ color: "rgba(var(--fg-rgb),0.25)" }} />
               <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}
                 className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.08)", color: "rgba(var(--fg-rgb),0.6)" }}>
                 <option value="">All Categories</option>
                 {CATEGORIES.map(c => (
                   <option key={c} value={c}>{CATEGORY_CFG[c]?.label ?? c}</option>
                 ))}
               </select>
               <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"
-                style={{ color: "rgba(255,255,255,0.3)" }} />
+                style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
             </div>
           </div>
 
@@ -305,21 +305,21 @@ export default function SkillsPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {skillsByCategory[cat].map(skill => (
                           <div key={skill.id} className="rounded-2xl p-4"
-                            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                            style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap mb-1">
                                   <span className="text-sm font-semibold text-white">{skill.name}</span>
                                   {skill.is_mandatory && (
                                     <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium"
-                                      style={{ background: "rgba(239,68,68,0.12)", color: "#f87171" }}>
+                                      style={{ background: "rgba(239,68,68,0.12)", color: "var(--c-red)" }}>
                                       <ShieldCheck size={10} /> Mandatory
                                     </span>
                                   )}
                                 </div>
                                 {skill.description && (
                                   <p className="text-xs leading-relaxed mb-2"
-                                    style={{ color: "rgba(255,255,255,0.45)" }}>
+                                    style={{ color: "rgba(var(--fg-rgb),0.45)" }}>
                                     {skill.description}
                                   </p>
                                 )}
@@ -372,14 +372,14 @@ export default function SkillsPage() {
             ].map((f, i) => (
               <div key={i} className="relative">
                 <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2"
-                  style={{ color: "rgba(255,255,255,0.25)" }} />
+                  style={{ color: "rgba(var(--fg-rgb),0.25)" }} />
                 <select value={f.value} onChange={e => f.set(e.target.value)}
                   className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}>
+                  style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.08)", color: "rgba(var(--fg-rgb),0.6)" }}>
                   {f.opts.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                 </select>
                 <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"
-                  style={{ color: "rgba(255,255,255,0.3)" }} />
+                  style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
               </div>
             ))}
           </div>
@@ -413,7 +413,7 @@ export default function SkillsPage() {
                     const expiryDate = ss.certification_expiry ? new Date(ss.certification_expiry) : null;
                     const expiryStr = expiryDate ? expiryDate.toLocaleDateString("en-GB") : "—";
                     const expiryColor = ss.is_expiring_soon
-                      ? "#f87171"
+                      ? "var(--c-red)"
                       : "var(--text-secondary)";
                     return (
                       <tr key={ss.id} style={{ borderBottom: "1px solid var(--border)" }}>
@@ -438,7 +438,7 @@ export default function SkillsPage() {
                         <td className="px-4 py-3">
                           {ss.certified ? (
                             <span className="flex items-center gap-1 text-xs w-fit px-2 py-0.5 rounded-lg"
-                              style={{ background: "rgba(52,211,153,0.12)", color: "#34d399" }}>
+                              style={{ background: "rgba(52,211,153,0.12)", color: "var(--c-green)" }}>
                               <ShieldCheck size={11} /> Yes
                             </span>
                           ) : (
@@ -470,22 +470,22 @@ export default function SkillsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-md"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Add Skill</h3>
-              <button onClick={() => setShowAddSkill(false)} style={{ color: "rgba(255,255,255,0.4)" }}>
+              <button onClick={() => setShowAddSkill(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                 <X size={18} />
               </button>
             </div>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Skill Name *</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Skill Name *</label>
                 <input value={skillForm.name} onChange={e => setSkillForm(f => ({ ...f, name: e.target.value }))}
                   placeholder="e.g. Manual Handling, Dementia Care…"
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} />
               </div>
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Category</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Category</label>
                 <select value={skillForm.category} onChange={e => setSkillForm(f => ({ ...f, category: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>
                   {CATEGORIES.map(c => (
@@ -494,7 +494,7 @@ export default function SkillsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Description</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Description</label>
                 <textarea rows={3} value={skillForm.description}
                   onChange={e => setSkillForm(f => ({ ...f, description: e.target.value }))}
                   placeholder="Brief description of this skill…"
@@ -505,19 +505,19 @@ export default function SkillsPage() {
                   <input type="checkbox" checked={skillForm.is_mandatory}
                     onChange={e => setSkillForm(f => ({ ...f, is_mandatory: e.target.checked }))}
                     className="rounded" />
-                  <span className="text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>Mandatory skill</span>
+                  <span className="text-sm" style={{ color: "rgba(var(--fg-rgb),0.7)" }}>Mandatory skill</span>
                 </label>
               </div>
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowAddSkill(false)}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button onClick={handleAddSkill} disabled={savingSkill || !skillForm.name}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {savingSkill ? "Saving…" : "Add Skill"}
               </button>
             </div>
@@ -530,16 +530,16 @@ export default function SkillsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
           <div className="rounded-2xl p-6 w-full max-w-md"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}>
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Add Staff Skill</h3>
-              <button onClick={() => setShowAddStaffSkill(false)} style={{ color: "rgba(255,255,255,0.4)" }}>
+              <button onClick={() => setShowAddStaffSkill(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                 <X size={18} />
               </button>
             </div>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Staff Member *</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Staff Member *</label>
                 <select value={staffSkillForm.staff_member}
                   onChange={e => setStaffSkillForm(f => ({ ...f, staff_member: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>
@@ -550,7 +550,7 @@ export default function SkillsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Skill *</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Skill *</label>
                 <select value={staffSkillForm.skill}
                   onChange={e => setStaffSkillForm(f => ({ ...f, skill: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>
@@ -561,7 +561,7 @@ export default function SkillsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Proficiency</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Proficiency</label>
                 <select value={staffSkillForm.proficiency}
                   onChange={e => setStaffSkillForm(f => ({ ...f, proficiency: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle}>
@@ -572,13 +572,13 @@ export default function SkillsPage() {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Acquired Date</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Acquired Date</label>
                   <input type="date" value={staffSkillForm.acquired_date}
                     onChange={e => setStaffSkillForm(f => ({ ...f, acquired_date: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} />
                 </div>
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Cert. Expiry</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Cert. Expiry</label>
                   <input type="date" value={staffSkillForm.certification_expiry}
                     onChange={e => setStaffSkillForm(f => ({ ...f, certification_expiry: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} />
@@ -589,11 +589,11 @@ export default function SkillsPage() {
                   <input type="checkbox" checked={staffSkillForm.certified}
                     onChange={e => setStaffSkillForm(f => ({ ...f, certified: e.target.checked }))}
                     className="rounded" />
-                  <span className="text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>Certified</span>
+                  <span className="text-sm" style={{ color: "rgba(var(--fg-rgb),0.7)" }}>Certified</span>
                 </label>
               </div>
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Notes</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Notes</label>
                 <textarea rows={2} value={staffSkillForm.notes}
                   onChange={e => setStaffSkillForm(f => ({ ...f, notes: e.target.value }))}
                   placeholder="Optional notes…"
@@ -603,13 +603,13 @@ export default function SkillsPage() {
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowAddStaffSkill(false)}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button onClick={handleAddStaffSkill}
                 disabled={savingStaffSkill || !staffSkillForm.staff_member || !staffSkillForm.skill}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+                style={{ background: "#0d9488" }}>
                 {savingStaffSkill ? "Saving…" : "Add Staff Skill"}
               </button>
             </div>

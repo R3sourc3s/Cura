@@ -13,7 +13,7 @@ import CookieBanner from "@/components/CookieBanner";
 
 export default function Home() {
   return (
-    <main style={{ background: "#faf7f0", minHeight: "100vh" }}>
+    <main style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
       <Navbar />
       <Hero />
       <Stats />

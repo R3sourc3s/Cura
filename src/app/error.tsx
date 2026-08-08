@@ -21,7 +21,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
             </p>
             <button onClick={reset}
               className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl text-white"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+              style={{ background: "linear-gradient(135deg, #7c3aed, #14b8a6)" }}>
               <RefreshCw size={14} /> Try again
             </button>
           </div>

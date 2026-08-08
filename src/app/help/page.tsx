@@ -33,7 +33,7 @@ const popularArticles = [
 
 const categories = [
   { icon: BookOpen,   label: "Getting Started",     count: 12, color: "#7c3aed" },
-  { icon: CreditCard, label: "Account & Billing",   count: 8,  color: "#3b82f6" },
+  { icon: CreditCard, label: "Account & Billing",   count: 8,  color: "#14b8a6" },
   { icon: UserCircle, label: "Residents",            count: 24, color: "#10b981" },
   { icon: Pill,       label: "Medications",          count: 16, color: "#f59e0b" },
   { icon: Users,      label: "Staff Management",     count: 19, color: "#ec4899" },
@@ -61,17 +61,17 @@ export default function HelpPage() {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59,130,246,0.15), transparent)",
+              "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(20, 184, 166,0.15), transparent)",
           }}
         />
         <div className="dot-grid absolute inset-0 opacity-20 pointer-events-none" />
 
         <div className="max-w-3xl mx-auto px-6 text-center relative">
           <div
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium text-blue-300 mb-6"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium text-teal-300 mb-6"
             style={{
-              border: "1px solid rgba(59,130,246,0.35)",
-              background: "rgba(59,130,246,0.1)",
+              border: "1px solid rgba(20, 184, 166,0.35)",
+              background: "rgba(20, 184, 166,0.1)",
             }}
           >
             <HelpCircle size={12} />
@@ -97,7 +97,7 @@ export default function HelpPage() {
               placeholder="Search for articles, guides, and FAQs…"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full pl-14 pr-6 py-4 rounded-2xl text-white placeholder-gray-500 text-lg outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+              className="w-full pl-14 pr-6 py-4 rounded-2xl text-white placeholder-gray-500 text-lg outline-none focus:ring-2 focus:ring-teal-500/50 transition-all"
               style={{
                 background: "rgba(255,255,255,0.05)",
                 border: "1px solid rgba(255,255,255,0.1)",
@@ -192,13 +192,13 @@ export default function HelpPage() {
       <section className="pb-24 max-w-7xl mx-auto px-6">
         <div
           className="glass rounded-3xl p-10 relative overflow-hidden"
-          style={{ border: "1px solid rgba(59,130,246,0.2)" }}
+          style={{ border: "1px solid rgba(20, 184, 166,0.2)" }}
         >
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                "radial-gradient(ellipse 50% 80% at 0% 50%, rgba(59,130,246,0.08), transparent)",
+                "radial-gradient(ellipse 50% 80% at 0% 50%, rgba(20, 184, 166,0.08), transparent)",
             }}
           />
           <div className="relative flex flex-col md:flex-row items-center justify-between gap-8">
@@ -214,7 +214,7 @@ export default function HelpPage() {
                   <span>Mon–Fri&nbsp;&nbsp;8am–8pm</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock size={14} className="text-blue-400" />
+                  <Clock size={14} className="text-teal-400" />
                   <span>Sat&nbsp;&nbsp;9am–5pm</span>
                 </div>
               </div>
@@ -222,7 +222,7 @@ export default function HelpPage() {
             <div className="flex flex-col sm:flex-row gap-3 shrink-0">
               <button
                 className="flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold glow-button"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+                style={{ background: "linear-gradient(135deg, #7c3aed, #14b8a6)" }}
               >
                 <MessageCircle size={16} />
                 Chat with Support

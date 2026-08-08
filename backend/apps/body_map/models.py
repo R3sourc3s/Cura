@@ -18,7 +18,11 @@ class WoundRecord(models.Model):
         G4 = "4", "Grade 4"
         UNSTAGEABLE = "unstageable", "Unstageable"
 
-    BODY_SIDE_CHOICES = [("front", "Front"), ("back", "Back"), ("left", "Left Side"), ("right", "Right Side")]
+    BODY_SIDE_CHOICES = [
+        ("front", "Front"), ("back", "Back"), ("left", "Left Side"), ("right", "Right Side"),
+        ("head-front", "Head — Front"), ("head-back", "Head — Back"),
+        ("head-left", "Head — Left"), ("head-right", "Head — Right"), ("head-top", "Head — Top"),
+    ]
 
     resident = models.ForeignKey(
         "residents.Resident",
@@ -27,7 +31,7 @@ class WoundRecord(models.Model):
     )
     wound_type = models.CharField(max_length=20, choices=WoundType.choices)
     grade = models.CharField(max_length=12, choices=Grade.choices, blank=True)
-    body_side = models.CharField(max_length=6, choices=BODY_SIDE_CHOICES)
+    body_side = models.CharField(max_length=12, choices=BODY_SIDE_CHOICES)
     location_x = models.FloatField(help_text="X position as % of body diagram width")
     location_y = models.FloatField(help_text="Y position as % of body diagram height")
     location_label = models.CharField(max_length=100, blank=True)

@@ -11,7 +11,7 @@ import Breadcrumbs from "@/components/ui/Breadcrumbs";
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium mb-1.5" style={{ color: "rgba(255,255,255,0.5)" }}>
+      <label className="block text-xs font-medium mb-1.5" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>
         {label}{required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {children}
@@ -20,7 +20,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
 }
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none text-white";
-const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "white" };
+const inputStyle = { background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "var(--text-primary)" };
 
 export default function EditResidentPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -108,7 +108,7 @@ export default function EditResidentPage({ params }: { params: Promise<{ id: str
         <h1 className="text-xl font-bold text-white">Edit — {resident.full_name}</h1>
         <button type="submit" disabled={saving}
           className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+          style={{ background: "#0d9488" }}>
           <Save size={14} />{saving ? "Saving…" : "Save Changes"}
         </button>
       </div>
@@ -121,20 +121,20 @@ export default function EditResidentPage({ params }: { params: Promise<{ id: str
       )}
 
       {/* Photo */}
-      <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-        <div className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "rgba(255,255,255,0.35)" }}>Profile Photo</div>
+      <div className="rounded-2xl p-5" style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
+        <div className="text-xs font-semibold uppercase tracking-wider mb-4" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>Profile Photo</div>
         <div className="flex items-center gap-5">
           <div className="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0 flex items-center justify-center"
-            style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}>
+            style={{ background: "rgba(13, 148, 136,0.12)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
             {photoPreview
               ? <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-              : <span className="text-2xl font-bold" style={{ color: "#a78bfa" }}>
+              : <span className="text-2xl font-bold" style={{ color: "var(--c-teal)" }}>
                   {resident.first_name[0]}{resident.last_name[0]}
                 </span>
             }
           </div>
           <label className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl cursor-pointer transition-all"
-            style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
             <Upload size={14} /> Upload Photo
             <input type="file" accept="image/*" className="hidden" onChange={handlePhoto} />
           </label>
@@ -142,8 +142,8 @@ export default function EditResidentPage({ params }: { params: Promise<{ id: str
       </div>
 
       {/* Personal */}
-      <div className="rounded-2xl p-5 space-y-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-        <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "rgba(255,255,255,0.35)" }}>Personal Information</div>
+      <div className="rounded-2xl p-5 space-y-4" style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
+        <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>Personal Information</div>
         <div className="grid grid-cols-2 gap-4">
           <Field label="First Name" required>
             <input className={inputCls} style={inputStyle} value={form.first_name}
@@ -184,8 +184,8 @@ export default function EditResidentPage({ params }: { params: Promise<{ id: str
       </div>
 
       {/* Risk */}
-      <div className="rounded-2xl p-5 space-y-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-        <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "rgba(255,255,255,0.35)" }}>Risk Assessment</div>
+      <div className="rounded-2xl p-5 space-y-4" style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
+        <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>Risk Assessment</div>
         <div className="grid grid-cols-2 gap-4">
           <Field label="Fall Risk" required>
             <select className={inputCls} style={inputStyle} value={form.fall_risk}
@@ -203,8 +203,8 @@ export default function EditResidentPage({ params }: { params: Promise<{ id: str
       </div>
 
       {/* Contacts */}
-      <div className="rounded-2xl p-5 space-y-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-        <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "rgba(255,255,255,0.35)" }}>Key Contacts</div>
+      <div className="rounded-2xl p-5 space-y-4" style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
+        <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>Key Contacts</div>
         <div className="grid grid-cols-2 gap-4">
           <Field label="Next of Kin Name">
             <input className={inputCls} style={inputStyle} value={form.next_of_kin_name}

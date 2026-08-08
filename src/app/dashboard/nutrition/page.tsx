@@ -15,7 +15,7 @@ interface Resident { id: number; full_name: string; }
 
 const FLUID_TYPES: Record<string,string> = { water:"Water", tea:"Tea", coffee:"Coffee", juice:"Juice", milk:"Milk", supplement:"Supplement", soup:"Soup", iv:"IV Fluids", other:"Other" };
 const MEAL_TYPES: Record<string,string> = { breakfast:"Breakfast", lunch:"Lunch", dinner:"Dinner", snack:"Snack" };
-const APPETITE_CFG: Record<string,{color:string;bg:string}> = { good:{color:"#34d399",bg:"rgba(52,211,153,0.1)"}, fair:{color:"#fbbf24",bg:"rgba(251,191,36,0.1)"}, poor:{color:"#f87171",bg:"rgba(239,68,68,0.1)"} };
+const APPETITE_CFG: Record<string,{color:string;bg:string}> = { good:{color:"var(--c-green)",bg:"rgba(52,211,153,0.1)"}, fair:{color:"var(--c-amber)",bg:"rgba(251,191,36,0.1)"}, poor:{color:"var(--c-red)",bg:"rgba(239,68,68,0.1)"} };
 const FLUID_TARGET_ML = 1500;
 
 function isoDate(d: Date) { return d.toISOString().slice(0,10); }
@@ -74,14 +74,14 @@ export default function NutritionPage() {
 
   const totalFluidMl = fluids.reduce((acc, f) => acc + f.amount_ml, 0);
   const fluidPct = Math.min(100, Math.round(totalFluidMl / FLUID_TARGET_ML * 100));
-  const fluidColor = fluidPct >= 80 ? "#34d399" : fluidPct >= 50 ? "#fbbf24" : "#f87171";
+  const fluidColor = fluidPct >= 80 ? "var(--c-green)" : fluidPct >= 50 ? "var(--c-amber)" : "var(--c-red)";
 
   return (
     <div className="space-y-5 max-w-5xl mx-auto">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(96,165,250,0.12)", border:"1px solid rgba(96,165,250,0.2)" }}>
-            <Utensils size={16} style={{ color:"#60a5fa" }} />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(45, 212, 191,0.12)", border:"1px solid rgba(45, 212, 191,0.2)" }}>
+            <Utensils size={16} style={{ color:"var(--c-teal2)" }} />
           </div>
           <div><h1 className="text-lg font-bold text-white">Fluid & Nutrition</h1><p className="text-xs" style={{ color:"var(--text-muted)" }}>Daily intake monitoring</p></div>
         </div>
@@ -95,22 +95,22 @@ export default function NutritionPage() {
       </div>
 
       {!selectedResident ? (
-        <div className="text-center py-20 rounded-2xl" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid var(--border)" }}>
+        <div className="text-center py-20 rounded-2xl" style={{ background:"rgba(var(--fg-rgb),0.02)", border:"1px solid var(--border)" }}>
           <Utensils size={28} className="mx-auto mb-2" style={{ color:"var(--text-muted)" }} />
           <p className="text-sm" style={{ color:"var(--text-muted)" }}>Select a resident to view their nutrition record</p>
         </div>
       ) : loading ? (
-        <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" /></div>
+        <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" /></div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {/* Fluid section */}
-          <div className="rounded-2xl p-5 space-y-4" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid var(--border)" }}>
+          <div className="rounded-2xl p-5 space-y-4" style={{ background:"rgba(var(--fg-rgb),0.02)", border:"1px solid var(--border)" }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Droplets size={15} style={{ color:"#60a5fa" }} />
+                <Droplets size={15} style={{ color:"var(--c-teal2)" }} />
                 <h3 className="text-sm font-semibold text-white">Fluid Intake</h3>
               </div>
-              <button onClick={() => setShowFluid(true)} className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg" style={{ background:"rgba(96,165,250,0.1)", color:"#60a5fa", border:"1px solid rgba(96,165,250,0.2)" }}><Plus size={11} /> Add</button>
+              <button onClick={() => setShowFluid(true)} className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg" style={{ background:"rgba(45, 212, 191,0.1)", color:"var(--c-teal2)", border:"1px solid rgba(45, 212, 191,0.2)" }}><Plus size={11} /> Add</button>
             </div>
 
             {/* Progress bar */}
@@ -130,10 +130,10 @@ export default function NutritionPage() {
             ) : (
               <div className="space-y-1.5 max-h-64 overflow-y-auto">
                 {fluids.map(f => (
-                  <div key={f.id} className="flex items-center gap-3 rounded-lg px-3 py-2" style={{ background:"rgba(255,255,255,0.02)" }}>
+                  <div key={f.id} className="flex items-center gap-3 rounded-lg px-3 py-2" style={{ background:"rgba(var(--fg-rgb),0.02)" }}>
                     <span className="text-xs" style={{ color:"var(--text-muted)" }}>{new Date(f.recorded_at).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</span>
                     <span className="text-xs font-medium text-white flex-1">{FLUID_TYPES[f.fluid_type] ?? f.fluid_type}</span>
-                    <span className="text-xs font-semibold" style={{ color:"#60a5fa" }}>{f.amount_ml}ml</span>
+                    <span className="text-xs font-semibold" style={{ color:"var(--c-teal2)" }}>{f.amount_ml}ml</span>
                   </div>
                 ))}
               </div>
@@ -141,13 +141,13 @@ export default function NutritionPage() {
           </div>
 
           {/* Meals section */}
-          <div className="rounded-2xl p-5 space-y-4" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid var(--border)" }}>
+          <div className="rounded-2xl p-5 space-y-4" style={{ background:"rgba(var(--fg-rgb),0.02)", border:"1px solid var(--border)" }}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Utensils size={15} style={{ color:"#34d399" }} />
+                <Utensils size={15} style={{ color:"var(--c-green)" }} />
                 <h3 className="text-sm font-semibold text-white">Meals</h3>
               </div>
-              <button onClick={() => setShowMeal(true)} className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg" style={{ background:"rgba(52,211,153,0.1)", color:"#34d399", border:"1px solid rgba(52,211,153,0.2)" }}><Plus size={11} /> Add</button>
+              <button onClick={() => setShowMeal(true)} className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg" style={{ background:"rgba(52,211,153,0.1)", color:"var(--c-green)", border:"1px solid rgba(52,211,153,0.2)" }}><Plus size={11} /> Add</button>
             </div>
 
             {/* Meal grid */}
@@ -155,11 +155,11 @@ export default function NutritionPage() {
               {["breakfast","lunch","dinner","snack"].map(mt => {
                 const entry = meals.find(m => m.meal_type === mt);
                 return (
-                  <div key={mt} className="rounded-xl p-3 text-center" style={{ background: entry ? "rgba(52,211,153,0.05)" : "rgba(255,255,255,0.02)", border: entry ? "1px solid rgba(52,211,153,0.15)" : "1px solid rgba(255,255,255,0.06)" }}>
-                    <div className="text-xs font-semibold mb-1" style={{ color: entry ? "#34d399" : "var(--text-muted)" }}>{MEAL_TYPES[mt]}</div>
+                  <div key={mt} className="rounded-xl p-3 text-center" style={{ background: entry ? "rgba(52,211,153,0.05)" : "rgba(var(--fg-rgb),0.02)", border: entry ? "1px solid rgba(52,211,153,0.15)" : "1px solid rgba(var(--fg-rgb),0.06)" }}>
+                    <div className="text-xs font-semibold mb-1" style={{ color: entry ? "var(--c-green)" : "var(--text-muted)" }}>{MEAL_TYPES[mt]}</div>
                     {entry ? (
                       <>
-                        <div className="text-lg font-bold" style={{ color:"white" }}>{entry.completion_percent}%</div>
+                        <div className="text-lg font-bold" style={{ color:"var(--text-primary)" }}>{entry.completion_percent}%</div>
                         <div className="text-xs mt-0.5 px-1.5 py-0.5 rounded w-fit mx-auto" style={{ background: APPETITE_CFG[entry.appetite]?.bg, color: APPETITE_CFG[entry.appetite]?.color }}>
                           {entry.appetite}
                         </div>
@@ -175,7 +175,7 @@ export default function NutritionPage() {
             {meals.length > 0 && (
               <div className="space-y-1.5 max-h-32 overflow-y-auto">
                 {meals.filter(m => m.notes).map(m => (
-                  <div key={m.id} className="text-xs px-3 py-2 rounded-lg" style={{ background:"rgba(255,255,255,0.02)", color:"var(--text-muted)" }}>
+                  <div key={m.id} className="text-xs px-3 py-2 rounded-lg" style={{ background:"rgba(var(--fg-rgb),0.02)", color:"var(--text-muted)" }}>
                     <span className="font-medium" style={{ color:"var(--text-secondary)" }}>{MEAL_TYPES[m.meal_type]}: </span>{m.notes}
                   </div>
                 ))}
@@ -188,7 +188,7 @@ export default function NutritionPage() {
       {/* Add fluid modal */}
       {showFluid && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-sm" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(96,165,250,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-sm" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(45, 212, 191,0.25)" }}>
             <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Log Fluid Intake</h3><button onClick={()=>setShowFluid(false)} style={{color:"var(--text-muted)"}}><X size={18}/></button></div>
             <div className="space-y-3">
               <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Type</label>
@@ -202,7 +202,7 @@ export default function NutritionPage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={()=>setShowFluid(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card-hover)",color:"var(--text-secondary)",border:"1px solid var(--bg-card-hover)"}}>Cancel</button>
-              <button onClick={handleAddFluid} disabled={saving||!fluidForm.amount_ml} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#3b82f6,#7c3aed)"}}>{saving?"Saving…":"Log"}</button>
+              <button onClick={handleAddFluid} disabled={saving||!fluidForm.amount_ml} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#10b981,#0d9488)"}}>{saving?"Saving…":"Log"}</button>
             </div>
           </div>
         </div>
@@ -231,7 +231,7 @@ export default function NutritionPage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={()=>setShowMeal(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card-hover)",color:"var(--text-secondary)",border:"1px solid var(--bg-card-hover)"}}>Cancel</button>
-              <button onClick={handleAddMeal} disabled={saving} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#34d399,#3b82f6)"}}>{saving?"Saving…":"Log"}</button>
+              <button onClick={handleAddMeal} disabled={saving} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,var(--c-green),#10b981)"}}>{saving?"Saving…":"Log"}</button>
             </div>
           </div>
         </div>

@@ -32,7 +32,7 @@ export default function ConfirmDialog({
           </button>
           <button onClick={onConfirm}
             className="px-4 py-2 rounded-xl text-sm font-medium text-white transition-opacity hover:opacity-90"
-            style={{ background: danger ? "#ef4444" : "linear-gradient(135deg,#7c3aed,#3b82f6)" }}>
+            style={{ background: danger ? "#ef4444" : "linear-gradient(135deg,#7c3aed,#14b8a6)" }}>
             {confirmLabel}
           </button>
         </div>

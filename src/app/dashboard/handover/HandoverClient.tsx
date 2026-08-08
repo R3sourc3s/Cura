@@ -8,19 +8,19 @@ import type { HandoverNote, Resident } from "@/types";
 import { ClipboardList, Plus, X, Save, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 
 const SHIFT_CONFIG = {
-  day:     { color: "#fbbf24", bg: "rgba(250,204,21,0.12)",  label: "Day",     icon: "☀️" },
-  evening: { color: "#fb923c", bg: "rgba(251,146,60,0.12)",   label: "Evening", icon: "🌆" },
-  night:   { color: "#60a5fa", bg: "rgba(96,165,250,0.12)",   label: "Night",   icon: "🌙" },
+  day:     { color: "var(--c-amber)", bg: "rgba(250,204,21,0.12)",  label: "Day",     icon: "☀️" },
+  evening: { color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)",   label: "Evening", icon: "🌆" },
+  night:   { color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)",   label: "Night",   icon: "🌙" },
 } as const;
 
 const PRIORITY = {
-  normal:   { color: "rgba(255,255,255,0.5)",  bg: "rgba(255,255,255,0.06)",  label: "Normal" },
-  urgent:   { color: "#fbbf24",                bg: "rgba(250,204,21,0.12)",   label: "Urgent" },
-  critical: { color: "#f87171",                bg: "rgba(239,68,68,0.12)",    label: "Critical" },
+  normal:   { color: "rgba(var(--fg-rgb),0.5)",  bg: "rgba(var(--fg-rgb),0.06)",  label: "Normal" },
+  urgent:   { color: "var(--c-amber)",                bg: "rgba(250,204,21,0.12)",   label: "Urgent" },
+  critical: { color: "var(--c-red)",                bg: "rgba(239,68,68,0.12)",    label: "Critical" },
 } as const;
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
-const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" };
+const inputStyle = { background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" };
 
 function today() { return new Date().toISOString().slice(0, 10); }
 function addDays(date: string, n: number) {
@@ -83,7 +83,7 @@ function CreateNoteModal({ residents, date, onClose, onCreated }: {
           style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+              style={{ background: "#0d9488" }}>
               <ClipboardList size={14} className="text-white" />
             </div>
             <h2 className="text-base font-bold text-white">Add Handover Note</h2>
@@ -130,9 +130,9 @@ function CreateNoteModal({ residents, date, onClose, onCreated }: {
                     <button key={r.id} type="button" onClick={() => toggleResident(r.id)}
                       className="text-xs px-2.5 py-1 rounded-full transition-colors"
                       style={{
-                        background: selected ? "rgba(124,58,237,0.25)" : "rgba(255,255,255,0.05)",
-                        color: selected ? "#a78bfa" : "rgba(255,255,255,0.5)",
-                        border: `1px solid ${selected ? "rgba(124,58,237,0.4)" : "rgba(255,255,255,0.08)"}`,
+                        background: selected ? "rgba(13, 148, 136,0.25)" : "rgba(var(--fg-rgb),0.05)",
+                        color: selected ? "var(--c-teal)" : "rgba(var(--fg-rgb),0.5)",
+                        border: `1px solid ${selected ? "rgba(13, 148, 136,0.4)" : "rgba(var(--fg-rgb),0.08)"}`,
                       }}>
                       {r.full_name}
                     </button>
@@ -151,7 +151,7 @@ function CreateNoteModal({ residents, date, onClose, onCreated }: {
           </button>
           <button onClick={(e) => handleSubmit(e as unknown as React.FormEvent)} disabled={saving || !form.content.trim()}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Save size={14} />{saving ? "Saving…" : "Save Note"}
           </button>
         </div>
@@ -215,7 +215,7 @@ export default function HandoverClient({ initialNotes, residents }: Props) {
       <div className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-            <ClipboardList size={22} style={{ color: "#7c3aed" }} /> Handover
+            <ClipboardList size={22} style={{ color: "#0d9488" }} /> Handover
           </h1>
           <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
             {notes.length} note{notes.length !== 1 ? "s" : ""} · {dateLabel}
@@ -224,7 +224,7 @@ export default function HandoverClient({ initialNotes, residents }: Props) {
         {can("handover.create") && (
           <button onClick={() => setShowCreate(true)}
             className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white flex-shrink-0"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Plus size={15} /> <span className="hidden sm:inline">Add Note</span><span className="sm:hidden">Add</span>
           </button>
         )}
@@ -239,7 +239,7 @@ export default function HandoverClient({ initialNotes, residents }: Props) {
         </button>
         <input type="date" value={date} onChange={(e) => loadDate(e.target.value)}
           className="text-sm px-3 py-2 rounded-xl outline-none"
-          style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "white" }} />
+          style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)", color: "var(--text-primary)" }} />
         <button onClick={() => loadDate(addDays(date, 1))} disabled={loadingDate || date >= today()}
           className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-30"
           style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
@@ -248,7 +248,7 @@ export default function HandoverClient({ initialNotes, residents }: Props) {
         {!isToday && (
           <button onClick={() => loadDate(today())}
             className="text-xs px-3 py-2 rounded-xl"
-            style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa", border: "1px solid rgba(124,58,237,0.2)" }}>
+            style={{ background: "rgba(13, 148, 136,0.12)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
             Back to Today
           </button>
         )}
@@ -301,7 +301,7 @@ export default function HandoverClient({ initialNotes, residents }: Props) {
                             {!isRead && (
                               <button onClick={() => markRead(note.id)}
                                 className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-lg flex-shrink-0"
-                                style={{ background: "rgba(52,211,153,0.1)", color: "#34d399", border: "1px solid rgba(52,211,153,0.2)" }}>
+                                style={{ background: "rgba(52,211,153,0.1)", color: "var(--c-green)", border: "1px solid rgba(52,211,153,0.2)" }}>
                                 <CheckCircle size={10} /> Mark read
                               </button>
                             )}
@@ -316,7 +316,7 @@ export default function HandoverClient({ initialNotes, residents }: Props) {
                             <div className="flex flex-wrap gap-1">
                               {note.residents_mentioned.map((id) => (
                                 <span key={id} className="text-xs px-1.5 py-0.5 rounded"
-                                  style={{ background: "rgba(124,58,237,0.12)", color: "#a78bfa" }}>
+                                  style={{ background: "rgba(13, 148, 136,0.12)", color: "var(--c-teal)" }}>
                                   {residentMap[id] ?? `Resident #${id}`}
                                 </span>
                               ))}

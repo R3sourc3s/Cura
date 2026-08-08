@@ -30,12 +30,12 @@ interface Enquiry {
 }
 
 const STATUS_CFG: Record<string, { label: string; color: string; bg: string }> = {
-  new:               { label: "New",               color: "#60a5fa", bg: "rgba(96,165,250,0.12)" },
-  in_progress:       { label: "In Progress",       color: "#fbbf24", bg: "rgba(251,191,36,0.12)" },
-  assessment_booked: { label: "Assessment Booked", color: "#a78bfa", bg: "rgba(167,139,250,0.12)" },
-  waitlisted:        { label: "Waitlisted",        color: "#fb923c", bg: "rgba(251,146,60,0.12)" },
-  admitted:          { label: "Admitted",          color: "#34d399", bg: "rgba(52,211,153,0.12)" },
-  declined:          { label: "Declined",          color: "#f87171", bg: "rgba(248,113,113,0.12)" },
+  new:               { label: "New",               color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)" },
+  in_progress:       { label: "In Progress",       color: "var(--c-amber)", bg: "rgba(251,191,36,0.12)" },
+  assessment_booked: { label: "Assessment Booked", color: "var(--c-teal)", bg: "rgba(167,139,250,0.12)" },
+  waitlisted:        { label: "Waitlisted",        color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)" },
+  admitted:          { label: "Admitted",          color: "var(--c-green)", bg: "rgba(52,211,153,0.12)" },
+  declined:          { label: "Declined",          color: "var(--c-red)", bg: "rgba(248,113,113,0.12)" },
   withdrawn:         { label: "Withdrawn",         color: "#9ca3af", bg: "rgba(156,163,175,0.12)" },
 };
 
@@ -150,9 +150,9 @@ export default function EnquiriesPage() {
         <div className="flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.2)" }}
+            style={{ background: "rgba(13, 148, 136,0.12)", border: "1px solid rgba(13, 148, 136,0.2)" }}
           >
-            <ClipboardPlus size={16} style={{ color: "#a78bfa" }} />
+            <ClipboardPlus size={16} style={{ color: "var(--c-teal)" }} />
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">Enquiries</h1>
@@ -162,7 +162,7 @@ export default function EnquiriesPage() {
         <button
           onClick={() => setShowModal(true)}
           className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
-          style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+          style={{ background: "#0d9488" }}
         >
           <Plus size={14} /> Add Enquiry
         </button>
@@ -171,10 +171,10 @@ export default function EnquiriesPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Total Enquiries",       value: total,                color: "#a78bfa" },
-          { label: "New",                   value: newCount,             color: "#60a5fa" },
-          { label: "Assessment Booked",     value: assessmentBookedCount,color: "#a78bfa" },
-          { label: "Admitted This Month",   value: admittedThisMonth,    color: "#34d399" },
+          { label: "Total Enquiries",       value: total,                color: "var(--c-teal)" },
+          { label: "New",                   value: newCount,             color: "var(--c-teal2)" },
+          { label: "Assessment Booked",     value: assessmentBookedCount,color: "var(--c-teal)" },
+          { label: "Admitted This Month",   value: admittedThisMonth,    color: "var(--c-green)" },
         ].map(({ label, value, color }) => (
           <div
             key={label}
@@ -208,13 +208,13 @@ export default function EnquiriesPage() {
                   <span className="text-xs text-center leading-tight mt-0.5" style={{ color: cfg.color }}>{cfg.label}</span>
                 </div>
                 {idx < PIPELINE_STEPS.length - 1 && (
-                  <ArrowRight size={14} style={{ color: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
+                  <ArrowRight size={14} style={{ color: "rgba(var(--fg-rgb),0.2)", flexShrink: 0 }} />
                 )}
               </div>
             );
           })}
           {/* Terminal statuses */}
-          <div className="flex items-center gap-1 ml-2 pl-2" style={{ borderLeft: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="flex items-center gap-1 ml-2 pl-2" style={{ borderLeft: "1px solid rgba(var(--fg-rgb),0.08)" }}>
             {TERMINAL_STATUSES.map(step => {
               const cfg = STATUS_CFG[step];
               const count = enquiries.filter(e => e.status === step).length;
@@ -235,7 +235,7 @@ export default function EnquiriesPage() {
         {filterStatus && (
           <button
             className="mt-2 text-xs"
-            style={{ color: "rgba(255,255,255,0.35)" }}
+            style={{ color: "rgba(var(--fg-rgb),0.35)" }}
             onClick={() => setFilterStatus("")}
           >
             Clear filter &times;
@@ -275,18 +275,18 @@ export default function EnquiriesPage() {
           },
         ].map((f, i) => (
           <div key={i} className="relative">
-            <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(255,255,255,0.25)" }} />
+            <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(var(--fg-rgb),0.25)" }} />
             <select
               value={f.value}
               onChange={e => f.set(e.target.value)}
               className="text-sm pl-8 pr-8 py-2 rounded-xl outline-none appearance-none"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)" }}
+              style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.08)", color: "rgba(var(--fg-rgb),0.6)" }}
             >
               {f.opts.map(([v, l]) => (
                 <option key={v} value={v}>{l}</option>
               ))}
             </select>
-            <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+            <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
           </div>
         ))}
       </div>
@@ -311,7 +311,7 @@ export default function EnquiriesPage() {
               <div
                 key={enq.id}
                 className="rounded-2xl p-4"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+                style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
@@ -326,14 +326,14 @@ export default function EnquiriesPage() {
                       </span>
                       <span
                         className="text-xs px-2 py-0.5 rounded-full"
-                        style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.45)" }}
+                        style={{ background: "rgba(var(--fg-rgb),0.05)", color: "rgba(var(--fg-rgb),0.45)" }}
                       >
                         {FUNDING_LABELS[enq.funding_type] ?? enq.funding_type}
                       </span>
                       {enq.has_assessment && (
                         <span
                           className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
-                          style={{ background: "rgba(52,211,153,0.1)", color: "#34d399" }}
+                          style={{ background: "rgba(52,211,153,0.1)", color: "var(--c-green)" }}
                         >
                           <CheckCircle2 size={10} /> Assessment
                         </span>
@@ -341,7 +341,7 @@ export default function EnquiriesPage() {
                     </div>
 
                     {/* Contact info */}
-                    <div className="flex items-center flex-wrap gap-3 text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
+                    <div className="flex items-center flex-wrap gap-3 text-xs" style={{ color: "rgba(var(--fg-rgb),0.45)" }}>
                       <span className="flex items-center gap-1">
                         <User size={11} />
                         {enq.contact_name}
@@ -363,7 +363,7 @@ export default function EnquiriesPage() {
                     {enq.care_needs && (
                       <p
                         className="text-xs mt-1.5 line-clamp-2"
-                        style={{ color: "rgba(255,255,255,0.4)" }}
+                        style={{ color: "rgba(var(--fg-rgb),0.4)" }}
                       >
                         {enq.care_needs}
                       </p>
@@ -372,12 +372,12 @@ export default function EnquiriesPage() {
 
                   {/* Right column */}
                   <div className="text-right flex-shrink-0 space-y-1">
-                    <div className="flex items-center justify-end gap-1 text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+                    <div className="flex items-center justify-end gap-1 text-xs" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>
                       <CalendarDays size={11} />
                       {new Date(enq.enquiry_date).toLocaleDateString("en-GB")}
                     </div>
                     {enq.assigned_to_name && (
-                      <div className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                      <div className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
                         {enq.assigned_to_name}
                       </div>
                     )}
@@ -397,11 +397,11 @@ export default function EnquiriesPage() {
         >
           <div
             className="rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
-            style={{ background: "#0f1629", border: "1px solid rgba(124,58,237,0.25)" }}
+            style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}
           >
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold text-white">Add Enquiry</h3>
-              <button onClick={() => setShowModal(false)} style={{ color: "rgba(255,255,255,0.4)" }}>
+              <button onClick={() => setShowModal(false)} style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
                 <X size={18} />
               </button>
             </div>
@@ -409,74 +409,74 @@ export default function EnquiriesPage() {
             <div className="space-y-3">
               {/* Prospective Resident */}
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Prospective Resident Name *</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Prospective Resident Name *</label>
                 <input
                   type="text"
                   placeholder="Full name…"
                   value={form.prospective_resident_name}
                   onChange={e => setForm(f => ({ ...f, prospective_resident_name: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                  style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Date of Birth</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Date of Birth</label>
                 <input
                   type="date"
                   value={form.date_of_birth}
                   onChange={e => setForm(f => ({ ...f, date_of_birth: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                  style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                 />
               </div>
 
               {/* Contact */}
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Contact Name *</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Contact Name *</label>
                 <input
                   type="text"
                   placeholder="Contact person…"
                   value={form.contact_name}
                   onChange={e => setForm(f => ({ ...f, contact_name: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                  style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Relationship</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Relationship</label>
                 <input
                   type="text"
                   placeholder="e.g. Son, Daughter, Social Worker…"
                   value={form.contact_relationship}
                   onChange={e => setForm(f => ({ ...f, contact_relationship: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                  style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Phone</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Phone</label>
                   <input
                     type="tel"
                     placeholder="Contact phone…"
                     value={form.contact_phone}
                     onChange={e => setForm(f => ({ ...f, contact_phone: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                    style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Email</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Email</label>
                   <input
                     type="email"
                     placeholder="Contact email…"
                     value={form.contact_email}
                     onChange={e => setForm(f => ({ ...f, contact_email: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                    style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                   />
                 </div>
               </div>
@@ -484,35 +484,35 @@ export default function EnquiriesPage() {
               {/* Funding & Status */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Funding Type</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Funding Type</label>
                   <div className="relative">
                     <select
                       value={form.funding_type}
                       onChange={e => setForm(f => ({ ...f, funding_type: e.target.value }))}
                       className="w-full text-sm px-3 pr-8 py-2 rounded-xl outline-none appearance-none"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                      style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                     >
                       {Object.entries(FUNDING_LABELS).map(([v, l]) => (
                         <option key={v} value={v}>{l}</option>
                       ))}
                     </select>
-                    <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+                    <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Status</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Status</label>
                   <div className="relative">
                     <select
                       value={form.status}
                       onChange={e => setForm(f => ({ ...f, status: e.target.value }))}
                       className="w-full text-sm px-3 pr-8 py-2 rounded-xl outline-none appearance-none"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                      style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                     >
                       {Object.entries(STATUS_CFG).map(([v, c]) => (
                         <option key={v} value={v}>{c.label}</option>
                       ))}
                     </select>
-                    <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+                    <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
                   </div>
                 </div>
               </div>
@@ -520,50 +520,50 @@ export default function EnquiriesPage() {
               {/* Dates */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Enquiry Date *</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Enquiry Date *</label>
                   <input
                     type="date"
                     value={form.enquiry_date}
                     onChange={e => setForm(f => ({ ...f, enquiry_date: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                    style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Assessment Date</label>
+                  <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Assessment Date</label>
                   <input
                     type="datetime-local"
                     value={form.assessment_date}
                     onChange={e => setForm(f => ({ ...f, assessment_date: e.target.value }))}
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                    style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                   />
                 </div>
               </div>
 
               {/* Care Needs */}
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Care Needs</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Care Needs</label>
                 <textarea
                   rows={3}
                   placeholder="Describe care requirements…"
                   value={form.care_needs}
                   onChange={e => setForm(f => ({ ...f, care_needs: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                  style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                 />
               </div>
 
               {/* Notes */}
               <div>
-                <label className="block text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>Notes</label>
+                <label className="block text-xs mb-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Notes</label>
                 <textarea
                   rows={2}
                   placeholder="Additional notes…"
                   value={form.notes}
                   onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}
+                  style={{ background: "rgba(var(--fg-rgb),0.05)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}
                 />
               </div>
             </div>
@@ -572,7 +572,7 @@ export default function EnquiriesPage() {
               <button
                 onClick={() => { setShowModal(false); setForm({ ...EMPTY_FORM }); }}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
-                style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.08)" }}
+                style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}
               >
                 Cancel
               </button>
@@ -580,7 +580,7 @@ export default function EnquiriesPage() {
                 onClick={handleSave}
                 disabled={saving || !form.prospective_resident_name || !form.contact_name || !form.enquiry_date}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+                style={{ background: "#0d9488" }}
               >
                 {saving ? "Saving…" : "Save Enquiry"}
               </button>

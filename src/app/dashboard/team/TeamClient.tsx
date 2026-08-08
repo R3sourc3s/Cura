@@ -1,32 +1,34 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { auth as authApi } from "@/lib/api";
 import type { User } from "@/types";
 import { useToast } from "@/components/Toast";
 import { useUser } from "@/context/UserContext";
+import LinkedDocuments from "@/components/documents/LinkedDocuments";
 import {
   Users, Plus, X, Save, Search, Shield, Edit2, Trash2,
   CheckCircle, XCircle, Mail, Phone,
 } from "lucide-react";
 
 const ROLES: { value: User["role"]; label: string; color: string; bg: string }[] = [
-  { value: "admin",   label: "Admin",        color: "#f87171", bg: "rgba(239,68,68,0.12)"   },
-  { value: "manager", label: "Care Manager", color: "#fb923c", bg: "rgba(251,146,60,0.12)"  },
-  { value: "nurse",   label: "Nurse",        color: "#34d399", bg: "rgba(52,211,153,0.12)"  },
-  { value: "carer",   label: "Carer",        color: "#60a5fa", bg: "rgba(96,165,250,0.12)"  },
-  { value: "hr",      label: "HR",           color: "#a78bfa", bg: "rgba(167,139,250,0.12)" },
+  { value: "admin",   label: "Admin",        color: "var(--c-red)", bg: "rgba(239,68,68,0.12)"   },
+  { value: "manager", label: "Care Manager", color: "var(--c-orange)", bg: "rgba(251,146,60,0.12)"  },
+  { value: "nurse",   label: "Nurse",        color: "var(--c-green)", bg: "rgba(52,211,153,0.12)"  },
+  { value: "carer",   label: "Carer",        color: "var(--c-teal2)", bg: "rgba(45, 212, 191,0.12)"  },
+  { value: "hr",      label: "HR",           color: "var(--c-teal)", bg: "rgba(167,139,250,0.12)" },
 ];
 
 function roleConfig(role: string) {
-  return ROLES.find((r) => r.value === role) ?? { label: role, color: "#9ca3af", bg: "rgba(255,255,255,0.06)" };
+  return ROLES.find((r) => r.value === role) ?? { label: role, color: "#9ca3af", bg: "rgba(var(--fg-rgb),0.06)" };
 }
 
 const inputCls = "w-full px-3 py-2.5 text-sm rounded-xl outline-none";
 const inputStyle = {
   background: "var(--input-bg)",
   border: "1px solid var(--border-strong)",
-  color: "white",
+  color: "var(--text-primary)",
 };
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
@@ -110,7 +112,7 @@ function UserModal({ user, onClose, onSaved }: {
           style={{ borderBottom: "1px solid var(--border)" }}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+              style={{ background: "#0d9488" }}>
               {isEdit ? <Edit2 size={14} className="text-white" /> : <Plus size={14} className="text-white" />}
             </div>
             <h2 className="text-base font-bold text-white">{isEdit ? `Edit ${user.full_name}` : "Add Team Member"}</h2>
@@ -176,6 +178,13 @@ function UserModal({ user, onClose, onSaved }: {
               </Field>
             </div>
           </div>
+
+          {user && (
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "1rem" }}>
+              <p className="text-xs mb-3 font-medium" style={{ color: "var(--text-muted)" }}>Documents</p>
+              <LinkedDocuments staffId={user.id} emptyHint="Link documents to this staff member in the Document Vault." />
+            </div>
+          )}
         </form>
 
         <div className="px-6 py-4 flex gap-3 flex-shrink-0"
@@ -187,7 +196,7 @@ function UserModal({ user, onClose, onSaved }: {
           </button>
           <button onClick={() => (document.querySelector("form") as HTMLFormElement)?.requestSubmit()} disabled={saving}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Save size={14} />{saving ? "Saving…" : isEdit ? "Save Changes" : "Add Member"}
           </button>
         </div>
@@ -220,7 +229,7 @@ function DeleteConfirmModal({ user, onClose, onDeleted }: {
         style={{ background: "var(--bg-elevated)", border: "1px solid rgba(239,68,68,0.2)" }}>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(239,68,68,0.12)" }}>
-            <Trash2 size={18} style={{ color: "#f87171" }} />
+            <Trash2 size={18} style={{ color: "var(--c-red)" }} />
           </div>
           <div>
             <h3 className="text-base font-bold text-white">Remove Team Member</h3>
@@ -285,7 +294,7 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-            <Users size={22} style={{ color: "#a78bfa" }} /> Team
+            <Users size={22} style={{ color: "var(--c-teal)" }} /> Team
           </h1>
           <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
             {activeCount} active · {users.length} total
@@ -294,7 +303,7 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
         {can("team.manage") && (
           <button onClick={() => setShowAdd(true)}
             className="flex-shrink-0 flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-semibold rounded-xl text-white"
-            style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}>
+            style={{ background: "#0d9488" }}>
             <Plus size={14} /> <span className="hidden sm:inline">Add Member</span><span className="sm:hidden">Add</span>
           </button>
         )}
@@ -322,7 +331,7 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "var(--text-muted)" }} />
         <input
           className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl outline-none"
-          style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)", color: "white" }}
+          style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)", color: "var(--text-primary)" }}
           placeholder="Search by name, email or username…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -347,16 +356,16 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
             ) : filtered.map((u) => {
               const rc = roleConfig(u.role);
               return (
-                <tr key={u.id} style={{ borderBottom: "1px solid var(--bg-card)" }}
+                <tr key={u.id} style={{ borderBottom: "1px solid var(--border)" }}
                   className="transition-colors hover:bg-white/[0.02]">
                   <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-3">
+                    <Link href={`/dashboard/team/${u.id}`} className="flex items-center gap-3 group">
                       <Avatar user={u} size={36} />
                       <div>
-                        <div className="text-sm font-semibold text-white">{u.full_name}</div>
+                        <div className="text-sm font-semibold text-white group-hover:underline">{u.full_name}</div>
                         <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>@{u.username}</div>
                       </div>
-                    </div>
+                    </Link>
                   </td>
                   <td className="px-5 py-3.5">
                     <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ background: rc.bg, color: rc.color }}>{rc.label}</span>
@@ -370,14 +379,14 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
                       <button onClick={() => toggleActive(u)} disabled={togglingId === u.id}
                         className="flex items-center gap-1.5 text-xs font-medium disabled:opacity-50">
                         {u.is_active
-                          ? <><CheckCircle size={13} style={{ color: "#34d399" }} /><span style={{ color: "#34d399" }}>Active</span></>
-                          : <><XCircle size={13} style={{ color: "#f87171" }} /><span style={{ color: "#f87171" }}>Inactive</span></>}
+                          ? <><CheckCircle size={13} style={{ color: "var(--c-green)" }} /><span style={{ color: "var(--c-green)" }}>Active</span></>
+                          : <><XCircle size={13} style={{ color: "var(--c-red)" }} /><span style={{ color: "var(--c-red)" }}>Inactive</span></>}
                       </button>
                     ) : (
                       <span className="flex items-center gap-1.5 text-xs font-medium">
                         {u.is_active
-                          ? <><CheckCircle size={13} style={{ color: "#34d399" }} /><span style={{ color: "#34d399" }}>Active</span></>
-                          : <><XCircle size={13} style={{ color: "#f87171" }} /><span style={{ color: "#f87171" }}>Inactive</span></>}
+                          ? <><CheckCircle size={13} style={{ color: "var(--c-green)" }} /><span style={{ color: "var(--c-green)" }}>Active</span></>
+                          : <><XCircle size={13} style={{ color: "var(--c-red)" }} /><span style={{ color: "var(--c-red)" }}>Inactive</span></>}
                       </span>
                     )}
                   </td>
@@ -393,7 +402,7 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
                           <button onClick={() => setDeleteUser(u)}
                             className="w-7 h-7 rounded-lg flex items-center justify-center"
                             style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)" }}>
-                            <Trash2 size={12} style={{ color: "#f87171" }} />
+                            <Trash2 size={12} style={{ color: "var(--c-red)" }} />
                           </button>
                         </>
                       )}
@@ -420,10 +429,10 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
                 <Avatar user={u} size={42} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <div className="text-sm font-semibold text-white">{u.full_name}</div>
+                    <Link href={`/dashboard/team/${u.id}`}>
+                      <div className="text-sm font-semibold text-white hover:underline">{u.full_name}</div>
                       <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>@{u.username}</div>
-                    </div>
+                    </Link>
                     <span className="text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0" style={{ background: rc.bg, color: rc.color }}>{rc.label}</span>
                   </div>
                 </div>
@@ -432,16 +441,16 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
                 <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}><Mail size={11} />{u.email}</div>
                 {u.phone && <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-muted)" }}><Phone size={11} />{u.phone}</div>}
               </div>
-              <div className="flex gap-2 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+              <div className="flex gap-2 pt-3" style={{ borderTop: "1px solid rgba(var(--fg-rgb),0.05)" }}>
                 {can("team.manage") ? (
                   <button onClick={() => toggleActive(u)} disabled={togglingId === u.id}
                     className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium rounded-xl disabled:opacity-50"
-                    style={{ background: u.is_active ? "rgba(52,211,153,0.1)" : "rgba(239,68,68,0.1)", color: u.is_active ? "#34d399" : "#f87171" }}>
+                    style={{ background: u.is_active ? "rgba(52,211,153,0.1)" : "rgba(239,68,68,0.1)", color: u.is_active ? "var(--c-green)" : "var(--c-red)" }}>
                     {u.is_active ? <><CheckCircle size={12} />Active</> : <><XCircle size={12} />Inactive</>}
                   </button>
                 ) : (
                   <span className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium rounded-xl"
-                    style={{ background: u.is_active ? "rgba(52,211,153,0.08)" : "rgba(239,68,68,0.08)", color: u.is_active ? "#34d399" : "#f87171" }}>
+                    style={{ background: u.is_active ? "rgba(52,211,153,0.08)" : "rgba(239,68,68,0.08)", color: u.is_active ? "var(--c-green)" : "var(--c-red)" }}>
                     {u.is_active ? <><CheckCircle size={12} />Active</> : <><XCircle size={12} />Inactive</>}
                   </span>
                 )}
@@ -449,12 +458,12 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
                   <>
                     <button onClick={() => setEditUser(u)}
                       className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium rounded-xl"
-                      style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)" }}>
+                      style={{ background: "rgba(var(--fg-rgb),0.05)", color: "rgba(var(--fg-rgb),0.6)" }}>
                       <Edit2 size={12} />Edit
                     </button>
                     <button onClick={() => setDeleteUser(u)}
                       className="w-9 flex items-center justify-center py-2 rounded-xl" style={{ background: "rgba(239,68,68,0.08)" }}>
-                      <Trash2 size={13} style={{ color: "#f87171" }} />
+                      <Trash2 size={13} style={{ color: "var(--c-red)" }} />
                     </button>
                   </>
                 )}

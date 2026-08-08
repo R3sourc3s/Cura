@@ -118,22 +118,21 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
           </button>
         </div>
 
-        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto">
           {visibleNav.map(({ label, href }) => {
             const Icon = ICONS[href] ?? LayoutDashboard;
             const exact = href === "/dashboard";
             const active = exact ? pathname === href : pathname.startsWith(href);
             return (
               <Link key={href} href={href} onClick={onClose}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150"
+                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150"
                 style={{
-                  background: active ? "rgba(255,255,255,0.15)" : "transparent",
-                  color: active ? "#ffffff" : "rgba(255,255,255,0.65)",
-                  border: active ? "1px solid rgba(255,255,255,0.2)" : "1px solid transparent",
+                  background: active ? "rgba(16, 185, 129,0.12)" : "transparent",
+                  color: active ? "#5eead4" : "rgba(255,255,255,0.45)",
                 }}>
-                <Icon size={16} style={{ color: active ? "#ffffff" : "rgba(255,255,255,0.45)" }} />
+                <Icon size={15} style={{ color: active ? "#2dd4bf" : "rgba(255,255,255,0.3)" }} />
                 <span>{label}</span>
-                {active && <div className="ml-auto w-1.5 h-1.5 rounded-full" style={{ background: "#b8923a" }} />}
+                {active && <div className="ml-auto w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#2dd4bf", boxShadow: "0 0 6px #2dd4bf" }} />}
               </Link>
             );
           })}

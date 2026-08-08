@@ -11,9 +11,9 @@ interface TrainingRecord {
 interface StaffMember { id: number; full_name: string; role: string; }
 
 const STATUS_CFG: Record<string, { label: string; color: string; bg: string; Icon: React.ElementType }> = {
-  valid:         { label:"Valid",          color:"#34d399", bg:"rgba(52,211,153,0.12)",  Icon: CheckCircle },
-  expiring_soon: { label:"Expiring Soon",  color:"#fbbf24", bg:"rgba(251,191,36,0.12)",  Icon: Clock },
-  expired:       { label:"Expired",        color:"#f87171", bg:"rgba(239,68,68,0.12)",   Icon: AlertTriangle },
+  valid:         { label:"Valid",          color:"var(--c-green)", bg:"rgba(52,211,153,0.12)",  Icon: CheckCircle },
+  expiring_soon: { label:"Expiring Soon",  color:"var(--c-amber)", bg:"rgba(251,191,36,0.12)",  Icon: Clock },
+  expired:       { label:"Expired",        color:"var(--c-red)", bg:"rgba(239,68,68,0.12)",   Icon: AlertTriangle },
   not_completed: { label:"Not Completed",  color:"#6b7280", bg:"rgba(107,114,128,0.12)", Icon: Clock },
 };
 
@@ -66,18 +66,18 @@ export default function TrainingPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(251,191,36,0.12)", border:"1px solid rgba(251,191,36,0.2)" }}>
-            <GraduationCap size={16} style={{ color:"#fbbf24" }} />
+            <GraduationCap size={16} style={{ color:"var(--c-amber)" }} />
           </div>
           <div><h1 className="text-lg font-bold text-white">Staff Training</h1><p className="text-xs" style={{ color:"var(--text-muted)" }}>Mandatory training & certification tracker</p></div>
         </div>
-        <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#7c3aed,#3b82f6)" }}><Plus size={14} /> Add Record</button>
+        <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#0d9488,#10b981)" }}><Plus size={14} /> Add Record</button>
       </div>
 
       {/* Alerts */}
       {(expired > 0 || expiring > 0) && (
         <div className="flex gap-3 flex-wrap">
-          {expired > 0 && <div className="flex items-center gap-2 text-xs px-3 py-2 rounded-xl" style={{ background:"rgba(239,68,68,0.1)", color:"#f87171" }}><AlertTriangle size={12} /><strong>{expired}</strong>&nbsp;expired records</div>}
-          {expiring > 0 && <div className="flex items-center gap-2 text-xs px-3 py-2 rounded-xl" style={{ background:"rgba(251,191,36,0.1)", color:"#fbbf24" }}><Clock size={12} /><strong>{expiring}</strong>&nbsp;expiring within 30 days</div>}
+          {expired > 0 && <div className="flex items-center gap-2 text-xs px-3 py-2 rounded-xl" style={{ background:"rgba(239,68,68,0.1)", color:"var(--c-red)" }}><AlertTriangle size={12} /><strong>{expired}</strong>&nbsp;expired records</div>}
+          {expiring > 0 && <div className="flex items-center gap-2 text-xs px-3 py-2 rounded-xl" style={{ background:"rgba(251,191,36,0.1)", color:"var(--c-amber)" }}><Clock size={12} /><strong>{expiring}</strong>&nbsp;expiring within 30 days</div>}
         </div>
       )}
 
@@ -89,7 +89,7 @@ export default function TrainingPage() {
         </select>
         {["","valid","expiring_soon","expired","not_completed"].map(s => (
           <button key={s} onClick={() => setFilterStatus(s)} className="text-xs px-3 py-1.5 rounded-xl transition-all"
-            style={{ background: filterStatus===s ? "rgba(124,58,237,0.2)" : "var(--bg-card)", color: filterStatus===s ? "#a78bfa" : "var(--text-secondary)", border: filterStatus===s ? "1px solid rgba(124,58,237,0.3)" : "1px solid transparent" }}>
+            style={{ background: filterStatus===s ? "rgba(13, 148, 136,0.2)" : "var(--bg-card)", color: filterStatus===s ? "var(--c-teal)" : "var(--text-secondary)", border: filterStatus===s ? "1px solid rgba(13, 148, 136,0.3)" : "1px solid transparent" }}>
             {s === "" ? "All" : STATUS_CFG[s]?.label ?? s}
           </button>
         ))}
@@ -118,7 +118,7 @@ export default function TrainingPage() {
                     <td className="px-4 py-3 text-sm text-white font-medium">{r.staff_member_name ?? `Staff #${r.staff_member}`}</td>
                     <td className="px-4 py-3 text-sm" style={{ color:"var(--text-secondary)" }}>{r.course_name_display}</td>
                     <td className="px-4 py-3 text-xs" style={{ color:"var(--text-secondary)" }}>{r.completed_date ? new Date(r.completed_date).toLocaleDateString("en-GB") : "—"}</td>
-                    <td className="px-4 py-3 text-xs" style={{ color: r.status==="expired" ? "#f87171" : r.status==="expiring_soon" ? "#fbbf24" : "var(--text-secondary)" }}>
+                    <td className="px-4 py-3 text-xs" style={{ color: r.status==="expired" ? "var(--c-red)" : r.status==="expiring_soon" ? "var(--c-amber)" : "var(--text-secondary)" }}>
                       {r.expiry_date ? new Date(r.expiry_date).toLocaleDateString("en-GB") : "—"}
                     </td>
                     <td className="px-4 py-3">
@@ -137,7 +137,7 @@ export default function TrainingPage() {
 
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(124,58,237,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Training Record</h3><button onClick={()=>setShowCreate(false)} style={{color:"var(--text-muted)"}}><X size={18}/></button></div>
             <div className="space-y-3">
               <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Staff Member *</label>
@@ -159,7 +159,7 @@ export default function TrainingPage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={()=>setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card)",color:"var(--text-secondary)",border:"1px solid var(--border)"}}>Cancel</button>
-              <button onClick={handleCreate} disabled={saving||!form.staff_member||!form.course_name} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#7c3aed,#3b82f6)"}}>{saving?"Saving…":"Save"}</button>
+              <button onClick={handleCreate} disabled={saving||!form.staff_member||!form.course_name} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#0d9488,#10b981)"}}>{saving?"Saving…":"Save"}</button>
             </div>
           </div>
         </div>

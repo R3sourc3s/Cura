@@ -30,9 +30,9 @@ interface PRNAdmin {
 interface Medication { id: number; drug_name: string; frequency: string; prn_protocol: PRNProtocol | null; resident: number; }
 
 const EFFECT_CFG = {
-  effective:   { label: "Effective",    color: "#34d399", bg: "rgba(52,211,153,0.15)" },
-  partial:     { label: "Partial",      color: "#fbbf24", bg: "rgba(251,191,36,0.15)" },
-  ineffective: { label: "Ineffective",  color: "#f87171", bg: "rgba(239,68,68,0.15)" },
+  effective:   { label: "Effective",    color: "var(--c-green)", bg: "rgba(52,211,153,0.15)" },
+  partial:     { label: "Partial",      color: "var(--c-amber)", bg: "rgba(251,191,36,0.15)" },
+  ineffective: { label: "Ineffective",  color: "var(--c-red)", bg: "rgba(239,68,68,0.15)" },
   unknown:     { label: "Unknown",      color: "#6b7280", bg: "rgba(107,114,128,0.15)" },
 };
 
@@ -115,7 +115,7 @@ export default function PRNPage() {
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(52,211,153,0.12)", border: "1px solid rgba(52,211,153,0.2)" }}>
-            <Pill size={18} style={{ color: "#34d399" }} />
+            <Pill size={18} style={{ color: "var(--c-green)" }} />
           </div>
           <div>
             <h1 className="text-xl font-bold text-white">PRN Medications</h1>
@@ -125,7 +125,7 @@ export default function PRNPage() {
         {residentId && (
           <button onClick={() => setShowForm(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all hover:opacity-80"
-            style={{ background: "rgba(52,211,153,0.15)", color: "#34d399", border: "1px solid rgba(52,211,153,0.25)" }}>
+            style={{ background: "rgba(52,211,153,0.15)", color: "var(--c-green)", border: "1px solid rgba(52,211,153,0.25)" }}>
             <Plus size={14} /> Log Administration
           </button>
         )}
@@ -161,30 +161,30 @@ export default function PRNPage() {
                     : Infinity;
                   const canGive = hoursSinceLast >= p.min_interval_hours;
                   return (
-                    <div key={m.id} className="rounded-2xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${canGive ? "rgba(52,211,153,0.15)" : "rgba(251,191,36,0.15)"}` }}>
+                    <div key={m.id} className="rounded-2xl p-4" style={{ background: "rgba(var(--fg-rgb),0.02)", border: `1px solid ${canGive ? "rgba(52,211,153,0.15)" : "rgba(251,191,36,0.15)"}` }}>
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <div className="text-sm font-semibold text-white">{m.drug_name}</div>
                           <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>{p.indication}</div>
                         </div>
                         <span className="text-xs px-2 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1"
-                          style={{ background: canGive ? "rgba(52,211,153,0.15)" : "rgba(251,191,36,0.15)", color: canGive ? "#34d399" : "#fbbf24" }}>
+                          style={{ background: canGive ? "rgba(52,211,153,0.15)" : "rgba(251,191,36,0.15)", color: canGive ? "var(--c-green)" : "var(--c-amber)" }}>
                           {canGive ? <CheckCircle size={10} /> : <Clock size={10} />}
                           {canGive ? "Can give" : `Wait ${Math.ceil(p.min_interval_hours - hoursSinceLast)}h`}
                         </span>
                       </div>
                       <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                        <div className="rounded-lg px-2 py-1.5" style={{ background: "rgba(255,255,255,0.04)" }}>
-                          <div style={{ color: "rgba(255,255,255,0.35)" }}>Max dose / 24h</div>
+                        <div className="rounded-lg px-2 py-1.5" style={{ background: "rgba(var(--fg-rgb),0.04)" }}>
+                          <div style={{ color: "rgba(var(--fg-rgb),0.35)" }}>Max dose / 24h</div>
                           <div className="font-medium text-white mt-0.5">{p.max_dose_per_24h}</div>
                         </div>
-                        <div className="rounded-lg px-2 py-1.5" style={{ background: "rgba(255,255,255,0.04)" }}>
-                          <div style={{ color: "rgba(255,255,255,0.35)" }}>Min interval</div>
+                        <div className="rounded-lg px-2 py-1.5" style={{ background: "rgba(var(--fg-rgb),0.04)" }}>
+                          <div style={{ color: "rgba(var(--fg-rgb),0.35)" }}>Min interval</div>
                           <div className="font-medium text-white mt-0.5">{p.min_interval_hours}h</div>
                         </div>
                       </div>
                       {lastAdmin && (
-                        <div className="mt-2 text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+                        <div className="mt-2 text-xs" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
                           Last given {timeAgo(lastAdmin.administered_at)} · {recentAdmins.length} times today
                         </div>
                       )}
@@ -200,29 +200,29 @@ export default function PRNPage() {
             <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div>
           ) : (
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "rgba(255,255,255,0.35)" }}>Administration History</div>
+              <div className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>Administration History</div>
               {administrations.length === 0 ? (
-                <div className="text-center py-10 rounded-2xl" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                  <Pill size={24} className="mx-auto mb-2" style={{ color: "rgba(255,255,255,0.15)" }} />
-                  <p className="text-sm" style={{ color: "rgba(255,255,255,0.3)" }}>No PRN administrations recorded.</p>
+                <div className="text-center py-10 rounded-2xl" style={{ background: "rgba(var(--fg-rgb),0.02)", border: "1px solid rgba(var(--fg-rgb),0.06)" }}>
+                  <Pill size={24} className="mx-auto mb-2" style={{ color: "rgba(var(--fg-rgb),0.15)" }} />
+                  <p className="text-sm" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>No PRN administrations recorded.</p>
                 </div>
               ) : (
                 <div className="space-y-2">
                   {administrations.map(a => {
                     const eff = EFFECT_CFG[a.effectiveness] ?? EFFECT_CFG.unknown;
                     return (
-                      <div key={a.id} className="rounded-2xl px-4 py-3 flex items-start gap-3" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                      <div key={a.id} className="rounded-2xl px-4 py-3 flex items-start gap-3" style={{ background: "rgba(var(--fg-rgb),0.02)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: "rgba(52,211,153,0.12)" }}>
-                          <Pill size={13} style={{ color: "#34d399" }} />
+                          <Pill size={13} style={{ color: "var(--c-green)" }} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-sm font-semibold text-white">{a.drug_name ?? "Medication"}</span>
                             <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: eff.bg, color: eff.color }}>{eff.label}</span>
                           </div>
-                          <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.45)" }}>{a.reason} · {a.dose_given}</div>
-                          {a.effectiveness_notes && <div className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.35)" }}>{a.effectiveness_notes}</div>}
-                          <div className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.25)" }}>
+                          <div className="text-xs mt-0.5" style={{ color: "rgba(var(--fg-rgb),0.45)" }}>{a.reason} · {a.dose_given}</div>
+                          {a.effectiveness_notes && <div className="text-xs mt-1" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>{a.effectiveness_notes}</div>}
+                          <div className="text-xs mt-1" style={{ color: "rgba(var(--fg-rgb),0.25)" }}>
                             {a.administered_by_name} · {timeAgo(a.administered_at)}
                           </div>
                         </div>
@@ -239,75 +239,75 @@ export default function PRNPage() {
       {/* Log form modal */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)" }} onClick={() => setShowForm(false)}>
-          <div className="w-full max-w-md rounded-2xl p-5 space-y-4" style={{ background: "#0d1424", border: "1px solid rgba(255,255,255,0.1)" }} onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-2xl p-5 space-y-4" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(var(--fg-rgb),0.1)" }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-white">Log PRN Administration</span>
-              <button onClick={() => setShowForm(false)}><X size={14} style={{ color: "rgba(255,255,255,0.4)" }} /></button>
+              <button onClick={() => setShowForm(false)}><X size={14} style={{ color: "rgba(var(--fg-rgb),0.4)" }} /></button>
             </div>
 
             <div>
-              <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Medication *</label>
+              <label className="text-xs mb-1.5 block" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>Medication *</label>
               <div className="relative">
                 <select value={form.medication} onChange={e => setForm(f => ({ ...f, medication: e.target.value }))}
                   className="w-full text-sm px-3 py-2.5 rounded-xl appearance-none outline-none pr-8"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}>
+                  style={{ background: "rgba(var(--fg-rgb),0.06)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}>
                   <option value="">Select PRN medication…</option>
-                  {prnMeds.map(m => <option key={m.id} value={m.id} style={{ background: "#0d1424" }}>{m.drug_name}</option>)}
+                  {prnMeds.map(m => <option key={m.id} value={m.id} style={{ background: "var(--bg-elevated)" }}>{m.drug_name}</option>)}
                 </select>
-                <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+                <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
               </div>
             </div>
 
             {selectedMed?.prn_protocol && (
               <div className="rounded-xl p-3 text-xs" style={{ background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.15)" }}>
-                <div style={{ color: "#34d399" }}>Protocol: {selectedMed.prn_protocol.indication}</div>
-                <div className="mt-1" style={{ color: "rgba(255,255,255,0.5)" }}>Max: {selectedMed.prn_protocol.max_dose_per_24h} · Interval: {selectedMed.prn_protocol.min_interval_hours}h</div>
+                <div style={{ color: "var(--c-green)" }}>Protocol: {selectedMed.prn_protocol.indication}</div>
+                <div className="mt-1" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>Max: {selectedMed.prn_protocol.max_dose_per_24h} · Interval: {selectedMed.prn_protocol.min_interval_hours}h</div>
               </div>
             )}
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Dose given *</label>
+                <label className="text-xs mb-1.5 block" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>Dose given *</label>
                 <input value={form.dose_given} onChange={e => setForm(f => ({ ...f, dose_given: e.target.value }))}
                   placeholder="e.g. 500mg"
                   className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }} />
+                  style={{ background: "rgba(var(--fg-rgb),0.06)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }} />
               </div>
               <div>
-                <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Effectiveness</label>
+                <label className="text-xs mb-1.5 block" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>Effectiveness</label>
                 <div className="relative">
                   <select value={form.effectiveness} onChange={e => setForm(f => ({ ...f, effectiveness: e.target.value as PRNAdmin["effectiveness"] }))}
                     className="w-full text-sm px-3 py-2 rounded-xl appearance-none outline-none pr-8"
-                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }}>
-                    {Object.entries(EFFECT_CFG).map(([v, c]) => <option key={v} value={v} style={{ background: "#0d1424" }}>{c.label}</option>)}
+                    style={{ background: "rgba(var(--fg-rgb),0.06)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }}>
+                    {Object.entries(EFFECT_CFG).map(([v, c]) => <option key={v} value={v} style={{ background: "var(--bg-elevated)" }}>{c.label}</option>)}
                   </select>
-                  <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(255,255,255,0.3)" }} />
+                  <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "rgba(var(--fg-rgb),0.3)" }} />
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Reason *</label>
+              <label className="text-xs mb-1.5 block" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>Reason *</label>
               <textarea value={form.reason} onChange={e => setForm(f => ({ ...f, reason: e.target.value }))}
                 placeholder="Why was the PRN given?"
                 rows={2}
                 className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none"
-                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }} />
+                style={{ background: "rgba(var(--fg-rgb),0.06)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }} />
             </div>
 
             <div>
-              <label className="text-xs mb-1.5 block" style={{ color: "rgba(255,255,255,0.4)" }}>Effectiveness notes</label>
+              <label className="text-xs mb-1.5 block" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>Effectiveness notes</label>
               <input value={form.effectiveness_notes} onChange={e => setForm(f => ({ ...f, effectiveness_notes: e.target.value }))}
                 placeholder="How did the resident respond?"
                 className="w-full text-sm px-3 py-2 rounded-xl outline-none"
-                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)" }} />
+                style={{ background: "rgba(var(--fg-rgb),0.06)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }} />
             </div>
 
             <div className="flex gap-2">
-              <button onClick={() => setShowForm(false)} className="flex-1 py-2.5 rounded-xl text-sm" style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.5)" }}>Cancel</button>
+              <button onClick={() => setShowForm(false)} className="flex-1 py-2.5 rounded-xl text-sm" style={{ background: "rgba(var(--fg-rgb),0.05)", color: "rgba(var(--fg-rgb),0.5)" }}>Cancel</button>
               <button onClick={submit} disabled={saving || !form.medication || !form.reason || !form.dose_given}
                 className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-40"
-                style={{ background: "linear-gradient(135deg,#7c3aed,#3b82f6)", color: "#fff" }}>
+                style={{ background: "linear-gradient(135deg,#0d9488,#10b981)", color: "#fff" }}>
                 {saving ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : "Save"}
               </button>
             </div>

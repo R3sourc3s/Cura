@@ -13,19 +13,19 @@ interface Appointment {
 interface Resident { id: number; full_name: string; }
 
 const TYPE_CFG: Record<string, { label:string; color:string; bg:string }> = {
-  gp:         { label:"GP",          color:"#34d399", bg:"rgba(52,211,153,0.12)" },
-  hospital:   { label:"Hospital",    color:"#f87171", bg:"rgba(239,68,68,0.12)" },
-  specialist: { label:"Specialist",  color:"#a78bfa", bg:"rgba(124,58,237,0.12)" },
-  dentist:    { label:"Dentist",     color:"#60a5fa", bg:"rgba(96,165,250,0.12)" },
-  optician:   { label:"Optician",    color:"#2dd4bf", bg:"rgba(45,212,191,0.1)" },
-  physio:     { label:"Physio",      color:"#fb923c", bg:"rgba(251,146,60,0.12)" },
+  gp:         { label:"GP",          color:"var(--c-green)", bg:"rgba(52,211,153,0.12)" },
+  hospital:   { label:"Hospital",    color:"var(--c-red)", bg:"rgba(239,68,68,0.12)" },
+  specialist: { label:"Specialist",  color:"var(--c-teal)", bg:"rgba(13, 148, 136,0.12)" },
+  dentist:    { label:"Dentist",     color:"var(--c-teal2)", bg:"rgba(45, 212, 191,0.12)" },
+  optician:   { label:"Optician",    color:"var(--c-teal2)", bg:"rgba(45,212,191,0.1)" },
+  physio:     { label:"Physio",      color:"var(--c-orange)", bg:"rgba(251,146,60,0.12)" },
   other:      { label:"Other",       color:"#9ca3af", bg:"rgba(107,114,128,0.1)" },
 };
 const STATUS_CFG: Record<string, { label:string; color:string; bg:string }> = {
-  scheduled:  { label:"Scheduled",  color:"#60a5fa", bg:"rgba(96,165,250,0.12)" },
-  completed:  { label:"Completed",  color:"#34d399", bg:"rgba(52,211,153,0.12)" },
+  scheduled:  { label:"Scheduled",  color:"var(--c-teal2)", bg:"rgba(45, 212, 191,0.12)" },
+  completed:  { label:"Completed",  color:"var(--c-green)", bg:"rgba(52,211,153,0.12)" },
   cancelled:  { label:"Cancelled",  color:"#9ca3af", bg:"rgba(107,114,128,0.1)" },
-  dna:        { label:"DNA",        color:"#f87171", bg:"rgba(239,68,68,0.12)" },
+  dna:        { label:"DNA",        color:"var(--c-red)", bg:"rgba(239,68,68,0.12)" },
 };
 
 export default function AppointmentsPage() {
@@ -95,16 +95,16 @@ export default function AppointmentsPage() {
     <div className="space-y-5 max-w-5xl mx-auto">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(96,165,250,0.12)", border: "1px solid rgba(96,165,250,0.2)" }}>
-            <Calendar size={16} style={{ color: "#60a5fa" }} />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(45, 212, 191,0.12)", border: "1px solid rgba(45, 212, 191,0.2)" }}>
+            <Calendar size={16} style={{ color: "var(--c-teal2)" }} />
           </div>
           <div><h1 className="text-lg font-bold text-white">Appointments</h1><p className="text-xs" style={{ color: "var(--text-muted)" }}>GP, hospital & specialist visits</p></div>
         </div>
-        <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}><Plus size={14} /> Add Appointment</button>
+        <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background: "#0d9488" }}><Plus size={14} /> Add Appointment</button>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[{ label:"Upcoming This Week", value:upcoming, color:"#60a5fa" }, { label:"Today", value:todayCount, color:"#a78bfa" }, { label:"Escort Required", value:escortNeeded, color:"#fbbf24" }, { label:"Follow-ups Due", value:followUps, color:"#f87171" }].map(({ label, value, color }) => (
+        {[{ label:"Upcoming This Week", value:upcoming, color:"var(--c-teal2)" }, { label:"Today", value:todayCount, color:"var(--c-teal)" }, { label:"Escort Required", value:escortNeeded, color:"var(--c-amber)" }, { label:"Follow-ups Due", value:followUps, color:"var(--c-red)" }].map(({ label, value, color }) => (
           <div key={label} className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
             <div className="text-2xl font-bold" style={{ color }}>{value}</div>
             <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>{label}</div>
@@ -138,24 +138,24 @@ export default function AppointmentsPage() {
                 {["Resident","Type","Provider","Date & Time","Status","Escort","Transport"].map(h => <th key={h} className="text-left text-xs font-semibold uppercase tracking-wider px-4 py-3" style={{ color: "var(--text-muted)" }}>{h}</th>)}
               </tr>
             </thead>
-            <tbody style={{ background: "rgba(5,9,20,0.6)" }}>
-              {loading ? <tr><td colSpan={7} className="py-12 text-center"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin mx-auto" /></td></tr> :
+            <tbody style={{ background: "var(--bg-card)" }}>
+              {loading ? <tr><td colSpan={7} className="py-12 text-center"><div className="w-6 h-6 rounded-full border-2 border-teal-500 border-t-transparent animate-spin mx-auto" /></td></tr> :
                filtered.length === 0 ? <tr><td colSpan={7} className="py-12 text-center text-sm" style={{ color: "var(--text-muted)" }}>No appointments found</td></tr> :
                filtered.map(a => {
                 const tc = TYPE_CFG[a.appointment_type] ?? TYPE_CFG.other;
                 const sc = STATUS_CFG[a.status] ?? STATUS_CFG.scheduled;
                 const isPast = a.scheduled_at < today;
                 return (
-                  <tr key={a.id} className="cursor-pointer" style={{ borderBottom: "1px solid var(--bg-card)", opacity: isPast && a.status === "scheduled" ? 0.7 : 1 }}
+                  <tr key={a.id} className="cursor-pointer" style={{ borderBottom: "1px solid var(--border)", opacity: isPast && a.status === "scheduled" ? 0.7 : 1 }}
                     onClick={() => { setEditAppt(a); setEditForm({ status: a.status, outcome: a.outcome, follow_up_required: a.follow_up_required, follow_up_notes: a.follow_up_notes }); }}
-                    onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.02)")} onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
+                    onMouseEnter={e => (e.currentTarget.style.background = "rgba(var(--fg-rgb),0.02)")} onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
                     <td className="px-4 py-3 text-sm font-medium text-white">{a.resident_name ?? `#${a.resident}`}</td>
                     <td className="px-4 py-3"><span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: tc.bg, color: tc.color }}>{tc.label}</span></td>
                     <td className="px-4 py-3 text-sm" style={{ color: "var(--text-secondary)" }}>{a.provider_name}</td>
                     <td className="px-4 py-3 text-xs" style={{ color: "var(--text-secondary)" }}>{new Date(a.scheduled_at).toLocaleDateString("en-GB")} <span style={{ color: "var(--text-muted)" }}>{new Date(a.scheduled_at).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})}</span></td>
                     <td className="px-4 py-3"><span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: sc.bg, color: sc.color }}>{sc.label}</span></td>
-                    <td className="px-4 py-3 text-xs" style={{ color: a.escort_required ? "#fbbf24" : "var(--text-muted)" }}>{a.escort_required ? "Yes" : "No"}</td>
-                    <td className="px-4 py-3 text-xs" style={{ color: a.transport_arranged ? "#34d399" : "var(--text-muted)" }}>{a.transport_arranged ? "Arranged" : "—"}</td>
+                    <td className="px-4 py-3 text-xs" style={{ color: a.escort_required ? "var(--c-amber)" : "var(--text-muted)" }}>{a.escort_required ? "Yes" : "No"}</td>
+                    <td className="px-4 py-3 text-xs" style={{ color: a.transport_arranged ? "var(--c-green)" : "var(--text-muted)" }}>{a.transport_arranged ? "Arranged" : "—"}</td>
                   </tr>
                 );
               })}
@@ -167,7 +167,7 @@ export default function AppointmentsPage() {
       {/* Create Modal */}
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(124,58,237,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Add Appointment</h3><button onClick={() => setShowCreate(false)} style={{ color: "var(--text-muted)" }}><X size={18} /></button></div>
             <div className="space-y-3">
               {[
@@ -188,7 +188,7 @@ export default function AppointmentsPage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={()=>setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card-hover)",color:"var(--text-secondary)",border:"1px solid var(--bg-card-hover)"}}>Cancel</button>
-              <button onClick={handleCreate} disabled={saving||!form.resident||!form.provider_name||!form.scheduled_at} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#7c3aed,#3b82f6)"}}>{saving?"Saving…":"Save"}</button>
+              <button onClick={handleCreate} disabled={saving||!form.resident||!form.provider_name||!form.scheduled_at} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#0d9488,#10b981)"}}>{saving?"Saving…":"Save"}</button>
             </div>
           </div>
         </div>
@@ -197,7 +197,7 @@ export default function AppointmentsPage() {
       {/* Edit Modal */}
       {editAppt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(124,58,237,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-md" style={{ background: "var(--bg-elevated)", border: "1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-3"><h3 className="text-base font-bold text-white">Update Appointment</h3><button onClick={()=>setEditAppt(null)} style={{color:"var(--text-muted)"}}><X size={18}/></button></div>
             <p className="text-sm mb-5" style={{color:"var(--text-secondary)"}}>{editAppt.resident_name} — {editAppt.provider_name}</p>
             <div className="space-y-3">
@@ -213,7 +213,7 @@ export default function AppointmentsPage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={()=>setEditAppt(null)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card-hover)",color:"var(--text-secondary)",border:"1px solid var(--bg-card-hover)"}}>Cancel</button>
-              <button onClick={handleUpdate} disabled={saving} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#7c3aed,#3b82f6)"}}>{saving?"Saving…":"Update"}</button>
+              <button onClick={handleUpdate} disabled={saving} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#0d9488,#10b981)"}}>{saving?"Saving…":"Update"}</button>
             </div>
           </div>
         </div>

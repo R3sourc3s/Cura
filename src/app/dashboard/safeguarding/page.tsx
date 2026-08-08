@@ -15,10 +15,10 @@ interface Resident { id: number; full_name: string; }
 
 const CATEGORIES: Record<string,string> = { physical:"Physical Abuse", emotional:"Emotional/Psychological", financial:"Financial Abuse", sexual:"Sexual Abuse", neglect:"Neglect", discriminatory:"Discriminatory", organisational:"Organisational", self_neglect:"Self-Neglect", domestic:"Domestic Abuse" };
 const STATUS_CFG: Record<string,{label:string;color:string;bg:string}> = {
-  open:          { label:"Open",                color:"#f87171", bg:"rgba(239,68,68,0.12)" },
-  investigating: { label:"Under Investigation", color:"#fbbf24", bg:"rgba(251,191,36,0.12)" },
-  referred:      { label:"Referred",            color:"#60a5fa", bg:"rgba(96,165,250,0.12)" },
-  closed:        { label:"Closed",              color:"#34d399", bg:"rgba(52,211,153,0.12)" },
+  open:          { label:"Open",                color:"var(--c-red)", bg:"rgba(239,68,68,0.12)" },
+  investigating: { label:"Under Investigation", color:"var(--c-amber)", bg:"rgba(251,191,36,0.12)" },
+  referred:      { label:"Referred",            color:"var(--c-teal2)", bg:"rgba(45, 212, 191,0.12)" },
+  closed:        { label:"Closed",              color:"var(--c-green)", bg:"rgba(52,211,153,0.12)" },
 };
 
 const inputStyle = { background:"var(--input-bg)", border:"1px solid var(--border-strong)", color:"var(--text-primary)" };
@@ -75,18 +75,18 @@ export default function SafeguardingPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(239,68,68,0.12)", border:"1px solid rgba(239,68,68,0.2)" }}>
-            <ShieldAlert size={16} style={{ color:"#f87171" }} />
+            <ShieldAlert size={16} style={{ color:"var(--c-red)" }} />
           </div>
           <div><h1 className="text-lg font-bold text-white">Safeguarding Register</h1><p className="text-xs" style={{ color:"var(--text-muted)" }}>Concerns, referrals & outcomes</p></div>
         </div>
-        <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#ef4444,#7c3aed)" }}><Plus size={14} /> Raise Concern</button>
+        <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"#0d9488" }}><Plus size={14} /> Raise Concern</button>
       </div>
 
       {/* Summary */}
       {(open > 0 || investigating > 0) && (
         <div className="flex gap-3 flex-wrap">
-          {open > 0 && <div className="text-xs px-3 py-2 rounded-xl" style={{ background:"rgba(239,68,68,0.1)", color:"#f87171" }}><strong>{open}</strong> open concerns</div>}
-          {investigating > 0 && <div className="text-xs px-3 py-2 rounded-xl" style={{ background:"rgba(251,191,36,0.1)", color:"#fbbf24" }}><strong>{investigating}</strong> under investigation</div>}
+          {open > 0 && <div className="text-xs px-3 py-2 rounded-xl" style={{ background:"rgba(239,68,68,0.1)", color:"var(--c-red)" }}><strong>{open}</strong> open concerns</div>}
+          {investigating > 0 && <div className="text-xs px-3 py-2 rounded-xl" style={{ background:"rgba(251,191,36,0.1)", color:"var(--c-amber)" }}><strong>{investigating}</strong> under investigation</div>}
         </div>
       )}
 
@@ -94,7 +94,7 @@ export default function SafeguardingPage() {
       <div className="flex gap-1 flex-wrap">
         {["","open","investigating","referred","closed"].map(s => (
           <button key={s} onClick={() => setFilterStatus(s)} className="text-xs px-3 py-1.5 rounded-xl transition-all"
-            style={{ background: filterStatus===s ? "rgba(239,68,68,0.15)" : "var(--bg-card)", color: filterStatus===s ? "#f87171" : "var(--text-secondary)", border: filterStatus===s ? "1px solid rgba(239,68,68,0.3)" : "1px solid transparent" }}>
+            style={{ background: filterStatus===s ? "rgba(239,68,68,0.15)" : "var(--bg-card)", color: filterStatus===s ? "var(--c-red)" : "var(--text-secondary)", border: filterStatus===s ? "1px solid rgba(239,68,68,0.3)" : "1px solid transparent" }}>
             {s === "" ? "All" : STATUS_CFG[s]?.label ?? s}
           </button>
         ))}
@@ -120,7 +120,7 @@ export default function SafeguardingPage() {
                       <span className="text-sm font-semibold text-white">{c.resident_name ?? `Resident #${c.resident}`}</span>
                       <span className="text-xs px-2 py-0.5 rounded" style={{ background:"var(--border)", color:"var(--text-secondary)" }}>{CATEGORIES[c.category] ?? c.category}</span>
                       <span className="text-xs px-2 py-0.5 rounded-lg" style={{ background:stCfg.bg, color:stCfg.color }}>{stCfg.label}</span>
-                      {c.referred_to_authority && <span className="text-xs px-2 py-0.5 rounded" style={{ background:"rgba(96,165,250,0.1)", color:"#60a5fa" }}>Referred</span>}
+                      {c.referred_to_authority && <span className="text-xs px-2 py-0.5 rounded" style={{ background:"rgba(45, 212, 191,0.1)", color:"var(--c-teal2)" }}>Referred</span>}
                     </div>
                     <div className="text-xs mt-0.5" style={{ color:"var(--text-muted)" }}>
                       {new Date(c.date_raised).toLocaleDateString("en-GB")} · {c.raised_by_name ?? "—"}
@@ -135,9 +135,9 @@ export default function SafeguardingPage() {
                     {c.outcome && <div className="text-xs" style={{ color:"var(--text-secondary)" }}><span style={{ color:"var(--text-muted)" }}>Outcome: </span>{c.outcome}</div>}
                     {c.status !== "closed" && (
                       <div className="flex gap-2 flex-wrap">
-                        {c.status === "open" && <button onClick={() => updateStatus(c.id, "investigating")} className="text-xs px-3 py-1.5 rounded-lg" style={{ background:"rgba(251,191,36,0.1)", color:"#fbbf24", border:"1px solid rgba(251,191,36,0.2)" }}>Start Investigation</button>}
-                        {(c.status === "open" || c.status === "investigating") && <button onClick={() => updateStatus(c.id, "referred")} className="text-xs px-3 py-1.5 rounded-lg" style={{ background:"rgba(96,165,250,0.1)", color:"#60a5fa", border:"1px solid rgba(96,165,250,0.2)" }}>Refer to Authority</button>}
-                        <button onClick={() => updateStatus(c.id, "closed")} className="text-xs px-3 py-1.5 rounded-lg" style={{ background:"rgba(52,211,153,0.1)", color:"#34d399", border:"1px solid rgba(52,211,153,0.2)" }}>Close</button>
+                        {c.status === "open" && <button onClick={() => updateStatus(c.id, "investigating")} className="text-xs px-3 py-1.5 rounded-lg" style={{ background:"rgba(251,191,36,0.1)", color:"var(--c-amber)", border:"1px solid rgba(251,191,36,0.2)" }}>Start Investigation</button>}
+                        {(c.status === "open" || c.status === "investigating") && <button onClick={() => updateStatus(c.id, "referred")} className="text-xs px-3 py-1.5 rounded-lg" style={{ background:"rgba(45, 212, 191,0.1)", color:"var(--c-teal2)", border:"1px solid rgba(45, 212, 191,0.2)" }}>Refer to Authority</button>}
+                        <button onClick={() => updateStatus(c.id, "closed")} className="text-xs px-3 py-1.5 rounded-lg" style={{ background:"rgba(52,211,153,0.1)", color:"var(--c-green)", border:"1px solid rgba(52,211,153,0.2)" }}>Close</button>
                       </div>
                     )}
                   </div>
@@ -182,7 +182,7 @@ export default function SafeguardingPage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={()=>setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--border)",color:"var(--text-primary)",border:"1px solid var(--border-strong)"}}>Cancel</button>
-              <button onClick={handleCreate} disabled={saving||!form.resident||!form.description} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#ef4444,#7c3aed)"}}>{saving?"Saving…":"Raise Concern"}</button>
+              <button onClick={handleCreate} disabled={saving||!form.resident||!form.description} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"#0d9488"}}>{saving?"Saving…":"Raise Concern"}</button>
             </div>
           </div>
         </div>

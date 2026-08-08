@@ -74,7 +74,7 @@ export default function QuickCareNote() {
       <button
         onClick={() => { setOpen(true); setSaved(false); }}
         className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-2xl shadow-2xl font-medium text-sm transition-all hover:scale-105 active:scale-95"
-        style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)", color: "#fff", boxShadow: "0 8px 32px rgba(124,58,237,0.5)" }}>
+        style={{ background: "#0d9488", color: "#fff", boxShadow: "0 8px 32px rgba(13, 148, 136,0.45)" }}>
         <NotebookPen size={15} />
         <span className="hidden sm:inline">Quick Note</span>
       </button>
@@ -90,10 +90,10 @@ export default function QuickCareNote() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.25)" }}>
-                  <NotebookPen size={13} style={{ color: "#a78bfa" }} />
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(13, 148, 136,0.12)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
+                  <NotebookPen size={13} style={{ color: "#0d9488" }} />
                 </div>
-                <span className="text-sm font-semibold text-white">Quick Care Note</span>
+                <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Quick Care Note</span>
               </div>
               <button onClick={() => setOpen(false)} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "var(--input-bg)" }}>
                 <X size={14} style={{ color: "var(--text-secondary)" }} />
@@ -154,7 +154,7 @@ export default function QuickCareNote() {
                 ].map(m => (
                   <button key={m.v} onClick={() => setMood(m.v)}
                     className="w-9 h-9 rounded-xl flex items-center justify-center text-lg transition-all"
-                    style={{ background: mood === m.v ? "rgba(124,58,237,0.2)" : "var(--bg-card)", border: mood === m.v ? "1px solid rgba(124,58,237,0.4)" : "1px solid transparent" }}
+                    style={{ background: mood === m.v ? "rgba(13, 148, 136,0.12)" : "var(--bg-card)", border: mood === m.v ? "1px solid rgba(13, 148, 136,0.35)" : "1px solid transparent" }}
                     title={m.v}>
                     {m.e}
                   </button>
@@ -182,7 +182,7 @@ export default function QuickCareNote() {
               </button>
               <button onClick={submit} disabled={saving || !content.trim() || !residentId}
                 className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-40"
-                style={{ background: saved ? "rgba(52,211,153,0.2)" : "linear-gradient(135deg,#7c3aed,#3b82f6)", color: saved ? "#34d399" : "#fff" }}>
+                style={{ background: saved ? "rgba(52,211,153,0.15)" : "#0d9488", color: saved ? "var(--c-green)" : "#fff" }}>
                 {saved ? "✓ Saved!" : saving ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <><Send size={13} /> Save Note</>}
               </button>
             </div>

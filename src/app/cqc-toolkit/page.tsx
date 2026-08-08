@@ -58,7 +58,7 @@ const kloes = [
   },
   {
     key: "Responsive",
-    color: "#3b82f6",
+    color: "#14b8a6",
     icon: ClipboardList,
     score: 89,
     desc: "Services meet people's needs and they can access support when needed.",
@@ -99,7 +99,7 @@ const downloads = [
     desc: "Ready-to-fill template for organising your evidence across all five KLOEs.",
     format: "DOCX",
     pages: "24 pages",
-    color: "#3b82f6",
+    color: "#14b8a6",
   },
   {
     icon: BookOpen,
@@ -163,7 +163,7 @@ export default function CQCToolkitPage() {
             <a
               href="#downloads"
               className="flex items-center gap-2 px-8 py-3.5 rounded-full text-white font-semibold glow-button"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+              style={{ background: "linear-gradient(135deg, #7c3aed, #14b8a6)" }}
             >
               Download Free Resources
               <FileDown size={16} />
@@ -391,7 +391,7 @@ export default function CQCToolkitPage() {
             <div className="flex items-center justify-center gap-3">
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+                style={{ background: "linear-gradient(135deg, #7c3aed, #14b8a6)" }}
               >
                 SM
               </div>
@@ -429,7 +429,7 @@ export default function CQCToolkitPage() {
               <a
                 href="/contact"
                 className="flex items-center gap-2 px-8 py-3.5 rounded-full text-white font-semibold glow-button"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #3b82f6)" }}
+                style={{ background: "linear-gradient(135deg, #7c3aed, #14b8a6)" }}
               >
                 Book a Free Demo
                 <ArrowRight size={16} />

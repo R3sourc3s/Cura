@@ -10,12 +10,12 @@ interface OvernightCheck {
 interface Resident { id: number; full_name: string; }
 
 const STATUS_CFG: Record<string, { label: string; color: string; bg: string }> = {
-  asleep:      { label:"Asleep",           color:"#a78bfa", bg:"rgba(124,58,237,0.12)" },
-  awake:       { label:"Awake",            color:"#60a5fa", bg:"rgba(96,165,250,0.12)" },
-  unsettled:   { label:"Unsettled",        color:"#fbbf24", bg:"rgba(251,191,36,0.12)" },
-  repositioned:{ label:"Repositioned",     color:"#34d399", bg:"rgba(52,211,153,0.12)" },
-  toileted:    { label:"Toileted",         color:"#2dd4bf", bg:"rgba(45,212,191,0.1)" },
-  unwell:      { label:"Unwell – Escalated",color:"#f87171",bg:"rgba(239,68,68,0.12)" },
+  asleep:      { label:"Asleep",           color:"var(--c-teal)", bg:"rgba(13, 148, 136,0.12)" },
+  awake:       { label:"Awake",            color:"var(--c-teal2)", bg:"rgba(45, 212, 191,0.12)" },
+  unsettled:   { label:"Unsettled",        color:"var(--c-amber)", bg:"rgba(251,191,36,0.12)" },
+  repositioned:{ label:"Repositioned",     color:"var(--c-green)", bg:"rgba(52,211,153,0.12)" },
+  toileted:    { label:"Toileted",         color:"var(--c-teal2)", bg:"rgba(45,212,191,0.1)" },
+  unwell:      { label:"Unwell – Escalated",color:"var(--c-red)",bg:"rgba(239,68,68,0.12)" },
 };
 
 function isoDate(d: Date) { return d.toISOString().slice(0,10); }
@@ -66,24 +66,24 @@ export default function OvernightChecksPage() {
     <div className="space-y-5 max-w-5xl mx-auto">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(124,58,237,0.12)", border:"1px solid rgba(124,58,237,0.2)" }}>
-            <Moon size={16} style={{ color:"#a78bfa" }} />
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background:"rgba(13, 148, 136,0.12)", border:"1px solid rgba(13, 148, 136,0.2)" }}>
+            <Moon size={16} style={{ color:"var(--c-teal)" }} />
           </div>
           <div><h1 className="text-lg font-bold text-white">Overnight Checks</h1><p className="text-xs" style={{ color:"var(--text-muted)" }}>Night staff resident monitoring log</p></div>
         </div>
         <div className="flex items-center gap-3">
           <input type="date" value={date} onChange={e => setDate(e.target.value)} className="text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} />
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#7c3aed,#3b82f6)" }}><Plus size={14} /> Log Check</button>
+          <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white" style={{ background:"linear-gradient(135deg,#0d9488,#10b981)" }}><Plus size={14} /> Log Check</button>
         </div>
       </div>
 
       {/* Summary */}
       <div className="flex gap-3 flex-wrap">
         <div className="text-xs px-3 py-1.5 rounded-xl" style={{ background:"var(--input-bg)", color:"var(--text-secondary)" }}>
-          <CheckCircle size={11} className="inline mr-1.5" style={{ color:"#34d399" }} /><strong style={{ color:"white" }}>{totalChecks}</strong> checks logged
+          <CheckCircle size={11} className="inline mr-1.5" style={{ color:"var(--c-green)" }} /><strong style={{ color:"var(--text-primary)" }}>{totalChecks}</strong> checks logged
         </div>
         {unwellCount > 0 && (
-          <div className="text-xs px-3 py-1.5 rounded-xl" style={{ background:"rgba(239,68,68,0.1)", color:"#f87171" }}>
+          <div className="text-xs px-3 py-1.5 rounded-xl" style={{ background:"rgba(239,68,68,0.1)", color:"var(--c-red)" }}>
             <AlertTriangle size={11} className="inline mr-1.5" /><strong>{unwellCount}</strong> unwell escalations
           </div>
         )}
@@ -101,20 +101,20 @@ export default function OvernightChecksPage() {
       {loading ? (
         <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div>
       ) : checks.length === 0 ? (
-        <div className="text-center py-16 rounded-2xl" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid var(--border)" }}>
+        <div className="text-center py-16 rounded-2xl" style={{ background:"rgba(var(--fg-rgb),0.02)", border:"1px solid var(--border)" }}>
           <Moon size={28} className="mx-auto mb-2" style={{ color:"var(--text-muted)" }} />
           <p className="text-sm" style={{ color:"var(--text-muted)" }}>No checks logged for this date.</p>
         </div>
       ) : (
         <div className="space-y-3">
           {byResident.map(({ resident: r, checks: rc }) => (
-            <div key={r.id} className="rounded-2xl p-4" style={{ background:"rgba(255,255,255,0.02)", border:"1px solid var(--border)" }}>
+            <div key={r.id} className="rounded-2xl p-4" style={{ background:"rgba(var(--fg-rgb),0.02)", border:"1px solid var(--border)" }}>
               <div className="text-sm font-semibold text-white mb-2">{r.full_name}</div>
               <div className="space-y-1.5">
                 {rc.map(c => {
-                  const cfg = STATUS_CFG[c.status] ?? { label:c.status, color:"#a78bfa", bg:"rgba(124,58,237,0.12)" };
+                  const cfg = STATUS_CFG[c.status] ?? { label:c.status, color:"var(--c-teal)", bg:"rgba(13, 148, 136,0.12)" };
                   return (
-                    <div key={c.id} className="flex items-center gap-3 rounded-lg px-3 py-2" style={{ background:"rgba(255,255,255,0.02)" }}>
+                    <div key={c.id} className="flex items-center gap-3 rounded-lg px-3 py-2" style={{ background:"rgba(var(--fg-rgb),0.02)" }}>
                       <span className="text-xs font-medium w-14 flex-shrink-0" style={{ color:"var(--text-muted)" }}>
                         {new Date(c.check_time).toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit" })}
                       </span>
@@ -132,7 +132,7 @@ export default function OvernightChecksPage() {
 
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)" }}>
-          <div className="rounded-2xl p-6 w-full max-w-sm" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(124,58,237,0.25)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-sm" style={{ background:"var(--bg-elevated)", border:"1px solid rgba(13, 148, 136,0.25)" }}>
             <div className="flex items-center justify-between mb-5"><h3 className="text-base font-bold text-white">Log Check</h3><button onClick={() => setShowCreate(false)} style={{ color:"var(--text-muted)" }}><X size={18} /></button></div>
             <div className="space-y-3">
               <div><label className="block text-xs mb-1" style={{color:"var(--text-secondary)"}}>Resident *</label>
@@ -148,7 +148,7 @@ export default function OvernightChecksPage() {
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={()=>setShowCreate(false)} className="flex-1 py-2.5 text-sm font-semibold rounded-xl" style={{background:"var(--bg-card-hover)",color:"var(--text-secondary)",border:"1px solid var(--bg-card-hover)"}}>Cancel</button>
-              <button onClick={handleCreate} disabled={saving||!form.resident} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#7c3aed,#3b82f6)"}}>{saving?"Saving…":"Log"}</button>
+              <button onClick={handleCreate} disabled={saving||!form.resident} className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50" style={{background:"linear-gradient(135deg,#0d9488,#10b981)"}}>{saving?"Saving…":"Log"}</button>
             </div>
           </div>
         </div>

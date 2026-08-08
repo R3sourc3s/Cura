@@ -5,7 +5,7 @@ import { ArrowRight, Calendar } from "lucide-react";
 
 export default function CTA() {
   return (
-    <section id="demo" className="py-24" style={{ background: "#faf7f0" }}>
+    <section id="demo" className="py-24" style={{ background: "var(--bg-secondary)" }}>
       <div className="max-w-5xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
@@ -27,7 +27,7 @@ export default function CTA() {
           <div
             className="absolute inset-0"
             style={{
-              background: "linear-gradient(135deg, rgba(28,46,32,0.93) 0%, rgba(45,90,61,0.87) 50%, rgba(22,38,26,0.93) 100%)",
+              background: "linear-gradient(135deg, rgba(28,46,32,0.93) 0%, rgba(13, 148, 136,0.87) 50%, rgba(22,38,26,0.93) 100%)",
             }}
           />
 
@@ -57,7 +57,7 @@ export default function CTA() {
               <a
                 href="mailto:hello@curacareplatform.co.uk"
                 className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-xl font-semibold text-base transition-all"
-                style={{ background: "white", color: "#2d5a3d" }}
+                style={{ background: "white", color: "#0d9488" }}
               >
                 Request a Free Demo <ArrowRight size={16} />
               </a>
