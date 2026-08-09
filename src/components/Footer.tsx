@@ -30,6 +30,7 @@ const links: Record<string, { label: string; href: string }[]> = {
     { label: "Terms of Service", href: "/terms" },
     { label: "Cookie Policy",    href: "/cookies" },
     { label: "GDPR Statement",   href: "/gdpr" },
+    { label: "Accessibility",    href: "/accessibility" },
   ],
 };
 

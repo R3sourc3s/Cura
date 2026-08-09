@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Package, Plus, X, Search, ChevronDown, AlertTriangle, FlaskConical, Building2 } from "lucide-react";
+import { Package, Plus, X, Search, ChevronDown, AlertTriangle, FlaskConical, Building2, Truck, Zap, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/components/Toast";
 import EmptyState from "@/components/ui/EmptyState";
+import FaceWitnessCapture from "@/components/pharmacy/FaceWitnessCapture";
+import type { PurchaseOrder } from "@/types";
 
 interface MedicationStock {
   id: number;
@@ -30,6 +32,8 @@ interface ControlledDrug {
   balance_after: string;
   witnessed_by: number | null;
   witnessed_by_name?: string;
+  witness_method?: "manual" | "face_match";
+  witness_confidence?: number | null;
   recorded_by: number | null;
   recorded_by_name?: string;
   recorded_at: string;
@@ -50,8 +54,19 @@ interface Supplier {
 }
 
 interface Resident { id: number; full_name: string; }
+interface StaffMember { id: number; full_name: string; avatar?: string | null; }
 
-type Tab = "stock" | "controlled" | "suppliers";
+type Tab = "stock" | "controlled" | "suppliers" | "orders";
+
+const ORDER_STATUS_CFG: Record<PurchaseOrder["status"], { label: string; color: string; bg: string }> = {
+  draft:      { label: "Draft",      color: "#9ca3af", bg: "rgba(156,163,175,0.12)" },
+  submitted:  { label: "Submitted",  color: "var(--c-amber)", bg: "rgba(251,191,36,0.12)" },
+  confirmed:  { label: "Confirmed",  color: "var(--c-teal2)", bg: "rgba(45,212,191,0.12)" },
+  dispatched: { label: "Dispatched", color: "#818cf8", bg: "rgba(129,140,248,0.12)" },
+  delivered:  { label: "Delivered",  color: "var(--c-green)", bg: "rgba(52,211,153,0.12)" },
+  cancelled:  { label: "Cancelled",  color: "var(--c-red)", bg: "rgba(239,68,68,0.12)" },
+};
+const ORDER_STATUS_FLOW: PurchaseOrder["status"][] = ["draft", "submitted", "confirmed", "dispatched", "delivered"];
 
 const ENTRY_TYPE_CFG = {
   received:     { label: "Received",     color: "var(--c-green)", bg: "rgba(52,211,153,0.12)" },
@@ -89,9 +104,18 @@ export default function PharmacyPage() {
   const [savingCd, setSavingCd] = useState(false);
   const [cdForm, setCdForm] = useState({
     medication_name: "", resident: "", entry_type: "administered",
-    quantity: "", balance_after: "", witnessed_by: "",
+    quantity: "", balance_after: "",
     recorded_at: new Date().toISOString().slice(0, 16), notes: "",
   });
+  const [cdWitness, setCdWitness] = useState<{ witnessId: number; method: "face_match" | "manual"; confidence: number | null; photoDataUrl: string | null } | null>(null);
+  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
+
+  // Purchase Orders
+  const [orders, setOrders] = useState<PurchaseOrder[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+  const [ordersFilterStatus, setOrdersFilterStatus] = useState("");
+  const [generatingOrder, setGeneratingOrder] = useState(false);
+  const [updatingOrderId, setUpdatingOrderId] = useState<number | null>(null);
 
   // Suppliers
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
@@ -139,15 +163,70 @@ export default function PharmacyPage() {
       .finally(() => setSuppliersLoading(false));
   }, [supplierSearch]);
 
+  const loadOrders = useCallback(() => {
+    setOrdersLoading(true);
+    const qs = new URLSearchParams({ ordering: "-created_at" });
+    if (ordersFilterStatus) qs.set("status", ordersFilterStatus);
+    fetch(`/api/v1/pharmacy/orders/?${qs}`, { credentials: "include" })
+      .then(r => r.ok ? r.json() : { results: [] })
+      .then(d => setOrders(d.results ?? d))
+      .catch(console.error)
+      .finally(() => setOrdersLoading(false));
+  }, [ordersFilterStatus]);
+
   useEffect(() => { loadStock(); }, [loadStock]);
   useEffect(() => { loadCd(); }, [loadCd]);
   useEffect(() => { loadSuppliers(); }, [loadSuppliers]);
+  useEffect(() => { loadOrders(); }, [loadOrders]);
 
   useEffect(() => {
     fetch("/api/v1/residents/?is_active=true&page_size=100", { credentials: "include" })
       .then(r => r.ok ? r.json() : { results: [] })
       .then(d => setResidents(d.results ?? []));
+    fetch("/api/v1/auth/users/?page_size=100", { credentials: "include" })
+      .then(r => r.ok ? r.json() : { results: [] })
+      .then(d => setStaffMembers((d.results ?? []).map((u: { id: number; first_name: string; last_name: string; avatar?: string | null }) => ({
+        id: u.id, full_name: `${u.first_name} ${u.last_name}`.trim(), avatar: u.avatar,
+      }))));
   }, []);
+
+  async function generateFromLowStock() {
+    setGeneratingOrder(true);
+    try {
+      const res = await fetch("/api/v1/pharmacy/orders/generate_from_low_stock/", {
+        method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}),
+      });
+      if (res.ok) {
+        const order = await res.json();
+        setOrders(p => [order, ...p]);
+        toast(`Draft order ${order.reference} generated from low-stock items.`, "success");
+      } else {
+        const err = await res.json().catch(() => ({}));
+        toast(err.detail ?? "No low-stock items to order.", "error");
+      }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setGeneratingOrder(false); }
+  }
+
+  async function advanceOrderStatus(order: PurchaseOrder) {
+    const idx = ORDER_STATUS_FLOW.indexOf(order.status);
+    const next = ORDER_STATUS_FLOW[idx + 1];
+    if (!next) return;
+    setUpdatingOrderId(order.id);
+    try {
+      const res = await fetch(`/api/v1/pharmacy/orders/${order.id}/`, {
+        method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: next }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setOrders(p => p.map(o => o.id === order.id ? updated : o));
+        toast(`Order ${order.reference} marked ${ORDER_STATUS_CFG[next].label.toLowerCase()}.`, "success");
+        if (next === "delivered") loadStock();
+      } else { toast("Could not update order status.", "error"); }
+    } catch { toast("Network error — please try again.", "error"); }
+    finally { setUpdatingOrderId(null); }
+  }
 
   async function handleSaveStock() {
     if (!stockForm.medication_name) return;
@@ -176,31 +255,59 @@ export default function PharmacyPage() {
     finally { setSavingStock(false); }
   }
 
+  function resetCdForm() {
+    setCdForm({ medication_name: "", resident: "", entry_type: "administered", quantity: "", balance_after: "", recorded_at: new Date().toISOString().slice(0, 16), notes: "" });
+    setCdWitness(null);
+  }
+
   async function handleSaveCd() {
-    if (!cdForm.medication_name || !cdForm.quantity || !cdForm.balance_after) return;
+    if (!cdForm.medication_name || !cdForm.quantity || !cdForm.balance_after || !cdWitness) return;
     setSavingCd(true);
     try {
-      const body: Record<string, unknown> = {
-        medication_name: cdForm.medication_name,
-        entry_type: cdForm.entry_type,
-        quantity: cdForm.quantity,
-        balance_after: cdForm.balance_after,
-        recorded_at: cdForm.recorded_at,
-        notes: cdForm.notes,
-      };
-      if (cdForm.resident) body.resident = Number(cdForm.resident);
-      if (cdForm.witnessed_by) body.witnessed_by = Number(cdForm.witnessed_by);
-      const res = await fetch("/api/v1/pharmacy/controlled-drugs/", {
-        method: "POST", credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      let res: Response;
+      if (cdWitness.photoDataUrl) {
+        const fd = new FormData();
+        fd.append("medication_name", cdForm.medication_name);
+        fd.append("entry_type", cdForm.entry_type);
+        fd.append("quantity", cdForm.quantity);
+        fd.append("balance_after", cdForm.balance_after);
+        fd.append("recorded_at", cdForm.recorded_at);
+        fd.append("notes", cdForm.notes);
+        if (cdForm.resident) fd.append("resident", cdForm.resident);
+        fd.append("witnessed_by", String(cdWitness.witnessId));
+        fd.append("witness_method", cdWitness.method);
+        if (cdWitness.confidence !== null) fd.append("witness_confidence", String(cdWitness.confidence));
+        const blob = await (await fetch(cdWitness.photoDataUrl)).blob();
+        fd.append("witness_photo", blob, "witness-capture.jpg");
+        res = await fetch("/api/v1/pharmacy/controlled-drugs/", { method: "POST", credentials: "include", body: fd });
+      } else {
+        const body: Record<string, unknown> = {
+          medication_name: cdForm.medication_name,
+          entry_type: cdForm.entry_type,
+          quantity: cdForm.quantity,
+          balance_after: cdForm.balance_after,
+          recorded_at: cdForm.recorded_at,
+          notes: cdForm.notes,
+          witnessed_by: cdWitness.witnessId,
+          witness_method: cdWitness.method,
+          witness_confidence: cdWitness.confidence,
+        };
+        if (cdForm.resident) body.resident = Number(cdForm.resident);
+        res = await fetch("/api/v1/pharmacy/controlled-drugs/", {
+          method: "POST", credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+      }
       if (res.ok) {
         const n = await res.json();
         setCdEntries(p => [n, ...p]);
         setShowCdModal(false);
-        setCdForm({ medication_name: "", resident: "", entry_type: "administered", quantity: "", balance_after: "", witnessed_by: "", recorded_at: new Date().toISOString().slice(0, 16), notes: "" });
-        toast("Controlled drug entry recorded.", "success");
+        resetCdForm();
+        toast(
+          cdWitness.method === "face_match" ? "CD entry recorded — witness verified by face match." : "Controlled drug entry recorded.",
+          "success"
+        );
       } else { toast("Could not record CD entry.", "error"); }
     } catch { toast("Network error — please try again.", "error"); }
     finally { setSavingCd(false); }
@@ -235,6 +342,7 @@ export default function PharmacyPage() {
   const TABS: { key: Tab; label: string; icon: typeof Package }[] = [
     { key: "stock",      label: "Stock",            icon: Package      },
     { key: "controlled", label: "Controlled Drugs",  icon: FlaskConical },
+    { key: "orders",     label: "Orders",            icon: Truck        },
     { key: "suppliers",  label: "Suppliers",         icon: Building2    },
   ];
 
@@ -271,6 +379,13 @@ export default function PharmacyPage() {
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white"
             style={{ background: "#0d9488" }}>
             <Plus size={14} /> Add Supplier
+          </button>
+        )}
+        {tab === "orders" && (
+          <button onClick={generateFromLowStock} disabled={generatingOrder}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
+            style={{ background: "#0d9488" }}>
+            <Zap size={14} /> {generatingOrder ? "Generating…" : "Generate from Low Stock"}
           </button>
         )}
       </div>
@@ -428,8 +543,13 @@ export default function PharmacyPage() {
                             </span>
                           )}
                           {entry.witnessed_by_name && (
-                            <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
+                            <span className="text-xs flex items-center gap-1" style={{ color: "rgba(var(--fg-rgb),0.3)" }}>
                               Witnessed by: {entry.witnessed_by_name}
+                              {entry.witness_method === "face_match" && (
+                                <span className="px-1.5 py-0.5 rounded font-medium" style={{ background: "rgba(52,211,153,0.12)", color: "var(--c-green)" }}>
+                                  Face verified{entry.witness_confidence ? ` ${Math.round(entry.witness_confidence * 100)}%` : ""}
+                                </span>
+                              )}
                             </span>
                           )}
                         </div>
@@ -441,6 +561,82 @@ export default function PharmacyPage() {
                         <div className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.25)" }}>
                           {new Date(entry.recorded_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Orders Tab */}
+      {tab === "orders" && (
+        <>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <select value={ordersFilterStatus} onChange={e => setOrdersFilterStatus(e.target.value)}
+                className="text-sm pl-3 pr-8 py-2 rounded-xl outline-none appearance-none"
+                style={{ background: "var(--input-bg)", border: "1px solid var(--bg-card-hover)", color: "var(--text-secondary)" }}>
+                <option value="">All Statuses</option>
+                {ORDER_STATUS_FLOW.concat("cancelled").map(s => <option key={s} value={s}>{ORDER_STATUS_CFG[s].label}</option>)}
+              </select>
+              <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"
+                style={{ color: "var(--text-muted)" }} />
+            </div>
+          </div>
+
+          {ordersLoading ? (
+            <div className="flex justify-center py-12">
+              <div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" />
+            </div>
+          ) : orders.length === 0 ? (
+            <EmptyState icon={Truck} title="No purchase orders" description="Generate a draft order from your low-stock items to get started."
+              action={{ label: "Generate from Low Stock", onClick: generateFromLowStock }} />
+          ) : (
+            <div className="space-y-2">
+              {orders.map(order => {
+                const cfg = ORDER_STATUS_CFG[order.status];
+                const nextIdx = ORDER_STATUS_FLOW.indexOf(order.status);
+                const nextStatus = nextIdx >= 0 ? ORDER_STATUS_FLOW[nextIdx + 1] : undefined;
+                return (
+                  <div key={order.id} className="rounded-2xl p-4"
+                    style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap mb-1">
+                          <span className="text-sm font-semibold text-white">{order.reference}</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
+                        </div>
+                        {order.supplier_name && (
+                          <div className="text-xs" style={{ color: "var(--text-muted)" }}>Supplier: {order.supplier_name}</div>
+                        )}
+                        <div className="mt-2 space-y-1">
+                          {order.items?.map(item => (
+                            <div key={item.id} className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.5)" }}>
+                              {item.medication_name} × {item.quantity_ordered} {item.unit}
+                            </div>
+                          ))}
+                        </div>
+                        {order.notes && <p className="text-xs mt-1" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>{order.notes}</p>}
+                      </div>
+                      <div className="text-right flex-shrink-0 space-y-2">
+                        <div className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
+                          {new Date(order.created_at).toLocaleDateString("en-GB")}
+                        </div>
+                        {nextStatus && (
+                          <button onClick={() => advanceOrderStatus(order)} disabled={updatingOrderId === order.id}
+                            className="text-xs font-semibold px-3 py-1.5 rounded-lg text-white disabled:opacity-50"
+                            style={{ background: "#0d9488" }}>
+                            {updatingOrderId === order.id ? "…" : `Mark ${ORDER_STATUS_CFG[nextStatus].label}`}
+                          </button>
+                        )}
+                        {order.status === "delivered" && (
+                          <div className="flex items-center gap-1 text-xs justify-end" style={{ color: "var(--c-green)" }}>
+                            <CheckCircle2 size={11} /> Stock updated
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -628,11 +824,6 @@ export default function PharmacyPage() {
                     className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder="0.00" />,
                 },
                 {
-                  label: "Witnessed By",
-                  el: <input value={cdForm.witnessed_by} onChange={e => setCdForm(f => ({ ...f, witnessed_by: e.target.value }))}
-                    className="w-full text-sm px-3 py-2 rounded-xl outline-none" style={inputStyle} placeholder="Staff name or ID" />,
-                },
-                {
                   label: "Date & Time *",
                   el: <input type="datetime-local" value={cdForm.recorded_at}
                     onChange={e => setCdForm(f => ({ ...f, recorded_at: e.target.value }))}
@@ -650,15 +841,24 @@ export default function PharmacyPage() {
                   {el}
                 </div>
               ))}
+
+              <FaceWitnessCapture candidates={staffMembers} onVerified={setCdWitness} />
+              {cdWitness && (
+                <div className="text-xs px-1 flex items-center gap-1.5" style={{ color: "var(--c-green)" }}>
+                  <CheckCircle2 size={11} />
+                  Witness set: {staffMembers.find(s => s.id === cdWitness.witnessId)?.full_name}
+                  {cdWitness.method === "face_match" ? " (face verified)" : " (manual)"}
+                </div>
+              )}
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={() => setShowCdModal(false)}
+              <button onClick={() => { setShowCdModal(false); resetCdForm(); }}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl"
                 style={{ background: "rgba(var(--fg-rgb),0.06)", color: "rgba(var(--fg-rgb),0.7)", border: "1px solid rgba(var(--fg-rgb),0.08)" }}>
                 Cancel
               </button>
               <button onClick={handleSaveCd}
-                disabled={savingCd || !cdForm.medication_name || !cdForm.quantity || !cdForm.balance_after}
+                disabled={savingCd || !cdForm.medication_name || !cdForm.quantity || !cdForm.balance_after || !cdWitness}
                 className="flex-1 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
                 style={{ background: "#0d9488" }}>
                 {savingCd ? "Saving…" : "Save Entry"}

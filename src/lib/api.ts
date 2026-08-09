@@ -15,6 +15,7 @@ import type {
   IncidentFollowUp,
   HandoverNote,
   VitalSign,
+  SuggestedComplianceAction,
 } from "@/types";
 
 const BASE = "/api/v1";
@@ -82,6 +83,11 @@ export const auth = {
     request<User>(`/auth/users/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
   deleteUser: (id: number) =>
     request<void>(`/auth/users/${id}/`, { method: "DELETE" }),
+  changePassword: (currentPassword: string, newPassword: string) =>
+    request<{ detail: string }>("/auth/change-password/", {
+      method: "POST",
+      body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+    }),
 };
 
 export const residents = {
@@ -262,6 +268,6 @@ export const ai = {
       credentials: "include",
     }).then(async (r) => {
       if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error ?? "AI unavailable");
-      return r.json() as Promise<{ report: string }>;
+      return r.json() as Promise<{ report: string; suggested_actions: SuggestedComplianceAction[] }>;
     }),
 };

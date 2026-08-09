@@ -31,14 +31,21 @@ export default function EditResidentPage({ params }: { params: Promise<{ id: str
   const [error, setError] = useState("");
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [wings, setWings] = useState<{ id: number; name: string }[]>([]);
 
   const [form, setForm] = useState({
     first_name: "", last_name: "", date_of_birth: "", nhs_number: "",
-    room_number: "", admission_date: "", discharge_date: "",
+    room_number: "", wing: "", admission_date: "", discharge_date: "",
     fall_risk: "low", pressure_ulcer_risk: "low",
     next_of_kin_name: "", next_of_kin_phone: "",
     gp_name: "", gp_phone: "", is_active: true,
   });
+
+  useEffect(() => {
+    fetch("/api/v1/staff/wings/?page_size=100", { credentials: "include" })
+      .then(r => r.ok ? r.json() : { results: [] })
+      .then(d => setWings(d.results ?? d));
+  }, []);
 
   useEffect(() => {
     residentsApi.get(Number(id)).then((r) => {
@@ -46,7 +53,7 @@ export default function EditResidentPage({ params }: { params: Promise<{ id: str
       setForm({
         first_name: r.first_name, last_name: r.last_name,
         date_of_birth: r.date_of_birth, nhs_number: r.nhs_number ?? "",
-        room_number: r.room_number, admission_date: r.admission_date,
+        room_number: r.room_number, wing: r.wing ? String(r.wing) : "", admission_date: r.admission_date,
         discharge_date: r.discharge_date ?? "",
         fall_risk: r.fall_risk, pressure_ulcer_risk: r.pressure_ulcer_risk,
         next_of_kin_name: r.next_of_kin_name ?? "", next_of_kin_phone: r.next_of_kin_phone ?? "",
@@ -164,6 +171,13 @@ export default function EditResidentPage({ params }: { params: Promise<{ id: str
           <Field label="Room Number" required>
             <input className={inputCls} style={inputStyle} value={form.room_number}
               onChange={(e) => set("room_number", e.target.value)} required />
+          </Field>
+          <Field label="Wing">
+            <select className={inputCls} style={inputStyle} value={form.wing}
+              onChange={(e) => set("wing", e.target.value)}>
+              <option value="">— unassigned —</option>
+              {wings.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
+            </select>
           </Field>
           <Field label="Admission Date" required>
             <input type="date" className={inputCls} style={inputStyle} value={form.admission_date}

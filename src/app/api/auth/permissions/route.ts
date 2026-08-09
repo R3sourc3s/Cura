@@ -3,7 +3,13 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { Role, Permission } from "@/lib/permissions";
 
-const ALL: Permission[] = [
+// Mirrors backend/apps/authentication/permissions.py ROLE_PERMISSIONS exactly —
+// keep these in sync. (Previously this list drifted badly out of date and was
+// missing pharmacy/recruitment/leave/tasks/enquiries/billing/gp/family/skills/
+// integrations entirely, which silently hid those nav items for every role,
+// admin included.)
+
+const ADMIN: Permission[] = [
   "residents.view", "residents.create", "residents.edit", "residents.delete",
   "medications.view", "medications.create", "medications.edit", "medications.delete", "medications.administer",
   "care_plans.view", "care_plans.create", "care_plans.ai_summary",
@@ -32,10 +38,22 @@ const ALL: Permission[] = [
   "messages.view", "messages.create",
   "cqc.view",
   "prn.view", "prn.administer",
+  "family.view_resident",
+  "pharmacy.view", "pharmacy.manage",
+  "recruitment.view", "recruitment.manage",
+  "leave.view", "leave.manage", "leave.request",
+  "tasks.view", "tasks.create", "tasks.manage",
+  "enquiries.view", "enquiries.manage",
+  "billing.view", "billing.manage",
+  "gp.view", "gp.manage",
+  "family.view", "family.manage",
+  "skills.view", "skills.manage",
+  "integrations.view", "integrations.manage",
+  "devices.view", "devices.manage",
 ];
 
 const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
-  admin: ALL,
+  admin: ADMIN,
 
   manager: [
     "residents.view", "residents.create", "residents.edit",
@@ -66,6 +84,17 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "messages.view", "messages.create",
     "cqc.view",
     "prn.view", "prn.administer",
+    "pharmacy.view", "pharmacy.manage",
+    "recruitment.view", "recruitment.manage",
+    "leave.view", "leave.manage", "leave.request",
+    "tasks.view", "tasks.create", "tasks.manage",
+    "enquiries.view", "enquiries.manage",
+    "billing.view", "billing.manage",
+    "gp.view", "gp.manage",
+    "family.view", "family.manage",
+    "skills.view", "skills.manage",
+    "integrations.view", "integrations.manage",
+    "devices.view", "devices.manage",
   ],
 
   nurse: [
@@ -94,6 +123,13 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "messages.view", "messages.create",
     "cqc.view",
     "prn.view", "prn.administer",
+    "pharmacy.view",
+    "leave.view", "leave.request",
+    "tasks.view", "tasks.create",
+    "gp.view",
+    "family.view",
+    "skills.view",
+    "devices.view",
   ],
 
   carer: [
@@ -119,6 +155,9 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "overnight_checks.view", "overnight_checks.create",
     "messages.view", "messages.create",
     "prn.view", "prn.administer",
+    "leave.view", "leave.request",
+    "tasks.view", "tasks.create",
+    "devices.view",
   ],
 
   hr: [
@@ -130,6 +169,9 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "rota.view", "rota.manage",
     "training.view", "training.manage",
     "messages.view", "messages.create",
+    "recruitment.view", "recruitment.manage",
+    "leave.view", "leave.manage",
+    "skills.view", "skills.manage",
   ],
 
   family: [

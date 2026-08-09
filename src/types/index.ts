@@ -18,6 +18,8 @@ export interface Resident {
   date_of_birth: string;
   nhs_number?: string;
   room_number: string;
+  wing?: number | null;
+  wing_name?: string;
   admission_date: string;
   discharge_date?: string;
   photo?: string;
@@ -48,6 +50,7 @@ export interface Medication {
   stock_count: number;
   reorder_threshold: number;
   is_controlled: boolean;
+  is_psychotropic?: boolean;
   is_low_stock: boolean;
   is_active: boolean;
   notes?: string;
@@ -66,6 +69,7 @@ export interface MAREntry {
   resident_name?: string;
   resident_id?: number;
   status: "given" | "refused" | "omitted" | "pending";
+  patch_site?: string;
   notes?: string;
   created_at: string;
 }
@@ -163,6 +167,14 @@ export interface AuditAction {
   completed_at: string | null;
 }
 
+/** An AI-proposed remediation action, not yet persisted — the user adds it to a tracked AuditAction. */
+export interface SuggestedComplianceAction {
+  domain: "safe" | "effective" | "caring" | "responsive" | "well_led";
+  priority: "low" | "medium" | "high" | "critical";
+  description: string;
+  due_in_days: number;
+}
+
 export interface User {
   id: number;
   username: string;
@@ -175,6 +187,32 @@ export interface User {
   avatar?: string;
   care_home: number | null;
   is_active: boolean;
+  is_group_admin?: boolean;
+}
+
+export interface GroupOversightHome {
+  id: number;
+  name: string;
+  bed_count: number;
+  resident_count: number;
+  occupancy_pct: number | null;
+  high_risk_residents: number;
+  staff_count: number;
+  avg_compliance_score: number | null;
+  incidents_last_30_days: number;
+}
+
+export interface GroupOversight {
+  group: { id: number; name: string };
+  care_homes: GroupOversightHome[];
+  totals: {
+    care_home_count: number;
+    resident_count: number;
+    bed_count: number;
+    staff_count: number;
+    incidents_last_30_days: number;
+  };
+  generated_at: string;
 }
 
 export interface IncidentFollowUp {
@@ -224,6 +262,128 @@ export interface HandoverNote {
   residents_mentioned: number[];
   read_by_ids: number[];
   created_at: string;
+}
+
+export interface Wing {
+  id: number;
+  care_home: number;
+  name: string;
+  floor?: string;
+  bed_count: number;
+  lead_staff: number | null;
+  lead_staff_name?: string;
+  notes?: string;
+  is_active: boolean;
+  resident_count?: number;
+  created_at: string;
+}
+
+export interface PurchaseOrderItem {
+  id: number;
+  purchase_order: number;
+  medication_stock: number | null;
+  medication_name: string;
+  quantity_ordered: string;
+  unit: string;
+  unit_cost: string | null;
+  quantity_received: string;
+}
+
+export interface PurchaseOrder {
+  id: number;
+  care_home: number;
+  supplier: number | null;
+  supplier_name?: string;
+  reference: string;
+  status: "draft" | "submitted" | "confirmed" | "dispatched" | "delivered" | "cancelled";
+  ordered_by: number | null;
+  ordered_by_name?: string;
+  ordered_at: string | null;
+  expected_delivery: string | null;
+  dispatched_at: string | null;
+  delivered_at: string | null;
+  tracking_reference?: string;
+  notes?: string;
+  items: PurchaseOrderItem[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PEGFeedRecord {
+  id: number;
+  peg_chart: number;
+  recorded_by: number | null;
+  recorded_by_name?: string;
+  recorded_at: string;
+  entry_type: "feed" | "flush" | "site_check" | "medication";
+  volume_ml: number | null;
+  site_condition?: string;
+  tolerated_well: boolean;
+  notes?: string;
+}
+
+export interface PEGChart {
+  id: number;
+  resident: number;
+  resident_name?: string;
+  tube_type: "peg" | "rig" | "ng" | "jejunostomy";
+  tube_size_fr?: string;
+  insertion_date: string | null;
+  feed_regimen?: string;
+  feed_rate_ml_per_hr: string | null;
+  water_flush_ml: number;
+  dietitian_name?: string;
+  next_tube_change_due: string | null;
+  is_active: boolean;
+  notes?: string;
+  recent_feeds?: PEGFeedRecord[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Accreditation {
+  id: number;
+  care_home: number;
+  name: string;
+  category: "cqc" | "cyber" | "data_protection" | "fire_safety" | "health_safety" | "quality" | "other";
+  issuing_body?: string;
+  status: "certified" | "in_progress" | "expiring_soon" | "expired" | "not_applicable";
+  reference_number?: string;
+  valid_from: string | null;
+  valid_until: string | null;
+  certificate_url?: string;
+  is_expiring_soon: boolean;
+  notes?: string;
+  created_at: string;
+}
+
+export type DeviceType = "wearable" | "fall_sensor" | "bed_sensor" | "motion_sensor" | "door_sensor" | "other";
+export type DeviceReadingType = "fall_detected" | "vitals" | "motion" | "battery" | "other";
+
+export interface DeviceReading {
+  id: number;
+  reading_type: DeviceReadingType;
+  recorded_at: string;
+  data: Record<string, unknown>;
+  resulting_incident: number | null;
+  resulting_vital_sign: number | null;
+  created_at: string;
+}
+
+export interface Device {
+  id: number;
+  name: string;
+  device_type: DeviceType;
+  device_type_display: string;
+  external_id: string;
+  manufacturer?: string;
+  resident: number | null;
+  resident_name?: string | null;
+  battery_level: number | null;
+  is_active: boolean;
+  last_seen_at: string | null;
+  created_at: string;
+  latest_reading: DeviceReading | null;
 }
 
 export interface VitalSign {

@@ -49,7 +49,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ toast }}>
       {children}
-      <div className="fixed bottom-5 right-5 z-[9999] flex flex-col gap-2 pointer-events-none" style={{ maxWidth: 360 }}>
+      <div className="fixed bottom-5 right-5 z-[9999] flex flex-col gap-2 pointer-events-none" style={{ maxWidth: 360 }}
+        role="status" aria-live="polite" aria-atomic="true">
         {toasts.map((t) => {
           const s = STYLES[t.type];
           const Icon = ICONS[t.type];
@@ -64,7 +65,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               }}>
               <Icon size={16} style={{ color: "#fff", flexShrink: 0, marginTop: 1 }} />
               <span className="text-sm flex-1 font-medium" style={{ color: "#fff" }}>{t.message}</span>
-              <button onClick={() => dismiss(t.id)} className="flex-shrink-0 opacity-70 hover:opacity-100 transition-opacity">
+              <button onClick={() => dismiss(t.id)} aria-label="Dismiss notification" className="flex-shrink-0 opacity-70 hover:opacity-100 transition-opacity">
                 <X size={14} style={{ color: "#fff" }} />
               </button>
             </div>

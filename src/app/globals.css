@@ -234,6 +234,15 @@ body {
 ::-webkit-scrollbar-track  { background: var(--scrollbar-track); }
 ::-webkit-scrollbar-thumb  { background: rgba(13, 148, 136, 0.3); border-radius: 3px; }
 
+/* ── Accessibility: visible keyboard focus (WCAG 2.4.7) ──────────
+   Many components apply Tailwind's `outline-none` to interactive elements.
+   This rule guarantees a visible focus indicator for keyboard users
+   regardless of that, without adding a ring for mouse/touch clicks. */
+:focus-visible {
+  outline: 2px solid var(--c-teal2) !important;
+  outline-offset: 2px !important;
+}
+
 /* ── Landing page (clean clinical — navy + sky blue) ──────────── */
 
 .lp-card {

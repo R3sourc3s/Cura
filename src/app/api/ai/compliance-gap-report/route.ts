@@ -77,14 +77,43 @@ Write a professional gap analysis report with these sections:
 3. **Priority Actions** (top 3 concrete steps to improve weakest domains)
 4. **Strengths** (what's working well, if anything scores 70+)
 
-Use professional UK care sector language. Be specific and actionable. Maximum 400 words.`;
+Use professional UK care sector language. Be specific and actionable. Maximum 400 words.
+
+After the report, also propose up to 5 concrete remediation actions a manager could immediately add to their compliance action plan. Respond with ONLY a single JSON object (no markdown fences) with exactly this shape:
+{
+  "report": "<the full markdown report as described above>",
+  "suggested_actions": [
+    { "domain": "safe" | "effective" | "caring" | "responsive" | "well_led", "priority": "low" | "medium" | "high" | "critical", "description": "<specific, actionable, one sentence>", "due_in_days": <integer 3-60> }
+  ]
+}
+Only propose actions for domains that have a recorded audit above. If no domains have gaps worth acting on, return an empty suggested_actions array.`;
 
   const completion = await openai.chat.completions.create({
     model: "gpt-4o",
-    max_tokens: 1024,
+    max_tokens: 1536,
+    response_format: { type: "json_object" },
     messages: [{ role: "user", content: prompt }],
   });
 
-  const report = completion.choices[0].message.content ?? "";
-  return NextResponse.json({ report });
+  const raw = completion.choices[0].message.content ?? "{}";
+  let parsed: { report?: string; suggested_actions?: unknown[] } = {};
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    // Model didn't return valid JSON — fall back to treating the whole response as the report.
+    parsed = { report: raw, suggested_actions: [] };
+  }
+
+  const VALID_DOMAINS = new Set(["safe", "effective", "caring", "responsive", "well_led"]);
+  const VALID_PRIORITIES = new Set(["low", "medium", "high", "critical"]);
+  const suggested_actions = Array.isArray(parsed.suggested_actions)
+    ? parsed.suggested_actions.filter((a): a is { domain: string; priority: string; description: string; due_in_days: number } => {
+        const action = a as Record<string, unknown>;
+        return !!action && VALID_DOMAINS.has(action.domain as string) && VALID_PRIORITIES.has(action.priority as string)
+          && typeof action.description === "string" && action.description.trim().length > 0
+          && typeof action.due_in_days === "number";
+      }).slice(0, 5)
+    : [];
+
+  return NextResponse.json({ report: parsed.report ?? "", suggested_actions });
 }

@@ -40,6 +40,8 @@ ROLE_PERMISSIONS: dict[str, set[str]] = {
         "gp.view", "gp.manage",
         "family.view", "family.manage",
         "skills.view", "skills.manage",
+        "integrations.view", "integrations.manage",
+        "devices.view", "devices.manage",
     },
     "manager": {
         "residents.view", "residents.create", "residents.edit",
@@ -79,6 +81,8 @@ ROLE_PERMISSIONS: dict[str, set[str]] = {
         "gp.view", "gp.manage",
         "family.view", "family.manage",
         "skills.view", "skills.manage",
+        "integrations.view", "integrations.manage",
+        "devices.view", "devices.manage",
     },
     "nurse": {
         "residents.view", "residents.create", "residents.edit",
@@ -112,6 +116,7 @@ ROLE_PERMISSIONS: dict[str, set[str]] = {
         "gp.view",
         "family.view",
         "skills.view",
+        "devices.view",
     },
     "carer": {
         "residents.view",
@@ -138,6 +143,7 @@ ROLE_PERMISSIONS: dict[str, set[str]] = {
         "prn.view", "prn.administer",
         "leave.view", "leave.request",
         "tasks.view", "tasks.create",
+        "devices.view",
     },
     "hr": {
         "staff.view", "staff.manage", "staff.request_leave",

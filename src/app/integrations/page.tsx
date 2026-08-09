@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Plug, ArrowRight, CheckCircle, Code2 } from "lucide-react";
+import { Plug, ArrowRight, Code2 } from "lucide-react";
 
 const categories = [
   {
@@ -63,11 +63,21 @@ const categories = [
       { name: "Twilio SMS",         status: "live" },
     ],
   },
+  {
+    name: "Clinical & AI Partners",
+    color: "#0d9488",
+    integrations: [
+      { name: "PainChek (AI pain assessment)", status: "coming" },
+      { name: "Wearables & fall sensors",      status: "live" },
+      { name: "Ambient/passive monitoring",    status: "coming" },
+      { name: "NHS TRUD (drug dictionary)",    status: "coming" },
+    ],
+  },
 ];
 
 export default function IntegrationsPage() {
   return (
-    <main style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
+    <main id="main-content" style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
       <Navbar />
 
       <section className="pt-32 pb-20 px-6">
@@ -137,7 +147,7 @@ export default function IntegrationsPage() {
               Build anything with our REST API. Full OpenAPI spec, webhook support, and a sandbox environment for testing. Our developer docs cover authentication, rate limits, and all available endpoints.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a href="/docs" className="px-6 py-3 rounded-xl text-sm font-semibold flex items-center gap-2 justify-center transition-all"
+              <a href="/docs/api" className="px-6 py-3 rounded-xl text-sm font-semibold flex items-center gap-2 justify-center transition-all"
                 style={{ border: "1px solid var(--border)", color: "#0d9488", background: "var(--bg-secondary)" }}>
                 View API docs <ArrowRight size={14} />
               </a>

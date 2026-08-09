@@ -18,7 +18,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
           <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
           <div className="flex-1 flex flex-col lg:ml-64 min-w-0">
             <Header onMenuClick={() => setSidebarOpen(true)} />
-            <main className="flex-1 p-4 lg:p-6 overflow-auto">{children}</main>
+            <main id="main-content" tabIndex={-1} className="flex-1 p-4 lg:p-6 overflow-auto">{children}</main>
           </div>
           <CommandPalette />
           <QuickCareNote />

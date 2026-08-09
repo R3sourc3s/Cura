@@ -22,6 +22,18 @@ const CATEGORIES = [
   { value: "social", label: "Social" },
 ];
 
+// One-tap phrase templates per category — low-typing point-of-care logging.
+// Tapping inserts the phrase; staff can still edit or add to it before saving.
+const TEMPLATES: Record<string, string[]> = {
+  general: ["No concerns to report.", "Settled and comfortable throughout.", "Asked to speak with a nurse — flagged to shift lead."],
+  personal_care: ["Assisted with washing and dressing, no concerns.", "Declined personal care, will offer again later.", "Continence care provided, skin intact."],
+  nutrition: ["Ate all of meal and drank well.", "Ate approximately half of meal.", "Declined meal, offered an alternative."],
+  mobility: ["Mobilised independently.", "Required assistance of one to transfer.", "Remained in bed/chair, repositioned as per care plan."],
+  behaviour: ["Calm and settled throughout.", "Some agitation noted, redirected successfully.", "No behaviours of concern observed."],
+  medical: ["Vital signs within normal range.", "No new symptoms reported.", "GP review requested — details in notes."],
+  social: ["Engaged well in group activity.", "Enjoyed a visit from family.", "Preferred quiet time alone today."],
+};
+
 export default function QuickCareNote() {
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
@@ -43,6 +55,14 @@ export default function QuickCareNote() {
     }
     if (open) setTimeout(() => textRef.current?.focus(), 100);
   }, [open, residents.length]);
+
+  function insertTemplate(phrase: string) {
+    setContent(prev => {
+      const trimmed = prev.trim();
+      return trimmed ? `${trimmed} ${phrase}` : phrase;
+    });
+    textRef.current?.focus();
+  }
 
   async function submit() {
     if (!content.trim() || !residentId) return;
@@ -157,6 +177,20 @@ export default function QuickCareNote() {
                     style={{ background: mood === m.v ? "rgba(13, 148, 136,0.12)" : "var(--bg-card)", border: mood === m.v ? "1px solid rgba(13, 148, 136,0.35)" : "1px solid transparent" }}
                     title={m.v}>
                     {m.e}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* One-tap templates */}
+            <div>
+              <label className="text-xs mb-1.5 block" style={{ color: "var(--text-muted)" }}>Quick phrases — tap to add</label>
+              <div className="flex flex-wrap gap-1.5">
+                {(TEMPLATES[category] ?? TEMPLATES.general).map(phrase => (
+                  <button key={phrase} type="button" onClick={() => insertTemplate(phrase)}
+                    className="text-xs px-2.5 py-1.5 rounded-lg text-left transition-colors"
+                    style={{ background: "var(--input-bg)", color: "var(--text-secondary)", border: "1px solid var(--border-strong)" }}>
+                    {phrase}
                   </button>
                 ))}
               </div>

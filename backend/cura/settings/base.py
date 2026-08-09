@@ -63,6 +63,9 @@ LOCAL_APPS = [
     "apps.gp_integration",
     "apps.family_portal",
     "apps.skills",
+    "apps.integrations",
+    "apps.partner_api",
+    "apps.devices",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -160,6 +163,8 @@ REST_FRAMEWORK = {
         "auth_login": "10/minute",   # brute-force protection on login
         "auth_password_reset": "5/hour",
         "ai": "30/hour",             # expensive LLM endpoints (defense-in-depth vs proxy limit)
+        "partner_api": "1000/hour",  # third-party integration traffic (per API-key-authenticated user)
+        "device_ingest": "6000/hour", # wearable/sensor data ingestion — higher frequency than partner reads
     },
 }
 

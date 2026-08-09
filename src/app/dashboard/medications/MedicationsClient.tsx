@@ -7,9 +7,11 @@ import { useUser } from "@/context/UserContext";
 import { useToast } from "@/components/Toast";
 import {
   Pill, AlertTriangle, CheckCircle, Clock, XCircle,
-  Plus, X, Save, Edit2, Trash2,
+  Plus, X, Save, Edit2, Trash2, ScanLine, Sparkles,
 } from "lucide-react";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import VoiceInputButton from "@/components/ui/VoiceInputButton";
+import MedicationInsights from "./MedicationInsights";
 
 const STATUS_CONFIG = {
   given:    { icon: CheckCircle, color: "var(--c-green)", bg: "rgba(52,211,153,0.12)", label: "Given" },
@@ -60,8 +62,18 @@ const BLANK = {
   is_controlled: false, notes: "",
 };
 
+interface TranscribedRx {
+  drug_name?: string; dose?: string; route?: string; frequency?: string;
+  indication?: string; prescribed_by?: string; is_controlled?: boolean;
+  confidence?: "low" | "medium" | "high"; raw_text?: string;
+}
+
 function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medication; residents: Resident[]; onClose: () => void; onSaved: (m: Medication) => void }) {
   const formRef = useRef<HTMLFormElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [scanning, setScanning] = useState(false);
+  const [scanResult, setScanResult] = useState<TranscribedRx | null>(null);
+  const [scanError, setScanError] = useState("");
   const [form, setForm] = useState(
     initial
       ? {
@@ -80,6 +92,38 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
   const { toast } = useToast();
 
   function set(k: string, v: string | boolean) { setForm((f) => ({ ...f, [k]: v })); }
+
+  async function handleScanPrescription(file: File) {
+    setScanning(true);
+    setScanError("");
+    setScanResult(null);
+    try {
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await fetch("/api/ai/transcribe-prescription", { method: "POST", credentials: "include", body: fd });
+      const data = await res.json();
+      if (!res.ok) {
+        setScanError(data.error ?? "Could not read the prescription.");
+        return;
+      }
+      const rx: TranscribedRx = data.extracted;
+      setScanResult(rx);
+      setForm((f) => ({
+        ...f,
+        drug_name: rx.drug_name || f.drug_name,
+        dose: rx.dose || f.dose,
+        route: (rx.route && ROUTES.includes(rx.route)) ? rx.route : f.route,
+        frequency: (rx.frequency && FREQS.some(fr => fr.value === rx.frequency)) ? rx.frequency : f.frequency,
+        indication: rx.indication || f.indication,
+        prescribed_by: rx.prescribed_by || f.prescribed_by,
+        is_controlled: rx.is_controlled ?? f.is_controlled,
+      }));
+    } catch {
+      setScanError("Network error — please try again or enter details manually.");
+    } finally {
+      setScanning(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -133,6 +177,32 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
             <div className="px-4 py-3 rounded-xl text-sm text-red-300"
               style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
               {error}
+            </div>
+          )}
+
+          {!initial && (
+            <div className="rounded-xl p-3.5" style={{ background: "rgba(139,92,246,0.06)", border: "1px dashed rgba(139,92,246,0.3)" }}>
+              <input ref={fileInputRef} type="file" accept="image/*" capture="environment" className="hidden"
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) handleScanPrescription(f); e.target.value = ""; }} />
+              <button type="button" onClick={() => fileInputRef.current?.click()} disabled={scanning}
+                className="w-full flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg disabled:opacity-60"
+                style={{ background: "rgba(139,92,246,0.15)", color: "#a78bfa" }}>
+                {scanning ? (
+                  <><div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" /> Reading prescription…</>
+                ) : (
+                  <><ScanLine size={14} /> Scan Prescription with AI</>
+                )}
+              </button>
+              <p className="text-xs mt-1.5 text-center" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>
+                Photograph a label or prescription — Cura AI will pre-fill the form below.
+              </p>
+              {scanError && <p className="text-xs mt-2 text-center text-red-300">{scanError}</p>}
+              {scanResult && !scanError && (
+                <div className="mt-2 flex items-center justify-center gap-1.5 text-xs" style={{ color: "#a78bfa" }}>
+                  <Sparkles size={11} />
+                  Filled from scan · confidence: {scanResult.confidence ?? "unknown"} — please verify before saving.
+                </div>
+              )}
             </div>
           )}
 
@@ -219,10 +289,14 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
             </label>
           </div>
 
-          <Field label="Notes">
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Notes</label>
+              <VoiceInputButton onTranscript={(t) => set("notes", (form.notes ? form.notes + " " : "") + t)} title="Dictate notes" />
+            </div>
             <textarea className={inputCls} style={inputStyle} value={form.notes} rows={3}
-              onChange={(e) => set("notes", e.target.value)} placeholder="Additional notes…" />
-          </Field>
+              onChange={(e) => set("notes", e.target.value)} placeholder="Additional notes… (or use the mic to dictate)" />
+          </div>
         </form>
 
         <div className="px-6 py-4 flex gap-3 flex-shrink-0"
@@ -314,6 +388,8 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
           </button>
         )}
       </div>
+
+      <MedicationInsights />
 
       {lowStock.length > 0 && (
         <div className="flex items-center gap-3 px-4 py-3 rounded-xl"

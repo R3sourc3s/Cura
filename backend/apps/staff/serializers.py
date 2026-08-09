@@ -1,11 +1,38 @@
 from rest_framework import serializers
-from .models import CareHome, Shift, LeaveRequest, Training
+from .models import CareHome, CareHomeGroup, Shift, LeaveRequest, Training, Wing
+
+
+class CareHomeGroupSerializer(serializers.ModelSerializer):
+    care_home_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CareHomeGroup
+        fields = ["id", "name", "created_at", "care_home_count"]
+        read_only_fields = ["id", "created_at"]
+
+    def get_care_home_count(self, obj):
+        return obj.care_homes.count()
 
 
 class CareHomeSerializer(serializers.ModelSerializer):
+    group_name = serializers.CharField(source="group.name", read_only=True, default=None)
+
     class Meta:
         model = CareHome
         fields = "__all__"
+
+
+class WingSerializer(serializers.ModelSerializer):
+    lead_staff_name = serializers.CharField(source="lead_staff.get_full_name", read_only=True)
+    resident_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Wing
+        fields = "__all__"
+        read_only_fields = ["care_home", "created_at"]
+
+    def get_resident_count(self, obj):
+        return obj.residents.filter(is_active=True).count()
 
 
 class ShiftSerializer(serializers.ModelSerializer):

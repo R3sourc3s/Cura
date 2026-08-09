@@ -1,6 +1,7 @@
 from rest_framework import viewsets, decorators, response
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.authentication.permissions import require
+from apps.integrations.webhooks import dispatch as dispatch_webhook
 from .models import Medication, MAREntry, PRNProtocol, PRNAdministration
 from .serializers import MedicationSerializer, MAREntrySerializer, PRNProtocolSerializer, PRNAdministrationSerializer
 
@@ -27,7 +28,7 @@ _MAR_PERMS = {
 class MedicationViewSet(viewsets.ModelViewSet):
     serializer_class = MedicationSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["resident", "is_active", "is_controlled", "route", "frequency"]
+    filterset_fields = ["resident", "is_active", "is_controlled", "is_psychotropic", "route", "frequency"]
 
     def get_permissions(self):
         return [require(*_MED_PERMS.get(self.action, ["medications.view"]))]
@@ -96,4 +97,8 @@ class PRNAdministrationViewSet(viewsets.ModelViewSet):
         ).filter(medication__resident__care_home=self.request.user.care_home)
 
     def perform_create(self, serializer):
-        serializer.save(administered_by=self.request.user)
+        admin = serializer.save(administered_by=self.request.user)
+        dispatch_webhook(admin.medication.resident.care_home, "prn.administered", {
+            "id": admin.id, "medication_id": admin.medication_id, "drug_name": admin.medication.drug_name,
+            "resident_id": admin.medication.resident_id, "administered_at": admin.administered_at.isoformat(),
+        })

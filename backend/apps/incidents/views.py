@@ -1,6 +1,7 @@
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.authentication.permissions import require
+from apps.integrations.webhooks import dispatch as dispatch_webhook
 from .models import Incident, IncidentFollowUp
 from .serializers import IncidentSerializer, IncidentListSerializer, IncidentFollowUpSerializer
 
@@ -35,10 +36,14 @@ class IncidentViewSet(viewsets.ModelViewSet):
         )
 
     def perform_create(self, serializer):
-        serializer.save(
+        incident = serializer.save(
             care_home=self.request.user.care_home,
             reported_by=self.request.user,
         )
+        dispatch_webhook(incident.care_home, "incident.created", {
+            "id": incident.id, "incident_type": incident.incident_type, "severity": incident.severity,
+            "resident_id": incident.resident_id, "incident_date": incident.incident_date.isoformat(),
+        })
 
 
 class IncidentFollowUpViewSet(viewsets.ModelViewSet):

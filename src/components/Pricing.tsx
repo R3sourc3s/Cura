@@ -5,6 +5,22 @@ import { Check, ArrowRight } from "lucide-react";
 
 const plans = [
   {
+    name: "Free",
+    desc: "For very small homes and pilots — no time limit.",
+    price: "£0",
+    per: "up to 8 residents",
+    cta: "Start for free",
+    ctaHref: "#demo",
+    highlight: false,
+    features: [
+      "Digital care plans & risk assessments",
+      "eMAR medication management",
+      "Incidents & handover",
+      "1 admin user",
+      "Community & email support",
+    ],
+  },
+  {
     name: "Essentials",
     desc: "For homes getting started with digital care records.",
     price: "£4",
@@ -66,11 +82,11 @@ export default function Pricing() {
             Simple pricing, no surprises
           </h2>
           <p className="text-lg max-w-xl mx-auto" style={{ color: "var(--text-muted)" }}>
-            All plans include a 30-day free trial. No credit card required until you&apos;re ready.
+            A genuinely free tier for small homes, a 30-day free trial on everything else, and 1-month rolling contracts — no credit card, no lock-in.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6 items-stretch">
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 items-stretch">
           {plans.map((p, i) => (
             <motion.div
               key={i}
@@ -123,7 +139,7 @@ export default function Pricing() {
         </div>
 
         <p className="text-center text-sm mt-8" style={{ color: "var(--text-muted)" }}>
-          All prices exclude VAT. Billed monthly or annually (save 20%). Minimum 10 residents.
+          All prices exclude VAT. Billed monthly or annually (save 20%). 1-month rolling contracts — cancel any time.
         </p>
       </div>
     </section>

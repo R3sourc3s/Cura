@@ -399,7 +399,7 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
                             style={{ background: "var(--input-bg)", border: "1px solid var(--bg-card-hover)" }}>
                             <Edit2 size={12} style={{ color: "var(--text-secondary)" }} />
                           </button>
-                          <button onClick={() => setDeleteUser(u)}
+                          <button onClick={() => setDeleteUser(u)} aria-label={`Remove ${u.full_name || u.username}`}
                             className="w-7 h-7 rounded-lg flex items-center justify-center"
                             style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)" }}>
                             <Trash2 size={12} style={{ color: "var(--c-red)" }} />
@@ -461,7 +461,7 @@ export default function TeamClient({ initialUsers }: { initialUsers: User[] }) {
                       style={{ background: "rgba(var(--fg-rgb),0.05)", color: "rgba(var(--fg-rgb),0.6)" }}>
                       <Edit2 size={12} />Edit
                     </button>
-                    <button onClick={() => setDeleteUser(u)}
+                    <button onClick={() => setDeleteUser(u)} aria-label={`Remove ${u.full_name}`}
                       className="w-9 flex items-center justify-center py-2 rounded-xl" style={{ background: "rgba(239,68,68,0.08)" }}>
                       <Trash2 size={13} style={{ color: "var(--c-red)" }} />
                     </button>

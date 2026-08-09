@@ -61,6 +61,58 @@ class AuditAction(models.Model):
         return f"{self.audit} — {self.description[:60]}"
 
 
+class Accreditation(models.Model):
+    """
+    Trust & Certifications register — lets an operator track their own regulatory
+    accreditations (CQC registration, Cyber Essentials, ISO 27001, DSPT, fire safety,
+    DBS umbrella body, etc.) with expiry visibility, the same transparency competitors
+    like Empathika publish about themselves.
+    """
+
+    class Status(models.TextChoices):
+        CERTIFIED = "certified", "Certified"
+        IN_PROGRESS = "in_progress", "In Progress"
+        EXPIRING_SOON = "expiring_soon", "Expiring Soon"
+        EXPIRED = "expired", "Expired"
+        NOT_APPLICABLE = "not_applicable", "Not Applicable"
+
+    class Category(models.TextChoices):
+        CQC = "cqc", "CQC Registration"
+        CYBER = "cyber", "Cyber Security"
+        DATA_PROTECTION = "data_protection", "Data Protection"
+        FIRE_SAFETY = "fire_safety", "Fire Safety"
+        HEALTH_SAFETY = "health_safety", "Health & Safety"
+        QUALITY = "quality", "Quality Management"
+        OTHER = "other", "Other"
+
+    care_home = models.ForeignKey("staff.CareHome", on_delete=models.CASCADE, related_name="accreditations")
+    name = models.CharField(max_length=200, help_text="e.g. Cyber Essentials Plus, ISO 27001, NHS DSPT")
+    category = models.CharField(max_length=20, choices=Category.choices, default=Category.OTHER)
+    issuing_body = models.CharField(max_length=200, blank=True)
+    status = models.CharField(max_length=15, choices=Status.choices, default=Status.IN_PROGRESS)
+    reference_number = models.CharField(max_length=100, blank=True)
+    valid_from = models.DateField(null=True, blank=True)
+    valid_until = models.DateField(null=True, blank=True)
+    certificate_file = models.FileField(upload_to="accreditations/", null=True, blank=True)
+    certificate_url = models.URLField(blank=True)
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["valid_until", "name"]
+
+    def __str__(self):
+        return f"{self.name} — {self.get_status_display()}"
+
+    @property
+    def is_expiring_soon(self):
+        if not self.valid_until:
+            return False
+        from datetime import date, timedelta
+        return date.today() <= self.valid_until <= date.today() + timedelta(days=60)
+
+
 class Policy(models.Model):
     care_home = models.ForeignKey("staff.CareHome", on_delete=models.CASCADE, related_name="policies")
     title = models.CharField(max_length=300)

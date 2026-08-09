@@ -1,8 +1,7 @@
 from rest_framework import views, response, status
 from apps.authentication.permissions import require
-from .services import chat, generate_compliance_gap_report, score_resident_risk
+from .services import chat, score_resident_risk
 from apps.residents.models import Resident
-from apps.staff.models import CareHome
 
 
 class ChatView(views.APIView):
@@ -29,23 +28,6 @@ class ChatView(views.APIView):
 
         reply = chat(messages, resident_context=context)
         return response.Response({"reply": reply})
-
-
-class ComplianceGapReportView(views.APIView):
-    throttle_scope = "ai"
-
-    def get_permissions(self):
-        return [require("compliance.ai_report")]
-
-    def post(self, request):
-        care_home_id = request.data.get("care_home_id")
-        try:
-            home = CareHome.objects.get(pk=care_home_id)
-        except CareHome.DoesNotExist:
-            return response.Response({"error": "Care home not found"}, status=404)
-
-        report = generate_compliance_gap_report(home)
-        return response.Response({"report": report})
 
 
 class ResidentRiskScoreView(views.APIView):

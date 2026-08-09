@@ -13,6 +13,7 @@ class ResidentSerializer(serializers.ModelSerializer):
     conditions = ConditionSerializer(many=True, read_only=True)
     full_name = serializers.ReadOnlyField()
     age = serializers.ReadOnlyField()
+    wing_name = serializers.CharField(source="wing.name", read_only=True)
 
     class Meta:
         model = Resident
@@ -24,12 +25,13 @@ class ResidentListSerializer(serializers.ModelSerializer):
     full_name = serializers.ReadOnlyField()
     age = serializers.ReadOnlyField()
     conditions = ConditionSerializer(many=True, read_only=True)
+    wing_name = serializers.CharField(source="wing.name", read_only=True)
 
     class Meta:
         model = Resident
         fields = [
             "id", "full_name", "first_name", "last_name", "age", "photo",
-            "room_number", "nhs_number", "admission_date",
+            "room_number", "wing", "wing_name", "nhs_number", "admission_date",
             "fall_risk", "pressure_ulcer_risk", "ai_risk_score",
             "is_active", "conditions",
         ]

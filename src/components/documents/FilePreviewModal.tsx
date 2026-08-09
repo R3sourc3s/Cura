@@ -25,7 +25,7 @@ export default function FilePreviewModal({ file, onClose }: { file: PreviewFile;
   const downloadUrl = `/api/v1/documents/files/${file.id}/download/`;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.8)", backdropFilter: "blur(8px)" }} onClick={onClose}>
-      <div className="rounded-2xl w-full max-w-4xl flex flex-col" style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)", maxHeight: "90vh" }} onClick={e => e.stopPropagation()}>
+      <div role="dialog" aria-modal="true" aria-label={file.name} className="rounded-2xl w-full max-w-4xl flex flex-col" style={{ background: "var(--bg-elevated)", border: "1px solid var(--border)", maxHeight: "90vh" }} onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-5 py-3 border-b" style={{ borderColor: "var(--border)" }}>
           <div className="min-w-0">
             <div className="text-sm font-semibold text-white truncate">{file.name}</div>
@@ -33,7 +33,7 @@ export default function FilePreviewModal({ file, onClose }: { file: PreviewFile;
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <a href={downloadUrl} download className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg" style={{ background: "rgba(13, 148, 136,0.1)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.2)" }}><Download size={12} /> Download</a>
-            <button onClick={onClose} style={{ color: "var(--text-muted)" }}><X size={18} /></button>
+            <button onClick={onClose} aria-label="Close preview" style={{ color: "var(--text-muted)" }}><X size={18} /></button>
           </div>
         </div>
         <div className="flex-1 overflow-auto p-4 flex items-center justify-center" style={{ background: "var(--bg-secondary)", minHeight: "300px" }}>

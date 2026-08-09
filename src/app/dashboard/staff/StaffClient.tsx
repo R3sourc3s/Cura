@@ -564,12 +564,12 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
                     </div>
                     {req.status === "pending" && can("staff.manage") ? (
                       <div className="flex gap-1.5 flex-shrink-0">
-                        <button onClick={() => updateLeave(req.id, "approved")} disabled={updating === req.id}
+                        <button onClick={() => updateLeave(req.id, "approved")} disabled={updating === req.id} aria-label="Approve leave request"
                           className="w-7 h-7 rounded-lg flex items-center justify-center disabled:opacity-50"
                           style={{ background: "rgba(52,211,153,0.15)", border: "1px solid rgba(52,211,153,0.25)" }}>
                           <CheckCircle size={13} style={{ color: "var(--c-green)" }} />
                         </button>
-                        <button onClick={() => updateLeave(req.id, "rejected")} disabled={updating === req.id}
+                        <button onClick={() => updateLeave(req.id, "rejected")} disabled={updating === req.id} aria-label="Reject leave request"
                           className="w-7 h-7 rounded-lg flex items-center justify-center disabled:opacity-50"
                           style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.2)" }}>
                           <XCircle size={13} style={{ color: "var(--c-red)" }} />

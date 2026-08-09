@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Heart, Eye, CheckCircle, TrendingUp, ArrowRight, Users } from "lucide-react";
+import { Heart, Eye, CheckCircle, TrendingUp, ArrowRight, Users, ShieldCheck } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -27,6 +27,7 @@ const values = [
   { icon: TrendingUp,   title: "Relentless Improvement",  description: "We ship continuously, listen obsessively to our customers, and treat every piece of feedback as a gift.", color: GOLD },
   { icon: Eye,          title: "Radical Transparency",    description: "We share our roadmap publicly, our uptime in real-time, and our reasoning openly — with customers and with each other.", color: GREEN },
   { icon: CheckCircle,  title: "Built for UK",             description: "CQC, NHS frameworks, UK GDPR — we don't bolt on compliance. It's baked into every line of code we write.", color: GOLD },
+  { icon: ShieldCheck,  title: "Independent by Design",    description: "Cura is a technology company, not a care home operator. We don't own or run care homes, so we have no incentive to steer decisions in any direction other than what's best for your residents and your business.", color: GREEN },
 ];
 
 const fadeUp = {
@@ -36,7 +37,7 @@ const fadeUp = {
 
 export default function AboutPage() {
   return (
-    <main style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
+    <main id="main-content" style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
       <Navbar />
 
       {/* Hero */}

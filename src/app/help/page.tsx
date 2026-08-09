@@ -52,7 +52,7 @@ export default function HelpPage() {
     : popularArticles;
 
   return (
-    <main style={{ background: "#050914", minHeight: "100vh" }}>
+    <main id="main-content" style={{ background: "#050914", minHeight: "100vh" }}>
       <Navbar />
 
       {/* Hero */}

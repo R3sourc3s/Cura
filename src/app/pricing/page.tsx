@@ -8,6 +8,22 @@ import { CheckCircle, XCircle, Zap, ArrowRight, ChevronDown, ChevronUp, Phone } 
 
 const plans = [
   {
+    name: "Free",
+    tagline: "For very small homes and pilots",
+    monthlyPrice: 0,
+    color: "#818cf8",
+    popular: false,
+    cta: "Start for Free",
+    features: [
+      "Up to 8 residents",
+      "Medications / eMAR",
+      "Care notes & handover",
+      "Incidents",
+      "1 admin user",
+      "Community & email support",
+    ],
+  },
+  {
     name: "Starter",
     tagline: "For single care homes getting started",
     monthlyPrice: 299,
@@ -70,32 +86,41 @@ const plans = [
   },
 ];
 
-type FeatureRow = { label: string; starter: boolean | string; pro: boolean | string; enterprise: boolean | string };
+type FeatureRow = { label: string; free: boolean | string; starter: boolean | string; pro: boolean | string; enterprise: boolean | string };
 
 const comparisonRows: FeatureRow[] = [
-  { label: "Residents",              starter: "Up to 20",     pro: "Up to 60",       enterprise: "Unlimited" },
-  { label: "Medications / eMAR",     starter: true,           pro: true,             enterprise: true },
-  { label: "Care Plans",             starter: "Basic",        pro: "AI-powered",     enterprise: "AI + Custom" },
-  { label: "Staff & HR",             starter: false,          pro: true,             enterprise: true },
-  { label: "AI Risk Scoring",        starter: false,          pro: true,             enterprise: true },
-  { label: "Family Portal",          starter: false,          pro: true,             enterprise: true },
-  { label: "Pharmacy Integration",   starter: false,          pro: true,             enterprise: true },
-  { label: "GP Integration",         starter: false,          pro: false,            enterprise: true },
-  { label: "Multi-site Management",  starter: false,          pro: false,            enterprise: true },
-  { label: "API Access",             starter: false,          pro: false,            enterprise: true },
-  { label: "On-premise Option",      starter: false,          pro: false,            enterprise: true },
-  { label: "Support",                starter: "Email & Chat", pro: "Priority 24/7",  enterprise: "Dedicated CSM" },
-  { label: "SLA Guarantee",          starter: false,          pro: false,            enterprise: true },
+  { label: "Residents",              free: "Up to 8",     starter: "Up to 20",     pro: "Up to 60",       enterprise: "Unlimited" },
+  { label: "Medications / eMAR",     free: true,          starter: true,           pro: true,             enterprise: true },
+  { label: "Care Plans",             free: false,         starter: "Basic",        pro: "AI-powered",     enterprise: "AI + Custom" },
+  { label: "Staff & HR",             free: false,         starter: false,          pro: true,             enterprise: true },
+  { label: "AI Risk Scoring",        free: false,         starter: false,          pro: true,             enterprise: true },
+  { label: "Family Portal",          free: false,         starter: false,          pro: true,             enterprise: true },
+  { label: "Pharmacy Integration",   free: false,         starter: false,          pro: true,             enterprise: true },
+  { label: "GP Integration",         free: false,         starter: false,          pro: false,            enterprise: true },
+  { label: "Multi-site Management",  free: false,         starter: false,          pro: false,            enterprise: true },
+  { label: "API Access",             free: false,         starter: false,          pro: false,            enterprise: true },
+  { label: "On-premise Option",      free: false,         starter: false,          pro: false,            enterprise: true },
+  { label: "Contract",               free: "1-month rolling", starter: "1-month rolling", pro: "1-month rolling", enterprise: "Annual/bespoke" },
+  { label: "Support",                free: "Community & email", starter: "Email & Chat", pro: "Priority 24/7",  enterprise: "Dedicated CSM" },
+  { label: "SLA Guarantee",          free: false,         starter: false,          pro: false,            enterprise: true },
 ];
 
 const faqs = [
+  {
+    q: "Is the Free plan really free, forever?",
+    a: "Yes. Up to 8 residents and 1 admin user, no time limit, no credit card required. It's there for very small homes and for anyone who wants to properly trial Cura on real data before committing to a paid plan.",
+  },
   {
     q: "Do I need a credit card to start a free trial?",
     a: "No. Your 30-day free trial starts immediately with no credit card required. We'll remind you before the trial ends so you can decide whether to continue.",
   },
   {
+    q: "Am I locked into a long contract?",
+    a: "No. Free, Starter, and Professional are all 1-month rolling contracts — cancel any time with no penalty. Choosing annual billing is optional and just saves you 20%; it's never required.",
+  },
+  {
     q: "Can I change plans later?",
-    a: "Yes — you can upgrade or downgrade at any time. Upgrades take effect immediately; downgrades apply at the next billing cycle. There are no penalties or lock-in periods.",
+    a: "Yes — you can upgrade or downgrade at any time, including from Free to a paid plan as you grow past 8 residents. Upgrades take effect immediately; downgrades apply at the next billing cycle.",
   },
   {
     q: "How does annual billing work?",
@@ -127,13 +152,14 @@ export default function PricingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const displayPrice = (plan: typeof plans[0]) => {
-    if (!plan.monthlyPrice) return "Custom";
+    if (plan.monthlyPrice === null) return "Custom";
+    if (plan.monthlyPrice === 0) return "£0";
     const price = annual ? Math.round(plan.monthlyPrice * 0.8) : plan.monthlyPrice;
     return `£${price}`;
   };
 
   return (
-    <main style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
+    <main id="main-content" style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
       <Navbar />
 
       <section className="pt-32 pb-16">
@@ -145,7 +171,7 @@ export default function PricingPage() {
               <span style={{ color: "#0d9488" }}>No surprises.</span>
             </h1>
             <p className="text-xl max-w-xl mx-auto" style={{ color: "var(--text-muted)" }}>
-              All plans include a 30-day free trial. No credit card required. Cancel or change at any time.
+              A genuinely free tier for small homes, a 30-day free trial on everything else, and 1-month rolling contracts across the board — no annual lock-in required.
             </p>
           </motion.div>
 
@@ -171,7 +197,7 @@ export default function PricingPage() {
 
       <section className="pb-24">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="grid lg:grid-cols-3 gap-7">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {plans.map((plan, i) => (
               <motion.div key={plan.name} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
                 className="relative rounded-3xl p-8 flex flex-col"
@@ -247,16 +273,17 @@ export default function PricingPage() {
 
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="rounded-3xl overflow-hidden" style={{ border: "1px solid var(--border)" }}>
-            <div className="grid grid-cols-4 px-6 py-4" style={{ borderBottom: "1px solid var(--border)", background: "var(--bg-secondary)" }}>
+            <div className="grid grid-cols-5 px-6 py-4" style={{ borderBottom: "1px solid var(--border)", background: "var(--bg-secondary)" }}>
               <div className="text-sm font-semibold" style={{ color: "var(--text-muted)" }}>Feature</div>
               {plans.map((p) => (
                 <div key={p.name} className="text-center text-sm font-semibold" style={{ color: p.color }}>{p.name}</div>
               ))}
             </div>
             {comparisonRows.map((row, i) => (
-              <div key={i} className="grid grid-cols-4 px-6 py-3.5 items-center"
+              <div key={i} className="grid grid-cols-5 px-6 py-3.5 items-center"
                 style={{ borderBottom: i < comparisonRows.length - 1 ? "1px solid var(--border)" : "none", background: i % 2 === 0 ? "#ffffff" : "var(--bg-secondary)" }}>
                 <div className="text-sm" style={{ color: "var(--text-secondary)" }}>{row.label}</div>
+                <div className="flex items-center justify-center"><FeatureCell value={row.free} /></div>
                 <div className="flex items-center justify-center"><FeatureCell value={row.starter} /></div>
                 <div className="flex items-center justify-center"><FeatureCell value={row.pro} /></div>
                 <div className="flex items-center justify-center"><FeatureCell value={row.enterprise} /></div>

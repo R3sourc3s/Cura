@@ -43,6 +43,34 @@ class MeView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 
+class ChangePasswordView(views.APIView):
+    """
+    Lets ANY authenticated user change their own password, given their current
+    one. Deliberately separate from UserDetailView (which requires the
+    staff.manage permission and is for admins editing other people's
+    accounts) — carers and nurses don't have staff.manage, so without this
+    endpoint they had no way to change their own password at all.
+    """
+
+    def post(self, request):
+        current_password = request.data.get("current_password", "")
+        new_password = request.data.get("new_password", "")
+
+        if not current_password or not new_password:
+            return response.Response(
+                {"detail": "current_password and new_password are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if not request.user.check_password(current_password):
+            return response.Response({"detail": "Current password is incorrect."}, status=status.HTTP_400_BAD_REQUEST)
+        if len(new_password) < 8:
+            return response.Response({"detail": "New password must be at least 8 characters."}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.user.set_password(new_password)
+        request.user.save(update_fields=["password"])
+        return response.Response({"detail": "Password changed successfully."})
+
+
 class UserListView(generics.ListAPIView):
     serializer_class = UserSerializer
     filter_backends = [DjangoFilterBackend]
@@ -62,7 +90,41 @@ class AdminCreateUserView(generics.CreateAPIView):
         return [require("staff.manage")]
 
     def perform_create(self, serializer):
-        serializer.save(care_home=self.request.user.care_home)
+        user = serializer.save(care_home=self.request.user.care_home)
+        self._send_welcome_email(user)
+
+    def _send_welcome_email(self, user):
+        """
+        New staff accounts are created with a password chosen by the admin,
+        which they typically relay verbally/in person. We additionally email
+        the new user a "set your password" link (same PasswordResetTokenGenerator
+        flow as the forgot-password path) so they can pick their own password
+        on first login instead of relying on one someone else knows.
+        """
+        if not user.email:
+            return
+        token_generator = PasswordResetTokenGenerator()
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = token_generator.make_token(user)
+        set_password_url = f"{settings.FRONTEND_URL.rstrip('/')}/reset-password?uid={uid}&token={token}"
+
+        html_body = render_to_string("authentication/welcome_email.html", {
+            "user": user,
+            "set_password_url": set_password_url,
+            "created_by_name": self.request.user.get_full_name() or self.request.user.username,
+            "care_home_name": getattr(user.care_home, "name", "Cura"),
+        })
+        try:
+            send_mail(
+                subject="Welcome to Cura — set your password",
+                message=f"Set your password here: {set_password_url}",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                html_message=html_body,
+                fail_silently=False,
+            )
+        except Exception:
+            logger.exception("Failed to send welcome email to %s", user.email)
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):

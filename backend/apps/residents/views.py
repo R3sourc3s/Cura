@@ -1,6 +1,7 @@
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.authentication.permissions import require
+from apps.integrations.webhooks import dispatch as dispatch_webhook
 from .models import Resident, Condition
 from .serializers import ResidentSerializer, ResidentListSerializer, ConditionSerializer
 
@@ -26,7 +27,7 @@ _CONDITION_PERMS = {
 class ResidentViewSet(viewsets.ModelViewSet):
     queryset = Resident.objects.select_related("care_home").prefetch_related("conditions")
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ["care_home", "is_active", "fall_risk"]
+    filterset_fields = ["care_home", "is_active", "fall_risk", "wing"]
     search_fields = ["first_name", "last_name", "nhs_number", "room_number"]
     ordering_fields = ["last_name", "ai_risk_score", "admission_date"]
 
@@ -45,7 +46,12 @@ class ResidentViewSet(viewsets.ModelViewSet):
         return super().get_queryset()
 
     def perform_create(self, serializer):
-        serializer.save(care_home=self.request.user.care_home)
+        resident = serializer.save(care_home=self.request.user.care_home)
+        if resident.is_active:
+            dispatch_webhook(resident.care_home, "resident.admitted", {
+                "id": resident.id, "full_name": resident.full_name,
+                "room_number": resident.room_number, "admission_date": resident.admission_date.isoformat(),
+            })
 
 
 class ConditionViewSet(viewsets.ModelViewSet):

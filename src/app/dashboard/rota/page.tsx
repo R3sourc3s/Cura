@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { CalendarDays, Plus, X, ChevronLeft, ChevronRight, Users } from "lucide-react";
+import { CalendarDays, Plus, X, ChevronLeft, ChevronRight, Users, AlertTriangle, Gauge } from "lucide-react";
 import { useToast } from "@/components/Toast";
 
 interface Shift {
@@ -10,6 +10,16 @@ interface Shift {
   start_time: string; end_time: string; is_agency: boolean; notes: string;
 }
 interface StaffMember { id: number; full_name: string; role: string; }
+
+interface CoverageShift {
+  shift_type: "day"|"evening"|"night"; shift_type_label: string;
+  staff_count: number; agency_count: number; recommended_staff: number;
+  understaffed: boolean; gap: number;
+}
+interface Coverage {
+  date: string; resident_count: number; acuity_weighted_load: number;
+  high_acuity_count: number; shifts: CoverageShift[];
+}
 
 const SHIFT_CFG = {
   day:     { label:"Day",     color:"var(--c-amber)", bg:"rgba(251,191,36,0.15)",  time:"07:00–15:00" },
@@ -48,6 +58,14 @@ export default function RotaPage() {
       .then(r => r.ok ? r.json() : { results:[] })
       .then(d => setStaff((d.results ?? d).filter((u: StaffMember & {role:string}) => u.role !== "family")));
   }, []);
+
+  const [coverage, setCoverage] = useState<Coverage | null>(null);
+  useEffect(() => {
+    fetch("/api/v1/staff/staffing-coverage/", { credentials: "include" })
+      .then(r => r.ok ? r.json() : null)
+      .then(setCoverage)
+      .catch(() => setCoverage(null));
+  }, [shifts]);
 
   async function handleCreate() {
     if (!form.staff_member || !form.date) return;
@@ -99,6 +117,49 @@ export default function RotaPage() {
         </div>
         {agencyCount > 0 && <div className="text-xs px-3 py-1.5 rounded-xl" style={{ background:"rgba(251,146,60,0.1)", color:"var(--c-orange)" }}><strong>{agencyCount}</strong> agency shifts</div>}
       </div>
+
+      {/* Staffing coverage */}
+      {coverage && (
+        <div className="rounded-2xl p-4" style={{ background:"var(--bg-card)", border:"1px solid var(--border)" }}>
+          <div className="flex items-center gap-2 mb-3">
+            <Gauge size={13} style={{ color:"var(--c-teal)" }} />
+            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color:"var(--text-muted)" }}>
+              Today&apos;s staffing coverage
+            </span>
+            <span className="text-xs" style={{ color:"var(--text-muted)" }}>
+              — {coverage.resident_count} residents, {coverage.high_acuity_count} high/critical acuity
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {coverage.shifts.map(s => {
+              const cfg = SHIFT_CFG[s.shift_type];
+              return (
+                <div key={s.shift_type} className="rounded-xl p-3"
+                  style={{ background: s.understaffed ? "rgba(239,68,68,0.06)" : "var(--input-bg)", border: s.understaffed ? "1px solid rgba(239,68,68,0.3)" : "1px solid var(--border)" }}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-semibold" style={{ color: cfg.color }}>{s.shift_type_label}</span>
+                    {s.understaffed ? (
+                      <span className="flex items-center gap-1 text-xs font-medium" style={{ color:"var(--c-red)" }}>
+                        <AlertTriangle size={10} /> Short {s.gap}
+                      </span>
+                    ) : (
+                      <span className="text-xs" style={{ color:"var(--c-green)" }}>Covered</span>
+                    )}
+                  </div>
+                  <div className="text-sm" style={{ color:"var(--text-secondary)" }}>
+                    <strong style={{ color:"var(--text-primary)" }}>{s.staff_count}</strong> rostered
+                    {s.recommended_staff > 0 && <> · suggests {s.recommended_staff}</>}
+                    {s.agency_count > 0 && <> · {s.agency_count} agency</>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-xs mt-3" style={{ color: "rgba(var(--fg-rgb),0.35)" }}>
+            Suggested staffing is an illustrative guide based on resident count and fall/pressure-ulcer risk — not a regulatory minimum.
+          </p>
+        </div>
+      )}
 
       {/* Rota grid */}
       {loading ? <div className="flex justify-center py-12"><div className="w-6 h-6 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" /></div> : (

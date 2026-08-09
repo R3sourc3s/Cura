@@ -41,7 +41,7 @@ export default function FamilyShell({ user, children }: { user: User; children: 
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+      <main id="main-content" tabIndex={-1} className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
         {children}
       </main>
     </div>

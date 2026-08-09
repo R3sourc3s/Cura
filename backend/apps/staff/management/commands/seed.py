@@ -86,6 +86,30 @@ class Command(BaseCommand):
             admin.is_superuser = True
             admin.save(update_fields=["care_home", "role", "is_superuser"])
 
+        # ── Additional admin account ─────────────────────────────────────────────
+        faith, created = User.objects.get_or_create(
+            username="faithwaithera",
+            defaults=dict(
+                first_name="Faith",
+                last_name="Waithera",
+                email="faithwaithera018@gmail.com",
+                role="admin",
+                care_home=home,
+                is_staff=True,
+                is_superuser=True,
+            ),
+        )
+        if created:
+            faith.set_password("Faith!Cura2026$Xy7")
+            faith.save()
+        else:
+            faith.email = "faithwaithera018@gmail.com"
+            faith.role = "admin"
+            faith.care_home = home
+            faith.is_staff = True
+            faith.is_superuser = True
+            faith.save(update_fields=["email", "role", "care_home", "is_staff", "is_superuser"])
+
         # ── Residents ──────────────────────────────────────────────────────────
         residents_data = [
             # (first, last, dob, nhs, room, fall_risk, pressure_risk, ai_score, nok_name, nok_phone, nok_relation)

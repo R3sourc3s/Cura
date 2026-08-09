@@ -28,7 +28,7 @@ export default function StatusPage() {
   }, []);
 
   return (
-    <main style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
+    <main id="main-content" style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
       <Navbar />
 
       <section className="pt-32 pb-20 px-6">

@@ -9,6 +9,9 @@ class Resident(models.Model):
         CRITICAL = "critical", "Critical"
 
     care_home = models.ForeignKey("staff.CareHome", on_delete=models.CASCADE, related_name="residents")
+    wing = models.ForeignKey(
+        "staff.Wing", on_delete=models.SET_NULL, null=True, blank=True, related_name="residents"
+    )
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     date_of_birth = models.DateField()

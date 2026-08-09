@@ -74,9 +74,9 @@ export default function LinkedDocuments({ residentId, staffId, emptyHint }: { re
                       <div className="text-xs" style={{ color: "var(--text-muted)" }}>{fmtBytes(f.file_size)}</div>
                     </div>
                     {canPreviewFile(f) && (
-                      <button onClick={() => setPreviewFile(f)} title="Preview" className="w-7 h-7 flex items-center justify-center rounded-lg flex-shrink-0" style={{ color: "var(--c-teal2)" }}><Eye size={13} /></button>
+                      <button onClick={() => setPreviewFile(f)} aria-label={`Preview ${f.name}`} title="Preview" className="w-7 h-7 flex items-center justify-center rounded-lg flex-shrink-0" style={{ color: "var(--c-teal2)" }}><Eye size={13} /></button>
                     )}
-                    <a href={`/api/v1/documents/files/${f.id}/download/`} download title="Download" className="w-7 h-7 flex items-center justify-center rounded-lg flex-shrink-0" style={{ color: "var(--c-teal)" }}><Download size={13} /></a>
+                    <a href={`/api/v1/documents/files/${f.id}/download/`} download aria-label={`Download ${f.name}`} title="Download" className="w-7 h-7 flex items-center justify-center rounded-lg flex-shrink-0" style={{ color: "var(--c-teal)" }}><Download size={13} /></a>
                   </div>
                 ))}
               </div>

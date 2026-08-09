@@ -136,7 +136,7 @@ export default function BlogPage() {
   const showFeatured = filteredPosts.some((p) => p.featured) && activeCategory === "All" && searchQuery === "";
 
   return (
-    <main style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
+    <main id="main-content" style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
       <Navbar />
 
       <section className="relative pt-32 pb-16 overflow-hidden">

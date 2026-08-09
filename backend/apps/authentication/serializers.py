@@ -8,8 +8,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "username", "email", "first_name", "last_name", "full_name", "role", "phone", "avatar", "care_home"]
-        read_only_fields = ["id"]
+        fields = ["id", "username", "email", "first_name", "last_name", "full_name", "role", "phone", "avatar", "care_home", "is_group_admin"]
+        read_only_fields = ["id", "is_group_admin"]
 
     def get_full_name(self, obj):
         return obj.get_full_name()

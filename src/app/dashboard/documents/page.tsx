@@ -246,11 +246,11 @@ export default function DocumentsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 flex-shrink-0">
-                  <button onClick={() => openEdit(doc)} title="Edit" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ background: "var(--bg-card-hover)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>
+                  <button onClick={() => openEdit(doc)} aria-label="Edit" title="Edit" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ background: "var(--bg-card-hover)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>
                     <Pencil size={12} />
                   </button>
                   {can("staff.manage") && (
-                    <button onClick={() => setDeleteTarget(doc)} title="Delete record" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ background: "rgba(239,68,68,0.1)", color: "var(--c-red)", border: "1px solid rgba(239,68,68,0.2)" }}>
+                    <button onClick={() => setDeleteTarget(doc)} aria-label="Delete record" title="Delete record" className="w-8 h-8 flex items-center justify-center rounded-lg" style={{ background: "rgba(239,68,68,0.1)", color: "var(--c-red)", border: "1px solid rgba(239,68,68,0.2)" }}>
                       <Trash2 size={12} />
                     </button>
                   )}
@@ -352,7 +352,7 @@ export default function DocumentsPage() {
                       <div key={f.id} className="flex items-center gap-2 text-xs px-2.5 py-1.5 rounded-lg" style={{ background:"var(--input-bg)", color:"var(--text-secondary)" }}>
                         <FileText size={13} className="flex-shrink-0" style={{ color: isPdfType(f.file_type) ? "var(--c-red)" : "var(--c-teal2)" }} />
                         <span className="flex-1 truncate">{f.name} · {formatBytes(f.file_size)}</span>
-                        <button onClick={()=>setFileToRemove(f)} className="flex-shrink-0" style={{ color:"var(--c-red)" }} title="Remove file"><Trash2 size={12} /></button>
+                        <button onClick={()=>setFileToRemove(f)} className="flex-shrink-0" style={{ color:"var(--c-red)" }} aria-label={`Remove ${f.name}`} title="Remove file"><Trash2 size={12} /></button>
                       </div>
                     ))}
                   </div>

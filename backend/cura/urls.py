@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, AllowAny
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -42,8 +42,30 @@ urlpatterns = [
     path("api/v1/gp/", include("apps.gp_integration.urls")),
     path("api/v1/family/", include("apps.family_portal.urls")),
     path("api/v1/skills/", include("apps.skills.urls")),
+    path("api/v1/integrations/", include("apps.integrations.urls")),
+    path("api/v1/devices/", include("apps.devices.urls")),
 
-    # OpenAPI docs — admin only
+    # Partner API — API-key authenticated, for third-party integrations (pharmacy, GP, etc.)
+    path("api/partner/v1/", include("apps.partner_api.urls")),
+
+    # OpenAPI docs — internal schema is admin only
     path("api/schema/", SpectacularAPIView.as_view(permission_classes=[IsAdminUser]), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema", permission_classes=[IsAdminUser]), name="swagger-ui"),
+
+    # Partner API schema is public — this is the "open API" surface third parties integrate against.
+    path(
+        "api/partner/v1/schema/",
+        SpectacularAPIView.as_view(
+            urlconf="apps.partner_api.urls",
+            authentication_classes=[],
+            permission_classes=[AllowAny],
+            api_version="partner-v1",
+        ),
+        name="partner-schema",
+    ),
+    path(
+        "api/partner/v1/docs/",
+        SpectacularSwaggerView.as_view(url_name="partner-schema", authentication_classes=[], permission_classes=[AllowAny]),
+        name="partner-swagger-ui",
+    ),
 ]

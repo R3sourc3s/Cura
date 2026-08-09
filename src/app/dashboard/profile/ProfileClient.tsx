@@ -46,7 +46,7 @@ export default function ProfileClient({ initialUser }: { initialUser: User }) {
     phone: initialUser.phone ?? "",
   });
   const [savingProfile, setSavingProfile] = useState(false);
-  const [passwords, setPasswords] = useState({ next: "", confirm: "" });
+  const [passwords, setPasswords] = useState({ current: "", next: "", confirm: "" });
   const [savingPw, setSavingPw] = useState(false);
 
   async function saveProfile(e: React.FormEvent) {
@@ -64,12 +64,13 @@ export default function ProfileClient({ initialUser }: { initialUser: User }) {
 
   async function savePassword(e: React.FormEvent) {
     e.preventDefault();
+    if (!passwords.current) { toast("Enter your current password.", "error"); return; }
     if (passwords.next !== passwords.confirm) { toast("New passwords do not match.", "error"); return; }
     if (passwords.next.length < 8) { toast("Password must be at least 8 characters.", "error"); return; }
     setSavingPw(true);
     try {
-      await authApi.updateUser(user.id, { password: passwords.next });
-      setPasswords({ next: "", confirm: "" });
+      await authApi.changePassword(passwords.current, passwords.next);
+      setPasswords({ current: "", next: "", confirm: "" });
       toast("Password changed successfully.");
     } catch (err) {
       toast(err instanceof Error ? err.message : "Failed to change password.", "error");
@@ -145,6 +146,11 @@ export default function ProfileClient({ initialUser }: { initialUser: User }) {
           <p className="text-xs" style={{ color: "var(--text-muted)" }}>
             Choose a strong password of at least 8 characters.
           </p>
+          <Field label="Current Password">
+            <input type="password" className={inputCls} style={inputStyle} value={passwords.current}
+              onChange={(e) => setPasswords((p) => ({ ...p, current: e.target.value }))}
+              required autoComplete="current-password" placeholder="••••••••" />
+          </Field>
           <Field label="New Password">
             <input type="password" className={inputCls} style={inputStyle} value={passwords.next}
               onChange={(e) => setPasswords((p) => ({ ...p, next: e.target.value }))}

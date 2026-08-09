@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Supplier, MedicationStock, ControlledDrugRegister
+from .models import Supplier, MedicationStock, ControlledDrugRegister, PurchaseOrder, PurchaseOrderItem
 
 
 class SupplierSerializer(serializers.ModelSerializer):
@@ -28,3 +28,28 @@ class ControlledDrugRegisterSerializer(serializers.ModelSerializer):
         model = ControlledDrugRegister
         fields = "__all__"
         read_only_fields = ["care_home", "recorded_by", "created_at"]
+
+
+class PurchaseOrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PurchaseOrderItem
+        fields = "__all__"
+        read_only_fields = ["purchase_order"]
+
+
+class PurchaseOrderSerializer(serializers.ModelSerializer):
+    items = PurchaseOrderItemSerializer(many=True, required=False)
+    supplier_name = serializers.CharField(source="supplier.name", read_only=True)
+    ordered_by_name = serializers.CharField(source="ordered_by.get_full_name", read_only=True)
+
+    class Meta:
+        model = PurchaseOrder
+        fields = "__all__"
+        read_only_fields = ["care_home", "reference", "ordered_by", "created_at", "updated_at"]
+
+    def create(self, validated_data):
+        items_data = validated_data.pop("items", [])
+        order = PurchaseOrder.objects.create(**validated_data)
+        for item in items_data:
+            PurchaseOrderItem.objects.create(purchase_order=order, **item)
+        return order

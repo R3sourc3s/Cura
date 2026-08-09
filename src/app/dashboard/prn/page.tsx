@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Pill, Plus, X, Clock, CheckCircle, AlertTriangle, ChevronDown } from "lucide-react";
 import { useToast } from "@/components/Toast";
+import VoiceInputButton from "@/components/ui/VoiceInputButton";
 
 interface Resident { id: number; full_name: string; room_number?: string; }
 
@@ -291,16 +292,22 @@ export default function PRNPage() {
             </div>
 
             <div>
-              <label className="text-xs mb-1.5 block" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>Reason *</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs block" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>Reason *</label>
+                <VoiceInputButton onTranscript={t => setForm(f => ({ ...f, reason: (f.reason ? f.reason + " " : "") + t }))} title="Dictate reason" />
+              </div>
               <textarea value={form.reason} onChange={e => setForm(f => ({ ...f, reason: e.target.value }))}
-                placeholder="Why was the PRN given?"
+                placeholder="Why was the PRN given? (or use the mic to dictate)"
                 rows={2}
                 className="w-full text-sm px-3 py-2 rounded-xl outline-none resize-none"
                 style={{ background: "rgba(var(--fg-rgb),0.06)", border: "1px solid rgba(var(--fg-rgb),0.1)", color: "rgba(var(--fg-rgb),0.8)" }} />
             </div>
 
             <div>
-              <label className="text-xs mb-1.5 block" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>Effectiveness notes</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs block" style={{ color: "rgba(var(--fg-rgb),0.4)" }}>Effectiveness notes</label>
+                <VoiceInputButton onTranscript={t => setForm(f => ({ ...f, effectiveness_notes: (f.effectiveness_notes ? f.effectiveness_notes + " " : "") + t }))} title="Dictate notes" />
+              </div>
               <input value={form.effectiveness_notes} onChange={e => setForm(f => ({ ...f, effectiveness_notes: e.target.value }))}
                 placeholder="How did the resident respond?"
                 className="w-full text-sm px-3 py-2 rounded-xl outline-none"

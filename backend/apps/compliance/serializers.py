@@ -1,5 +1,14 @@
 from rest_framework import serializers
-from .models import ComplianceAudit, AuditAction, Policy
+from .models import ComplianceAudit, AuditAction, Policy, Accreditation
+
+
+class AccreditationSerializer(serializers.ModelSerializer):
+    is_expiring_soon = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Accreditation
+        fields = "__all__"
+        read_only_fields = ["id", "care_home", "created_at", "updated_at"]
 
 
 class AuditActionSerializer(serializers.ModelSerializer):

@@ -40,13 +40,16 @@ export type Permission =
   | "billing.view" | "billing.manage"
   | "gp.view" | "gp.manage"
   | "family.view" | "family.manage"
-  | "skills.view" | "skills.manage";
+  | "skills.view" | "skills.manage"
+  | "integrations.view" | "integrations.manage"
+  | "devices.view" | "devices.manage";
 
 /** Which permission gates each nav item (null = always visible). */
 export const NAV_ACCESS: { label: string; href: string; permission: Permission | null }[] = [
   { label: "Overview",         href: "/dashboard",                  permission: null },
   { label: "KPI Dashboard",    href: "/dashboard/kpi",              permission: "kpi.view" },
   { label: "Residents",        href: "/dashboard/residents",        permission: "residents.view" },
+  { label: "Wings & Occupancy",href: "/dashboard/wings",            permission: "residents.view" },
   { label: "Medications",      href: "/dashboard/medications",      permission: "medications.view" },
   { label: "MAR Chart",        href: "/dashboard/mar",              permission: "mar.view" },
   { label: "Care Plans",       href: "/dashboard/care-plans",       permission: "care_plans.view" },
@@ -82,4 +85,6 @@ export const NAV_ACCESS: { label: string; href: string; permission: Permission |
   { label: "GP & Hospital",   href: "/dashboard/gp",              permission: "gp.view" },
   { label: "Family Portal",   href: "/dashboard/family",           permission: "family.view" },
   { label: "Skills",          href: "/dashboard/skills",           permission: "skills.view" },
+  { label: "Integrations",    href: "/dashboard/integrations",     permission: "integrations.view" },
+  { label: "Devices & Sensors", href: "/dashboard/devices",        permission: "devices.view" },
 ];

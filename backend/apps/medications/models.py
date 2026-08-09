@@ -32,6 +32,9 @@ class Medication(models.Model):
     stock_count = models.IntegerField(default=0)
     reorder_threshold = models.IntegerField(default=7, help_text="Days of stock to trigger reorder")
     is_controlled = models.BooleanField(default=False)
+    is_psychotropic = models.BooleanField(
+        default=False, help_text="Antipsychotic, sedative, or other psychotropic medication — tracked for CQC oversight"
+    )
     is_active = models.BooleanField(default=True)
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -104,6 +107,10 @@ class MAREntry(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="mar_entries"
     )
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
+    patch_site = models.CharField(
+        max_length=50, blank=True,
+        help_text="Applied site for topical/patch medications, for rotation tracking (e.g. 'Left upper arm')",
+    )
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -88,6 +88,7 @@ function SearchInput({ mobile = false, inputRef }: { mobile?: boolean; inputRef?
       <input
         ref={inputRef}
         type="text"
+        aria-label="Search residents"
         value={query}
         onChange={e => setQuery(e.target.value)}
         placeholder="Search residents…"
@@ -203,7 +204,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
         {/* Left */}
         <div className="flex items-center gap-3">
-          <button onClick={onMenuClick}
+          <button onClick={onMenuClick} aria-label="Open menu"
             className="lg:hidden w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
             style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
             <Menu size={18} style={{ color: "var(--text-secondary)" }} />
@@ -222,7 +223,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
         {/* Right */}
         <div className="flex items-center gap-2">
           {/* Mobile search toggle */}
-          <button onClick={() => setSearchOpen(v => !v)}
+          <button onClick={() => setSearchOpen(v => !v)} aria-label={searchOpen ? "Close search" : "Open search"}
             className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center"
             style={{ background: "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
             {searchOpen
@@ -234,6 +235,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
           <button onClick={toggle}
             className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
             style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
             {theme === "dark"
               ? <Sun size={15} style={{ color: "var(--text-secondary)" }} />
@@ -242,7 +244,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
           {/* Notifications */}
           <div className="relative" ref={notifsRef}>
-            <button onClick={openNotifs}
+            <button onClick={openNotifs} aria-label="Notifications" aria-haspopup="true" aria-expanded={notifsOpen}
               className="relative w-9 h-9 rounded-xl flex items-center justify-center"
               style={{ background: notifsOpen ? "rgba(13, 148, 136,0.08)" : "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
               <Bell size={15} style={{ color: "var(--text-secondary)" }} />
@@ -280,7 +282,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
                           style={{ color: "var(--text-secondary)" }}>
                           {n.message}
                         </Link>
-                        <button onClick={() => dismissNotif(n.id)} className="flex-shrink-0 mt-0.5 opacity-40 hover:opacity-70 transition-opacity">
+                        <button onClick={() => dismissNotif(n.id)} aria-label="Dismiss notification" className="flex-shrink-0 mt-0.5 opacity-40 hover:opacity-70 transition-opacity">
                           <X size={12} style={{ color: "var(--text-secondary)" }} />
                         </button>
                       </div>
@@ -293,7 +295,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
           {/* User menu */}
           <div className="relative" ref={menuRef}>
-            <button onClick={() => setMenuOpen(!menuOpen)}
+            <button onClick={() => setMenuOpen(!menuOpen)} aria-label="User menu" aria-haspopup="true" aria-expanded={menuOpen}
               className="flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-xl transition-all"
               style={{ background: menuOpen ? "rgba(13, 148, 136,0.08)" : "var(--input-bg)", border: "1px solid var(--border-strong)" }}>
               <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold text-white flex-shrink-0"

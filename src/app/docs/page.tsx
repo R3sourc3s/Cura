@@ -132,7 +132,7 @@ const categories = [
 
 export default function DocsPage() {
   return (
-    <main style={{ background: "#050914", minHeight: "100vh" }}>
+    <main id="main-content" style={{ background: "#050914", minHeight: "100vh" }}>
       <Navbar />
 
       {/* Hero */}
@@ -198,7 +198,7 @@ export default function DocsPage() {
           {quickStart.map(({ icon: Icon, label, desc, badge, color }) => (
             <a
               key={label}
-              href="/help"
+              href={label === "API Reference" ? "/docs/api" : "/help"}
               className="glass glass-hover rounded-2xl p-6 group cursor-pointer"
               style={{ border: "1px solid rgba(255,255,255,0.07)" }}
             >
@@ -249,7 +249,7 @@ export default function DocsPage() {
                 {items.map(({ icon: Icon, label }) => (
                   <li key={label}>
                     <a
-                      href="/help"
+                      href={label === "API Reference" || label === "Webhooks" ? "/docs/api" : "/help"}
                       className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all group"
                     >
                       <Icon size={15} style={{ color }} className="shrink-0" />

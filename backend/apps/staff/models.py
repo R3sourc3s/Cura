@@ -2,7 +2,28 @@ from django.db import models
 from django.conf import settings
 
 
+class CareHomeGroup(models.Model):
+    """
+    An operator running more than one care home under Cura — the multi-site
+    layer Access Group's "enterprise suite" claims and Cura's own Enterprise
+    tier already promises. Deliberately additive: individual CareHomes remain
+    the unit every other app scopes data to, so nothing outside this group
+    dashboard changes behaviour.
+    """
+    name = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
 class CareHome(models.Model):
+    group = models.ForeignKey(
+        CareHomeGroup, on_delete=models.SET_NULL, null=True, blank=True, related_name="care_homes"
+    )
     name = models.CharField(max_length=200)
     address = models.TextField()
     cqc_registration_number = models.CharField(max_length=50, unique=True)
@@ -14,6 +35,28 @@ class CareHome(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Wing(models.Model):
+    """A wing/floor/unit within a care home — enables multi-wing central oversight and room allocation."""
+
+    care_home = models.ForeignKey(CareHome, on_delete=models.CASCADE, related_name="wings")
+    name = models.CharField(max_length=100, help_text="e.g. Rose Wing, Ground Floor, Dementia Unit")
+    floor = models.CharField(max_length=20, blank=True)
+    bed_count = models.PositiveIntegerField(default=0)
+    lead_staff = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="led_wings"
+    )
+    notes = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["name"]
+        unique_together = ["care_home", "name"]
+
+    def __str__(self):
+        return f"{self.name} — {self.care_home}"
 
 
 class Shift(models.Model):

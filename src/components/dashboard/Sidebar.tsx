@@ -11,7 +11,7 @@ import {
   Table2, GraduationCap, Utensils, AlertCircle, Moon, ShieldAlert,
   MessageSquare, Star,
   Package, Briefcase, CalendarOff, CheckSquare, ClipboardPlus,
-  Receipt, Activity, Heart, Award,
+  Receipt, Activity, Heart, Award, LayoutGrid, Plug, Watch, Building2,
 } from "lucide-react";
 import { logout } from "@/lib/auth";
 import { useUser } from "@/context/UserContext";
@@ -21,6 +21,7 @@ const ICONS: Record<string, React.ElementType> = {
   "/dashboard":              LayoutDashboard,
   "/dashboard/kpi":          TrendingUp,
   "/dashboard/residents":    Users,
+  "/dashboard/wings":        LayoutGrid,
   "/dashboard/medications":  Pill,
   "/dashboard/care-plans":   ClipboardList,
   "/dashboard/care-notes":   NotebookPen,
@@ -56,6 +57,9 @@ const ICONS: Record<string, React.ElementType> = {
   "/dashboard/gp":           Activity,
   "/dashboard/family":       Heart,
   "/dashboard/skills":       Award,
+  "/dashboard/integrations": Plug,
+  "/dashboard/devices":      Watch,
+  "/dashboard/group":        Building2,
 };
 
 interface SidebarProps {
@@ -65,11 +69,16 @@ interface SidebarProps {
 
 export default function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
-  const { can } = useUser();
+  const { can, user } = useUser();
 
   const visibleNav = NAV_ACCESS.filter(({ permission }) =>
     permission === null || can(permission)
   );
+  // Group Oversight is gated by a per-user tenancy flag, not a role permission —
+  // seeing another care home's data is a cross-tenant boundary, not a job function.
+  if (user?.is_group_admin) {
+    visibleNav.push({ label: "Group Oversight", href: "/dashboard/group", permission: null });
+  }
 
   return (
     <>
@@ -111,14 +120,14 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               <div className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>Care Platform</div>
             </div>
           </div>
-          <button onClick={onClose}
+          <button onClick={onClose} aria-label="Close menu"
             className="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center"
             style={{ background: "rgba(255,255,255,0.1)" }}>
             <X size={16} style={{ color: "rgba(255,255,255,0.7)" }} />
           </button>
         </div>
 
-        <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto">
+        <nav aria-label="Primary" className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto">
           {visibleNav.map(({ label, href }) => {
             const Icon = ICONS[href] ?? LayoutDashboard;
             const exact = href === "/dashboard";

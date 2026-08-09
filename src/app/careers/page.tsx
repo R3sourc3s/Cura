@@ -72,7 +72,7 @@ const fadeUp = {
 
 export default function CareersPage() {
   return (
-    <main style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
+    <main id="main-content" style={{ background: "var(--bg-secondary)", minHeight: "100vh" }}>
       <Navbar />
 
       <section className="relative pt-32 pb-24 overflow-hidden">

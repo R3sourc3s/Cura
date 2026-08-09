@@ -1,10 +1,22 @@
 from django.contrib import admin
-from .models import CareHome, Shift, LeaveRequest, Training
+from .models import CareHome, CareHomeGroup, Shift, LeaveRequest, Training, Wing
+
+
+@admin.register(CareHomeGroup)
+class CareHomeGroupAdmin(admin.ModelAdmin):
+    list_display = ["name", "created_at"]
 
 
 @admin.register(CareHome)
 class CareHomeAdmin(admin.ModelAdmin):
-    list_display = ["name", "cqc_registration_number", "bed_count", "is_active"]
+    list_display = ["name", "group", "cqc_registration_number", "bed_count", "is_active"]
+    list_filter = ["group", "is_active"]
+
+
+@admin.register(Wing)
+class WingAdmin(admin.ModelAdmin):
+    list_display = ["name", "care_home", "floor", "bed_count", "lead_staff", "is_active"]
+    list_filter = ["care_home", "is_active"]
 
 
 @admin.register(Shift)

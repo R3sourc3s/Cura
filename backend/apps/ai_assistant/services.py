@@ -94,26 +94,3 @@ Reply with ONLY a single integer."""
         return int(response.content[0].text.strip())
     except ValueError:
         return 0
-
-
-def generate_compliance_gap_report(care_home) -> str:
-    """Produce a plain-English compliance gap report for a care home."""
-    audits = care_home.audits.order_by("-audit_date")[:5]
-    audit_text = "\n".join(
-        f"- {a.domain}: {a.score}/100 ({a.rating})"
-        for a in audits
-    )
-    prompt = f"""Care home: {care_home.name}
-Recent audit scores:
-{audit_text or 'No audits recorded'}
-
-Identify the top 3 compliance gaps and suggest concrete actions to address each.
-Format as a numbered list. Be specific and reference CQC standards where applicable."""
-
-    response = _get_client().messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=800,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return response.content[0].text
