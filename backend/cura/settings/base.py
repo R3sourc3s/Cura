@@ -193,10 +193,16 @@ CELERY_TASK_SERIALIZER = "json"
 
 # Cache — backs DRF throttling so rate limits are shared across workers and
 # survive restarts (uses a separate Redis DB from Celery).
+# Derive the cache URL by setting the DB path to /1, safely handling URLs that
+# have no db suffix (e.g. Railway's "redis://user:pass@host:6379").
+from urllib.parse import urlsplit, urlunsplit  # noqa: E402
+
+_redis_parts = urlsplit(REDIS_URL)
+_default_cache_url = urlunsplit(_redis_parts._replace(path="/1"))
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": env("CACHE_URL", default=REDIS_URL.rsplit("/", 1)[0] + "/1"),
+        "LOCATION": env("CACHE_URL", default=_default_cache_url),
     }
 }
 
