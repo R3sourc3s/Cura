@@ -172,7 +172,7 @@ export default function LeavePage() {
       if (res.ok) {
         const updated = await res.json();
         setRequests(p => p.map(r => r.id === updated.id ? updated : r));
-        toast(`Leave ${reviewTarget.action}.`, reviewTarget.action === "rejected" ? "error" : "success");
+        toast(`Leave ${reviewTarget.action}.`, reviewTarget.action === "declined" ? "error" : "success");
         setReviewTarget(null);
         setReviewNotes("");
       } else { toast("Could not review leave request.", "error"); }
