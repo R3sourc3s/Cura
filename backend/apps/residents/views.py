@@ -40,10 +40,7 @@ class ResidentViewSet(viewsets.ModelViewSet):
         return ResidentSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        if user.care_home:
-            return super().get_queryset().filter(care_home=user.care_home)
-        return super().get_queryset()
+        return super().get_queryset().filter(care_home=self.request.user.care_home)
 
     def perform_create(self, serializer):
         resident = serializer.save(care_home=self.request.user.care_home)

@@ -9,7 +9,7 @@ from rest_framework import generics, permissions, views, response, status
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .models import User, FamilyContact
-from .serializers import UserSerializer, RegisterSerializer, CuraTokenSerializer, AdminCreateUserSerializer, AdminUpdateUserSerializer
+from .serializers import UserSerializer, CuraTokenSerializer, AdminCreateUserSerializer, AdminUpdateUserSerializer
 from .permissions import require
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -28,12 +28,6 @@ class LoginView(TokenObtainPairView):
     serializer_class = CuraTokenSerializer
     permission_classes = [permissions.AllowAny]
     throttle_classes = [LoginRateThrottle]
-
-
-class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = RegisterSerializer
-    permission_classes = [permissions.AllowAny]
 
 
 class MeView(generics.RetrieveUpdateAPIView):

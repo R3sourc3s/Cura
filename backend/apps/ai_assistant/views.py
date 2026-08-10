@@ -17,7 +17,9 @@ class ChatView(views.APIView):
         context = ""
         if resident_id:
             try:
-                r = Resident.objects.prefetch_related("conditions", "medications").get(pk=resident_id)
+                r = Resident.objects.prefetch_related("conditions", "medications").get(
+                    pk=resident_id, care_home=request.user.care_home
+                )
                 conditions = ", ".join(c.name for c in r.conditions.filter(is_active=True))
                 context = f"Name: {r.full_name}, Age: {r.age}, Room: {r.room_number}, Conditions: {conditions}"
             except Resident.DoesNotExist:
@@ -38,7 +40,9 @@ class ResidentRiskScoreView(views.APIView):
 
     def post(self, request, resident_id):
         try:
-            resident = Resident.objects.prefetch_related("conditions", "medications").get(pk=resident_id)
+            resident = Resident.objects.prefetch_related("conditions", "medications").get(
+                pk=resident_id, care_home=request.user.care_home
+            )
         except Resident.DoesNotExist:
             return response.Response({"error": "Resident not found"}, status=404)
 

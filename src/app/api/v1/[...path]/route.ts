@@ -63,7 +63,7 @@ async function proxy(request: NextRequest, params: Promise<{ path: string[] }>):
 
         const retryResponse = await buildNextResponse(retried);
         retryResponse.cookies.set("emp_access", newAccess, {
-          httpOnly: true, secure, sameSite: "lax", maxAge: 60 * 60, path: "/",
+          httpOnly: true, secure, sameSite: "strict", maxAge: 60 * 60, path: "/",
         });
         return retryResponse;
       }

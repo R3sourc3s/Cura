@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   const { access } = await upstream.json();
   const response = NextResponse.json({ ok: true });
   response.cookies.set("emp_access", access, {
-    httpOnly: true, secure, sameSite: "lax", maxAge: 60 * 60, path: "/",
+    httpOnly: true, secure, sameSite: "strict", maxAge: 60 * 60, path: "/",
   });
   return response;
 }
