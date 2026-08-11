@@ -70,7 +70,7 @@ async function tryRefresh(
     response.cookies.set("emp_access", access, {
       httpOnly: true,
       secure,
-      sameSite: "lax",
+      sameSite: "strict",
       maxAge: 60 * 60,
       path: "/",
     });

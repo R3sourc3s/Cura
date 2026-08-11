@@ -73,6 +73,9 @@ export default function MaintenancePage() {
   const open = issues.filter(i => i.status === "open").length;
   const urgent = issues.filter(i => i.priority === "urgent" && i.status !== "closed").length;
   const inProgress = issues.filter(i => i.status === "in_progress").length;
+  // issues starts empty and is only populated client-side after the fetch effect resolves,
+  // so this "last 7 days" cutoff has no server-rendered output to mismatch against.
+  // eslint-disable-next-line react-hooks/purity
   const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
   const resolvedWeek = issues.filter(i => i.status === "resolved" && i.updated_at >= weekAgo).length;
 

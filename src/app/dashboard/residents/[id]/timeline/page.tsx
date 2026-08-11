@@ -2,7 +2,6 @@
 
 import { useEffect, useState, use } from "react";
 import { Activity, Shield, Pill, Heart, NotebookPen, CalendarDays, Stethoscope, Moon, ClipboardList } from "lucide-react";
-import { useRouter } from "next/navigation";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 interface TimelineEvent {
@@ -41,7 +40,6 @@ function isoToRelative(iso: string): string {
 
 export default function ResidentTimelinePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const router = useRouter();
   const [events, setEvents] = useState<TimelineEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [residentName, setResidentName] = useState("");

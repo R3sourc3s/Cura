@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { auth as authApi, staff } from "@/lib/api";
+import { staff } from "@/lib/api";
 import { useUser } from "@/context/UserContext";
 import { useToast } from "@/components/Toast";
 import type { Shift, LeaveRequest, Training, User } from "@/types";
@@ -38,19 +38,6 @@ function Field({ label, required, children }: { label: string; required?: boolea
         {label}{required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {children}
-    </div>
-  );
-}
-
-function GlassCard({ title, children, badge, action }: { title: string; children: React.ReactNode; badge?: React.ReactNode; action?: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl overflow-hidden"
-      style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-hover)" }}>
-      <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--border)" }}>
-        <h2 className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>{title}</h2>
-        <div className="flex items-center gap-2">{badge}{action}</div>
-      </div>
-      <div>{children}</div>
     </div>
   );
 }
@@ -408,7 +395,7 @@ export default function StaffClient({ initialShifts, initialLeave, initialTraini
       await staff.updateLeave(id, { status });
       setLeave((prev) => prev.map((r) => r.id === id ? { ...r, status } : r));
       toast(`Leave request ${status}.`);
-    } catch (e) {
+    } catch {
       toast("Failed to update leave request.", "error");
     } finally { setUpdating(null); }
   }

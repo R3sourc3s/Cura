@@ -5,7 +5,6 @@ import {
   Calendar,
   Clock,
   Users,
-  ArrowRight,
   Video,
   Eye,
   Mail,

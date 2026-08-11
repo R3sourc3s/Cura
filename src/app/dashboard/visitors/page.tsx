@@ -83,6 +83,9 @@ export default function VisitorsPage() {
   const today = new Date().toISOString().slice(0, 10);
   const currentlyIn = logs.filter(l => !l.is_signed_out);
   const todayVisits = logs.filter(l => l.signed_in.startsWith(today)).length;
+  // logs starts empty and is only populated client-side after the fetch effect resolves,
+  // so this "last 7 days" cutoff has no server-rendered output to mismatch against.
+  // eslint-disable-next-line react-hooks/purity
   const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
   const weekVisits = logs.filter(l => l.signed_in >= weekAgo).length;
 

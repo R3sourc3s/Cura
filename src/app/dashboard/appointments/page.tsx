@@ -83,7 +83,6 @@ export default function AppointmentsPage() {
   }
 
   const today = new Date().toISOString().slice(0, 10);
-  const weekEnd = new Date(Date.now() + 7 * 86400000).toISOString();
   const upcoming = appts.filter(a => a.status === "scheduled" && a.scheduled_at >= today).length;
   const todayCount = appts.filter(a => a.scheduled_at.startsWith(today)).length;
   const escortNeeded = appts.filter(a => a.escort_required && a.status === "scheduled").length;

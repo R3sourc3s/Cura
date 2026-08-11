@@ -1,12 +1,14 @@
 import { serverApi } from "@/lib/server-api";
 import ProfileClient from "./ProfileClient";
 import { redirect } from "next/navigation";
+import type { User } from "@/types";
 
 export default async function ProfilePage() {
+  let user: User;
   try {
-    const user = await serverApi.auth.me();
-    return <ProfileClient initialUser={user} />;
+    user = await serverApi.auth.me();
   } catch {
     redirect("/dashboard");
   }
+  return <ProfileClient initialUser={user} />;
 }

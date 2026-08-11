@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   Search, LayoutDashboard, Users, Pill, ClipboardList, AlertTriangle,
-  MessageSquare, Star, Shield, BookOpen, TrendingUp, NotebookPen,
+  MessageSquare, Star, BookOpen, TrendingUp, NotebookPen,
   Stethoscope, CalendarDays, Smile, DoorOpen, Wrench, FolderOpen,
   CalendarRange, Table2, GraduationCap, Utensils, AlertCircle, Moon,
   ShieldAlert, UserCheck, UsersRound, ShieldCheck, ClipboardCheck, Bot,

@@ -1,13 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Heart, LogOut, Menu, X } from "lucide-react";
+import { Heart, LogOut } from "lucide-react";
 import type { User } from "@/types";
 
 export default function FamilyShell({ user, children }: { user: User; children: React.ReactNode }) {
   const router = useRouter();
-  const [menuOpen, setMenuOpen] = useState(false);
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST", credentials: "include" });

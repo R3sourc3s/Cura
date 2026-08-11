@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AlertTriangle, X, ChevronRight, Clock, Pill, Shield, Moon, Star } from "lucide-react";
+import { AlertTriangle, X, ChevronRight, Clock, Pill, Shield, Star } from "lucide-react";
 import Link from "next/link";
 
 interface Alert {

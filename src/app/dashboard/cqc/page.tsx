@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
   Star, Shield, Zap, Heart, RefreshCw, Award,
   CheckCircle, AlertTriangle, XCircle, TrendingUp,
-  FileText, Users, Pill, ClipboardList, Activity,
+  FileText, Pill, ClipboardList, Activity,
   ChevronRight, BookOpen,
 } from "lucide-react";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { BarChart2, RefreshCw, Users, AlertTriangle, Pill, UserCheck, ClipboardList, TrendingUp } from "lucide-react";
+import { BarChart2, RefreshCw, AlertTriangle, Pill, UserCheck, ClipboardList, TrendingUp } from "lucide-react";
 
 interface KPI {
   residents: {

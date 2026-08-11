@@ -1,7 +1,7 @@
 "use client";
 
 import type { Resident, Medication, CarePlan } from "@/types";
-import { Heart, User, Pill, ClipboardList, Phone } from "lucide-react";
+import { Heart, Pill, ClipboardList, Phone } from "lucide-react";
 
 const RISK = {
   critical: { bg: "rgba(239,68,68,0.15)", text: "#f87171", dot: "#ef4444" },

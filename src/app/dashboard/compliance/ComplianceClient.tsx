@@ -477,7 +477,7 @@ export default function ComplianceClient({ initialAudits }: { initialAudits: Com
         actions: (a.actions ?? []).map((ac) => ac.id === action.id ? updated : ac),
       }));
       toast(`Action marked ${next.replace("_", " ")}.`);
-    } catch (e) { toast("Failed to update action.", "error"); }
+    } catch { toast("Failed to update action.", "error"); }
     finally { setUpdatingAction(null); }
   }
 

@@ -6,8 +6,8 @@ import { useUser } from "@/context/UserContext";
 import { useToast } from "@/components/Toast";
 import type { Incident, Resident } from "@/types";
 import {
-  AlertTriangle, Plus, X, Save, ChevronDown, ChevronUp,
-  CheckCircle, Clock, Eye,
+  AlertTriangle, Plus, X, Save,
+  CheckCircle, Eye,
 } from "lucide-react";
 import EmptyState from "@/components/ui/EmptyState";
 
@@ -264,7 +264,6 @@ function IncidentDetail({ incident, onClose, onUpdate }: {
     finally { setUpdatingStatus(false); }
   }
 
-  const sev = SEVERITY[incident.severity as keyof typeof SEVERITY] ?? SEVERITY.low;
   const st = STATUS[incident.status as keyof typeof STATUS] ?? STATUS.open;
 
   return (

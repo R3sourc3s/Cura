@@ -87,6 +87,9 @@ export default function CareNotesPage() {
 
   const today = new Date().toISOString().slice(0, 10);
   const todayCount = notes.filter(n => n.recorded_at.startsWith(today)).length;
+  // notes starts empty and is only populated client-side after the fetch effect resolves,
+  // so this "last 7 days" cutoff has no server-rendered output to mismatch against.
+  // eslint-disable-next-line react-hooks/purity
   const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
   const weekCount = notes.filter(n => n.recorded_at >= weekAgo).length;
   const shiftCounts = { day: notes.filter(n => n.shift === "day").length, evening: notes.filter(n => n.shift === "evening").length, night: notes.filter(n => n.shift === "night").length };

@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { carePlans } from "@/lib/api";
-import type { CarePlan, CarePlanSection, CarePlanNote } from "@/types";
+import type { CarePlan, CarePlanSection } from "@/types";
 import {
   Bot, Calendar, CheckCircle, ChevronDown, ChevronUp,
-  Edit2, MessageSquare, Plus, Save, Trash2, X,
+  Edit2, MessageSquare, Plus, Save, Trash2,
 } from "lucide-react";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 

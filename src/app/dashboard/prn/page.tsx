@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Pill, Plus, X, Clock, CheckCircle, AlertTriangle, ChevronDown } from "lucide-react";
+import { Pill, Plus, X, Clock, CheckCircle, ChevronDown } from "lucide-react";
 import { useToast } from "@/components/Toast";
 import VoiceInputButton from "@/components/ui/VoiceInputButton";
 
@@ -161,7 +161,11 @@ export default function PRNPage() {
                   const p = m.prn_protocol!;
                   const recentAdmins = administrations.filter(a => a.medication === m.id);
                   const lastAdmin = recentAdmins[0];
+                  // administrations starts empty and is only populated client-side after the
+                  // fetch effect resolves, so this has no server-rendered output to mismatch
+                  // against — and the interval check needs the real current time regardless.
                   const hoursSinceLast = lastAdmin
+                    // eslint-disable-next-line react-hooks/purity
                     ? (Date.now() - new Date(lastAdmin.administered_at).getTime()) / 3600000
                     : Infinity;
                   const canGive = hoursSinceLast >= p.min_interval_hours;

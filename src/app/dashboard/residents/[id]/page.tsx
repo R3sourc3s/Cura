@@ -4,7 +4,7 @@ import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { residents as residentsApi, ai as aiApi, vitals as vitalsApi } from "@/lib/api";
 import { useUser } from "@/context/UserContext";
-import type { Resident, Medication, CarePlan, MAREntry, VitalSign } from "@/types";
+import type { Resident, Medication, CarePlan, VitalSign } from "@/types";
 import {
   Edit2, Trash2, User, Phone, Heart, Pill,
   ClipboardList, AlertTriangle, CheckCircle, Clock, XCircle,
@@ -142,7 +142,7 @@ function VitalsTab({ residentId, canEdit }: { residentId: number; canEdit: boole
 
   useEffect(() => {
     vitalsApi.list(residentId)
-      .then(setVitals)
+      .then(d => setVitals(d.results))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [residentId]);

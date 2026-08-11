@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { MessageSquare, Send, Plus, X, Pin } from "lucide-react";
+import { MessageSquare, Send, Pin } from "lucide-react";
 import { useToast } from "@/components/Toast";
 
 interface Message {

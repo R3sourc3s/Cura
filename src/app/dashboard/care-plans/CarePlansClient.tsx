@@ -298,7 +298,7 @@ export default function CarePlansClient({ initialPlans, initialResidents }: Prop
                         const r = await carePlans.generateSummary(plan.id);
                         setPlans((prev) => prev.map((p) => p.id === plan.id ? { ...p, ai_summary: r.summary } : p));
                         toast("AI summary generated.");
-                      } catch (e) { toast("Failed to generate summary.", "error"); }
+                      } catch { toast("Failed to generate summary.", "error"); }
                       finally { setSummaryLoading(null); }
                     }}
                     className="flex-1 py-2 text-xs font-semibold rounded-xl flex items-center justify-center gap-1"

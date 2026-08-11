@@ -238,7 +238,7 @@ export const family = {
 
 export const vitals = {
   list: (residentId: number) =>
-    request<VitalSign[]>(`/vitals/?resident=${residentId}&ordering=-recorded_at`),
+    request<{ results: VitalSign[]; count: number }>(`/vitals/?resident=${residentId}&ordering=-recorded_at`),
   create: (data: Partial<VitalSign>) =>
     request<VitalSign>("/vitals/", { method: "POST", body: JSON.stringify(data) }),
 };

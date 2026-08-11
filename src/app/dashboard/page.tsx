@@ -1,4 +1,5 @@
 import { serverApi } from "@/lib/server-api";
+import Link from "next/link";
 import type { Resident, MAREntry, ComplianceAudit } from "@/types";
 import { Users, Pill, ShieldCheck, ClipboardList, AlertTriangle, TrendingUp, Activity } from "lucide-react";
 import DashboardAlerts from "@/components/dashboard/DashboardAlerts";
@@ -131,7 +132,7 @@ export default async function DashboardPage() {
               <Activity size={16} style={{ color: "var(--c-red)" }} />
               <h2 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>High Risk Residents</h2>
             </div>
-            <a href="/dashboard/residents" className="text-xs" style={{ color: "#0d9488" }}>View all →</a>
+            <Link href="/dashboard/residents" className="text-xs" style={{ color: "#0d9488" }}>View all →</Link>
           </div>
           {highRisk.length === 0 ? (
             <p className="text-sm" style={{ color: "var(--text-muted)" }}>No high-risk residents.</p>
