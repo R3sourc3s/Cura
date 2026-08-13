@@ -1,0 +1,30 @@
+{
+  "backend": [
+    {
+      "t": 1786657279,
+      "ok": true,
+      "latency_ms": 1079,
+      "status": 200
+    },
+    {
+      "t": 1786657328,
+      "ok": true,
+      "latency_ms": 602,
+      "status": 200
+    }
+  ],
+  "frontend": [
+    {
+      "t": 1786657279,
+      "ok": true,
+      "latency_ms": 332,
+      "status": 200
+    },
+    {
+      "t": 1786657328,
+      "ok": true,
+      "latency_ms": 224,
+      "status": 200
+    }
+  ]
+}

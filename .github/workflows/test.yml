@@ -59,7 +59,8 @@ jobs:
       - name: Generate coverage badge data
         working-directory: backend
         run: |
-          PCT=$(coverage json -o /tmp/coverage.json && python -c "import json; print(round(json.load(open('/tmp/coverage.json'))['totals']['percent_covered']))")
+          coverage json -o /tmp/coverage.json > /dev/null
+          PCT=$(python -c "import json; print(round(json.load(open('/tmp/coverage.json'))['totals']['percent_covered']))")
           COLOR=$([ "$PCT" -ge 80 ] && echo green || ([ "$PCT" -ge 50 ] && echo yellow || echo red))
           mkdir -p ../badges
           echo "{\"schemaVersion\":1,\"label\":\"backend coverage\",\"message\":\"${PCT}%\",\"color\":\"${COLOR}\"}" > ../badges/coverage-backend.json

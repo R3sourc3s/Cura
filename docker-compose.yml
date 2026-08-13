@@ -6,6 +6,11 @@ services:
       POSTGRES_DB: cura
       POSTGRES_USER: cura
       POSTGRES_PASSWORD: cura
+    ports:
+      # Exposed to the host so `manage.py test`/`runserver` run from a local
+      # venv (not the backend container) can reach it — dev-only, prod's
+      # compose file deliberately doesn't do this.
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -17,6 +22,10 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
+    ports:
+      # Same reasoning as db's port above — local (non-Docker) test runs hit
+      # this via REDIS_URL's localhost default for DRF throttling's cache backend.
+      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
