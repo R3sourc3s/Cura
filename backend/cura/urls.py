@@ -2,9 +2,11 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.permissions import IsAdminUser, AllowAny
+from .health import health_check
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/health/", health_check, name="health-check"),
 
     # API v1
     path("api/v1/auth/", include("apps.authentication.urls")),

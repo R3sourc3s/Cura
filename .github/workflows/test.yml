@@ -9,6 +9,8 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     services:
       postgres:
         image: postgres:16-alpine
@@ -42,18 +44,35 @@ jobs:
         with:
           python-version: "3.12"
           cache: "pip"
-          cache-dependency-path: backend/requirements.txt
+          cache-dependency-path: backend/requirements-dev.txt
 
       - name: Install dependencies
         working-directory: backend
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-dev.txt
 
-      - name: Run tests
+      - name: Run tests with coverage
         working-directory: backend
-        run: python manage.py test
+        run: |
+          coverage run manage.py test
+          coverage report
+
+      - name: Generate coverage badge data
+        working-directory: backend
+        run: |
+          PCT=$(coverage json -o /tmp/coverage.json && python -c "import json; print(round(json.load(open('/tmp/coverage.json'))['totals']['percent_covered']))")
+          COLOR=$([ "$PCT" -ge 80 ] && echo green || ([ "$PCT" -ge 50 ] && echo yellow || echo red))
+          mkdir -p ../badges
+          echo "{\"schemaVersion\":1,\"label\":\"backend coverage\",\"message\":\"${PCT}%\",\"color\":\"${COLOR}\"}" > ../badges/coverage-backend.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: badges-backend
+          path: badges/coverage-backend.json
 
   frontend:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -74,3 +93,47 @@ jobs:
         # once those are cleaned up so lint failures block merges too.
         run: npm run lint
         continue-on-error: true
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Generate coverage badge data
+        run: |
+          PCT=$(node -e "console.log(Math.round(require('./coverage/coverage-summary.json').total.lines.pct))")
+          COLOR=$([ "$PCT" -ge 80 ] && echo green || ([ "$PCT" -ge 50 ] && echo yellow || echo red))
+          mkdir -p badges
+          echo "{\"schemaVersion\":1,\"label\":\"frontend coverage\",\"message\":\"${PCT}%\",\"color\":\"${COLOR}\"}" > badges/coverage-frontend.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: badges-frontend
+          path: badges/coverage-frontend.json
+
+  publish-badges:
+    # Coverage badges are read by the README from files committed to the repo
+    # (a self-contained shields.io "endpoint" badge — no Codecov/Coveralls
+    # account needed). Only runs on an actual push to main, never on PRs,
+    # since PRs shouldn't be committing badge data for code that isn't merged.
+    needs: [backend, frontend]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: badges-*
+          path: badges
+          merge-multiple: true
+
+      - name: Commit badge data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add badges/
+          git diff --staged --quiet || git commit -m "chore: update coverage badges [skip ci]"
+          git push

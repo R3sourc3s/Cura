@@ -48,6 +48,12 @@ services:
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
              gunicorn cura.wsgi:application --bind 0.0.0.0:8000 --workers 4 --reload"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health/', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   celery:
     build:
@@ -61,7 +67,7 @@ services:
       REDIS_URL: redis://redis:6379/0
     depends_on:
       backend:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - ./backend:/app
     command: celery -A cura worker -l info
@@ -82,6 +88,12 @@ services:
       NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN}
     depends_on:
       - backend
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 volumes:
   postgres_data:
