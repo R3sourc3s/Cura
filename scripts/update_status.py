@@ -1,16 +1,26 @@
 """
 Pings the live health endpoints, appends the result to status/history.json,
-and regenerates the shields.io badge JSON + an SVG uptime graph from that
-history. Run on a schedule by .github/workflows/uptime.yml (self-hosted, same
-pattern as the coverage badges — no third-party uptime-monitor account).
+and regenerates a badge SVG + an SVG uptime graph from that history. Run on a
+schedule by .github/workflows/uptime.yml (self-hosted, same pattern as the
+coverage badges — no third-party uptime-monitor account).
+
+The badge is rendered locally via render_badge.py rather than shields.io's
+`img.shields.io/endpoint` feature: this repo is private, and shields.io fetches
+the referenced JSON from its own server with no GitHub auth, so it always
+404s against private raw content. A self-rendered SVG, referenced by the
+README via a relative path, renders fine for any authenticated viewer instead.
 
 Usage: python scripts/update_status.py
 """
 import json
+import sys
 import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from render_badge import render as render_badge_svg  # noqa: E402
 
 STATUS_DIR = Path(__file__).resolve().parent.parent / "status"
 HISTORY_FILE = STATUS_DIR / "history.json"
@@ -64,8 +74,7 @@ def badge_color(pct):
 def write_badge(name, pct):
     color = badge_color(pct)
     message = "unknown" if pct is None else f"{pct}%"
-    data = {"schemaVersion": 1, "label": f"{name} uptime", "message": message, "color": color}
-    (STATUS_DIR / f"uptime-{name}.json").write_text(json.dumps(data))
+    (STATUS_DIR / f"uptime-{name}.svg").write_text(render_badge_svg(f"{name} uptime", message, color))
 
 
 def write_graph_svg(name, entries):

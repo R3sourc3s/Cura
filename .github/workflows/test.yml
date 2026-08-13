@@ -56,19 +56,19 @@ jobs:
           coverage run manage.py test
           coverage report
 
-      - name: Generate coverage badge data
+      - name: Generate coverage badge
         working-directory: backend
         run: |
           coverage json -o /tmp/coverage.json > /dev/null
           PCT=$(python -c "import json; print(round(json.load(open('/tmp/coverage.json'))['totals']['percent_covered']))")
           COLOR=$([ "$PCT" -ge 80 ] && echo green || ([ "$PCT" -ge 50 ] && echo yellow || echo red))
           mkdir -p ../badges
-          echo "{\"schemaVersion\":1,\"label\":\"backend coverage\",\"message\":\"${PCT}%\",\"color\":\"${COLOR}\"}" > ../badges/coverage-backend.json
+          python ../scripts/render_badge.py "backend coverage" "${PCT}%" "$COLOR" ../badges/coverage-backend.svg
 
       - uses: actions/upload-artifact@v4
         with:
           name: badges-backend
-          path: badges/coverage-backend.json
+          path: badges/coverage-backend.svg
 
   frontend:
     runs-on: ubuntu-latest
@@ -98,23 +98,24 @@ jobs:
       - name: Run tests with coverage
         run: npm run test:coverage
 
-      - name: Generate coverage badge data
+      - name: Generate coverage badge
         run: |
           PCT=$(node -e "console.log(Math.round(require('./coverage/coverage-summary.json').total.lines.pct))")
           COLOR=$([ "$PCT" -ge 80 ] && echo green || ([ "$PCT" -ge 50 ] && echo yellow || echo red))
           mkdir -p badges
-          echo "{\"schemaVersion\":1,\"label\":\"frontend coverage\",\"message\":\"${PCT}%\",\"color\":\"${COLOR}\"}" > badges/coverage-frontend.json
+          python3 scripts/render_badge.py "frontend coverage" "${PCT}%" "$COLOR" badges/coverage-frontend.svg
 
       - uses: actions/upload-artifact@v4
         with:
           name: badges-frontend
-          path: badges/coverage-frontend.json
+          path: badges/coverage-frontend.svg
 
   publish-badges:
-    # Coverage badges are read by the README from files committed to the repo
-    # (a self-contained shields.io "endpoint" badge — no Codecov/Coveralls
-    # account needed). Only runs on an actual push to main, never on PRs,
-    # since PRs shouldn't be committing badge data for code that isn't merged.
+    # Coverage badges are rendered locally (scripts/render_badge.py) and
+    # committed to the repo — no Codecov/Coveralls account, and no dependency
+    # on shields.io's endpoint feature, which can't reach this private repo's
+    # raw content anonymously. Only runs on an actual push to main, never on
+    # PRs, since PRs shouldn't be committing badge data for unmerged code.
     needs: [backend, frontend]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
