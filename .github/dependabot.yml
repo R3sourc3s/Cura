@@ -1,0 +1,50 @@
+version: 2
+
+updates:
+  # Frontend — npm (root package.json)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      # vitest and its coverage provider must move together — they're
+      # version-locked to each other (a mismatch broke `npm install` earlier
+      # in this repo's history: @vitest/coverage-v8 pulling a newer vitest
+      # peer dependency than what's actually installed).
+      vitest:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Backend — pip (requirements.txt / requirements-dev.txt)
+  - package-ecosystem: "pip"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Docker base images
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+
+  # Versions pinned in workflow files (actions/checkout@v4, etc.)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
