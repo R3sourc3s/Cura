@@ -79,3 +79,6 @@ class PolicyViewSet(viewsets.ModelViewSet):
         return Policy.objects.select_related("care_home", "approved_by").filter(
             care_home=self.request.user.care_home
         )
+
+    def perform_create(self, serializer):
+        serializer.save(care_home=self.request.user.care_home)

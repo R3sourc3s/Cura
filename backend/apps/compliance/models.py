@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from cura.validators import document_upload_validators
 
 
 class ComplianceAudit(models.Model):
@@ -93,7 +94,7 @@ class Accreditation(models.Model):
     reference_number = models.CharField(max_length=100, blank=True)
     valid_from = models.DateField(null=True, blank=True)
     valid_until = models.DateField(null=True, blank=True)
-    certificate_file = models.FileField(upload_to="accreditations/", null=True, blank=True)
+    certificate_file = models.FileField(upload_to="accreditations/", null=True, blank=True, validators=document_upload_validators())
     certificate_url = models.URLField(blank=True)
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AlertTriangle, Bell, ChevronDown, ClipboardList, LogOut, Menu, Moon, Pill, Search, Shield, Sun, UserCircle, X } from "lucide-react";
+import { AlertTriangle, Bell, ChevronDown, ClipboardList, LogOut, Menu, Moon, Pill, Receipt, Search, Shield, ShieldAlert, Sun, User, UserCircle, UserCog, X } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,7 +20,7 @@ interface Resident {
 
 interface Notif {
   id: number;
-  notif_type: "incident" | "leave" | "stock" | "handover" | "general";
+  notif_type: "incident" | "leave" | "stock" | "handover" | "general" | "medication" | "safeguarding" | "resident" | "staff" | "billing";
   message: string;
   link: string;
   is_read: boolean;
@@ -41,6 +41,11 @@ function NotifIcon({ type }: { type: Notif["notif_type"] }) {
   if (type === "stock") return <Pill size={14} className="text-red-400 flex-shrink-0" />;
   if (type === "incident") return <Shield size={14} className="text-orange-400 flex-shrink-0" />;
   if (type === "handover") return <ClipboardList size={14} className="text-purple-400 flex-shrink-0" />;
+  if (type === "medication") return <Pill size={14} className="text-teal-400 flex-shrink-0" />;
+  if (type === "safeguarding") return <ShieldAlert size={14} className="text-red-400 flex-shrink-0" />;
+  if (type === "resident") return <User size={14} className="text-blue-400 flex-shrink-0" />;
+  if (type === "staff") return <UserCog size={14} className="text-amber-400 flex-shrink-0" />;
+  if (type === "billing") return <Receipt size={14} className="text-emerald-400 flex-shrink-0" />;
   return <Bell size={14} className="text-teal-400 flex-shrink-0" />;
 }
 

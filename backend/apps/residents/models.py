@@ -1,4 +1,5 @@
 from django.db import models
+from cura.validators import image_upload_validators
 
 
 class Resident(models.Model):
@@ -19,7 +20,7 @@ class Resident(models.Model):
     room_number = models.CharField(max_length=10)
     admission_date = models.DateField()
     discharge_date = models.DateField(null=True, blank=True)
-    photo = models.ImageField(upload_to="residents/", null=True, blank=True)
+    photo = models.ImageField(upload_to="residents/", null=True, blank=True, validators=image_upload_validators())
 
     # Key contacts
     next_of_kin_name = models.CharField(max_length=200, blank=True)

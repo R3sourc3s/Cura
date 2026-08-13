@@ -56,6 +56,13 @@ services:
       NODE_ENV: production
       API_URL: http://backend:8000
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      # The frontend's own AI routes (src/app/api/ai/*) call OpenAI directly,
+      # separate from the backend's Anthropic-based ai_assistant app. This was
+      # missing here — dev's docker-compose.yml has it, prod didn't — so the
+      # chat/compliance-report/risk-score/care-plan-summary/transcription
+      # features would silently 503 in a real deploy. Reads from the root
+      # .env file (docker compose's own convention), same as dev.
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
     depends_on:
       - backend
 

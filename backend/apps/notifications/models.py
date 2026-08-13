@@ -8,6 +8,11 @@ class Notification(models.Model):
         STOCK = "stock", "Low Stock"
         HANDOVER = "handover", "Handover"
         GENERAL = "general", "General"
+        MEDICATION = "medication", "Medication"
+        SAFEGUARDING = "safeguarding", "Safeguarding"
+        RESIDENT = "resident", "Resident Record"
+        STAFF = "staff", "Staff Account"
+        BILLING = "billing", "Billing"
 
     user = models.ForeignKey("authentication.User", on_delete=models.CASCADE, related_name="notifications")
     notif_type = models.CharField(max_length=20, choices=NotifType.choices, default=NotifType.GENERAL)

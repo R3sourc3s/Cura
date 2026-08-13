@@ -52,6 +52,9 @@ class WingViewSet(viewsets.ModelViewSet):
 @permission_classes([IsAuthenticated])
 def wing_oversight(request):
     """Central, multi-wing occupancy + roster snapshot for a care home."""
+    if not user_has_perm(request.user, "staff.view"):
+        return Response({"detail": "Permission denied."}, status=403)
+
     care_home = request.user.care_home
     now = timezone.localtime()
     today = now.date()

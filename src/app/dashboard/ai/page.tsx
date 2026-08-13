@@ -80,11 +80,11 @@ export default function AIPage() {
             AI Assistant
             <span className="text-xs px-2 py-0.5 rounded-full font-medium"
               style={{ background: "rgba(13, 148, 136,0.15)", color: "var(--c-teal)", border: "1px solid rgba(13, 148, 136,0.2)" }}>
-              Claude
+              GPT-4o
             </span>
           </h1>
           <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-            Powered by Anthropic Claude · Care-aware AI
+            Powered by OpenAI · Care-aware AI
           </p>
         </div>
       </div>

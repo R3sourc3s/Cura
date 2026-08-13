@@ -23,11 +23,11 @@ class ComplianceAuditSerializer(serializers.ModelSerializer):
     class Meta:
         model = ComplianceAudit
         fields = "__all__"
-        read_only_fields = ["id", "created_at"]
+        read_only_fields = ["id", "care_home", "created_at"]
 
 
 class PolicySerializer(serializers.ModelSerializer):
     class Meta:
         model = Policy
         fields = "__all__"
-        read_only_fields = ["id", "created_at", "updated_at"]
+        read_only_fields = ["id", "care_home", "created_at", "updated_at"]

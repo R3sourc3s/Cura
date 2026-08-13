@@ -41,7 +41,7 @@ class ShiftSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shift
         fields = "__all__"
-        read_only_fields = ["id", "created_at"]
+        read_only_fields = ["id", "care_home", "created_at"]
 
 
 class LeaveRequestSerializer(serializers.ModelSerializer):

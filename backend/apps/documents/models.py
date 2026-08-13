@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.db import models
+from cura.validators import document_upload_validators
 
 
 class Document(models.Model):
@@ -42,7 +43,7 @@ class Document(models.Model):
     category = models.CharField(max_length=20, choices=Category.choices)
     title = models.CharField(max_length=300)
     # Legacy single-file fields — retained for old records; new uploads use DocumentFile.
-    file = models.FileField(upload_to="documents/%Y/%m/", blank=True)
+    file = models.FileField(upload_to="documents/%Y/%m/", blank=True, validators=document_upload_validators())
     file_size = models.PositiveIntegerField(default=0)
     file_type = models.CharField(max_length=50, blank=True)
     version = models.CharField(max_length=20, blank=True)
@@ -72,7 +73,7 @@ class DocumentFile(models.Model):
         on_delete=models.CASCADE,
         related_name="files",
     )
-    file = models.FileField(upload_to="documents/%Y/%m/")
+    file = models.FileField(upload_to="documents/%Y/%m/", validators=document_upload_validators())
     original_name = models.CharField(max_length=300, blank=True)
     file_size = models.PositiveIntegerField(default=0)
     file_type = models.CharField(max_length=100, blank=True)

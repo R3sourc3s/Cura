@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from cura.validators import image_upload_validators
 
 
 class Supplier(models.Model):
@@ -117,7 +118,7 @@ class ControlledDrugRegister(models.Model):
     witness_confidence = models.FloatField(
         null=True, blank=True, help_text="Face-match similarity score (0–1) captured at witnessing time"
     )
-    witness_photo = models.ImageField(upload_to="cd_witness_captures/", null=True, blank=True)
+    witness_photo = models.ImageField(upload_to="cd_witness_captures/", null=True, blank=True, validators=image_upload_validators())
     witness_verified_at = models.DateTimeField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

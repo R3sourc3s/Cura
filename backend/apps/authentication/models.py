@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from cura.validators import image_upload_validators
 
 
 class User(AbstractUser):
@@ -20,7 +21,7 @@ class User(AbstractUser):
         related_name="users",
     )
     phone = models.CharField(max_length=20, blank=True)
-    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
+    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True, validators=image_upload_validators())
     is_group_admin = models.BooleanField(
         default=False,
         help_text="Can view the cross-home Group Oversight dashboard for their care home's group.",
