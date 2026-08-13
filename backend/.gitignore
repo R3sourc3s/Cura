@@ -8,3 +8,7 @@ staticfiles/
 media/
 db.sqlite3
 *.log
+.venv/
+.coverage
+htmlcov/
+coverage.xml
