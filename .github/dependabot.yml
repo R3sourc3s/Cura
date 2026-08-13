@@ -38,13 +38,16 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 10
   - package-ecosystem: "docker"
     directory: "/backend"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 10
 
   # Versions pinned in workflow files (actions/checkout@v4, etc.)
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 10
