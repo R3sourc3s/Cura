@@ -65,7 +65,7 @@ jobs:
           mkdir -p ../badges
           python ../scripts/render_badge.py "backend coverage" "${PCT}%" "$COLOR" ../badges/coverage-backend.svg
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: badges-backend
           path: badges/coverage-backend.svg
@@ -105,7 +105,7 @@ jobs:
           mkdir -p badges
           python3 scripts/render_badge.py "frontend coverage" "${PCT}%" "$COLOR" badges/coverage-frontend.svg
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: badges-frontend
           path: badges/coverage-frontend.svg
