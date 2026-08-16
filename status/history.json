@@ -833,6 +833,12 @@
       "ok": true,
       "latency_ms": 350,
       "status": 200
+    },
+    {
+      "t": 1786921842,
+      "ok": true,
+      "latency_ms": 285,
+      "status": 200
     }
   ],
   "frontend": [
@@ -1668,6 +1674,12 @@
       "t": 1786920870,
       "ok": true,
       "latency_ms": 96,
+      "status": 200
+    },
+    {
+      "t": 1786921842,
+      "ok": true,
+      "latency_ms": 97,
       "status": 200
     }
   ]
