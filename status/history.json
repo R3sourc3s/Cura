@@ -1,12 +1,6 @@
 {
   "backend": [
     {
-      "t": 1787438367,
-      "ok": true,
-      "latency_ms": 242,
-      "status": 200
-    },
-    {
       "t": 1787439353,
       "ok": true,
       "latency_ms": 330,
@@ -1727,15 +1721,15 @@
       "ok": true,
       "latency_ms": 183,
       "status": 200
+    },
+    {
+      "t": 1789522960,
+      "ok": true,
+      "latency_ms": 182,
+      "status": 200
     }
   ],
   "frontend": [
-    {
-      "t": 1787438367,
-      "ok": true,
-      "latency_ms": 158,
-      "status": 200
-    },
     {
       "t": 1787439353,
       "ok": true,
@@ -3456,6 +3450,12 @@
       "t": 1789515651,
       "ok": true,
       "latency_ms": 98,
+      "status": 200
+    },
+    {
+      "t": 1789522960,
+      "ok": true,
+      "latency_ms": 113,
       "status": 200
     }
   ]
