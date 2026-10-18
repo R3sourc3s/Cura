@@ -4,8 +4,11 @@ import { useEffect, useState, useCallback } from "react";
 import { Pill, Plus, X, Clock, CheckCircle, ChevronDown } from "lucide-react";
 import { useToast } from "@/components/Toast";
 import VoiceInputButton from "@/components/ui/VoiceInputButton";
+import { throwIfNotOk, useSafetyCheck } from "@/components/medications/SafetyCheck";
+import { AllergyBanner } from "@/components/residents/Allergies";
+import type { Allergy } from "@/types";
 
-interface Resident { id: number; full_name: string; room_number?: string; }
+interface Resident { id: number; full_name: string; room_number?: string; allergies?: Allergy[]; }
 
 interface PRNProtocol {
   id: number;
@@ -25,17 +28,17 @@ interface PRNAdmin {
   administered_by_name?: string;
   reason: string;
   dose_given: string;
-  effectiveness: "effective" | "partial" | "ineffective" | "unknown";
+  effectiveness: "effective" | "partial" | "no_effect" | "not_assessed";
   effectiveness_notes: string;
 }
 
 interface Medication { id: number; drug_name: string; frequency: string; prn_protocol: PRNProtocol | null; resident: number; }
 
 const EFFECT_CFG = {
-  effective:   { label: "Effective",    color: "var(--c-green)", bg: "rgba(52,211,153,0.15)" },
-  partial:     { label: "Partial",      color: "var(--c-amber)", bg: "rgba(251,191,36,0.15)" },
-  ineffective: { label: "Ineffective",  color: "var(--c-red)", bg: "rgba(239,68,68,0.15)" },
-  unknown:     { label: "Unknown",      color: "#6b7280", bg: "rgba(107,114,128,0.15)" },
+  not_assessed: { label: "Not yet assessed", color: "#6b7280", bg: "rgba(107,114,128,0.15)" },
+  effective:    { label: "Effective",        color: "var(--c-green)", bg: "rgba(52,211,153,0.15)" },
+  partial:      { label: "Partial",          color: "var(--c-amber)", bg: "rgba(251,191,36,0.15)" },
+  no_effect:    { label: "No effect",        color: "var(--c-red)", bg: "rgba(239,68,68,0.15)" },
 };
 
 function timeAgo(iso: string) {
@@ -55,12 +58,13 @@ export default function PRNPage() {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
+  const { guard, dialog } = useSafetyCheck();
 
   const [form, setForm] = useState({
     medication: "",
     reason: "",
     dose_given: "",
-    effectiveness: "unknown" as PRNAdmin["effectiveness"],
+    effectiveness: "not_assessed" as PRNAdmin["effectiveness"],
     effectiveness_notes: "",
   });
 
@@ -92,25 +96,28 @@ export default function PRNPage() {
     if (!form.medication || !form.reason || !form.dose_given) return;
     setSaving(true);
     try {
-      const res = await fetch("/api/v1/medications/prn-administrations/", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          medication: parseInt(form.medication),
-          reason: form.reason,
-          dose_given: form.dose_given,
-          effectiveness: form.effectiveness,
-          effectiveness_notes: form.effectiveness_notes,
-        }),
-      });
-      if (res.ok) {
-        setShowForm(false);
-        setForm({ medication: "", reason: "", dose_given: "", effectiveness: "unknown", effectiveness_notes: "" });
-        load();
-        toast("PRN administration recorded.", "success");
-      } else { toast("Could not record PRN.", "error"); }
-    } catch { toast("Network error — please try again.", "error"); }
+      const saved = await guard((safety_override_reason) =>
+        fetch("/api/v1/medications/prn-administrations/", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            medication: parseInt(form.medication),
+            reason: form.reason,
+            dose_given: form.dose_given,
+            effectiveness: form.effectiveness,
+            effectiveness_notes: form.effectiveness_notes,
+            safety_override_reason,
+          }),
+        }).then(throwIfNotOk));
+      if (!saved) return;
+      setShowForm(false);
+      setForm({ medication: "", reason: "", dose_given: "", effectiveness: "not_assessed", effectiveness_notes: "" });
+      load();
+      toast("PRN administration recorded.", "success");
+    } catch (e) {
+      toast(e instanceof Error && e.message !== "Failed to fetch" ? e.message : "Network error — please try again.", "error");
+    }
     finally { setSaving(false); }
   }
 
@@ -152,6 +159,8 @@ export default function PRNPage() {
 
       {residentId && (
         <>
+          <AllergyBanner allergies={residents.find(r => r.id === residentId)?.allergies} />
+
           {/* PRN Protocols */}
           {prnMeds.length > 0 && (
             <div>
@@ -218,7 +227,7 @@ export default function PRNPage() {
               ) : (
                 <div className="space-y-2">
                   {administrations.map(a => {
-                    const eff = EFFECT_CFG[a.effectiveness] ?? EFFECT_CFG.unknown;
+                    const eff = EFFECT_CFG[a.effectiveness] ?? EFFECT_CFG.not_assessed;
                     return (
                       <div key={a.id} className="rounded-2xl px-4 py-3 flex items-start gap-3" style={{ background: "rgba(var(--fg-rgb),0.02)", border: "1px solid rgba(var(--fg-rgb),0.07)" }}>
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: "rgba(52,211,153,0.12)" }}>
@@ -329,6 +338,7 @@ export default function PRNPage() {
           </div>
         </div>
       )}
+      {dialog}
     </div>
   );
 }

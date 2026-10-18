@@ -14,6 +14,8 @@ import {
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import LinkedDocuments from "@/components/documents/LinkedDocuments";
+import { AllergiesCard, AllergyBanner } from "@/components/residents/Allergies";
+import type { Allergy } from "@/types";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -337,7 +339,13 @@ const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
 
 // ── Sub-views ─────────────────────────────────────────────────────────────────
 
-function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate }: { resident: Resident; onRiskScoreUpdate: (score: number) => void; canRecalculate: boolean }) {
+function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate, canEditAllergies, onAllergiesChange }: {
+  resident: Resident;
+  onRiskScoreUpdate: (score: number) => void;
+  canRecalculate: boolean;
+  canEditAllergies: boolean;
+  onAllergiesChange: (next: Allergy[]) => void;
+}) {
   const [riskScore, setRiskScore] = useState(resident.ai_risk_score);
   const [scoringLoading, setScoringLoading] = useState(false);
   const [scoringReason, setScoringReason] = useState("");
@@ -436,6 +444,9 @@ function OverviewTab({ resident, onRiskScoreUpdate, canRecalculate }: { resident
           </div>
         </div>
       </GlassCard>
+
+      <AllergiesCard residentId={resident.id} allergies={resident.allergies ?? []}
+        canEdit={canEditAllergies} onChange={onAllergiesChange} />
 
       {/* Conditions */}
       <GlassCard>
@@ -932,6 +943,9 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
               <RiskBadge level={resident.pressure_ulcer_risk} />
               <span className="text-xs" style={{ color: "rgba(var(--fg-rgb),0.25)" }}>pressure ulcer</span>
             </div>
+            <div className="mt-3">
+              <AllergyBanner allergies={resident.allergies} />
+            </div>
           </div>
           <div className="flex sm:flex-col gap-2 flex-shrink-0">
             <button
@@ -962,10 +976,10 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
 
       {/* Tabs */}
       <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-        <div className="flex gap-1 p-1 rounded-xl min-w-max sm:min-w-0" style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.06)" }}>
+        <div className="flex gap-1 p-1 rounded-xl w-full min-w-max" style={{ background: "rgba(var(--fg-rgb),0.03)", border: "1px solid rgba(var(--fg-rgb),0.06)" }}>
           {TABS.map(({ id: tid, label, icon: Icon }) => (
             <button key={tid} onClick={() => setTab(tid)}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all sm:flex-1 justify-center whitespace-nowrap"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all sm:flex-1 justify-center whitespace-nowrap"
               style={{
                 background: tab === tid ? "rgba(13, 148, 136,0.2)" : "transparent",
                 color: tab === tid ? "var(--c-teal)" : "rgba(var(--fg-rgb),0.4)",
@@ -978,7 +992,9 @@ export default function ResidentDetailPage({ params }: { params: Promise<{ id: s
       </div>
 
       {/* Tab content */}
-      {tab === "overview"      && <OverviewTab resident={resident} onRiskScoreUpdate={(score) => setResident((r) => r ? { ...r, ai_risk_score: score } : r)} canRecalculate={can("ai.risk_score")} />}
+      {tab === "overview"      && <OverviewTab resident={resident} onRiskScoreUpdate={(score) => setResident((r) => r ? { ...r, ai_risk_score: score } : r)} canRecalculate={can("ai.risk_score")}
+        canEditAllergies={can("residents.edit")}
+        onAllergiesChange={(next) => setResident((r) => r ? { ...r, allergies: next } : r)} />}
       {tab === "medications"   && <MedicationsTab residentId={resident.id} />}
       {tab === "care-plans"    && <CarePlansTab residentId={resident.id} />}
       {tab === "care-notes"    && <CareNotesTab residentId={resident.id} />}

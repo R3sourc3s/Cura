@@ -112,6 +112,9 @@ class MAREntry(models.Model):
         help_text="Applied site for topical/patch medications, for rotation tracking (e.g. 'Left upper arm')",
     )
     notes = models.TextField(blank=True)
+    overdue_alerted_at = models.DateTimeField(
+        null=True, blank=True, help_text="When staff were alerted that this dose was overdue (set once)",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

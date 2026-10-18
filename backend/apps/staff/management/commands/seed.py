@@ -4,6 +4,7 @@ Run: python manage.py seed
 """
 import random
 from datetime import date, timedelta, datetime
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -14,6 +15,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Seeding database...")
         self._seed()
+        self.stdout.write("Seeding operational modules...")
+        call_command("seed_extras", stdout=self.stdout._out)
         self.stdout.write(self.style.SUCCESS("Done."))
 
     def _seed(self):

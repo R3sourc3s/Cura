@@ -1,9 +1,19 @@
 from rest_framework import viewsets, decorators, response
+from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from apps.authentication.permissions import require
 from apps.integrations.webhooks import dispatch as dispatch_webhook
 from .models import Medication, MAREntry, PRNProtocol, PRNAdministration
 from .serializers import MedicationSerializer, MAREntrySerializer, PRNProtocolSerializer, PRNAdministrationSerializer
+from . import safety
+
+
+def _override_reason(request):
+    return (request.data.get("safety_override_reason") or "").strip()
+
+
+def _with_note(notes, extra):
+    return f"{notes}\n{extra}".strip() if extra else notes
 
 _MED_PERMS = {
     "list":           ["medications.view"],
@@ -38,6 +48,26 @@ class MedicationViewSet(viewsets.ModelViewSet):
             resident__care_home=self.request.user.care_home
         )
 
+    def _check_prescribing(self, serializer):
+        data = serializer.validated_data
+        resident = data.get("resident") or serializer.instance.resident
+        drug_name = data.get("drug_name") or serializer.instance.drug_name
+        changed = serializer.instance is None or "drug_name" in data or "resident" in data
+        if not changed:
+            return {}
+        note = safety.enforce(
+            safety.check_allergies(resident, drug_name), _override_reason(self.request),
+            user=self.request.user, resident=resident, drug_name=drug_name,
+        )
+        notes = data.get("notes", serializer.instance.notes if serializer.instance else "")
+        return {"notes": _with_note(notes, note)} if note else {}
+
+    def perform_create(self, serializer):
+        serializer.save(**self._check_prescribing(serializer))
+
+    def perform_update(self, serializer):
+        serializer.save(**self._check_prescribing(serializer))
+
     @decorators.action(detail=False, methods=["get"])
     def low_stock(self, request):
         qs = self.get_queryset().filter(is_active=True)
@@ -58,8 +88,30 @@ class MAREntryViewSet(viewsets.ModelViewSet):
             "medication__resident", "administered_by"
         ).filter(medication__resident__care_home=self.request.user.care_home)
 
+    def _save_dose(self, serializer):
+        data = serializer.validated_data
+        entry = serializer.instance
+        new_status = data.get("status", entry.status if entry else MAREntry.Status.PENDING)
+        if new_status != MAREntry.Status.GIVEN:
+            serializer.save(**({} if entry else {"administered_by": self.request.user}))
+            return
+        medication = data.get("medication") or entry.medication
+        note = safety.enforce(
+            safety.check_mar_dose(entry, medication), _override_reason(self.request),
+            user=self.request.user, resident=medication.resident, drug_name=medication.drug_name,
+        )
+        extra = {"administered_by": self.request.user}
+        if not data.get("administered_at"):
+            extra["administered_at"] = timezone.now()
+        if note:
+            extra["notes"] = _with_note(data.get("notes", entry.notes if entry else ""), note)
+        serializer.save(**extra)
+
     def perform_create(self, serializer):
-        serializer.save(administered_by=self.request.user)
+        self._save_dose(serializer)
+
+    def perform_update(self, serializer):
+        self._save_dose(serializer)
 
 
 class PRNProtocolViewSet(viewsets.ModelViewSet):
@@ -92,12 +144,25 @@ class PRNAdministrationViewSet(viewsets.ModelViewSet):
         return [require("medications.administer")]
 
     def get_queryset(self):
-        return PRNAdministration.objects.select_related(
+        qs = PRNAdministration.objects.select_related(
             "medication__resident", "administered_by"
         ).filter(medication__resident__care_home=self.request.user.care_home)
+        resident = self.request.query_params.get("resident")
+        if resident and resident.isdigit():
+            qs = qs.filter(medication__resident_id=resident)
+        return qs
 
     def perform_create(self, serializer):
-        admin = serializer.save(administered_by=self.request.user)
+        medication = serializer.validated_data["medication"]
+        administered_at = serializer.validated_data.get("administered_at") or timezone.now()
+        note = safety.enforce(
+            safety.check_prn_dose(medication, administered_at), _override_reason(self.request),
+            user=self.request.user, resident=medication.resident, drug_name=medication.drug_name,
+        )
+        extra = {"administered_by": self.request.user, "administered_at": administered_at}
+        if note:
+            extra["effectiveness_notes"] = _with_note(serializer.validated_data.get("effectiveness_notes", ""), note)
+        admin = serializer.save(**extra)
         dispatch_webhook(admin.medication.resident.care_home, "prn.administered", {
             "id": admin.id, "medication_id": admin.medication_id, "drug_name": admin.medication.drug_name,
             "resident_id": admin.medication.resident_id, "administered_at": admin.administered_at.isoformat(),

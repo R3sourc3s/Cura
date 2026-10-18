@@ -216,9 +216,10 @@ body {
 .pulse-glow { animation: pulseGlow 4s ease-in-out infinite; }
 
 /* Light mode: fix text-white on headings & content (buttons keep their white).
-   Scoped to the dashboard so marketing pages can keep white text on dark sections. */
-[data-theme="light"] .dashboard-scope :where(h1, h2, h3, h4, h5, h6).text-white,
-[data-theme="light"] .dashboard-scope :where(div, span, p, td, li).text-white {
+   Scoped to the dashboard so marketing pages can keep white text on dark sections.
+   Elements marked [data-dark-surface] (e.g. the sidebar) stay dark in both themes, so they're exempt. */
+[data-theme="light"] .dashboard-scope :where(h1, h2, h3, h4, h5, h6).text-white:not([data-dark-surface] *),
+[data-theme="light"] .dashboard-scope :where(div, span, p, td, li).text-white:not([data-dark-surface] *) {
   color: var(--text-primary) !important;
 }
 
@@ -282,3 +283,21 @@ body {
 .lp-serif {
   font-family: var(--font-lora), Georgia, 'Times New Roman', serif;
 }
+
+/* Footer links — theme-aware, teal on hover */
+.footer-link {
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+.footer-link:hover {
+  color: var(--c-teal);
+}
+
+/* Dashboard sidebar — always a dark surface, so colours are fixed rather than themed */
+.sidebar-link { color: rgba(255,255,255,0.68); }
+.sidebar-link .sidebar-link-icon { color: rgba(255,255,255,0.45); }
+.sidebar-link:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+.sidebar-link[data-active="true"] { background: rgba(16,185,129,0.14); color: #5eead4; }
+.sidebar-link[data-active="true"] .sidebar-link-icon { color: #2dd4bf; }
+.sidebar-section { color: rgba(255,255,255,0.45); }
+.sidebar-section:hover { color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.04); }

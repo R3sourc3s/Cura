@@ -64,6 +64,8 @@ function score(item: CommandItem, q: string): number {
   return 0;
 }
 
+export const OPEN_COMMAND_PALETTE = "cura:open-command-palette";
+
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -98,6 +100,13 @@ export default function CommandPalette() {
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
   }, [open, filtered, selected, navigate]);
+
+  // Lets other UI (e.g. the sidebar search button) open the palette without faking a keypress.
+  useEffect(() => {
+    const openPalette = () => { setOpen(true); setQuery(""); setSelected(0); };
+    window.addEventListener(OPEN_COMMAND_PALETTE, openPalette);
+    return () => window.removeEventListener(OPEN_COMMAND_PALETTE, openPalette);
+  }, []);
 
   useEffect(() => { if (open) setTimeout(() => inputRef.current?.focus(), 50); }, [open]);
   useEffect(() => { setSelected(0); }, [query]);

@@ -34,6 +34,26 @@ export interface Resident {
   created_at: string;
   updated_at: string;
   conditions?: Condition[];
+  allergies?: Allergy[];
+}
+
+export interface Allergy {
+  id: number;
+  resident: number;
+  allergen: string;
+  allergy_type: "drug" | "food" | "environmental" | "other";
+  severity: "mild" | "moderate" | "severe" | "anaphylaxis";
+  reaction: string;
+  recorded_by?: number | null;
+  recorded_by_name?: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface SafetyIssue {
+  code: "allergy" | "duplicate_dose" | "prn_interval" | "prn_max_daily";
+  message: string;
+  overridable: boolean;
 }
 
 export interface Medication {

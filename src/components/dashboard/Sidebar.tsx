@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -12,10 +13,12 @@ import {
   MessageSquare, Star,
   Package, Briefcase, CalendarOff, CheckSquare, ClipboardPlus,
   Receipt, Activity, Heart, Award, LayoutGrid, Plug, Watch, Building2,
+  ChevronDown, Search,
 } from "lucide-react";
 import { logout } from "@/lib/auth";
 import { useUser } from "@/context/UserContext";
-import { NAV_ACCESS } from "@/lib/permissions";
+import { NAV_ACCESS, NAV_SECTIONS, type NavItem, type NavSection } from "@/lib/permissions";
+import { OPEN_COMMAND_PALETTE } from "./CommandPalette";
 
 const ICONS: Record<string, React.ElementType> = {
   "/dashboard":              LayoutDashboard,
@@ -62,6 +65,57 @@ const ICONS: Record<string, React.ElementType> = {
   "/dashboard/group":        Building2,
 };
 
+// ── Collapsed-section state, persisted per browser ─────────────────────────────
+// Read through useSyncExternalStore so server and first client render agree (no hydration
+// mismatch), and fall back to defaults when storage is unavailable (private mode, blocked).
+const SECTIONS_KEY = "cura.sidebar.sections";
+const listeners = new Set<() => void>();
+let cachedRaw: string | null | undefined;
+let cachedState: Partial<Record<NavSection, boolean>> = {};
+
+function readSections(): Partial<Record<NavSection, boolean>> {
+  let raw: string | null = null;
+  try { raw = window.localStorage.getItem(SECTIONS_KEY); } catch {}
+  if (raw !== cachedRaw) {
+    cachedRaw = raw;
+    try { cachedState = raw ? JSON.parse(raw) : {}; } catch { cachedState = {}; }
+  }
+  return cachedState;
+}
+
+function writeSection(section: NavSection, isOpen: boolean) {
+  const next = { ...readSections(), [section]: isOpen };
+  try { window.localStorage.setItem(SECTIONS_KEY, JSON.stringify(next)); } catch {}
+  cachedRaw = undefined;
+  cachedState = next;
+  listeners.forEach((l) => l());
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  return () => { listeners.delete(listener); };
+}
+
+const EMPTY: Partial<Record<NavSection, boolean>> = {};
+
+function isActive(href: string, pathname: string) {
+  return href === "/dashboard" ? pathname === href : pathname.startsWith(href);
+}
+
+function NavLink({ item, pathname, onClose }: { item: NavItem; pathname: string; onClose: () => void }) {
+  const Icon = ICONS[item.href] ?? LayoutDashboard;
+  const active = isActive(item.href, pathname);
+  return (
+    <Link href={item.href} onClick={onClose} aria-current={active ? "page" : undefined}
+      className="sidebar-link flex items-center gap-3 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-150"
+      data-active={active}>
+      <Icon size={15} className="sidebar-link-icon flex-shrink-0" />
+      <span className="truncate">{item.label}</span>
+      {active && <div className="ml-auto w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#2dd4bf", boxShadow: "0 0 6px #2dd4bf" }} />}
+    </Link>
+  );
+}
+
 interface SidebarProps {
   open: boolean;
   onClose: () => void;
@@ -77,8 +131,16 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
   // Group Oversight is gated by a per-user tenancy flag, not a role permission —
   // seeing another care home's data is a cross-tenant boundary, not a job function.
   if (user?.is_group_admin) {
-    visibleNav.push({ label: "Group Oversight", href: "/dashboard/group", permission: null });
+    visibleNav.push({ label: "Group Oversight", href: "/dashboard/group", permission: null, section: "Settings" });
   }
+
+  const stored = useSyncExternalStore(subscribe, readSections, () => EMPTY);
+  const grouped = NAV_SECTIONS
+    .map((section) => ({ section, items: visibleNav.filter((i) => i.section === section) }))
+    .filter((g) => g.items.length > 0);
+  // Open by default: Residents (the daily core) and whichever section holds the current page.
+  const isOpen = (section: NavSection, items: NavItem[]) =>
+    stored[section] ?? (section === "Residents" || items.some((i) => isActive(i.href, pathname)));
 
   return (
     <>
@@ -91,6 +153,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
       )}
 
       <aside
+        data-dark-surface
         className="fixed top-0 left-0 h-full w-64 flex flex-col z-40 transition-transform duration-300 ease-in-out"
         style={{
           background: "var(--sidebar-bg)",
@@ -127,22 +190,43 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
           </button>
         </div>
 
-        <nav aria-label="Primary" className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto">
-          {visibleNav.map(({ label, href }) => {
-            const Icon = ICONS[href] ?? LayoutDashboard;
-            const exact = href === "/dashboard";
-            const active = exact ? pathname === href : pathname.startsWith(href);
+        <div className="px-3 pt-3">
+          <button onClick={() => window.dispatchEvent(new Event(OPEN_COMMAND_PALETTE))}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors"
+            style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.6)" }}>
+            <Search size={14} />
+            <span className="flex-1 text-left">Search…</span>
+            <kbd className="text-[10px] font-sans px-1.5 py-0.5 rounded" style={{ background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.6)" }}>⌘K</kbd>
+          </button>
+        </div>
+
+        <nav aria-label="Primary" className="flex-1 px-2 py-3 overflow-y-auto">
+          {grouped.map(({ section, items }) => {
+            if (section === "Main") {
+              return (
+                <div key={section} className="space-y-0.5 mb-2">
+                  {items.map((item) => <NavLink key={item.href} item={item} pathname={pathname} onClose={onClose} />)}
+                </div>
+              );
+            }
+            const open = isOpen(section, items);
+            const id = `nav-section-${section.replace(/\W+/g, "-").toLowerCase()}`;
+            const hasActive = items.some((i) => isActive(i.href, pathname));
             return (
-              <Link key={href} href={href} onClick={onClose}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150"
-                style={{
-                  background: active ? "rgba(16, 185, 129,0.12)" : "transparent",
-                  color: active ? "#5eead4" : "rgba(255,255,255,0.45)",
-                }}>
-                <Icon size={15} style={{ color: active ? "#2dd4bf" : "rgba(255,255,255,0.3)" }} />
-                <span>{label}</span>
-                {active && <div className="ml-auto w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#2dd4bf", boxShadow: "0 0 6px #2dd4bf" }} />}
-              </Link>
+              <div key={section} className="mt-1">
+                <button onClick={() => writeSection(section, !open)} aria-expanded={open} aria-controls={id}
+                  className="sidebar-section w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-semibold uppercase tracking-wider transition-colors">
+                  <span className="flex-1 text-left">{section}</span>
+                  {!open && hasActive && <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#2dd4bf" }} aria-hidden />}
+                  {!open && <span className="text-[10px] font-medium normal-case tracking-normal opacity-70">{items.length}</span>}
+                  <ChevronDown size={13} className="transition-transform duration-150" style={{ transform: open ? "none" : "rotate(-90deg)" }} />
+                </button>
+                {open && (
+                  <div id={id} className="space-y-0.5 mt-0.5 mb-1">
+                    {items.map((item) => <NavLink key={item.href} item={item} pathname={pathname} onClose={onClose} />)}
+                  </div>
+                )}
+              </div>
             );
           })}
         </nav>

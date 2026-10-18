@@ -52,7 +52,7 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-    command: celery -A cura worker -l info
+    command: celery -A cura worker --beat -l info
 
   frontend:
     image: ghcr.io/r3sourc3s/cura/frontend:latest
