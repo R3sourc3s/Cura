@@ -1,4 +1,5 @@
 import type {
+  Allergy,
   Resident,
   Medication,
   MAREntry,
@@ -20,6 +21,14 @@ import type {
 
 const BASE = "/api/v1";
 
+/** Error thrown for non-2xx responses; keeps the status and parsed body (e.g. a 409 medication safety payload). */
+export class ApiError extends Error {
+  constructor(message: string, public status: number, public data: Record<string, unknown>) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     ...options,
@@ -37,7 +46,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ detail: "Unknown error" }));
-    throw new Error(error.detail ?? "Request failed");
+    throw new ApiError(error.detail ?? "Request failed", res.status, error);
   }
 
   if (res.status === 204) return undefined as T;
@@ -105,18 +114,25 @@ export const residents = {
     request<{ results: MAREntry[]; count: number }>(`/medications/mar/?medication__resident=${residentId}`),
 };
 
+export const allergies = {
+  create: (data: Pick<Allergy, "resident" | "allergen" | "allergy_type" | "severity" | "reaction">) =>
+    request<Allergy>("/residents/allergies/", { method: "POST", body: JSON.stringify(data) }),
+  deactivate: (id: number) =>
+    request<Allergy>(`/residents/allergies/${id}/`, { method: "PATCH", body: JSON.stringify({ is_active: false }) }),
+};
+
 export const medications = {
   list: (params?: Record<string, string>) =>
     request<{ results: Medication[]; count: number }>(`/medications/${qs(params)}`),
   get: (id: number) => request<Medication>(`/medications/${id}/`),
-  create: (data: Partial<Medication>) =>
+  create: (data: Partial<Medication> & { safety_override_reason?: string }) =>
     request<Medication>("/medications/", { method: "POST", body: JSON.stringify(data) }),
-  update: (id: number, data: Partial<Medication>) =>
+  update: (id: number, data: Partial<Medication> & { safety_override_reason?: string }) =>
     request<Medication>(`/medications/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
   delete: (id: number) => request<void>(`/medications/${id}/`, { method: "DELETE" }),
   marList: (params?: Record<string, string>) =>
     request<{ results: MAREntry[]; count: number }>(`/medications/mar/${qs(params)}`),
-  updateMAR: (id: number, data: Partial<MAREntry>) =>
+  updateMAR: (id: number, data: Partial<MAREntry> & { safety_override_reason?: string }) =>
     request<MAREntry>(`/medications/mar/${id}/`, {
       method: "PATCH",
       body: JSON.stringify(data),
@@ -139,6 +155,14 @@ export const carePlans = {
     }).then(async (r) => {
       if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error ?? "AI unavailable");
       return r.json() as Promise<{ summary: string }>;
+    }),
+  draftWithAI: (residentId: number) =>
+    fetch(`/api/ai/residents/${residentId}/draft-care-plan`, {
+      method: "POST",
+      credentials: "include",
+    }).then(async (r) => {
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error ?? "AI unavailable");
+      return r.json() as Promise<{ id: number; version: number; sections: number }>;
     }),
   createSection: (planId: number, data: Partial<CarePlanSection>) =>
     request<CarePlanSection>(`/care-plans/${planId}/sections/`, {

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import VoiceInputButton from "@/components/ui/VoiceInputButton";
+import { useSafetyCheck } from "@/components/medications/SafetyCheck";
 import MedicationInsights from "./MedicationInsights";
 
 const STATUS_CONFIG = {
@@ -90,6 +91,7 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const { toast } = useToast();
+  const { guard, dialog } = useSafetyCheck();
 
   function set(k: string, v: string | boolean) { setForm((f) => ({ ...f, [k]: v })); }
 
@@ -137,9 +139,10 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
         reorder_threshold: Number(form.reorder_threshold),
         end_date: form.end_date || undefined,
       };
-      const saved = initial
-        ? await medications.update(initial.id, payload)
-        : await medications.create(payload);
+      const saved = await guard((safety_override_reason) => initial
+        ? medications.update(initial.id, { ...payload, safety_override_reason })
+        : medications.create({ ...payload, safety_override_reason }));
+      if (!saved) return;
       onSaved(saved);
       toast(initial ? "Medication updated." : "Medication added.", "success");
     } catch (err) {
@@ -313,6 +316,7 @@ function MedModal({ initial, residents, onClose, onSaved }: { initial?: Medicati
           </button>
         </div>
       </div>
+      {dialog}
     </div>
   );
 }
@@ -334,13 +338,20 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
   const [editMed, setEditMed] = useState<Medication | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+  const { guard, dialog } = useSafetyCheck();
 
   async function administer(id: number) {
     setAdministeringId(id);
     try {
-      await medications.updateMAR(id, { status: "given", administered_at: new Date().toISOString() });
-      setMar((prev) => prev.map((e) => e.id === id ? { ...e, status: "given" } : e));
-    } catch (e) { console.error(e); }
+      const saved = await guard((safety_override_reason) =>
+        medications.updateMAR(id, { status: "given", safety_override_reason }));
+      if (!saved) return;
+      setMar((prev) => prev.map((e) => e.id === id ? saved : e));
+      toast("Dose recorded as given.", "success");
+    } catch (e) {
+      console.error(e);
+      toast(e instanceof Error ? e.message : "Could not record dose.", "error");
+    }
     finally { setAdministeringId(null); }
   }
 
@@ -535,6 +546,7 @@ export default function MedicationsClient({ initialMeds, initialMar, initialResi
         onConfirm={() => { if (confirmDeleteId !== null) { handleDelete(confirmDeleteId); setConfirmDeleteId(null); } }}
         onCancel={() => setConfirmDeleteId(null)}
       />
+      {dialog}
     </div>
   );
 }

@@ -190,6 +190,12 @@ CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
+CELERY_BEAT_SCHEDULE = {
+    "flag-overdue-doses": {
+        "task": "apps.medications.tasks.flag_overdue_doses",
+        "schedule": 15 * 60,
+    },
+}
 
 # Cache — backs DRF throttling so rate limits are shared across workers and
 # survive restarts (uses a separate Redis DB from Celery).

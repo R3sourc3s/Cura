@@ -79,7 +79,7 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
-    command: celery -A cura worker -l info
+    command: celery -A cura worker --beat -l info
 
   frontend:
     image: node:22-alpine

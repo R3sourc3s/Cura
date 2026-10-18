@@ -44,47 +44,64 @@ export type Permission =
   | "integrations.view" | "integrations.manage"
   | "devices.view" | "devices.manage";
 
-/** Which permission gates each nav item (null = always visible). */
-export const NAV_ACCESS: { label: string; href: string; permission: Permission | null }[] = [
-  { label: "Overview",         href: "/dashboard",                  permission: null },
-  { label: "KPI Dashboard",    href: "/dashboard/kpi",              permission: "kpi.view" },
-  { label: "Residents",        href: "/dashboard/residents",        permission: "residents.view" },
-  { label: "Wings & Occupancy",href: "/dashboard/wings",            permission: "residents.view" },
-  { label: "Medications",      href: "/dashboard/medications",      permission: "medications.view" },
-  { label: "MAR Chart",        href: "/dashboard/mar",              permission: "mar.view" },
-  { label: "Care Plans",       href: "/dashboard/care-plans",       permission: "care_plans.view" },
-  { label: "Care Notes",       href: "/dashboard/care-notes",       permission: "care_notes.view" },
-  { label: "Body Map",         href: "/dashboard/body-map",         permission: "body_map.view" },
-  { label: "Falls Risk",       href: "/dashboard/falls-risk",       permission: "falls_risk.view" },
-  { label: "Fluid & Nutrition",href: "/dashboard/nutrition",        permission: "nutrition.view" },
-  { label: "Overnight Checks", href: "/dashboard/overnight-checks", permission: "overnight_checks.view" },
-  { label: "Appointments",     href: "/dashboard/appointments",     permission: "appointments.view" },
-  { label: "Handover",         href: "/dashboard/handover",         permission: "handover.view" },
-  { label: "Incidents",        href: "/dashboard/incidents",        permission: "incidents.view" },
-  { label: "Safeguarding",     href: "/dashboard/safeguarding",     permission: "safeguarding.view" },
-  { label: "Activities",       href: "/dashboard/activities",       permission: "activities.view" },
-  { label: "Visitors",         href: "/dashboard/visitors",         permission: "visitors.view" },
-  { label: "Maintenance",      href: "/dashboard/maintenance",      permission: "maintenance.view" },
-  { label: "Documents",        href: "/dashboard/documents",        permission: "documents.view" },
-  { label: "Staff Rota",       href: "/dashboard/rota",             permission: "rota.view" },
-  { label: "Staff Training",   href: "/dashboard/training",         permission: "training.view" },
-  { label: "Staff",            href: "/dashboard/staff",            permission: "staff.view" },
-  { label: "Team",             href: "/dashboard/team",             permission: "team.view" },
-  { label: "Compliance",       href: "/dashboard/compliance",       permission: "compliance.view" },
-  { label: "Audit Trail",      href: "/dashboard/audit",            permission: "audit.view" },
-  { label: "PRN Medications",  href: "/dashboard/prn",              permission: "prn.view" },
-  { label: "Messages",         href: "/dashboard/messages",         permission: "messages.view" },
-  { label: "CQC Readiness",   href: "/dashboard/cqc",              permission: "cqc.view" },
-  { label: "AI Assistant",    href: "/dashboard/ai",               permission: "ai.chat" },
-  { label: "Pharmacy",        href: "/dashboard/pharmacy",         permission: "pharmacy.view" },
-  { label: "Recruitment",     href: "/dashboard/recruitment",      permission: "recruitment.view" },
-  { label: "Leave",           href: "/dashboard/leave",            permission: "leave.view" },
-  { label: "Tasks",           href: "/dashboard/tasks",            permission: "tasks.view" },
-  { label: "Enquiries",       href: "/dashboard/enquiries",        permission: "enquiries.view" },
-  { label: "Billing",         href: "/dashboard/billing",          permission: "billing.view" },
-  { label: "GP & Hospital",   href: "/dashboard/gp",              permission: "gp.view" },
-  { label: "Family Portal",   href: "/dashboard/family",           permission: "family.view" },
-  { label: "Skills",          href: "/dashboard/skills",           permission: "skills.view" },
-  { label: "Integrations",    href: "/dashboard/integrations",     permission: "integrations.view" },
-  { label: "Devices & Sensors", href: "/dashboard/devices",        permission: "devices.view" },
+export type NavSection =
+  | "Main" | "Residents" | "Medication" | "Shift" | "Staff" | "Compliance" | "Home & Admin" | "Settings";
+
+/** Sidebar section order. "Main" renders ungrouped at the top. */
+export const NAV_SECTIONS: NavSection[] = [
+  "Main", "Residents", "Medication", "Shift", "Staff", "Compliance", "Home & Admin", "Settings",
+];
+
+export interface NavItem { label: string; href: string; permission: Permission | null; section: NavSection }
+
+/** Which permission gates each nav item (null = always visible), grouped by sidebar section. */
+export const NAV_ACCESS: NavItem[] = [
+  { label: "Overview",          href: "/dashboard",                  permission: null,                    section: "Main" },
+  { label: "Tasks",             href: "/dashboard/tasks",            permission: "tasks.view",            section: "Main" },
+  { label: "Messages",          href: "/dashboard/messages",         permission: "messages.view",         section: "Main" },
+  { label: "AI Assistant",      href: "/dashboard/ai",               permission: "ai.chat",               section: "Main" },
+
+  { label: "Residents",         href: "/dashboard/residents",        permission: "residents.view",        section: "Residents" },
+  { label: "Wings & Occupancy", href: "/dashboard/wings",            permission: "residents.view",        section: "Residents" },
+  { label: "Care Plans",        href: "/dashboard/care-plans",       permission: "care_plans.view",       section: "Residents" },
+  { label: "Care Notes",        href: "/dashboard/care-notes",       permission: "care_notes.view",       section: "Residents" },
+  { label: "Body Map",          href: "/dashboard/body-map",         permission: "body_map.view",         section: "Residents" },
+  { label: "Falls Risk",        href: "/dashboard/falls-risk",       permission: "falls_risk.view",       section: "Residents" },
+  { label: "Fluid & Nutrition", href: "/dashboard/nutrition",        permission: "nutrition.view",        section: "Residents" },
+  { label: "Overnight Checks",  href: "/dashboard/overnight-checks", permission: "overnight_checks.view", section: "Residents" },
+  { label: "Appointments",      href: "/dashboard/appointments",     permission: "appointments.view",     section: "Residents" },
+
+  { label: "Medications",       href: "/dashboard/medications",      permission: "medications.view",      section: "Medication" },
+  { label: "MAR Chart",         href: "/dashboard/mar",              permission: "mar.view",              section: "Medication" },
+  { label: "PRN Medications",   href: "/dashboard/prn",              permission: "prn.view",              section: "Medication" },
+  { label: "Pharmacy",          href: "/dashboard/pharmacy",         permission: "pharmacy.view",         section: "Medication" },
+
+  { label: "Handover",          href: "/dashboard/handover",         permission: "handover.view",         section: "Shift" },
+  { label: "Incidents",         href: "/dashboard/incidents",        permission: "incidents.view",        section: "Shift" },
+  { label: "Safeguarding",      href: "/dashboard/safeguarding",     permission: "safeguarding.view",     section: "Shift" },
+  { label: "Visitors",          href: "/dashboard/visitors",         permission: "visitors.view",         section: "Shift" },
+  { label: "Activities",        href: "/dashboard/activities",       permission: "activities.view",       section: "Shift" },
+
+  { label: "Staff Overview",    href: "/dashboard/staff",            permission: "staff.view",            section: "Staff" },
+  { label: "Staff Rota",        href: "/dashboard/rota",             permission: "rota.view",             section: "Staff" },
+  { label: "Leave",             href: "/dashboard/leave",            permission: "leave.view",            section: "Staff" },
+  { label: "Training",          href: "/dashboard/training",         permission: "training.view",         section: "Staff" },
+  { label: "Skills Matrix",     href: "/dashboard/skills",           permission: "skills.view",           section: "Staff" },
+  { label: "Recruitment",       href: "/dashboard/recruitment",      permission: "recruitment.view",      section: "Staff" },
+  { label: "User Accounts",     href: "/dashboard/team",             permission: "team.view",             section: "Staff" },
+
+  { label: "CQC Readiness",     href: "/dashboard/cqc",              permission: "cqc.view",              section: "Compliance" },
+  { label: "Compliance",        href: "/dashboard/compliance",       permission: "compliance.view",       section: "Compliance" },
+  { label: "KPI Dashboard",     href: "/dashboard/kpi",              permission: "kpi.view",              section: "Compliance" },
+  { label: "Audit Trail",       href: "/dashboard/audit",            permission: "audit.view",            section: "Compliance" },
+  { label: "Documents",         href: "/dashboard/documents",        permission: "documents.view",        section: "Compliance" },
+
+  { label: "Enquiries",         href: "/dashboard/enquiries",        permission: "enquiries.view",        section: "Home & Admin" },
+  { label: "Billing",           href: "/dashboard/billing",          permission: "billing.view",          section: "Home & Admin" },
+  { label: "GP & Hospital",     href: "/dashboard/gp",               permission: "gp.view",               section: "Home & Admin" },
+  { label: "Family Portal",     href: "/dashboard/family",           permission: "family.view",           section: "Home & Admin" },
+  { label: "Maintenance",       href: "/dashboard/maintenance",      permission: "maintenance.view",      section: "Home & Admin" },
+
+  { label: "Integrations",      href: "/dashboard/integrations",     permission: "integrations.view",     section: "Settings" },
+  { label: "Devices & Sensors", href: "/dashboard/devices",          permission: "devices.view",          section: "Settings" },
 ];

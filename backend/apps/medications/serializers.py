@@ -11,7 +11,7 @@ class MAREntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = MAREntry
         fields = "__all__"
-        read_only_fields = ["id", "created_at"]
+        read_only_fields = ["id", "administered_by", "overdue_alerted_at", "created_at"]
 
 
 class PRNProtocolSerializer(serializers.ModelSerializer):
@@ -29,6 +29,7 @@ class PRNAdministrationSerializer(serializers.ModelSerializer):
         model = PRNAdministration
         fields = "__all__"
         read_only_fields = ["id", "administered_by", "created_at"]
+        extra_kwargs = {"administered_at": {"required": False}}
 
 
 class MedicationSerializer(serializers.ModelSerializer):

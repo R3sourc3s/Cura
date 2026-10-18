@@ -69,3 +69,37 @@ class Condition(models.Model):
 
     def __str__(self):
         return f"{self.resident} — {self.name}"
+
+
+class Allergy(models.Model):
+    """Recorded allergy or adverse drug reaction. Drug allergies are checked on prescribing and administration."""
+
+    class AllergyType(models.TextChoices):
+        DRUG = "drug", "Drug"
+        FOOD = "food", "Food"
+        ENVIRONMENTAL = "environmental", "Environmental"
+        OTHER = "other", "Other"
+
+    class Severity(models.TextChoices):
+        MILD = "mild", "Mild"
+        MODERATE = "moderate", "Moderate"
+        SEVERE = "severe", "Severe"
+        ANAPHYLAXIS = "anaphylaxis", "Anaphylaxis"
+
+    resident = models.ForeignKey(Resident, on_delete=models.CASCADE, related_name="allergies")
+    allergen = models.CharField(max_length=200, help_text="Drug, drug class (e.g. 'Penicillins'), food or substance")
+    allergy_type = models.CharField(max_length=20, choices=AllergyType.choices, default=AllergyType.DRUG)
+    severity = models.CharField(max_length=20, choices=Severity.choices, default=Severity.MODERATE)
+    reaction = models.CharField(max_length=300, blank=True, help_text="e.g. 'Rash', 'Swollen lips and wheeze'")
+    recorded_by = models.ForeignKey(
+        "authentication.User", on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
+    )
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-is_active", "allergen"]
+        verbose_name_plural = "allergies"
+
+    def __str__(self):
+        return f"{self.resident} — {self.allergen} ({self.severity})"

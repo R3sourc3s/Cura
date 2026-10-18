@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { carePlans } from "@/lib/api";
 import type { CarePlan, Resident } from "@/types";
-import { ClipboardList, Bot, Calendar, Filter, Plus, X, Save } from "lucide-react";
+import { ClipboardList, Bot, Calendar, Filter, Plus, X, Save, Sparkles } from "lucide-react";
 import { useToast } from "@/components/Toast";
 
 const STATUS = {
@@ -28,9 +28,14 @@ function Field({ label, required, children }: { label: string; required?: boolea
   );
 }
 
-function NewPlanModal({ residents, onClose, onCreated }: { residents: Resident[]; onClose: () => void; onCreated: (plan: CarePlan) => void }) {
+function NewPlanModal({ residents, onClose, onCreated }: {
+  residents: Resident[];
+  onClose: () => void;
+  onCreated: (planId: number, viaAI: boolean) => void;
+}) {
   const formRef = useRef<HTMLFormElement>(null);
   const [form, setForm] = useState({ resident: "", status: "draft", next_review_date: "" });
+  const [useAI, setUseAI] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -41,10 +46,15 @@ function NewPlanModal({ residents, onClose, onCreated }: { residents: Resident[]
     setSaving(true);
     setError("");
     try {
+      if (useAI) {
+        const drafted = await carePlans.draftWithAI(Number(form.resident));
+        onCreated(drafted.id, true);
+        return;
+      }
       const payload: Record<string, unknown> = { resident: Number(form.resident), status: form.status };
       if (form.next_review_date) payload.next_review_date = form.next_review_date;
       const plan = await carePlans.create(payload as Parameters<typeof carePlans.create>[0]);
-      onCreated(plan);
+      onCreated(plan.id, false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create plan");
     } finally {
@@ -87,18 +97,35 @@ function NewPlanModal({ residents, onClose, onCreated }: { residents: Resident[]
               ))}
             </select>
           </Field>
-          <Field label="Status">
-            <select className={inputCls} style={inputStyle} value={form.status}
-              onChange={(e) => set("status", e.target.value)}>
-              <option value="draft">Draft</option>
-              <option value="active">Active</option>
-              <option value="under_review">Under Review</option>
-            </select>
-          </Field>
-          <Field label="Next Review Date">
-            <input type="date" className={inputCls} style={inputStyle} value={form.next_review_date}
-              onChange={(e) => set("next_review_date", e.target.value)} />
-          </Field>
+          <label className="flex items-start gap-3 p-3 rounded-xl cursor-pointer"
+            style={{ background: useAI ? "rgba(13,148,136,0.08)" : "var(--bg-card)", border: `1px solid ${useAI ? "rgba(13,148,136,0.3)" : "var(--border)"}` }}>
+            <input type="checkbox" checked={useAI} onChange={(e) => setUseAI(e.target.checked)} className="mt-0.5 accent-teal-600" />
+            <span>
+              <span className="flex items-center gap-1.5 text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+                <Sparkles size={13} style={{ color: "var(--c-teal)" }} /> Draft sections with AI
+              </span>
+              <span className="block text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+                Writes a draft from the resident&apos;s conditions, allergies, medications, falls risk, vitals,
+                incidents and recent care notes. It&apos;s saved as a draft for you to review before activating.
+              </span>
+            </span>
+          </label>
+          {!useAI && (
+            <>
+              <Field label="Status">
+                <select className={inputCls} style={inputStyle} value={form.status}
+                  onChange={(e) => set("status", e.target.value)}>
+                  <option value="draft">Draft</option>
+                  <option value="active">Active</option>
+                  <option value="under_review">Under Review</option>
+                </select>
+              </Field>
+              <Field label="Next Review Date">
+                <input type="date" className={inputCls} style={inputStyle} value={form.next_review_date}
+                  onChange={(e) => set("next_review_date", e.target.value)} />
+              </Field>
+            </>
+          )}
         </form>
         <div className="px-6 py-4 flex gap-3 flex-shrink-0"
           style={{ borderTop: "1px solid var(--border)" }}>
@@ -110,7 +137,8 @@ function NewPlanModal({ residents, onClose, onCreated }: { residents: Resident[]
           <button onClick={() => formRef.current?.requestSubmit()} disabled={saving}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-xl text-white disabled:opacity-50"
             style={{ background: "#0d9488" }}>
-            <Save size={14} />{saving ? "Creating…" : "Create Plan"}
+            {useAI ? <Sparkles size={14} /> : <Save size={14} />}
+            {saving ? (useAI ? "Drafting… (up to a minute)" : "Creating…") : useAI ? "Draft Plan" : "Create Plan"}
           </button>
         </div>
       </div>
@@ -161,10 +189,10 @@ export default function CarePlansClient({ initialPlans, initialResidents }: Prop
     }
   }
 
-  function handleCreated(plan: CarePlan) {
+  function handleCreated(planId: number, viaAI: boolean) {
     setShowNew(false);
-    toast("Care plan created.");
-    router.push(`/dashboard/care-plans/${plan.id}`);
+    toast(viaAI ? "AI draft ready — review each section before activating." : "Care plan created.");
+    router.push(`/dashboard/care-plans/${planId}`);
   }
 
   const residentMap = Object.fromEntries(residentList.map((r) => [r.id, r]));
